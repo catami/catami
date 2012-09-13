@@ -1,0 +1,9 @@
+{% if latest_auvdeployment_list %}
+    <ul>
+    {% for auvdeployment in latest_auvdeployment_list %}
+        <li>{{auvdeployment.startTimeStamp}}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No auvdeployments are available.</p>
+{% endif %}
