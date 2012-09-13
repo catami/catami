@@ -8,7 +8,15 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'catamiPortal.views.home', name='home'),
     # url(r'^catamiPortal/', include('catamiPortal.foo.urls')),
+
     url(r'Force/', include('Force.urls')),
+
+    #to hide the database name
+    url(r'^main/$','Force.views.index'),
+    
+    #views
+    url(r'^main/auvdeployments/$', 'Force.views.auvdeployments'),
+
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

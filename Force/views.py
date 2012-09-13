@@ -1,7 +1,9 @@
 # Create your views here.
+from django.template import Context, loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, render, redirect
 from Force.forms import CampaignForm
+from Force.models import auvDeployment
 from django.core.urlresolvers import reverse
 
 def index(request):
@@ -18,3 +20,12 @@ def add_campaign(request):
         form = CampaignForm() # An unbound form
 
     return render(request, 'Force/AddCampaign.html', {'form': form})
+
+def auvdeployments(request):
+    latest_auvdeployment_list = auvDeployment.objects.all()
+    t = loader.get_template('auvindex2.html')
+    c = Context({
+        'latest_auvdeployment_list': latest_auvdeployment_list,
+    })
+    return HttpResponse(t.render(c))
+   
