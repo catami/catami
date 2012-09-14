@@ -1,9 +1,9 @@
 # Create your views here.
-from django.template import Context, loader
+from django.template import Context, loader, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, render, redirect
 from Force.forms import CampaignForm
-from Force.models import auvDeployment
+from Force.models import *
 from django.core.urlresolvers import reverse
 
 def index(request):
@@ -19,13 +19,19 @@ def add_campaign(request):
     else:
         form = CampaignForm() # An unbound form
 
-    return render(request, 'Force/AddCampaign.html', {'form': form})
+    return render(request, '/Force/AddCampaign.html', {'form': form})
 
 def auvdeployments(request):
     latest_auvdeployment_list = auvDeployment.objects.all()
-    t = loader.get_template('auvindex2.html')
-    c = Context({
-        'latest_auvdeployment_list': latest_auvdeployment_list,
-    })
-    return HttpResponse(t.render(c))
+    return render_to_response('auvindex2.html', {'latest_auvdeployment_list': latest_auvdeployment_list})
    
+def campaigns(request):
+    latest_campaign_list = campaign.objects.all()
+    return render_to_response('campaignIndex.html', {'latest_campaign_list': latest_campaign_list},context_instance=RequestContext(request))
+
+def campaignDetail(request, campaign_id):
+    campaignObject = campaign.objects.get(id=campaign_id)
+
+    auvdeploymentListForCampaign = auvDeployment.objects.filter(campaign=campaignObject)
+
+    return render_to_response('campaignInstance.html', {'campaignObject': campaignObject, 'auvdeploymentListForCampaign':auvdeploymentListForCampaign})
