@@ -120,11 +120,41 @@
 	
 	    </div>
 	    <div id="content" class="span9">
+        
             <ul class="breadcrumb">
-              <li class="active">AUV Deployment List</li>
+              <li><a href="/main/campaigns/">Campaign List</a> <span class="divider">></span></li>
+              <li class="active">Campaign</li>
             </ul>
-	          <h3>AUV Deployment List</h3>
-            {% if latest_auvdeployment_list %}
+
+	          <h3>Selected Campaign</h3>
+            {% if campaignObject %}
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Researchers</th>
+                  <th>Publications</th>
+                  <th>Grant</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                    <tr>
+                      <td>{{campaignObject.dateStart}}</td>
+                      <td>{{campaignObject.dateEnd}}</td>
+                      <td>{{campaignObject.associatedResearchers}}</td>
+                      <td>{{campaignObject.associatedPublications}}</td>
+                      <td>{{campaignObject.associatedResearchGrant}}</td>
+                      <td>{{campaignObject.description}}</td>
+                    <tr>
+              </tbody>
+            </table>
+            {% else %}
+                <p>This campaign seems to be broken or missing...</p>
+            {% endif %}
+
+            <h3>Campaign Deployments</h3>
             <table class="table table-striped">
               <thead>
                 <tr>
@@ -135,12 +165,11 @@
                   <th>Mission Aim</th>
                   <th>Transect Shape</th>
                   <th>Distance Covered</th>
-                  <th>Related Campaign</th>
                 </tr>
               </thead>
               <tbody>
 
-                  {% for auvdeployment in latest_auvdeployment_list %}
+                  {% for auvdeployment in auvdeploymentListForCampaign %}
                     <tr>
                       <td>{{auvdeployment.startTimeStamp}}</td>
                       <td>{{auvdeployment.endTimeStamp}}</td>
@@ -149,17 +178,13 @@
                       <td>{{auvdeployment.missionAim}}</td>
                       <td>{{auvdeployment.transectShape}}</td>
                       <td>{{auvdeployment.distanceCovered}}</td>
-                      <td><a href="/main/campaigns/{{auvdeployment.campaign.id}}" class="btn btn-large btn-primary">Campaign</a> <br><br>
-                          <a href="/main/auvdeployments/{{auvdeployment.id}}" class="btn btn-large btn-primary">Detail</a></td>
+                      <td><a href="/main/auvdeployments/{{auvdeployment.id}}" class="btn btn-large btn-primary">Detail</a> 
 
                     <tr>
 
                   {% endfor %}
               </tbody>
             </table>
-            {% else %}
-                <p>No auvdeployments are available.</p>
-            {% endif %}
 	    </div>
 	
 	  </div>
