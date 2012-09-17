@@ -120,6 +120,9 @@
 	
 	    </div>
 	    <div id="content" class="span9">
+            <ul class="breadcrumb">
+              <li class="active">AUV Deployment List</li>
+            </ul>
 	          <h3>AUV Deployment List</h3>
             {% if latest_auvdeployment_list %}
             <table class="table table-striped">
@@ -146,7 +149,9 @@
                       <td>{{auvdeployment.missionAim}}</td>
                       <td>{{auvdeployment.transectShape}}</td>
                       <td>{{auvdeployment.distanceCovered}}</td>
-                      <td><a href="/main/campaigns/{{auvdeployment.campaign.id}}" class="btn btn-large btn-primary">Details</a> 
+                      <td><a href="/main/campaigns/{{auvdeployment.campaign.id}}" class="btn btn-large btn-primary">Campaign</a> <br><br>
+                          <a href="/main/auvdeployments/{{auvdeployment.id}}" class="btn btn-large btn-primary">Detail</a></td>
+
                     <tr>
 
                   {% endfor %}

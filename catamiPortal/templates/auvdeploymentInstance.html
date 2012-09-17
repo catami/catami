@@ -120,8 +120,14 @@
 	
 	    </div>
 	    <div id="content" class="span9">
-	          <h3>AUV Deployment List</h3>
-            {% if latest_auvdeployment_list %}
+            <ul class="breadcrumb">
+              <li><a href="/main/campaigns/">Campaign List</a> <span class="divider">></span></li>
+              <li><a href="/main/campaigns/{{auvdeploymentObject.campaign.id}}">Campaign</a> <span class="divider">></span></li>
+              <li class="active">AUV Deployment</li>
+            </ul>
+
+	          <h3>AUV Deployment Detail</h3>
+            {% if auvdeploymentObject %}
             <table class="table table-striped">
               <thead>
                 <tr>
@@ -137,24 +143,24 @@
               </thead>
               <tbody>
 
-                  {% for auvdeployment in latest_auvdeployment_list %}
                     <tr>
-                      <td>{{auvdeployment.startTimeStamp}}</td>
-                      <td>{{auvdeployment.endTimeStamp}}</td>
-                      <td>{{auvdeployment.minDepth}}</td>
-                      <td>{{auvdeployment.maxDepth}}</td>
-                      <td>{{auvdeployment.missionAim}}</td>
-                      <td>{{auvdeployment.transectShape}}</td>
-                      <td>{{auvdeployment.distanceCovered}}</td>
-                      <td>{{auvdeployment.campaign}}
+                      <td>{{auvdeploymentObject.startTimeStamp}}</td>
+                      <td>{{auvdeploymentObject.endTimeStamp}}</td>
+                      <td>{{auvdeploymentObject.minDepth}}</td>
+                      <td>{{auvdeploymentObject.maxDepth}}</td>
+                      <td>{{auvdeploymentObject.missionAim}}</td>
+                      <td>{{auvdeploymentObject.transectShape}}</td>
+                      <td>{{auvdeploymentObject.distanceCovered}}</td>
+                      <td>{{auvdeploymentObject.campaign}}
                     <tr>
 
-                  {% endfor %}
               </tbody>
             </table>
             {% else %}
                 <p>No auvdeployments are available.</p>
             {% endif %}
+             <h3>AUV Deployment Data</h3>
+             <p>TBA</p>
 	    </div>
 	
 	  </div>

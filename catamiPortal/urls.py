@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^main/auvdeployments/$', 'Force.views.auvdeployments'),
     url(r'^main/campaigns/$', 'Force.views.campaigns'),
     url(r'^main/campaigns/(?P<campaign_id>\d+)/$', 'Force.views.campaignDetail'),
+    url(r'^main/auvdeployments/(?P<auvdeployment_id>\d+)/$', 'Force.views.auvdeploymentDetail'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

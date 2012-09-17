@@ -29,6 +29,10 @@ def campaigns(request):
     latest_campaign_list = campaign.objects.all()
     return render_to_response('campaignIndex.html', {'latest_campaign_list': latest_campaign_list},context_instance=RequestContext(request))
 
+def auvdeploymentDetail(request, auvdeployment_id):
+    auvdeploymentObject = auvDeployment.objects.get(id=auvdeployment_id)
+    return render_to_response('auvdeploymentInstance.html', {'auvdeploymentObject': auvdeploymentObject})
+
 def campaignDetail(request, campaign_id):
     campaignObject = campaign.objects.get(id=campaign_id)
 
