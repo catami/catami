@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response, render, redirect
 from Force.forms import CampaignForm
 from Force.models import *
 from django.core.urlresolvers import reverse
+from vectorformats.Formats import Django, GeoJSON
 
 def index(request):
     return HttpResponse("Hello World, from the CATAMI team.  We are not up and running yet, you can follow us here for now https://plus.google.com/u/0/b/104765819602128308640/104765819602128308640/posts")
@@ -31,7 +32,10 @@ def campaigns(request):
 
 def auvdeploymentDetail(request, auvdeployment_id):
     auvdeploymentObject = auvDeployment.objects.get(id=auvdeployment_id)
-    return render_to_response('auvdeploymentInstance.html', {'auvdeploymentObject': auvdeploymentObject})
+    djf=Django.Django(geodjango="transectShape", properties=[])
+    geoj = GeoJSON.GeoJSON()
+    deployment_as_geojson = geoj.encode(djf.decode([auvDeployment.objects.get(id=auvdeployment_id)]))
+    return render_to_response('auvdeploymentInstance.html', {'auvdeploymentObject': auvdeploymentObject,'deployment_as_geojson':deployment_as_geojson})
 
 def campaignDetail(request, campaign_id):
     campaignObject = campaign.objects.get(id=campaign_id)
