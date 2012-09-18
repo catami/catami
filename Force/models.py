@@ -33,8 +33,8 @@ class campaign(models.Model):
     associatedResearchers=dbarray.TextArrayField()
     associatedPublications=dbarray.TextArrayField()
     associatedResearchGrant=dbarray.TextArrayField()
-    dateStart=models.DateTimeField()
-    dateEnd=models.DateTimeField() # There is a "DateField" do we need time here ?
+    dateStart=models.DateField()
+    dateEnd=models.DateField()
 
 class deployment(models.Model):
     ''' 
