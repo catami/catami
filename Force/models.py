@@ -13,6 +13,10 @@ import dbarray
 #
 #==================================================#
 
+class campaignManager(models.Manager):
+    def get_by_natural_key(self, dateStart, shortName):
+        return self.get(dateStart=dateStart, shortName=shortName)
+
 class campaign(models.Model):
     '''
     @brief A campain describes a field campaign that has many deployments.
@@ -27,6 +31,7 @@ class campaign(models.Model):
     # date start <dateTime> :
     # date End <dateTime> : 
     #==================================================#
+    objects = campaignManager()
 
     shortName=models.CharField(max_length=100)
     description=models.TextField()
@@ -36,10 +41,21 @@ class campaign(models.Model):
     dateStart=models.DateField()
     dateEnd=models.DateField()
 
+    def natural_key(self):
+        return (self.dateStart, self.shortName)
+
+    class Meta:
+        unique_together = (('dateStart','shortName'),)
+
+class deploymentManager(models.Manager):
+    def get_by_natural_key(self, startTimeStamp, shortName):
+        return self.get(startTimeStamp=startTimeStamp, shortName=shortName)
+
 class deployment(models.Model):
     ''' 
     @brief This is the abstract deployment class.  
     '''
+    objects = deploymentManager()
     startPosition=models.PointField()
     startTimeStamp=models.DateTimeField()
     endTimeStamp=models.DateTimeField()
@@ -49,9 +65,18 @@ class deployment(models.Model):
     maxDepth=models.FloatField()
     campaign=models.ForeignKey(campaign)
 
-    #class Meta:
-    #    abstract = True
+    def natural_key(self):
+        return (self.startTimeStamp, self.shortName)
+
+    class Meta:
+        unique_together = (('startTimeStamp','shortName'),)
     
+class imageManager(models.Manager):
+    def get_by_natural_key(self, deployment_key, dateTime):
+        dep = deployment.objects.get_by_natural_key(*deployment_key)
+        return self.get(deployment=dep, dateTime=dateTime)
+
+
 class image(models.Model):
     '''
     @brief This is the abstract image class, mono images reference use the left imgage field
@@ -59,6 +84,7 @@ class image(models.Model):
 
     # ??? Maybe make an image reference class and instantiate left and right instances ?????
 
+    objects = imageManager()
     deployment=models.ForeignKey(deployment)
     leftThumbnailReference=models.URLField() #!!!!ImageField(upload_to='photos/%Y/%m/%d')
     leftImageReference=models.URLField()
@@ -72,9 +98,13 @@ class image(models.Model):
     altitude=models.FloatField()
     depth=models.FloatField()
 
-    #class Meta:
-    #    abstract = True
-    
+    def natural_key(self):
+        return self.deployment.natural_key() + (self.dateTime,)
+    natural_key.dependencies = ['Force.deployment']
+
+    class Meta:
+        unique_together = (('deployment', 'dateTime'),)
+
 class user(models.Model):
     '''
     @breif contains all of the information for the database users
