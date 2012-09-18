@@ -18,6 +18,7 @@ class campaign(models.Model):
     @brief A campain describes a field campaign that has many deployments.
     '''
     #==================================================#
+    # shortName <Text> : is a short name for the campaign
     # description <Text> : is a general description of the campaign
     # associateResearchers <array> :
     # associatedPublications <array> :
@@ -27,6 +28,7 @@ class campaign(models.Model):
     # date End <dateTime> : 
     #==================================================#
 
+    shortName=models.CharField(max_length=100)
     description=models.TextField()
     associatedResearchers=dbarray.TextArrayField()
     associatedPublications=dbarray.TextArrayField()
@@ -41,6 +43,7 @@ class deployment(models.Model):
     startPosition=models.PointField()
     startTimeStamp=models.DateTimeField()
     endTimeStamp=models.DateTimeField()
+    shortName=models.CharField(max_length=100)
     missionAim=models.TextField()
     minDepth=models.FloatField()
     maxDepth=models.FloatField()
@@ -98,6 +101,7 @@ class auvDeployment(deployment):
     # startTimeStamp : <dateTime>
     # endTimeStamp : <dateTime>
     # transectShape : <Polygon>
+    # shortName <Text> : is a short name for the deployment
     # missionAim : <Text>
     # minDepth : <double>
     # maxDepth : <double> 
