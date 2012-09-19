@@ -108,11 +108,6 @@
 	      <h1>Data View</h1>
 	      <p class="lead">Data, documents and analysis connected.  Join the dots.</p>
 	
-	      <div class="alert alert-error">
-	        <button type="button" class="close" data-dismiss="alert">x</button>
-	        <p><strong>Warning!</strong> This is just a prototype, nothing really works.</p>
-	      </div>
-	
 	      <div class="well well-small" style="align:center;">
 	        <p class="lead">Title</p>
 	        <p>options</p>
@@ -125,7 +120,7 @@
             </ul>
 	          <h3>Campaign List</h3>
             {% if latest_campaign_list %}
-            <table class="table table-striped">
+            <table class="table">
               <thead>
                 <tr>
                   <th>Start Date</th>
@@ -135,7 +130,6 @@
                   <th>Publications</th>
                   <th>Grant</th>
                   <th>Description</th>
-                  <th>Deployments Found</th>
                   <th></th>
                 </tr>
               </thead>
@@ -143,12 +137,16 @@
 
                   {% for campaign in latest_campaign_list %}
                     <tr>
-                      <td>{{campaign.dateStart}}</td>
-                      <td>{{campaign.dateEnd}}</td>
+                     <td colspan=8><p class="lead">{{campaign.short_name}}<p></td>
+                    </tr>
+
+                    <tr>
+                      <td>{{campaign.date_start}}</td>
+                      <td>{{campaign.date_end}}</td>
                       <td>0</td>
-                      <td>{{campaign.associatedResearchers}}</td>
-                      <td>{{campaign.associatedPublications}}</td>
-                      <td>{{campaign.associatedResearchGrant}}</td>
+                      <td>{{campaign.associated_researchers}}</td>
+                      <td>{{campaign.associated_publications}}</td>
+                      <td>{{campaign.associated_research_grant}}</td>
                       <td>{{campaign.description}}</td>
                       <td><a href="{{campaign.id}}" class="btn btn-large btn-primary">Detail</a> 
                     <tr>

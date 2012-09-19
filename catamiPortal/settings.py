@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.gis',
     'Force',
+    'staging',
 )
 
 # A sample logging configuration. The only tangible logging

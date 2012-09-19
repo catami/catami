@@ -191,7 +191,7 @@ class AddTest(TestCase):
         self.assertAlmostEqual(altitude, testEntry.altitude)
         self.assertAlmostEqual(roll,testEntry.roll)
         self.assertEqual(deployment_id,testEntry.deployment_id)
-        
+
         #==================================================#
         # stereoImages data file
         #==================================================#
@@ -262,6 +262,8 @@ class AddTest(TestCase):
         self.assertEqual(string.strip(comments),string.strip(testEntry.comments))
         self.assertEqual(image_reference_id,testEntry.image_reference_id)
         self.assertEqual(user_who_annotated_id,testEntry.user_who_annotated_id)
+
+        #print dir(testEntry)
         
     def test_ImportMetaDataFromDirectory(self):
         dao = self.mocker.CreateMock(catamiWebPortal.importTools.importMetaData)

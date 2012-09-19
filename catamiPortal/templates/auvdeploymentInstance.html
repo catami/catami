@@ -107,14 +107,10 @@
 	
 	      <h1>Data View</h1>
 	      <p class="lead">Data, documents and analysis connected.  Join the dots.</p>
-	
-	      <div class="alert alert-error">
-	        <button type="button" class="close" data-dismiss="alert">x</button>
-	        <p><strong>Warning!</strong> This is just a prototype, nothing really works.</p>
-	      </div>
+
 	
 	      <div class="well well-small" style="align:center;">
-	        <p class="lead">Title</p>
+	        <p class="lead">{{auvdeploymentObject.short_name}}</p>
 	        <p>options</p>
 	      </div><!--/.well -->
 	
@@ -122,11 +118,10 @@
 	    <div id="content" class="span9">
             <ul class="breadcrumb">
               <li><a href="/main/campaigns/">Campaign List</a> <span class="divider">></span></li>
-              <li><a href="/main/campaigns/{{auvdeploymentObject.campaign.id}}">Campaign</a> <span class="divider">></span></li>
-              <li class="active">AUV Deployment</li>
+              <li><a href="/main/campaigns/{{auvdeploymentObject.campaign.id}}">{{auvdeploymentObject.campaign.short_name}}</a> <span class="divider">></span></li>
+              <li class="active">{{auvdeploymentObject.short_name}}</li>
             </ul>
 
-	          <h3>AUV Deployment Detail</h3>
             {% if auvdeploymentObject %}
             <table class="table table-striped">
               <thead>
@@ -144,13 +139,13 @@
               <tbody>
 
                     <tr>
-                      <td>{{auvdeploymentObject.startTimeStamp}}</td>
-                      <td>{{auvdeploymentObject.endTimeStamp}}</td>
-                      <td>{{auvdeploymentObject.minDepth}}</td>
-                      <td>{{auvdeploymentObject.maxDepth}}</td>
-                      <td>{{auvdeploymentObject.missionAim}}</td>
-                      <td>{{auvdeploymentObject.transectShape}}</td>
-                      <td>{{auvdeploymentObject.distanceCovered}}</td>
+                      <td>{{auvdeploymentObject.start_time_stamp}}</td>
+                      <td>{{auvdeploymentObject.end_time_stamp}}</td>
+                      <td>{{auvdeploymentObject.min_depth}}</td>
+                      <td>{{auvdeploymentObject.max_depth}}</td>
+                      <td>{{auvdeploymentObject.missiona_aim}}</td>
+                      <td>{{auvdeploymentObject.transect_shape}}</td>
+                      <td>{{auvdeploymentObject.distance_covered}}</td>
                       <td>{{auvdeploymentObject.campaign}}
                     <tr>
 
