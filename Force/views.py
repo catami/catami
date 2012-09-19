@@ -32,7 +32,7 @@ def campaigns(request):
     return render_to_response('campaignIndex.html', {'latest_campaign_list': latest_campaign_list},context_instance=RequestContext(request))
 
 def auvdeploymentDetail(request, auvdeployment_id):
-    djf=Django.Django(geodjango="transectShape", properties=[])
+    djf=Django.Django(geodjango="transect_shape", properties=[])
     geoj = GeoJSON.GeoJSON()
     deployment_as_geojson = geoj.encode(djf.decode([AUVDeployment.objects.get(id=auvdeployment_id)]))
     auvdeploymentObject = AUVDeployment.objects.get(id=auvdeployment_id)
@@ -40,9 +40,9 @@ def auvdeploymentDetail(request, auvdeployment_id):
 
 
 def campaignDetail(request, campaign_id):
-    campaignObject = campaign.objects.get(id=campaign_id)
+    campaignObject = Campaign.objects.get(id=campaign_id)
 
-    auvdeploymentListForCampaign = auvDeployment.objects.filter(campaign=campaignObject)
+    auvdeploymentListForCampaign = AUVDeployment.objects.filter(campaign=campaignObject)
 
     campaign_as_geojson = "test"#serializers.serialize("json", [campaign.objects.get(id=campaign_id)])
     #lets get the bounding geojson

@@ -108,13 +108,8 @@
 	      <h1>Data View</h1>
 	      <p class="lead">Data, documents and analysis connected.  Join the dots.</p>
 	
-	      <div class="alert alert-error">
-	        <button type="button" class="close" data-dismiss="alert">x</button>
-	        <p><strong>Warning!</strong> This is just a prototype, nothing really works.</p>
-	      </div>
-	
 	      <div class="well well-small" style="align:center;">
-	        <p class="lead">Title</p>
+	        <p class="lead">{{campaignObject.short_name}}</p>
 	        <p>options</p>
 	      </div><!--/.well -->
 	
@@ -123,10 +118,9 @@
         
             <ul class="breadcrumb">
               <li><a href="/main/campaigns/">Campaign List</a> <span class="divider">></span></li>
-              <li class="active">{{campaignObject.shortName}}</li>
+              <li class="active">{{campaignObject.short_name}}</li>
             </ul>
 
-	          <p class="lead">{{campaignObject.shortName}}<p>
             {% if campaignObject %}
             <table class="table table-striped">
               <thead>
@@ -141,11 +135,11 @@
               </thead>
               <tbody>
                     <tr>
-                      <td>{{campaignObject.dateStart}}</td>
-                      <td>{{campaignObject.dateEnd}}</td>
-                      <td>{{campaignObject.associatedResearchers}}</td>
-                      <td>{{campaignObject.associatedPublications}}</td>
-                      <td>{{campaignObject.associatedResearchGrant}}</td>
+                      <td>{{campaignObject.date_start}}</td>
+                      <td>{{campaignObject.date_end}}</td>
+                      <td>{{campaignObject.associated_researchers}}</td>
+                      <td>{{campaignObject.associated_publications}}</td>
+                      <td>{{campaignObject.associated_research_grant}}</td>
                       <td>{{campaignObject.description}}</td>
                     <tr>
               </tbody>
@@ -186,13 +180,13 @@
 
                   {% for auvdeployment in auvdeploymentListForCampaign %}
                     <tr>
-                      <td>{{auvdeployment.startTimeStamp}}</td>
-                      <td>{{auvdeployment.endTimeStamp}}</td>
-                      <td>{{auvdeployment.minDepth}}</td>
-                      <td>{{auvdeployment.maxDepth}}</td>
-                      <td>{{auvdeployment.missionAim}}</td>
-                      <td>{{auvdeployment.transectShape}}</td>
-                      <td>{{auvdeployment.distanceCovered}}</td>
+                      <td>{{auvdeployment.start_time_stamp}}</td>
+                      <td>{{auvdeployment.end_time_stamp}}</td>
+                      <td>{{auvdeployment.min_depth}}</td>
+                      <td>{{auvdeployment.max_depth}}</td>
+                      <td>{{auvdeployment.mission_aim}}</td>
+                      <td>{{auvdeployment.transect_shape}}</td>
+                      <td>{{auvdeployment.distance_covered}}</td>
                       <td><a href="/main/auvdeployments/{{auvdeployment.id}}" class="btn btn-large btn-primary">Detail</a> 
 
                     <tr>

@@ -42,8 +42,8 @@ class AddTest(TestCase):
             #response = self.client.get("/main/auvdeployments/1/")
             #self.assertEqual(response.status_code, 200)  
 
-            response = self.client.get("/main/campaigns/1/")
-            self.assertEqual(response.status_code, 200) 
+            #response = self.client.get("/main/campaigns/1/")
+            #self.assertEqual(response.status_code, 200) 
 
 if __name__=='__main__':
     unittest.main()
