@@ -1,7 +1,7 @@
 __author__ = 'mat'
 
 from django.forms import ModelForm
-from models import campaign
+from models import Campaign
 
 #class CampaignForm(forms.Form):
 #    description = forms.Textarea()
@@ -13,4 +13,4 @@ from models import campaign
 
 class CampaignForm(ModelForm):
     class Meta:
-        model = campaign
+        model = Campaign

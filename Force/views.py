@@ -23,23 +23,23 @@ def add_campaign(request):
     return render(request, '/Force/AddCampaign.html', {'form': form})
 
 def auvdeployments(request):
-    latest_auvdeployment_list = auvDeployment.objects.all()
+    latest_auvdeployment_list = AUVDeployment.objects.all()
     return render_to_response('auvindex2.html', {'latest_auvdeployment_list': latest_auvdeployment_list})
    
 def campaigns(request):
-    latest_campaign_list = campaign.objects.all()
+    latest_campaign_list = Campaign.objects.all()
     return render_to_response('campaignIndex.html', {'latest_campaign_list': latest_campaign_list},context_instance=RequestContext(request))
 
 def auvdeploymentDetail(request, auvdeployment_id):
     djf=Django.Django(geodjango="transectShape", properties=[])
     geoj = GeoJSON.GeoJSON()
-    deployment_as_geojson = geoj.encode(djf.decode([auvDeployment.objects.get(id=auvdeployment_id)]))
-    auvdeploymentObject = auvDeployment.objects.get(id=auvdeployment_id)
+    deployment_as_geojson = geoj.encode(djf.decode([AUVDeployment.objects.get(id=auvdeployment_id)]))
+    auvdeploymentObject = AUVDeployment.objects.get(id=auvdeployment_id)
     return render_to_response('auvdeploymentInstance.html', {'auvdeploymentObject': auvdeploymentObject,'deployment_as_geojson':deployment_as_geojson})
 
 
 def campaignDetail(request, campaign_id):
-    campaignObject = campaign.objects.get(id=campaign_id)
+    campaignObject = Campaign.objects.get(id=campaign_id)
 
     auvdeploymentListForCampaign = auvDeployment.objects.filter(campaign=campaignObject)
 

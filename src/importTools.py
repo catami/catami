@@ -53,25 +53,25 @@ class importMetaData():
 
             if os.path.basename(fileName.upper()) == 'CAMPAIGN':
                 catamiWebPortal.logging.info("Found valid campaign file" + file)
-                dataModel = campaign(**data)
+                dataModel = Campaign(**data)
             elif os.path.basename(fileName.upper()) == 'DEPLOYMENT':
                 catamiWebPortal.logging.info("Found valid deployment file" + file)
-                dataModel = deployment(**data)
+                dataModel = Deployment(**data)
             elif os.path.basename(fileName.upper()) == 'AUVDEPLOYMENT':
                 catamiWebPortal.logging.info("Found valid deployment file" + file)
-                dataModel = auvDeployment(**data)
+                dataModel = AUVDeployment(**data)
             elif os.path.basename(fileName.upper()) == 'ANNOTATIONS':
                 catamiWebPortal.logging.info("Found valid annotation file" + file)
-                dataModel = annotations(**data)
+                dataModel = Annotations(**data)
             elif os.path.basename(fileName.upper()) == 'IMAGE':
                 catamiWebPortal.logging.info("Found valid image file" + file)
-                dataModel = image(**data)
+                dataModel = Image(**data)
             elif os.path.basename(fileName.upper()) == 'STEREOIMAGES':
                 catamiWebPortal.logging.info("Found valid stereo image file" + file)
-                dataModel = stereoImages(**data)
+                dataModel = StereoImage(**data)
             elif os.path.basename(fileName.upper()) == 'USER':
                 catamiWebPortal.logging.info("Found valid campaign file" + file)
-                dataModel = user(**data)                
+                dataModel = User(**data)                
             else:
                 catamiWebPortal.logging.error("No supported filname found.  Data not logged :: filename :: " + file)
                 read = False
@@ -118,7 +118,7 @@ class importMetaData():
                 
         if fileExtension == '.json':
             data = json.load(open(file))
-            dataModel = users(**data)
+            dataModel = Users(**data)
             dataModel.full_clean()
             dataModel.save()
         else:
@@ -135,7 +135,7 @@ class importMetaData():
                 
         if fileExtension == '.json':
             data = json.load(open(file))
-            dataModel = image(**data)
+            dataModel = Image(**data)
             dataModel.full_clean()
             dataModel.save()
         else:
@@ -152,7 +152,7 @@ class importMetaData():
                 
         if fileExtension == '.json':
             data = json.load(open(file))
-            dataModel = stereoImages(**data)
+            dataModel = StereoImage(**data)
             dataModel.full_clean()
             dataModel.save()
         else:
@@ -172,7 +172,7 @@ class importMetaData():
         
         if fileExtension == '.json':
             data = json.load(open(file))
-            dataModel = campaign(**data)
+            dataModel = Campaign(**data)
             dataModel.full_clean()
             dataModel.save()
         else:
@@ -193,7 +193,7 @@ class importMetaData():
             if os.path.basename(fileName.upper()) == 'AUVDEPLOYMENT':
                 catamiWebPortal.logging.info("Found valid deployment file")
                 data = json.load(open(file))
-                dataModel = auvDeployment(**data)
+                dataModel = AUVDeployment(**data)
                 try:
                     dataModel.full_clean()
                 except Exception as e:
@@ -216,7 +216,7 @@ class importMetaData():
                 
         if fileExtension == '.json':
             data = json.load(open(file))
-            dataModel = annotations(**data)
+            dataModel = Annotations(**data)
             dataModel.full_clean()
             dataModel.save()
         else:
