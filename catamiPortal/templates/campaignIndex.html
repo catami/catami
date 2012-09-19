@@ -125,7 +125,7 @@
             </ul>
 	          <h3>Campaign List</h3>
             {% if latest_campaign_list %}
-            <table class="table table-striped">
+            <table class="table">
               <thead>
                 <tr>
                   <th>Start Date</th>
@@ -135,13 +135,16 @@
                   <th>Publications</th>
                   <th>Grant</th>
                   <th>Description</th>
-                  <th>Deployments Found</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
 
                   {% for campaign in latest_campaign_list %}
+                    <tr>
+                     <td colspan=8><p class="lead">{{campaign.shortName}}<p></td>
+                    </tr>
+
                     <tr>
                       <td>{{campaign.dateStart}}</td>
                       <td>{{campaign.dateEnd}}</td>
