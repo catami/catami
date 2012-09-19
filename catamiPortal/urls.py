@@ -9,6 +9,8 @@ urlpatterns = patterns('',
     # url(r'^$', 'catamiPortal.views.home', name='home'),
     # url(r'^catamiPortal/', include('catamiPortal.foo.urls')),
 
+    url(r'staging/', include('staging.urls')),
+
     url(r'Force/', include('Force.urls')),
 
     #to hide the database name
