@@ -73,7 +73,7 @@ class Deployment(models.Model):
     
 class ImageManager(models.Manager):
     def get_by_natural_key(self, deployment_key, date_time):
-        depplyment = deployment.objects.get_by_natural_key(*deployment_key)
+        deployment = Deployment.objects.get_by_natural_key(*deployment_key)
         return self.get(deployment=deployment, date_time=date_time)
 
 
