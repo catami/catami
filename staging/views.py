@@ -68,4 +68,14 @@ def auvimported(request):
 
     return render_to_response('staging/auvimported.html', context, rc)
 
+def fileupload(request):
+    context = {}
+    rc = RequestContext(request)
 
+    return render_to_response('staging/fileupload.html', context, rc)
+
+def fileuploaded(request):
+    context = {}
+    rc = RequestContext(request)
+
+    return render_to_response('staging/fileuploaded.html', context, rc)

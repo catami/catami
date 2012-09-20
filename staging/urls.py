@@ -7,5 +7,7 @@ urlpatterns = patterns('',
     url(r'^$', 'staging.views.index'),
     url(r'^auv/import$', 'staging.views.auvimport'),
     url(r'^auv/imported$', 'staging.views.auvimported'),
+    url(r'^file/import$', 'staging.views.fileupload'),
+    url(r'^file/imported$', 'staging.views.fileuploaded'),
 )
 
