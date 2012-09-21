@@ -1,5 +1,5 @@
 from django import forms
-from Force.models import Campaign
+from Force.models import Campaign, Deployment
 
 class AUVImportForm(forms.Form):
     # get the available campaigns
@@ -21,5 +21,24 @@ class AUVImportForm(forms.Form):
     mission_name.help_text="""Short Name/Folder Name of the mission to import."""
     base_url.help_text="""Base URL to import from."""
 
+    # extra validation/clearning
+
+    def clean_mission_name(self):
+        # check the mission doesn't exist
+        # auv missions are all unique in short name (as start time
+        # is included)
+        mission_name = self.cleaned_data['mission_name']
+        mission_text = mission_name.split('_', 2)[2]
+        try:
+            existing = Deployment.objects.get(short_name=mission_text)
+        except Deployment.DoesNotExist:
+            # doesn't exist, so all good
+            return mission_name
+        else:
+            raise forms.ValidationError('Mission Name already exists.')
+
+
 class FileImportForm(forms.Form):
     upload_file = forms.FileField()
+
+    upload_file.help_text="""JSON file in import format."""
