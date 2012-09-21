@@ -94,42 +94,11 @@ class NetCDFParser:
     It implements the iterator interface returning dictionaries with salinity,
     temperature and time of measurement.
     """
-    def __init__(self, file_location, mission_datetime):
-        self.base_string = file_location
-
-        # search up to ten seconds from mission start time for the filename
-        for i in xrange(10):
-            mission_datetime += datetime.timedelta(0,1) # add a second
-            self.file_location = self.base_string.format(date_string=mission_datetime.strftime('%Y%m%dT%H%M%S'))
-            print "Attempting '{0}'".format(self.file_location)
-            self.file_handle = urllib.urlopen(self.file_location)
-
-            if self.file_handle.getcode() == 200:
-                break
-            elif self.file_handle.getcode() != 404:
-                raise IOError("Unknown response ({1}) from download of '{0}'".format(self.file_location, self.file_handle.getcode()))
-
-        if not self.file_handle.getcode() == 200:
-            raise IOError("Could not download file '{0}'".format(self.file_location))
-        else:
-            print "NetCDF file '{0}'".format(self.file_location)
-
-        # now have to 'download' the file
-
-        # now need to read into a buffer which we then use, can't do it directly
-        # get it a block at a time
-        block_size = 8192
-        buff = StringIO()
-        while True:
-            chunk = self.file_handle.read(block_size)
-            if not chunk:
-                break
-            buff.write(chunk)
-        # go back to the start
-        buff.seek(0)
+    def __init__(self, file_handle):
+        self.file_handle = file_handle
 
         # the netcdf file
-        self.reader = netcdf.netcdf_file(buff, mode='r', mmap=False)
+        self.reader = netcdf.netcdf_file(self.file_handle, mode='r')
 
         if not 'TIME' in self.reader.variables:
             # error, something is missing
@@ -176,17 +145,12 @@ class TrackParser:
     a dictionary using the header row to determine the keys and the values
     for each row.
     """
-    def __init__(self, file_location):
+    def __init__(self, file_handle):
         """Open a parser for AUV track files.
 
         -- file_location can be url or local file location.
         """
-        print "Track file '{0}'".format(file_location)
-        self.file_location = file_location 
-        self.file_handle = urllib.urlopen(self.file_location)
-
-        if not self.file_handle.getcode() == 200:
-            raise IOError("Unexpected HTTP Response {1} for file '{0}'".format(self.file_location, self.file_handle.getcode()))
+        self.file_handle = file_handle
 
         self.reader = csv.reader(self.file_handle)
 

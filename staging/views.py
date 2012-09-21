@@ -2,6 +2,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
 from django.db import transaction
 from django.core import serializers
+from django import forms
 
 from staging.forms import AUVImportForm
 from staging.auvimport import create_structure, structure_string
@@ -20,37 +21,32 @@ def auvimport(request):
     if request.method == 'POST':
         form = AUVImportForm(request.POST)
         if form.is_valid():
-            imported = False
-
             # try and get the files and import
             try:
                 data = form.cleaned_data
-                struc = create_structure(data['base_url'], data['campaign_name'], data['mission_name'])
-                json_string = structure_string(struc)
 
-                # now deserialize the string into the database
-                # check that there are no errors before saving them all
-                # if there are any, rollback to the initial state
-                with transaction.commit_manually():
-                    try:
-                        for obj in serializers.deserialize('json', json_string):
-                            obj.save()
-                    except Exception as e:
-                        transaction.rollback()
-                        errors = "ImportError: {0}".format(unicode(e))
-                        context['debug'] = json_string
-                    except:
-                        transaction.rollback()
-                        errors = "ImportError: Unknown Error"
-                    else:
-                        transaction.commit()
-                        imported = True
+                input_params = (data['base_url'], str(data['campaign_name'].date_start), data['campaign_name'].short_name, data['mission_name'])
+
+                print "fetching!!"
+                (track_url, netcdf_urlpattern, start_time) = tasks.auvfetch(*input_params)
+
+                print "get track"
+                track_file = tasks.get_known_file(1, track_url)
+
+                print "get netcdf"
+                netcdf_file = tasks.get_netcdf_file(1, netcdf_urlpattern, start_time)
+
+                print "process '{0}' '{1}'".format(track_file, netcdf_file)
+                json_string = tasks.auvprocess(track_file, netcdf_file, *input_params)
+
+                print "loading"
+                tasks.json_sload(json_string)
 
             except Exception as e:
-                errors = "ImportError: {0}".format(unicode(e))
+                errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
+                errors.append("{0}: {1}".format(e.__class__.__name__, e))
 
-            # if it worked
-            if imported:
+            else:
                 return redirect('staging.views.auvimported')
 
     else:
@@ -58,7 +54,6 @@ def auvimport(request):
 
     rc = RequestContext(request)
     context['form'] = form
-    context['errors'] = errors
 
     return render_to_response('staging/auvimport.html', context, rc)
 

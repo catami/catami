@@ -41,8 +41,11 @@ class Campaign(models.Model):
     date_start = models.DateField()
     date_end = models.DateField()
 
+    def __unicode__(self):
+        return "{0} - {1}".format(self.date_start, self.short_name)
+
     def natural_key(self):
-        return (self.dateStart, self.short_name)
+        return (self.date_start, self.short_name)
 
     class Meta:
         unique_together = (('date_start','short_name'),)
