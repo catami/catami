@@ -12,7 +12,7 @@ class AUVImportForm(forms.Form):
 
 
     # the fields themselves
-    campaign_name = forms.ChoiceField(widget=campaign_widget, choices=choices)
+    campaign_name = forms.ModelChoiceField(widget=campaign_widget, queryset=Campaign.objects.all(), empty_label=None)
     mission_name = forms.CharField(widget=url_widget, max_length=100)
     base_url = forms.URLField(widget=url_widget, initial='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV/')
 
