@@ -11,7 +11,7 @@ class ProgressManager(models.Manager):
 
         prog.save()
 
-        logger.debug("ProgressManager.get_new created new progress pk='{0}'.".format(prog.pk)
+        logger.debug("ProgressManager.get_new created new progress pk='{0}'.".format(prog.pk))
 
         return prog.pk
 
