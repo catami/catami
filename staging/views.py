@@ -12,6 +12,10 @@ from staging import tasks
 
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 def index(request):
     context = {}
     context['sections'] = ['auv', 'bruv']
@@ -47,26 +51,28 @@ def auvimport(request):
 
                 input_params = (data['base_url'], str(data['campaign_name'].date_start), data['campaign_name'].short_name, data['mission_name'])
 
-                print "fetching!!"
+                logger.debug("auvimport: determining remote files to fetch.")
                 (track_url, netcdf_urlpattern, start_time) = tasks.auvfetch(*input_params)
 
-                print "get track"
+                logger.debug("auvimport: fetching remote track file.")
                 track_file = tasks.get_known_file(1, track_url)
 
-                print "get netcdf"
+                logger.debug("auvimport: fetching remote netcdf file.")
                 netcdf_file = tasks.get_netcdf_file(1, netcdf_urlpattern, start_time)
 
-                print "process '{0}' '{1}'".format(track_file, netcdf_file)
+                logger.debug("auvimport: processing remote files to create json string.")
                 json_string = tasks.auvprocess(track_file, netcdf_file, *input_params)
 
-                print "loading"
+                logger.debug("auvimport: importing json string into database.")
                 tasks.json_sload(json_string)
 
             except Exception as e:
                 errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
                 errors.append("{0}: {1}".format(e.__class__.__name__, e))
+                logger.debug('auvimport: failed to import auv mission: ({0}): {1}'.format(e.__class__.__name__, e))
 
             else:
+                logger.debug("auvimport: import successful, redirecting to auvimported.")
                 return redirect('staging.views.auvimported')
 
     else:
@@ -103,20 +109,25 @@ def _fileupload(request):
         if form.is_valid():
             # this is where the import is performed...
             # and the file is read in
+            logger.debug("_fileupload: getting uploaded file.")
             upload = request.FILES['upload_file']
 
             # if it is large, read from the file
             # else read the entirety into a string
             try:
                 if hasattr(upload, 'temporary_file_path'):
+                    logger.debug("_fileupload: large file so pass filename to json_fload.")
                     tasks.json_fload(upload.temporary_file_path())
                 else:
+                    logger.debug("_fileupload: small file so pass string to json_sload.")
                     tasks.json_sload(upload.read())
                 
             except Exception as e:
                 errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
                 errors.append("{0}: {1}".format(e.__class__.__name__, e))
+                logger.debug('_fileupload: failed to import json contents: ({0}): {1}'.format(e.__class__.__name__, e))
             else:
+                logger.debug("_fileupload: import successful, redirecting to fileuploaded.")
                 return redirect('staging.views.fileuploaded')
     else:
         form = FileImportForm()
