@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'staging/', include('staging.urls')),
 
     #to hide the database name
-    url(r'main/$','catamiPortal.views.index'),
+    url(r'$','catamiPortal.views.index'),
 
     url(r'data/', include('Force.urls')),
     
