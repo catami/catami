@@ -1,0 +1,108 @@
+************* Module src.import_tools
+W: 68,19:ImportMetaData.import_metadata_from_file: Catching too general exception Exception
+W:104,23:ImportMetaData.import_metadata_from_file: Catching too general exception Exception
+W:109,23:ImportMetaData.import_metadata_from_file: Catching too general exception Exception
+R: 53,4:ImportMetaData.import_metadata_from_file: Too many branches (13/12)
+
+
+Report
+======
+55 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |1      |1          |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |1      |1          |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |3      |3          |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|function |0      |0          |=          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |0        |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |0.000    |=          |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |0      |1        |-1.00      |
++-----------+-------+---------+-----------+
+|refactor   |1      |1        |=          |
++-----------+-------+---------+-----------+
+|warning    |3      |3        |=          |
++-----------+-------+---------+-----------+
+|error      |0      |0        |=          |
++-----------+-------+---------+-----------+
+
+
+
+Messages
+--------
+
++-----------+------------+
+|message id |occurrences |
++===========+============+
+|W0703      |3           |
++-----------+------------+
+|R0912      |1           |
++-----------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 9.27/10 (previous run: 9.09/10)
+
+External dependencies
+---------------------
+::
+
+    Force 
+      \-models 
+        \-AUVDeployment (src.import_tools)
+        \-Annotations (src.import_tools)
+        \-Campaign (src.import_tools)
+        \-Deployment (src.import_tools)
+        \-Image (src.import_tools)
+        \-StereoImage (src.import_tools)
+    catami_web_portal (src.import_tools)
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |70     |50.72 |69       |+1.00      |
++----------+-------+------+---------+-----------+
+|docstring |57     |41.30 |57       |=          |
++----------+-------+------+---------+-----------+
+|comment   |0      |0.00  |0        |=          |
++----------+-------+------+---------+-----------+
+|empty     |11     |7.97  |11       |=          |
++----------+-------+------+---------+-----------+
+
+
+
