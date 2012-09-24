@@ -1,182 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Catami Prototype</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+{% extends "base_data.html" %}
 
-    <!-- Le styles -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}/static/assets/css/jquery-ui-1.8.23.custom.css" type="text/css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}/static/assets/css/bootstrap.css" type="text/css" >
-    <link rel="stylesheet" href="{{ STATIC_URL }}/static/assets/css/fullscreenMap.css" type="text/css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}/static/assets/css/overlay-basic.css" type="text/css">
+{% block leadtitle %}{{auvdeploymentObject.short_name}}{% endblock %}
 
-    <style>
-      body {padding-top: 40px; /* 60px to make the container go all the way to the bottom of the topbar */}
-      #map_container { height: 1000px; width: 100%;}
-      img.olTileImage { max-width: 256px !important; }
-      div.contentWrap { height:800px; overflow-y:auto;}
-      .sidebar-nav {
-          padding: 9px 0;
-      }
-      a.toggles {
-          position:fixed;
-          left:0;
-          bottom:0;
-          display:block;
-          background-color:black;
-          color:white;
-          padding:10px 20px;
-      }
-      .no-sidebar {
-          margin-left:0 !important;
-      }
-​
-    </style>
-    <link href="{{ STATIC_URL }}/static/assets/css/bootstrap-responsive.css" rel="stylesheet">
+{% block breadcrumbs %}
+  <li><a href="/main/campaigns/">Campaign List</a> <span class="divider">></span></li>
+  <li><a href="/main/campaigns/{{auvdeploymentObject.campaign.id}}">{{auvdeploymentObject.campaign.short_name}}</a> <span class="divider">></span></li>
+  <li class="active">{{auvdeploymentObject.short_name}}</li>
+{% endblock %}
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+{% block content %}
 
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="{{ STATIC_URL }}/static/assets/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ STATIC_URL }}/static/assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ STATIC_URL }}/static/assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ STATIC_URL }}/static/assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="{{ STATIC_URL }}/static/assets/ico/apple-touch-icon-57-precomposed.png">
+{% if auvdeploymentObject %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Min Depth</th>
+      <th>Max Depth</th>
+      <th>Mission Aim</th>
+      <th>Transect Shape</th>
+      <th>Distance Covered</th>
+    </tr>
+  </thead>
+  <tbody>
 
-  </head>
+        <tr>
+          <td>{{auvdeploymentObject.start_time_stamp}}</td>
+          <td>{{auvdeploymentObject.end_time_stamp}}</td>
+          <td>{{auvdeploymentObject.min_depth}}</td>
+          <td>{{auvdeploymentObject.max_depth}}</td>
+          <td>{{auvdeploymentObject.mission_aim}}</td>
+          <td>{{auvdeploymentObject.transect_shape}}</td>
+          <td>{{auvdeploymentObject.distance_covered}}</td>
+        <tr>
 
-  <body>
+  </tbody>
+</table>
+{% else %}
+    <p>No auvdeployments are available.</p>
+{% endif %}
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="./frontend.html">Catami</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="./frontend.html">Home</a></li>
-              <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                     <b class="caret"></b>
-                      Interfaces
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a  href=""><i class="icon-search"></i> None</a></li>
-                    </ul>
-              </li>
-              <li><a href="#" rel="popover" title="About This Thing" data-placement="bottom" data-content="This is a first test of Catami data layout running in Django <br><br>">About</a>
-              <li class="divider-vertical"></li>
-            </ul>
-
-            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>
-            <form class="navbar-search pull-right">
-                <input type="text" class="search-query  pull-left" placeholder="Search">
-            </form>-->
-          </div><!--/.nav-collapse -->
-        </div>
+ <div class="accordion" id="accordion1">
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">
+        GeoJSON Data
+      </a>
+    </div>
+    <div id="collapseOne" class="accordion-body collapse out">
+      <div class="accordion-inner">
+        {{deployment_as_geojson}}
       </div>
     </div>
-
-    <!--<div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span12">
-          <div id='map_container'>
-              <!-- <div style="bottom;position:absolute;z-index:10000;">
-                <p>
-                  <button class="btn btn-primary" type="button">Default button</button>
-                </p> 
-              </div>
-          </div>
-        </div>
-      </div>
-    </div>  -->
-
-	<div class="container-fluid">
-	  <div class="row-fluid">
-	    <div id="sidebar-nav" class="span3" style="padding-left:10px;">
-	
-	      <h1>Data View</h1>
-	      <p class="lead">Data, documents and analysis connected.  Join the dots.</p>
-
-	
-	      <div class="well well-small" style="align:center;">
-	        <p class="lead">{{auvdeploymentObject.short_name}}</p>
-	        <p>options</p>
-	      </div><!--/.well -->
-	
-	    </div>
-	    <div id="content" class="span9">
-            <ul class="breadcrumb">
-              <li><a href="/main/campaigns/">Campaign List</a> <span class="divider">></span></li>
-              <li><a href="/main/campaigns/{{auvdeploymentObject.campaign.id}}">{{auvdeploymentObject.campaign.short_name}}</a> <span class="divider">></span></li>
-              <li class="active">{{auvdeploymentObject.short_name}}</li>
-            </ul>
-
-            {% if auvdeploymentObject %}
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>Start Time</th>
-                  <th>End Time</th>
-                  <th>Min Depth</th>
-                  <th>Max Depth</th>
-                  <th>Mission Aim</th>
-                  <th>Transect Shape</th>
-                  <th>Distance Covered</th>
-                  <th>Related Campaign</th>
-                </tr>
-              </thead>
-              <tbody>
-
-                    <tr>
-                      <td>{{auvdeploymentObject.start_time_stamp}}</td>
-                      <td>{{auvdeploymentObject.end_time_stamp}}</td>
-                      <td>{{auvdeploymentObject.min_depth}}</td>
-                      <td>{{auvdeploymentObject.max_depth}}</td>
-                      <td>{{auvdeploymentObject.missiona_aim}}</td>
-                      <td>{{auvdeploymentObject.transect_shape}}</td>
-                      <td>{{auvdeploymentObject.distance_covered}}</td>
-                      <td>{{auvdeploymentObject.campaign}}
-                    <tr>
-
-              </tbody>
-            </table>
-            {% else %}
-                <p>No auvdeployments are available.</p>
-            {% endif %}
-
-             <div class="accordion" id="accordion1">
-              <div class="accordion-group">
-                <div class="accordion-heading">
-                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">
-                    GeoJSON Data
-                  </a>
-                </div>
-                <div id="collapseOne" class="accordion-body collapse out">
-                  <div class="accordion-inner">
-                    {{deployment_as_geojson}}
-                  </div>
-                </div>
-              </div>
-            </div>
+  </div>
+</div>
 
 
-             <h3>AUV Deployment Data</h3>
-             <p>TBA</p>
-	    </div>
-	
-	  </div>
-	</div>
+ <h3>AUV Deployment Data</h3>
+ <p>TBA</p>
+{% endblock %}
+
 
 
 
