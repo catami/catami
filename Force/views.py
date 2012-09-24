@@ -40,19 +40,19 @@ def auvdeploymentDetail(request, auvdeployment_id):
     #geoj = GeoJSON.GeoJSON()
     #deployment_as_geojson = geoj.encode(djf.decode([AUVDeployment.objects.get(id=auvdeployment_id)]))
     
-    auvdeploymentObject = AUVDeployment.objects.get(id=auvdeployment_id)
+    auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
 
-    ## the easy way is to just return auvdeploymentObject.transect_shape.geojson
-    return render_to_response('auvdeploymentInstance.html', {'auvdeploymentObject': auvdeploymentObject,'deployment_as_geojson':auvdeploymentObject.transect_shape.geojson},context_instance=RequestContext(request))
+    ## the easy way is to just return auvdeployment_object.transect_shape.geojson
+    return render_to_response('auvdeploymentInstance.html', {'auvdeployment_object': auvdeployment_object,'deployment_as_geojson':auvdeployment_object.transect_shape.geojson},context_instance=RequestContext(request))
 
 
 def campaignDetail(request, campaign_id):
     campaignObject = Campaign.objects.get(id=campaign_id)
     djf=Django.Django(geodjango="", properties=[])
 
-    auvdeploymentListForCampaign = AUVDeployment.objects.filter(campaign=campaignObject)
+    auvdeployment_list_for_campaign = AUVDeployment.objects.filter(campaign=campaignObject)
     geoj = GeoJSON.GeoJSON()
     campaign_as_geojson = geoj.encode(djf.decode([Campaign.objects.get(id=campaign_id)]))
 
 
-    return render_to_response('campaignInstance.html', {'campaignObject': campaignObject, 'auvdeploymentListForCampaign':auvdeploymentListForCampaign, 'campaign_as_geojson':campaign_as_geojson},context_instance=RequestContext(request))
+    return render_to_response('campaignInstance.html', {'campaignObject': campaignObject, 'auvdeployment_list_for_campaign':auvdeployment_list_for_campaign, 'campaign_as_geojson':campaign_as_geojson},context_instance=RequestContext(request))
