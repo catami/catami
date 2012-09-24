@@ -11,16 +11,16 @@ urlpatterns = patterns('',
 
     url(r'staging/', include('staging.urls')),
 
-    url(r'main/', include('Force.urls')),
+    #to hide the database name
+    url(r'main/$','catamiPortal.views.index'),
+
+    url(r'data/', include('Force.urls')),
+    
+    #haystack
+    #(r'^search/', include('haystack.urls')),
 
     #to hide the database name
-    url(r'^main/$','catamiPortal.views.index'),
-    
-    #views
-    #url(r'^main/auvdeployments/$', 'Force.views.auvdeployments'),
-    #url(r'^main/campaigns/$', 'Force.views.campaigns'),
-    #url(r'^main/campaigns/(?P<campaign_id>\d+)/$', 'Force.views.campaignDetail'),
-    #url(r'^main/auvdeployments/(?P<auvdeployment_id>\d+)/$', 'Force.views.auvdeploymentDetail'),
+    #url(r'main/$','catamiPortal.views.index'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

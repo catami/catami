@@ -17,11 +17,11 @@ def add_campaign(request):
 
 def auvdeployments(request):
     latest_auvdeployment_list = AUVDeployment.objects.all()
-    return render_to_response('auvDeploymentIndex.html', {'latest_auvdeployment_list': latest_auvdeployment_list},context_instance=RequestContext(request))
+    return render_to_response('Force/auvDeploymentIndex.html', {'latest_auvdeployment_list': latest_auvdeployment_list},context_instance=RequestContext(request))
    
 def campaigns(request):
     latest_campaign_list = Campaign.objects.all()
-    return render_to_response('campaignIndex.html', {'latest_campaign_list': latest_campaign_list},context_instance=RequestContext(request))
+    return render_to_response('Force/campaignIndex.html', {'latest_campaign_list': latest_campaign_list},context_instance=RequestContext(request))
 
 def auvdeploymentDetail(request, auvdeployment_id):
 
@@ -34,7 +34,7 @@ def auvdeploymentDetail(request, auvdeployment_id):
     auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
 
     ## the easy way is to just return auvdeployment_object.transect_shape.geojson
-    return render_to_response('auvdeploymentInstance.html', {'auvdeployment_object': auvdeployment_object,'deployment_as_geojson':auvdeployment_object.transect_shape.geojson},context_instance=RequestContext(request))
+    return render_to_response('Force/auvdeploymentInstance.html', {'auvdeployment_object': auvdeployment_object,'deployment_as_geojson':auvdeployment_object.transect_shape.geojson},context_instance=RequestContext(request))
 
 
 def campaignDetail(request, campaign_id):
@@ -46,4 +46,4 @@ def campaignDetail(request, campaign_id):
     campaign_as_geojson = geoj.encode(djf.decode([Campaign.objects.get(id=campaign_id)]))
 
 
-    return render_to_response('campaignInstance.html', {'campaignObject': campaignObject, 'auvdeployment_list_for_campaign':auvdeployment_list_for_campaign, 'campaign_as_geojson':campaign_as_geojson},context_instance=RequestContext(request))
+    return render_to_response('Force/campaignInstance.html', {'campaignObject': campaignObject, 'auvdeployment_list_for_campaign':auvdeployment_list_for_campaign, 'campaign_as_geojson':campaign_as_geojson},context_instance=RequestContext(request))
