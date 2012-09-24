@@ -1,4 +1,4 @@
-import catamiWebPortal
+import catami_web_portal
 
 def init():
     pass

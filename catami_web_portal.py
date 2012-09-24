@@ -1,6 +1,4 @@
-'''
-This is the main import file to create a common namespace.
-'''
+"""@brief This is the main import file to create a common namespace."""
 import logging
 import logging.config
 import ConfigParser
