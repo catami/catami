@@ -1,6 +1,10 @@
 from django import forms
 from Force.models import Campaign, Deployment
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class AUVImportForm(forms.Form):
 <<<<<<< HEAD
     Campaign.objects.update()
@@ -32,13 +36,24 @@ class AUVImportForm(forms.Form):
         # auv missions are all unique in short name (as start time
         # is included)
         mission_name = self.cleaned_data['mission_name']
-        mission_text = mission_name.split('_', 2)[2]
+        logger.debug("clean_mission_name: cleaning name {0}".format(mission_name))
+
+        # split into date/name parts
+        mission_name_parts = mission_name.split('_', 2)
+        if len(mission_name_parts) < 3:
+            logger.debug("AUVImportForm.clean_mission_name: name doesn't match pattern.")
+            raise forms.ValidationError("Mission Name does not match expected pattern 'rYYYYmmdd_HHMMSS_<mission_description>'.")
+
+        mission_text = mission_name_parts[2]
+
         try:
             existing = Deployment.objects.get(short_name=mission_text)
         except Deployment.DoesNotExist:
             # doesn't exist, so all good
+            logger.debug("AUVImportForm.clean_mission_name: valid name.")
             return mission_name
         else:
+            logger.debug("AUVImportForm.clean_mission_name: name already exists.")
             raise forms.ValidationError('Mission Name already exists.')
 
 
