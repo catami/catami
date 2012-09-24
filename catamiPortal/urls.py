@@ -9,15 +9,14 @@ urlpatterns = patterns('',
     # url(r'^$', 'catamiPortal.views.home', name='home'),
     # url(r'^catamiPortal/', include('catamiPortal.foo.urls')),
 
+    url(r'^$', 'catamiPortal.views.index'),
     url(r'staging/', include('staging.urls')),
 
     #to hide the database name
-    url(r'$','catamiPortal.views.index'),
-
     url(r'data/', include('Force.urls')),
     
     #haystack
-    #(r'^search/', include('haystack.urls')),
+    (r'^search/', include('haystack.urls')),
 
     #to hide the database name
     #url(r'main/$','catamiPortal.views.index'),
@@ -27,4 +26,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+
 )

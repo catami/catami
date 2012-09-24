@@ -10,7 +10,7 @@ from django.core import serializers
 from django.contrib.gis.geos import GEOSGeometry
 
 def index(request):
-    return HttpResponse("Hello World, from the CATAMI team.  We are not up and running yet, you can follow us here for now https://plus.google.com/u/0/b/104765819602128308640/104765819602128308640/posts")
+    return HttpResponse("This is data root")
 
 def add_campaign(request):
     return redirect('/admin/Force/campaign/add/') # Redirect after POST
