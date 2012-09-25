@@ -23,7 +23,7 @@ def campaigns(request):
     latest_campaign_list = Campaign.objects.all()
     return render_to_response('Force/campaignIndex.html', {'latest_campaign_list': latest_campaign_list},context_instance=RequestContext(request))
 
-def auvdeploymentDetail(request, auvdeployment_id):
+def auvdeployment_detail(request, auvdeployment_id):
 
     # the hard way. All columns in the geojson
     #djf=Django.Django(geodjango="transect_shape", properties=[])
@@ -37,7 +37,7 @@ def auvdeploymentDetail(request, auvdeployment_id):
     return render_to_response('Force/auvdeploymentInstance.html', {'auvdeployment_object': auvdeployment_object,'deployment_as_geojson':auvdeployment_object.transect_shape.geojson},context_instance=RequestContext(request))
 
 
-def campaignDetail(request, campaign_id):
+def campaign_detail(request, campaign_id):
     campaignObject = Campaign.objects.get(id=campaign_id)
     djf=Django.Django(geodjango="", properties=[])
 
