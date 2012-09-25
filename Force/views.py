@@ -10,7 +10,11 @@ from django.core import serializers
 from django.contrib.gis.geos import GEOSGeometry
 
 def index(request):
-    return HttpResponse("This is data root")
+    context = {}
+
+    rc = RequestContext(request)
+
+    return render_to_response('Force/index.html', context, rc)
 
 def add_campaign(request):
     return redirect('/admin/Force/campaign/add/') # Redirect after POST
