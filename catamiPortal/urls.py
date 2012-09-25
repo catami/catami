@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     url(r'data/', include('Force.urls')),
     
     #haystack
-    #(r'^search/', include('haystack.urls')),
+    (r'^search/', include('haystack.urls')),
 
     #to hide the database name
     #url(r'main/$','catamiPortal.views.index'),
