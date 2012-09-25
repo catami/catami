@@ -30,13 +30,13 @@ class AddTest(TestCase):
     # Add unittests here
     #==================================================#
     def testViews(self):
-            response = self.client.get("/main/")
+            response = self.client.get("/")
             self.assertEqual(response.status_code, 200)
 
-            response = self.client.get("/main/campaigns/")
+            response = self.client.get("/data/campaigns/")
             self.assertEqual(response.status_code, 200)
           
-            response = self.client.get("/main/auvdeployments/")
+            response = self.client.get("/data/auvdeployments/")
             self.assertEqual(response.status_code, 200)
 
             #response = self.client.get("/main/auvdeployments/1/")
