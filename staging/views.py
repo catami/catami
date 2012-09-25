@@ -93,7 +93,7 @@ def auvimported(request):
 @csrf_exempt
 def fileupload(request):
     # get a new progress
-    key = Progress.objects.get_new()
+    #key = Progress.objects.get_new()
 
     request.upload_handlers.insert(0, UploadProgressCachedHandler(request))
     return _fileupload(request)

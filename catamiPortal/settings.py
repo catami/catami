@@ -153,7 +153,15 @@ HAYSTACK_CONNECTIONS = {
 # more details on how to customize your logging configuration.
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
@@ -164,13 +172,36 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filename': 'log/catamiPortal.log'
         }
     },
     'loggers': {
+        'root': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
         },
+        'staging': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
+        'catamiPortal': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        }
     }
 }
