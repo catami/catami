@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block sidebar_title %}Search{% endblock %}
+
+{% block content %}
+    <div class="span12">
+        <h1>Search</h1>
+            <form class=".form-search" action="." method="get">{{ form.as_table }}
+            <input type="submit" value="Search" />
+        </form>
+    </div>
+
+    {% if query %}
+        <div class="span8">
+            {% for result in page.object_list %}
+                {% include 'search/_result_object.html' %}
+                {% empty %}<div class="alert alert-info alert-block"><h4>No results found. Oh snap!</h4>Perhaps try a different search?  If you think this is a bug, get in touch.</div>
+            {% endfor %}
+        </div>
+
+        {% if page.has_previous or page.has_next %}
+            <div>{% if page.has_previous %}<a href="?q={{ query }}&page={{ page.previous_page_number }}">{% endif %}« Previous{% if page.has_previous %}</a>{% endif %}
+            |
+            {% if page.has_next %}<a href="?q={{ query }}&page={{ page.next_page_number }}">{% endif %}Next »{% if page.has_next %}</a>{% endif %}</div>
+        {% endif %}</div>
+
+    {% else %}
+
+    {% endif %}
+{% endblock %}
