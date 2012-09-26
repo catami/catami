@@ -3,8 +3,8 @@
 {% block leadtitle %}{{auvdeploymentObject.short_name}}{% endblock %}
 
 {% block breadcrumbs %}
-  <li><a href="/main/campaigns/">Campaign List</a> <span class="divider">></span></li>
-  <li><a href="/main/campaigns/{{auvdeploymentObject.campaign.id}}">{{auvdeploymentObject.campaign.short_name}}</a> <span class="divider">></span></li>
+  <li><a href="/data/campaigns/">Campaign List</a> <span class="divider">></span></li>
+  <li><a href="/data/campaigns/{{auvdeploymentObject.campaign.id}}">{{auvdeploymentObject.campaign.short_name}}</a> <span class="divider">></span></li>
   <li class="active">{{auvdeploymentObject.short_name}}</li>
 {% endblock %}
 
