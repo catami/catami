@@ -3,18 +3,27 @@
 {% block sidebar_title %}Search{% endblock %}
 
 {% block content %}
-    <div class="span12">
-        <h1>Search</h1>
-            <form class=".form-search" action="." method="get">{{ form.as_table }}
-            <input type="submit" value="Search" />
-        </form>
-    </div>
 
+<form action="." method="get">
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" value="Search"/>
+    <br><br>
     {% if query %}
         <div class="span8">
+            <p>You searched for: <strong>{{ query }}</strong></p>
             {% for result in page.object_list %}
-                {% include 'search/_result_object.html' %}
-                {% empty %}<div class="alert alert-info alert-block"><h4>No results found. Oh snap!</h4>Perhaps try a different search?  If you think this is a bug, get in touch.</div>
+
+                {% if result.model_name == 'campaign' %}
+                    {% include 'search/_result_object_campaign.html' %}
+                {% elif result.model_name == 'deployment' %}
+                    {% include 'search/_result_object_deployment.html' %}
+                {% else %}
+                    <div class="alert alert-error"><p>If you're seeing this, then there is a bug. Please let someone at Catami know.</p></div>
+                {% endif %}
+
+                {% empty %}<div class="alert alert-info alert-block"><h4>No results found for <strong>{{ query }}</strong>. Oh snap!</h4>Perhaps try a different search?  If you think this is a bug, get in touch.</div>
             {% endfor %}
         </div>
 
@@ -26,5 +35,7 @@
 
     {% else %}
 
-    {% endif %}
+{% endif %}
+</form>
+
 {% endblock %}
