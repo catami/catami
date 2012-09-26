@@ -43,9 +43,9 @@ class Campaign(models.Model):
 
     short_name = models.CharField(max_length=100)
     description = models.TextField()
-    associated_researchers = dbarray.TextArrayField()
-    associated_publications = dbarray.TextArrayField()
-    associated_research_grant = dbarray.TextArrayField()
+    associated_researchers = models.TextField()
+    associated_publications = models.TextField()
+    associated_research_grant = models.TextField()
     date_start = models.DateField()
     date_end = models.DateField()
 
