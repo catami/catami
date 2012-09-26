@@ -1,16 +1,16 @@
 {% extends "base_data.html" %}
 
-{% block leadtitle %}{{auvdeploymentObject.short_name}}{% endblock %}
+{% block leadtitle %}{{auvdeployment_object.short_name}}{% endblock %}
 
 {% block breadcrumbs %}
   <li><a href="/data/campaigns/">Campaign List</a> <span class="divider">></span></li>
-  <li><a href="/data/campaigns/{{auvdeploymentObject.campaign.id}}">{{auvdeploymentObject.campaign.short_name}}</a> <span class="divider">></span></li>
-  <li class="active">{{auvdeploymentObject.short_name}}</li>
+  <li><a href="/data/campaigns/{{auvdeploymentObject.campaign.id}}">{{auvdeployment_object.campaign.short_name}}</a> <span class="divider">></span></li>
+  <li class="active">{{auvdeployment_object.short_name}}</li>
 {% endblock %}
 
 {% block content %}
 
-{% if auvdeploymentObject %}
+{% if auvdeployment_object %}
 <table class="table table-striped">
   <thead>
     <tr>
@@ -26,13 +26,13 @@
   <tbody>
 
         <tr>
-          <td>{{auvdeploymentObject.start_time_stamp}}</td>
-          <td>{{auvdeploymentObject.end_time_stamp}}</td>
-          <td>{{auvdeploymentObject.min_depth}}</td>
-          <td>{{auvdeploymentObject.max_depth}}</td>
-          <td>{{auvdeploymentObject.mission_aim}}</td>
-          <td>{{auvdeploymentObject.transect_shape}}</td>
-          <td>{{auvdeploymentObject.distance_covered}}</td>
+          <td>{{auvdeployment_object.start_time_stamp}}</td>
+          <td>{{auvdeployment_object.end_time_stamp}}</td>
+          <td>{{auvdeployment_object.min_depth}}</td>
+          <td>{{auvdeployment_object.max_depth}}</td>
+          <td>{{auvdeployment_object.mission_aim}}</td>
+          <td>{{auvdeployment_object.transect_shape}}</td>
+          <td>{{auvdeployment_object.distance_covered}}</td>
         <tr>
 
   </tbody>
