@@ -15,12 +15,18 @@ Edits :: Name : Date : description
 
 """
 
-import catamiWebPortal
+import catami_web_portal
 import os
-from django.core import serializers
-from Force.models import *
+#from django.core import serializers
+from Force.models import Campaign, \
+    Deployment, \
+    AUVDeployment, \
+    Image, \
+    StereoImage, \
+    Annotations
+    
 import json
-from django.contrib.gis.geos import GEOSGeometry
+#from django.contrib.gis.geos import GEOSGeometry
 
 class ImportMetaData():
     """
@@ -40,7 +46,7 @@ class ImportMetaData():
 
         """
 
-    def __init__():
+    def __init__(self):
         pass
 
     @staticmethod
@@ -52,62 +58,59 @@ class ImportMetaData():
         todo:-> .xml .yaml
 
         """
-        catamiWebPortal.logging.info("Importing metadata from " + d_file)
+        catami_web_portal.logging.info("Importing metadata from " + d_file)
         filename, fileextension = os.path.splitext(d_file)
         read = True
 
         if fileextension == '.json':
             try:
                 data = json.load(open(d_file))
-            except Exception as e:
-                catamiWebPortal.logging.error(
-                    "Error opening data d_file :: " + str(e))
+            except Exception as load_exception:
+                catami_web_portal.logging.error(
+                    "Error opening data d_file :: " + str(load_exception))
 
             if os.path.basename(filename.upper()) == 'CAMPAIGN':
-                catamiWebPortal.logging.info("Found valid campaign d_file"
+                catami_web_portal.logging.info("Found valid campaign d_file"
                                              + d_file)
                 data_model = Campaign(**data)
             elif os.path.basename(filename.upper()) == 'DEPLOYMENT':
-                catamiWebPortal.logging.info(
+                catami_web_portal.logging.info(
                     "Found valid deployment d_file" + d_file)
                 data_model = Deployment(**data)
             elif os.path.basename(filename.upper()) == 'AUVDEPLOYMENT':
-                catamiWebPortal.logging.info(
+                catami_web_portal.logging.info(
                     "Found valid deployment d_file" + d_file)
                 data_model = AUVDeployment(**data)
             elif os.path.basename(filename.upper()) == 'ANNOTATIONS':
-                catamiWebPortal.logging.info(
+                catami_web_portal.logging.info(
                     "Found valid annotation d_file" + d_file)
                 data_model = Annotations(**data)
             elif os.path.basename(filename.upper()) == 'IMAGE':
-                catamiWebPortal.logging.info("Found valid image d_file"
+                catami_web_portal.logging.info("Found valid image d_file"
                                              + d_file)
                 data_model = Image(**data)
             elif os.path.basename(filename.upper()) == 'STEREOIMAGES':
-                catamiWebPortal.logging.info(
+                catami_web_portal.logging.info(
                     "Found valid stereo image d_file" + d_file)
                 data_model = StereoImage(**data)
-            elif os.path.basename(filename.upper()) == 'USER':
-                catamiWebPortal.logging.info("Found valid campaign d_file"
-                                             + d_file)
-                data_model = User(**data)
             else:
-                catamiWebPortal.logging.error(
+                catami_web_portal.logging.error(
                     "No supported filname found \
                     Data not logged :: filename :: " + d_file)
                 read = False
             if read == True:
                 try:
                     data_model.full_clean()
-                except Exception as e:
-                    catamiWebPortal.logging.warning(
-                        "Possible validation error :: " + str(e))
+                except Exception as load_exception:
+                    catami_web_portal.logging.warning(
+                        "Possible validation error :: " + str(load_exception))
                 try:
                     data_model.save()
-                except Exception as e:
-                    catamiWebPortal.logging.error("Couldn't save :: " + str(e))
+                except Exception as save_exception:
+                    catami_web_portal.logging.error("Couldn't save :: "
+                                                  + str(save_exception))
         else:
-            catamiWebPortal.logging.error(
+            catami_web_portal.logging.error(
                 "No supported fileformat found.  Data not logged  \
                 :: d_file extension :: " + fileextension)
 
@@ -124,9 +127,10 @@ class ImportMetaData():
         """
 
         listing = os.listdir(directory)
-        catamiWebPortal.logging.info('Found files :: ' + str(listing))
+        catami_web_portal.logging.info('Found files :: ' + str(listing))
         for infile in listing:
             filename, fileextension = os.path.splitext(infile)
+            del(filename)
             if  fileextension == '.json':  #@todo: or other supported files
-                catamiWebPortal.importTools.importMetaData.import_
-                metadata_from_file(directory + infile)
+                catami_web_portal.importTools.importMetaData. \
+                import_metadata_from_file(directory + infile)

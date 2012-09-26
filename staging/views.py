@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response, redirect
 from django.db import transaction
 from django.core import serializers
 from django import forms
+from django.contrib.auth.decorators import login_required
 
 from staging.forms import AUVImportForm, FileImportForm
 from staging.auvimport import create_structure, structure_string
@@ -16,6 +17,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
+
+@login_required
 def index(request):
     context = {}
     context['sections'] = ['auv', 'bruv']

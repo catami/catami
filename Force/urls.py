@@ -20,3 +20,12 @@ urlpatterns = patterns('',
 
     #url(r'^(?P<poll_id>\d+)/vote/$', 'polls.views.vote'),
 )
+
+from django.contrib.auth.views import login, logout
+
+urlpatterns += patterns('',
+    # existing patterns here...
+    url(r'^accounts/login/$',  login),
+    url(r'^accounts/logout/$', logout)
+)
+

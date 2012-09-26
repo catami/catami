@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 class AUVImportForm(forms.Form):
     # get the available campaigns
     Campaign.objects.update()
+
     choices = tuple([(c.short_name, "{0} {1}".format(c.date_start, c.short_name))  for c in Campaign.objects.all()])
 
     # widget format adjusting

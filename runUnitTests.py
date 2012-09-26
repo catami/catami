@@ -8,5 +8,5 @@ import catamiWebPortal
 # Add Tests to start here
 #==================================================#
 
-#execfile('test/importToolsUnitTest.py')
+execfile('test/importToolsUnitTest.py')
 execfile('test/forceViewsUnitTest.py')
