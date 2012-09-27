@@ -1,6 +1,8 @@
+"""Contains extra functions that do not quite fit in other categories.
+"""
 from django.core.files.uploadhandler import FileUploadHandler
 from django.core.cache import cache
-from staging.models import Progress
+from .models import Progress
 
 def update_progress(key, progress):
     #obj = Progress.objects.get(pk=key)

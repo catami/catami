@@ -1,15 +1,16 @@
+"""Views for the staging app.
+"""
+
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
-from django.db import transaction
-from django.core import serializers
 from django import forms
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 
-from staging.forms import AUVImportForm, FileImportForm
-from staging.auvimport import create_structure, structure_string
-from staging.models import Progress
-from staging.extras import UploadProgressCachedHandler
-from staging import tasks
+from .forms import AUVImportForm, FileImportForm
+from .models import Progress
+from .extras import UploadProgressCachedHandler
+from . import tasks
 
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
@@ -17,21 +18,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
-
 @login_required
 def index(request):
+    """The home/index view for staging."""
     context = {}
     context['sections'] = ['auv', 'bruv']
 
-    rc = RequestContext(request)
+    rcon = RequestContext(request)
 
-    return render_to_response('staging/index.html', context, rc)
+    return render_to_response('staging/index.html', context, rcon)
 
+@login_required
 def progress(request, key):
     """Used to return progress of an operation."""
     context = {}
-    rc = RequestContext(request)
+    rcon = RequestContext(request)
 
     try:
         prog = Progress.objects.get(pk=key)
@@ -40,10 +41,12 @@ def progress(request, key):
     else:
         context['percent'] = prog.progress
 
-    return render_to_response('staging/progress.json', context, rc)
+    return render_to_response('staging/progress.json', context, rcon)
     
 
+@login_required
 def auvimport(request):
+    """The auvimport view. Handles GET and POST for the form."""
     errors = ""
     context = {}
     if request.method == 'POST':
@@ -70,10 +73,10 @@ def auvimport(request):
                 logger.debug("auvimport: importing json string into database.")
                 tasks.json_sload(json_string)
 
-            except Exception as e:
+            except Exception as exc:
                 errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
-                errors.append("{0}: {1}".format(e.__class__.__name__, e))
-                logger.debug('auvimport: failed to import auv mission: ({0}): {1}'.format(e.__class__.__name__, e))
+                errors.append("{0}: {1}".format(exc.__class__.__name__, exc))
+                logger.debug('auvimport: failed to import auv mission: ({0}): {1}'.format(exc.__class__.__name__, exc))
 
             else:
                 logger.debug("auvimport: import successful, redirecting to auvimported.")
@@ -82,30 +85,38 @@ def auvimport(request):
     else:
         form = AUVImportForm()
 
-    rc = RequestContext(request)
+    rcon = RequestContext(request)
     context['form'] = form
 
-    return render_to_response('staging/auvimport.html', context, rc)
+    return render_to_response('staging/auvimport.html', context, rcon)
 
+@login_required
 def auvimported(request):
+    """Displays the thankyou message on auvimport success."""
     context = {}
-    rc = RequestContext(request)
+    rcon = RequestContext(request)
 
-    return render_to_response('staging/auvimported.html', context, rc)
+    return render_to_response('staging/auvimported.html', context, rcon)
 
 # to enable the handler to exist...
+@login_required
 @csrf_exempt
 def fileupload(request):
+    """Handles setting up progress handler and uploading json files."""
     # get a new progress
     #key = Progress.objects.get_new()
 
+
+    # this is done here due to issues with csrf and touching of the POST
+    # data
     request.upload_handlers.insert(0, UploadProgressCachedHandler(request))
     return _fileupload(request)
 
 @csrf_protect
 def _fileupload(request):
+    """Deals with the actual uploading of files."""
     context = {}
-    rc = RequestContext(request)
+    rcon = RequestContext(request)
 
     if request.method == 'POST':
         form = FileImportForm(request.POST, request.FILES)
@@ -138,14 +149,17 @@ def _fileupload(request):
 
     context['form'] = form
 
-    return render_to_response('staging/fileupload.html', context, rc)
+    return render_to_response('staging/fileupload.html', context, rcon)
 
+@login_required
 def fileuploaded(request):
+    """Thankyou message after uploaded file imported successfully."""
     context = {}
-    rc = RequestContext(request)
+    rcon = RequestContext(request)
 
-    return render_to_response('staging/fileuploaded.html', context, rc)
+    return render_to_response('staging/fileuploaded.html', context, rcon)
 
+@login_required
 def upload_progress(request):
     """
     Return JSON object with information about the progress of an upload.

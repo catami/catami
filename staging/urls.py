@@ -1,15 +1,16 @@
-__author__ = 'lachlan'
+"""URL Mappings for the staging application.
+"""
+__author__ = 'Lachlan Toohey'
 
-from django.conf.urls import patterns, include, url
-from django.views.generic import DetailView, ListView
+from django.conf.urls import patterns, url
 
-urlpatterns = patterns('',
-    url(r'^$', 'staging.views.index'),
-    url(r'^progress/(?P<key>\d+)$', 'staging.views.progress'),
-    url(r'^upload_progress/$', 'staging.views.upload_progress'),
-    url(r'^auv/import$', 'staging.views.auvimport'),
-    url(r'^auv/imported$', 'staging.views.auvimported'),
-    url(r'^file/import$', 'staging.views.fileupload'),
-    url(r'^file/imported$', 'staging.views.fileuploaded'),
+urlpatterns = patterns('staging.views',
+    url(r'^$', 'index', name='staging_index'),
+    url(r'^progress/(?P<key>\d+)$', 'progress'),
+    url(r'^upload_progress/$', 'upload_progress'),
+    url(r'^auv/import$', 'auvimport', name='staging_auv_import'),
+    url(r'^auv/imported$', 'auvimported', name='staging_auv_imported'),
+    url(r'^file/import$', 'fileupload', name='staging_file_import'),
+    url(r'^file/imported$', 'fileuploaded', name='staging_file_imported'),
 )
 
