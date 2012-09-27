@@ -1,3 +1,5 @@
+"""Models for the staging Django application.
+"""
 from django.db import models
 
 import logging
@@ -5,8 +7,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 class ProgressManager(models.Manager):
+    """Manager for progress objects.
+
+    Enables simpler creation of Progress objects.
+    """
+
     def get_new(self):
-        # create a new one and get the key
+        """Create new Progress object and return the key.
+        """
         prog = self.create(progress=0)
 
         prog.save()
