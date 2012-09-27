@@ -1,10 +1,16 @@
-{% extends "base_data.html" %}
+{% extends "base.html" %}
 
 {% block leadtitle %}AUV Deployment List{% endblock %}
 
-{% block breadcrumbs %}
-  <li class="active">AUV Deployment List</li>
+{% block content_header %}
+  <ul class="breadcrumb">
+    <li class="active">AUV Deployment List</li>
+  </ul>
 {% endblock %}
+
+<!--{% block breadcrumbs %}
+  <li class="active">AUV Deployment List</li>
+{% endblock %}-->
 
 {% block content %}
   {% if latest_auvdeployment_list %}
