@@ -1,14 +1,14 @@
 {% extends "base_data.html" %}
 
-{% block leadtitle %}{{campaignObject.short_name}}{% endblock %}
+{% block leadtitle %}{{campaign_object.short_name}}{% endblock %}
      
 {% block breadcrumbs %}
   <li><a href="/data/campaigns/">Campaign List</a> <span class="divider">></span></li>
-  <li class="active">{{campaignObject.short_name}}</li>
+  <li class="active">{{campaign_object.short_name}}</li>
 {% endblock %}
 
 {% block content %}
-  {% if campaignObject %}
+  {% if campaign_object %}
   <table class="table table-striped">
     <thead>
       <tr>
@@ -22,12 +22,12 @@
     </thead>
     <tbody>
           <tr>
-            <td>{{campaignObject.date_start}}</td>
-            <td>{{campaignObject.date_end}}</td>
-            <td>{{campaignObject.associated_researchers}}</td>
-            <td>{{campaignObject.associated_publications}}</td>
-            <td>{{campaignObject.associated_research_grant}}</td>
-            <td>{{campaignObject.description}}</td>
+            <td>{{campaign_object.date_start}}</td>
+            <td>{{campaign_object.date_end}}</td>
+            <td>{{campaign_object.associated_researchers}}</td>
+            <td>{{campaign_object.associated_publications}}</td>
+            <td>{{campaign_object.associated_research_grant}}</td>
+            <td>{{campaign_object.description}}</td>
           <tr>
     </tbody>
   </table>
@@ -65,7 +65,7 @@
     </thead>
     <tbody>
 
-        {% for auvdeployment in auvdeploymentListForCampaign %}
+        {% for auvdeployment in auvdeployment_list_for_campaign %}
           <tr>
             <td>{{auvdeployment.start_time_stamp}}</td>
             <td>{{auvdeployment.end_time_stamp}}</td>

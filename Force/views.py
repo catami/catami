@@ -36,18 +36,23 @@ def auvdeployment_detail(request, auvdeployment_id):
     #deployment_as_geojson = geoj.encode(djf.decode([AUVDeployment.objects.get(id=auvdeployment_id)]))
     
     auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
+    image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
 
     ## the easy way is to just return auvdeployment_object.transect_shape.geojson
-    return render_to_response('Force/auvdeploymentInstance.html', {'auvdeployment_object': auvdeployment_object,'deployment_as_geojson':auvdeployment_object.transect_shape.geojson},context_instance=RequestContext(request))
+    return render_to_response('Force/auvdeploymentInstance.html', 
+                             {'auvdeployment_object': auvdeployment_object,
+                              'deployment_as_geojson':auvdeployment_object.transect_shape.geojson,
+                              'image_list':image_list},
+                              context_instance=RequestContext(request))
 
 
 def campaign_detail(request, campaign_id):
-    campaignObject = Campaign.objects.get(id=campaign_id)
+    campaign_object = Campaign.objects.get(id=campaign_id)
     djf=Django.Django(geodjango="", properties=[])
 
-    auvdeployment_list_for_campaign = AUVDeployment.objects.filter(campaign=campaignObject)
+    auvdeployment_list_for_campaign = AUVDeployment.objects.filter(campaign=campaign_object)
     geoj = GeoJSON.GeoJSON()
     campaign_as_geojson = geoj.encode(djf.decode([Campaign.objects.get(id=campaign_id)]))
 
 
-    return render_to_response('Force/campaignInstance.html', {'campaignObject': campaignObject, 'auvdeployment_list_for_campaign':auvdeployment_list_for_campaign, 'campaign_as_geojson':campaign_as_geojson},context_instance=RequestContext(request))
+    return render_to_response('Force/campaignInstance.html', {'campaign_object': campaign_object, 'auvdeployment_list_for_campaign':auvdeployment_list_for_campaign, 'campaign_as_geojson':campaign_as_geojson},context_instance=RequestContext(request))
