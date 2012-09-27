@@ -11,6 +11,7 @@ class CampaignIndex(indexes.SearchIndex, indexes.Indexable):
     def index_queryset(self):
         return self.get_model().objects.all()
 
+
 class DeploymentIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
  
