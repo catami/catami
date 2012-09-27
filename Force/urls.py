@@ -1,8 +1,12 @@
-__author__ = 'ivec'
+"""@brief Django URLs for Catami data.
 
-from django.conf.urls import patterns, include, url
-from django.views.generic import DetailView, ListView
-from Force.models import Campaign
+Created Mark Gray 10/09/2012
+markg@ivec.org
+
+Edits :: Name : Date : description
+
+"""
+from django.conf.urls import patterns, url
 
 urlpatterns = patterns('',
     url(r'^$', 'Force.views.index'),

@@ -8,15 +8,15 @@ Edits :: Name : Date : description
 """
 
 # Create your views here.
-from django.template import Context, loader, RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import render_to_response, render, redirect
-from Force.forms import CampaignForm
-from Force.models import *
-from django.core.urlresolvers import reverse
-from vectorformats.Formats import Django, GeoJSO
-from django.core import serializers
-from django.contrib.gis.geos import GEOSGeometry
+from django.template import RequestContext
+#from django.http import Http404
+from django.shortcuts import render_to_response, redirect
+#from django.core import serializers
+#from django.contrib.gis.geos import GEOSGeometry
+
+from vectorformats.Formats import Django, GeoJSON
+
+from Force.models import Campaign, AUVDeployment, StereoImage
 
 
 def index(request):
@@ -25,9 +25,10 @@ def index(request):
     """
     context = {}
 
-    rc = RequestContext(request)
-
-    return render_to_response('Force/index.html', context, rc)
+    return render_to_response(
+        'Force/index.html',
+        context,
+        RequestContext(request))
 
 
 def add_campaign(request):
