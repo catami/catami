@@ -106,17 +106,7 @@
     </div>  -->
 
     <div class="container-fluid">
-      <div class="row-fluid">
-        <div id="sidebar-nav" class="span3" style="padding-left:10px;">
-    
-          <h1>{% block sidebar_title %}{% endblock %}</h1>  
-          <div class="well well-small" style="align:center;">
-
-            <p class="lead">{% block leadtitle %}{% endblock %}</p>
-            <p>options</p>
-          </div><!--/.well -->
-    
-        </div>
+      {% block sidebar %} {% endblock %}
         <div id="content" class="span9">
             {% block content_header %}{% endblock %}
             {% block content %}{% endblock %}

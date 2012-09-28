@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 
-{% block leadtitle %}
-{{auvdeployment_object.short_name}}
-<div class="alert">
-  <strong>Warning!</strong> This page loads slowly for large datasets. Please be patient.
-</div>
 
+{% block sidebar %}
+  <div id="sidebar-nav" class="span3" style="padding-left:10px;">
+
+    <h1>Deployment</h1>  
+    <div class="well well-small" style="align:center;">
+
+      <p class="lead">{{auvdeployment_object.short_name}}</p>
+      <p>options</p>
+    </div><!--/.well -->
+    <div class="alert">
+      <strong>Warning!</strong> This page loads slowly for large datasets. Please be patient.
+    </div>
+  </div>
 {% endblock %}
 
 {% block content_header %}
