@@ -64,7 +64,7 @@
           <a class="brand" href="/">Catami</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="/">Home</a></li>
+              <li class=""><a href="/"><i class="icon-home icon-white"></i> Home</a></li>
               <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                      <b class="caret"></b>
@@ -75,14 +75,27 @@
                         <li><a  href="/staging"><i class="icon-upload"></i> Import Deployment</a></li>
                         <li><a  href="/data"><i class="icon-list-alt"></i> View Data</a></li>
                         <li><a  href="/search"><i class="icon-search"></i> Search Data</a></li>
+
                     </ul>
               </li>
-              <li><a href="#" rel="popover" title="About This Thing" data-placement="bottom" data-content="This is a first test of Catami data layout running in Django <br><br>">About</a>
+              <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                     <b class="caret"></b>
+                      Help
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a  href="/faq"><i class="icon-question-sign"></i> FAQ</a></li>
+                        <li><a  href="/contact"><i class="icon-envelope"></i> Contact us</a></li>
+
+
+                    </ul>
+              </li>              
+              <li><a href="#" rel="popover" title="About This Thing" data-placement="bottom" data-content="This is a first test of Catami data layout running in Django <br>">About</a>
               <li class="divider-vertical"></li>
             </ul>
 
-            <a href="/logout/"< class="btn btn-small pull-right">Logout</a>
-            <p class="navbar-text pull-right">Logged in as <a href="#"> {{ user.username }} </a>&nbsp;</p>
+            <a href="/logout/"< class="btn btn-small pull-right"> Logout</a>
+            <p class="navbar-text pull-right"><i class="icon-user icon-white"></i> Logged in as <a href="#"> {{ user.username }} </a>&nbsp;</p>
             <!--<form class="navbar-search pull-right">
                 <input type="text" class="search-query  pull-left" placeholder="Search">
             </form>-->
