@@ -22,27 +22,32 @@ logger = logging.getLogger(__name__)
 def index(request):
     """The home/index view for staging."""
     context = {}
-    context['sections'] = ['auv', 'bruv']
 
     rcon = RequestContext(request)
 
     return render_to_response('staging/index.html', context, rcon)
 
 @login_required
-def progress(request, key):
+def auvprogress(request):
     """Used to return progress of an operation."""
     context = {}
+
     rcon = RequestContext(request)
 
-    try:
-        prog = Progress.objects.get(pk=key)
-    except Progress.DoesNotExist:
-        context['percent'] = 40
-    else:
-        context['percent'] = prog.progress
+    uuid = request.GET.get('uuid', None)
 
-    return render_to_response('staging/progress.json', context, rcon)
-    
+    track_key = uuid + "_track_key"
+    netcdf_key = uuid + "_netcdf_key"
+
+    context['track_percent'] = cache.get(track_key)
+    context['netcdf_percent'] = cache.get(netcdf_key)
+
+    if not uuid:
+        return Error
+
+    # contains three elements that are needed to render
+
+    return render_to_response('staging/auvprogress.html', context, rcon)
 
 @login_required
 def auvimport(request):
@@ -56,16 +61,26 @@ def auvimport(request):
             try:
                 data = form.cleaned_data
 
+                # get the uuid - not part of POST
+                # but appears in the GET maybe?
+                uuid = request.REQUEST.get('uuid')
+
+                track_key = uuid + "_track_key"
+                netcdf_key = uuid + "_netcdf_key"
+
+                cache.add(track_key, 0, 300) # last for 5 minutes
+                cache.add(netcdf_key, 0, 300) # last for 5 minutes
+
                 input_params = (data['base_url'], str(data['campaign_name'].date_start), data['campaign_name'].short_name, data['mission_name'])
 
                 logger.debug("auvimport: determining remote files to fetch.")
                 (track_url, netcdf_urlpattern, start_time) = tasks.auvfetch(*input_params)
 
                 logger.debug("auvimport: fetching remote track file.")
-                track_file = tasks.get_known_file(1, track_url)
+                track_file = tasks.get_known_file(track_key, track_url)
 
                 logger.debug("auvimport: fetching remote netcdf file.")
-                netcdf_file = tasks.get_netcdf_file(1, netcdf_urlpattern, start_time)
+                netcdf_file = tasks.get_netcdf_file(netcdf_key, netcdf_urlpattern, start_time)
 
                 logger.debug("auvimport: processing remote files to create json string.")
                 json_string = tasks.auvprocess(track_file, netcdf_file, *input_params)

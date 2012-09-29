@@ -2,13 +2,9 @@
 """
 from django.core.files.uploadhandler import FileUploadHandler
 from django.core.cache import cache
-from .models import Progress
 
-def update_progress(key, progress):
-    #obj = Progress.objects.get(pk=key)
-    #obj.progress = progress
-    #obj.save()
-    pass
+def update_progress(key, percent):
+    data = cache.set(key, percent)
 
 class UploadProgressCachedHandler(FileUploadHandler):
     """
