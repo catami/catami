@@ -143,7 +143,7 @@ class Image(models.Model):
 
 class User(models.Model):
     '''
-    @breif contains all of the information for the database users
+    @brief contains all of the information for the database users
     '''
     #==================================================#
     # name <Char> : The name of the usr
