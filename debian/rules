@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+%:
+	dh $@ --with python2
+
+override_dh_auto_install:
+	dh_auto_install -- --install-scripts=/opt/extras.ubuntu.com/catamiPortal/bin                 --install-data=/opt/extras.ubuntu.com/catamiPortal                 --install-lib=/opt/extras.ubuntu.com/catamiPortal
+
+override_dh_python2:
+	dh_python2 /opt/extras.ubuntu.com/catamiPortal
+
+override_dh_install:
+	dh_install
+	
