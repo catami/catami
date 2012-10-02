@@ -1,5 +1,5 @@
-catamiPortal (0.10) precise; urgency=low
+catamiportal (0.10) precise; urgency=low
 
   * Auto build.
 
- -- Daniel Marrable <marrabld@ivec.org>  Mon, 09 Jul 2012 15:42:03 +0000
+ -- Daniel Marrable <d.marrable@ivec.org>  Mon, 09 Jul 2012 15:42:03 +0000

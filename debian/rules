@@ -3,11 +3,10 @@
 	dh $@ --with python2
 
 override_dh_auto_install:
-	dh_auto_install -- --install-scripts=/opt/extras.ubuntu.com/catamiPortal/bin                 --install-data=/opt/extras.ubuntu.com/catamiPortal                 --install-lib=/opt/extras.ubuntu.com/catamiPortal
+	dh_auto_install -- --install-scripts=/opt/extras.ubuntu.com/catamiportal/bin                 --install-data=/opt/extras.ubuntu.com/catamiportal                 --install-lib=/opt/extras.ubuntu.com/catamiportal
 
 override_dh_python2:
-	dh_python2 /opt/extras.ubuntu.com/catamiPortal
+	dh_python2 /opt/extras.ubuntu.com/catamiportal
 
 override_dh_install:
 	dh_install
-	

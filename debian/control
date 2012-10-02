@@ -1,7 +1,7 @@
-Source: pymi
+Source: catamiportal
 Section: python
 Priority: extra
-Maintainer: Daniel Marrable <marrabld@ivec.org>
+Maintainer: Daniel Marrable <d.marrable@ivec.org>
 Build-Depends: debhelper (>= 8),
                python (>=2.6.6-3~),
                python-distutils-extra
@@ -9,7 +9,7 @@ Standards-Version: 3.9.3
 X-Python-Version: current
 Homepage: https://launchpad.net/catami
 
-Package: pymi
+Package: catamiportal
 Architecture: all
 Depends: python-numpy,
          python-scipy,
