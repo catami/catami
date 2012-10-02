@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 
-{% block leadtitle %}
-{{auvdeployment_object.short_name}}
-<div class="alert">
-  <strong>Warning!</strong> This page loads slowly for large datasets. Please be patient.
-</div>
 
+{% block sidebar %}
+  <div id="sidebar-nav" class="span3" style="padding-left:10px;">
+
+    <h1>Deployment</h1>  
+    <div class="well well-small" style="align:center;">
+
+      <p class="lead">{{auvdeployment_object.short_name}}</p>
+      <p>options</p>
+    </div><!--/.well -->
+    <div class="alert">
+      <strong>Warning!</strong> This page loads slowly for large datasets. Please be patient.
+    </div>
+  </div>
 {% endblock %}
 
 {% block content_header %}
@@ -94,8 +102,10 @@
 
           {% for image in image_list %}
             <tr>
-              <td><img src="{{image.left_thumbnail_reference}}">
-              <img src="{{image.right_thumbnail_reference}}"></td>
+              <td>
+                <a class="btn" href="{{image.left_thumbnail_reference}}" > [L]<i class="icon-picture"></i></a>
+                <a class="btn" href="{{image.right_thumbnail_reference}}" > [R]<i class="icon-picture"></i></a>
+              </td>
               <td>{{image.date_time}}</v>
               <td>{{image.image_position}}</td>
               <td>{{image.temperature}}</td>
@@ -112,47 +122,38 @@
     </table>
   </div>
   <div class="tab-pane" id="viewer">
-    <div id="myCarousel" class="carousel slide">
-      <!-- Carousel items -->
-      <div class="carousel-inner" data-pause>
-        {% for image in image_list %}
-        <div class="item">
-             <img width="200" src="{{image.left_thumbnail_reference}}"><img width="200" src="{{image.right_thumbnail_reference}}">Text</div>
-        {% endfor %}
 
-      </div>
-      <!-- Carousel nav -->
-      <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-      <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
-    </div>
   </div>
-</div>
   {% else %}
       <p>No imagery found for AUV Deployment.</p>
-  {% endif %}{% endblock %}
+  {% endif %}
 
 
+  <!-- Modal -->
+  <div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="myModalLabel">Modal header</h3>
+    </div>
+    <div class="modal-body">
+    </div>
+  </div>​
 
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src='{{ STATIC_URL }}/static/assets/js/jquery-1.8.0.min.js'></script>
-    <script src='{{ STATIC_URL }}/static/assets/js/bootstrap.js'></script>
-    <script src="{{ STATIC_URL }}/static/assets/js/jquery.tools.min.js"></script>
-    <script src="{{ STATIC_URL }}/static/assets/js/jquery-ui-1.8.23.custom.min.js"></script>
-    
-    <!-- popover js -->
-    <script type="text/javascript">
-        (function() {
-            $("[rel=popover]").popover();
-        })();
-    </script>
+ 
     <!-- bootstrap-tab.js-->
     <script>
       $(function () {
         $('#myTab a:last').tab('show');
       })
     </script>
-</body>
-</html>
+
+  <script type='text/javascript'>//<![CDATA[ 
+  $(window).load(function(){
+  $('a.btn').on('click', function(e) {
+      e.preventDefault();
+      var url = $(this).attr('href');
+      $(".modal-body").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
+  });
+  });//]]>  
+  </script>
+  {% endblock %}

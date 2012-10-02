@@ -1,5 +1,8 @@
+"""Tasks that are used to import data to the database."""
+
+__author__ = "Lachlan Toohey"
+
 from urllib2 import urlopen, HTTPError
-from staging.models import Progress
 
 import json
 import datetime
@@ -9,10 +12,19 @@ import os.path
 from django.db import transaction
 from django.core import serializers
 
-from staging.extras import update_progress
+from .extras import update_progress
+from .models import Progress
+from .auvimport import NetCDFParser, LimitTracker, TrackParser
 
-from staging.auvimport import NetCDFParser, LimitTracker, TrackParser
 def get_known_file(key, url):
+    """Download a file and return a file-like handle to it.
+
+    This downloads a file either to memory if small enough or
+    to a file if too large.
+
+    Either way it returns a file-like handle to it and deletes
+    the file on releasing of the handle.
+    """
     # download the file async to get the file and give feedback
     resp = urlopen(url)
 
@@ -34,33 +46,43 @@ def get_known_file(key, url):
             update_progress(key, percent)
 
     if downloaded < size:
-        raise EOFError("Not enough data read in. Got {0} whilst expecting {1}".format(downloaded, size))
+        raise EOFError("Downloaded file ended unexpectedly.")
 
     file_handle.seek(0)
 
     return file_handle
 
-def get_netcdf_file(key, url_pattern, initial_time):
+def get_netcdf_file(key, pattern, start_time):
+    """Search for then download a file that has a naming pattern based on time.
+
+    The url_pattern contains {date_string} which is replaced with the start_time
+    and second increments of it (up to 10 seconds ahead).
+
+    Once the file is found (no 404 or other errors) the file is downloaded and a
+    handle returned using get_known_file.
+
+    If the file is not found an error an IO error is thrown.
+    """
     search_seconds = 10
     
     for i in xrange(search_seconds):
-        initial_time += datetime.timedelta(0,1) # add a second
-        url = url_pattern.format(date_string=initial_time.strftime('%Y%m%dT%H%M%S'))
+        start_time += datetime.timedelta(0, 1) # add a second
+        url = pattern.format(date_string=start_time.strftime('%Y%m%dT%H%M%S'))
         try:
-            #(filename, headers) = urlretrieve(url, reporthook=create_download_hook(key))
             file_handle = get_known_file(key, url)
-        except HTTPError as e:
-            print "HTTPError (expected) {0}".format(e)
+        except HTTPError:
             pass
         else:
             # no error in finding the file - have the right one so escape
             break
     else:
-        raise IOError(0, "Cannot find netcdf file.", url_pattern)
+        raise IOError(0, "Cannot find netcdf file.", pattern)
 
     return file_handle
 
 def auvfetch(base_url, campaign_date, campaign_name, mission_name):
+    """Calculate the track file url and the netcdf url pattern.
+    """
     # the YYYMMDD_hhmmss of the mission
     (day, time) = mission_name.lstrip('r').split('_')[0:2]
 
@@ -71,11 +93,8 @@ def auvfetch(base_url, campaign_date, campaign_name, mission_name):
 
     mission_base = base_url + "/" + campaign_name + "/" + mission_name
 
-    # the base directory for the geotiffs
-    image_base =  mission_base + "/i" + mission_datetime + "_gtif/"
-
     # the track file that contains image positions and names
-    trackfile_name = mission_base + "/track_files/" + mission_text + "_latlong.csv"
+    trackfile_name = "{0}/track_files/{1}_latlong.csv".format(mission_base, mission_text)
 
     # the netcdf that give water condition measurements
     netcdf_base = mission_base + '/hydro_netcdf/'
@@ -87,7 +106,9 @@ def auvfetch(base_url, campaign_date, campaign_name, mission_name):
     datetime_object = datetime.datetime.strptime(mission_datetime, "%Y%m%d_%H%M%S")
 
     return (trackfile_name, netcdfseabird_name, datetime_object)
+
 def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_name, mission_name, limit=None):
+    """Process the track and netcdf files into the importable json string."""
     # recreate the mission parameters etc.
     (day, time) = mission_name.lstrip('r').split('_')[0:2]
     mission_datetime = "{0}_{1}".format(day, time)
@@ -217,22 +238,32 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
     return json.dumps(structure)
 
 def json_sload(json_string):
+    """Load the json string into the database."""
     # now load into the database 
     json_real_load(json_string)
 
 def json_fload(file_name):
+    """Load the json in file 'file_name' in to the database."""
     # now load into the database 
     json_file = open(file_name, 'r')
     print file_name
     json_real_load(json_file)
 
 def json_real_load(data):
+    """The function that does the real load of json into the database.
+
+    This data can be either a string or file-like object from which data
+    can be read.
+
+    Objects in the file have to be from Force.models else the whole contents
+    will be rejected. This is a security issue.
+    """
     with transaction.commit_manually():
         try:
             for obj in serializers.deserialize('json', data):
                 # check if the class is in Force
                 if obj.object.__class__.__module__ == "Force.models":
-                   obj.save()
+                    obj.save()
                 else:
                     raise ValueError('Object does not come from target Module.', obj.object)
         except:

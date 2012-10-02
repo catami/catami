@@ -13,17 +13,19 @@ Base URL format (and example):
 fabric_base = "http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV/"
 
 """
-import json
+
+# date handling
 import datetime
 
 # needed for thumbnailing
 import Image
 from cStringIO import StringIO
 
+# for netcdf files
 from scipy.io import netcdf
 
 # for trackfiles from the data fabric
-#import urllib
+import urllib
 import csv
 
 import os
@@ -94,6 +96,10 @@ class NetCDFParser:
     It implements the iterator interface returning dictionaries with salinity,
     temperature and time of measurement.
     """
+    secs_in_day = 24.0 * 3600.0
+    imos_seconds_offset = 631152000.0
+    imos_days_offset = imos_seconds_offset / secs_in_day
+
     def __init__(self, file_handle):
         self.file_handle = file_handle
 
@@ -104,18 +110,21 @@ class NetCDFParser:
             # error, something is missing
             raise KeyError("Key 'TIME' not in netcdf file variables list.")
 
-        if not 'PSAL' in self.reader.variables or not 'TEMP' in self.reader.variables:
-            raise KeyError("Key 'PSAL' or 'TEMP' not in netcdf file variables list.")
+        if not 'PSAL' in self.reader.variables:
+            raise KeyError("Key 'PSAL' not in netcdf file variables list.")
 
+        if not 'TEMP' in self.reader.variables:
+            raise KeyError("Key 'TEMP' not in netcdf file variables list.")
 
         # the index we are up to...
         self.index = 0
         self.items = len(self.reader.variables['TIME'].data)
 
     def imos_to_unix(self, imos_time):
-        self.secs_in_day = 24.0 * 3600.0;
-        self.imos_seconds_offset = 631152000.0;
-        self.imos_days_offset = self.imos_seconds_offset / self.secs_in_day
+        """Convert IMOS time to UNIX time.
+
+        IMOS time is days since IMOS epoch which is 1950-01-01.
+        """
 
         return (imos_time - self.imos_days_offset) * self.secs_in_day
 
@@ -123,9 +132,16 @@ class NetCDFParser:
         return datetime.datetime.fromtimestamp(unix_time)
 
     def imos_to_datetime(self, imos_time):
-         return self.unix_to_datetime(self.imos_to_unix(imos_time))
+        """Convert IMOS time to python datetime object.
+
+        Utility function that chains the imos to unix and
+        unix to datetime functions.
+        """
+        return datetime.datetime.fromtimestamp(self.imos_to_unix(imos_time))
 
     def next(self):
+        """Get the next row in the NetCDF File.
+        """
         i = self.index
         self.index += 1
 
@@ -139,7 +155,7 @@ class NetCDFParser:
 
 
 class TrackParser:
-    """@brief A class to parse the csv stereo pose tracks for AUV deployments.
+    """A class to parse the csv stereo pose tracks for AUV deployments.
 
     It can be given a URI that it will retrieve the file from. It returns
     a dictionary using the header row to determine the keys and the values
@@ -164,6 +180,7 @@ class TrackParser:
         # so construction is finished
 
     def next(self):
+        """Get next row of track file."""
         # create a dict of the column headers and the values
         return dict(zip(self.header, self.reader.next()))
 

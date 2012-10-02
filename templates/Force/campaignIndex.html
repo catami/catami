@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 
-{% block leadtitle %}Campaign List{% endblock %}
+
+{% block sidebar %}
+  <div id="sidebar-nav" class="span3" style="padding-left:10px;">
+
+    <h1>Campaign</h1>  
+    <div class="well well-small" style="align:center;">
+
+      <p class="lead">List</p>
+      <p>options</p>
+    </div><!--/.well -->
+  </div>
+{% endblock %}
 
 {% block content_header %}
   <ul class="breadcrumb">  
@@ -49,24 +60,3 @@
       <p>No campaigns are available.</p>
   {% endif %}
 {% endblock %}
-
-
-
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src='{{ STATIC_URL }}/assets/js/jquery-1.8.0.min.js'></script>
-    <script src='{{ STATIC_URL }}/assets/js/bootstrap.js'></script>
-    <script src="{{ STATIC_URL }}/assets/js/jquery.tools.min.js"></script>
-    <script src="{{ STATIC_URL }}/assets/js/jquery-ui-1.8.23.custom.min.js"></script>
-    
-    <!-- popover js -->
-    <script type="text/javascript">
-        (function() {
-            $("[rel=popover]").popover();
-        })();
-     </script>
-
-</body>
-</html>
