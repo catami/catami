@@ -94,8 +94,15 @@
               <li class="divider-vertical"></li>
             </ul>
 
+{% if user.is_authenticated %}
             <a href="/logout/"< class="btn btn-small pull-right"> Logout</a>
-            <p class="navbar-text pull-right"><i class="icon-user icon-white"></i> Logged in as <a href="#"> {{ user.username }} </a>&nbsp;</p>
+            <p class="navbar-text pull-right"><i class="icon-user icon-white"></i> Logged in as <a href="#"> {{ user.username }} </a>&nbsp;</p>    
+{% else %}
+			<a role="button" class="btn btn-small pull-right" data-toggle="modal" data-target="#myModal" href="/accounts/login/">Login</a>            
+			<p class="navbar-text pull-right"><i class="icon-user icon-white"></i> Welcome visitor! <a href="#"> {{ user.username }} </a>&nbsp;</p>
+   
+{% endif %}
+
             <!--<form class="navbar-search pull-right">
                 <input type="text" class="search-query  pull-left" placeholder="Search">
             </form>-->
@@ -129,7 +136,19 @@
     </div>
 
 
-
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <h3 id="myModalLabel">Welcome to Catami</h3>
+	  </div>
+	  <div class="modal-body">
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn" data-dismiss="modal" aria-hidden="true">Forget it</button>
+	  </div>
+	</div>  
+	
+	
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -143,7 +162,8 @@
         (function() {
             $("[rel=popover]").popover();
         })();
-     </script>
-
+    </script>
+    
+  
 </body>
 </html>
