@@ -1,4 +1,4 @@
-"""Contains functions to create AUV Structure.
+"""@brief Contains functions to create AUV Structure.
 
 Given a base_url, campaign_name and mission_name create
 a structure that can be converted to JSON string or file for
@@ -23,7 +23,7 @@ from cStringIO import StringIO
 from scipy.io import netcdf
 
 # for trackfiles from the data fabric
-import urllib
+#import urllib
 import csv
 
 import os
@@ -106,7 +106,7 @@ class NetCDFParser:
 
         if not 'PSAL' in self.reader.variables or not 'TEMP' in self.reader.variables:
             raise KeyError("Key 'PSAL' or 'TEMP' not in netcdf file variables list.")
-            
+
 
         # the index we are up to...
         self.index = 0
@@ -128,7 +128,7 @@ class NetCDFParser:
     def next(self):
         i = self.index
         self.index += 1
-    
+
         time = self.reader.variables['TIME'].data[i]
         sal = self.reader.variables['PSAL'].data[i]
         temp = self.reader.variables['TEMP'].data[i]
@@ -139,7 +139,7 @@ class NetCDFParser:
 
 
 class TrackParser:
-    """A class to parse the csv stereo pose tracks for AUV deployments.
+    """@brief A class to parse the csv stereo pose tracks for AUV deployments.
 
     It can be given a URI that it will retrieve the file from. It returns
     a dictionary using the header row to determine the keys and the values
