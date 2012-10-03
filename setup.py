@@ -2,24 +2,32 @@ from distutils.core import setup
 from DistUtilsExtra.command import *
 
 import glob
+import os
 
-setup(name="pymi",
-      version="0.1",
-      description='A simple image processing program written for medical imaging undergraduate students to explore DSP of images without having to learn programming.',
+def gen_data_files(*dirs):
+    """build the data file structure to copy over"""
+    results = []
+
+    for src_dir in dirs:
+        for root,dirs,files in os.walk(src_dir):
+            results.append((root, map(lambda f:root + "/" + f, files)))
+    print results
+    return results
+
+setup(name="catamiportal",
+      version="0.10",
+      description='CATAMI web portal code',
       author="Dan Marrable",
-      author_email="marrabld@gmail.com",
-      url="https://launchpad.net/~marrabld",
-      license="GNU General Public License Version 3 (GPLv3)",
-      package_dir = {'':'src'},
-      scripts=['pyMi.run'],
-      py_modules=['errorHandler','imageFuncs','loadGui','mainGui','main','mplWidget','aboutGui','helpGui'],
-      data_files=[('/usr/share/applications',['pymi.desktop']),
-                  ('icons', ['icons/pymi.png','icons/i_document-open.png','icons/i_document-save.png','icons/i_help-contents.png','icons/i_help-about.png','icons/i_view-refresh.png','icons/document-open.png','icons/document-save.png','icons/help-contents.png','icons/help-about.png','icons/view-refresh.png']),
-                  ('Images',['src/Images/DALEC.jpg','src/Images/greyTux.jpg'])
-      ],
+      author_email="d.marrable@ivec.org",
+      url="https://launchpad.net/~catami",
+      license="zlib",
+      package_dir = {'':''},
+      packages = ['Force','staging'],
+
+      scripts=['startCatamiWebPortal.py','catami_web_portal.py','runUnitTests.py','manage.py'],
+      data_files = gen_data_files('./', 'Force','assests','admin','staging','log'),
+
       cmdclass={"build":  build_extra.build_extra, }
 )
 
-
-#                  ('/opt/extras.ubuntu.com/pymi',['pyMi.run']),
-#      packages=[''],
+print 'DONE'
