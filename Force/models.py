@@ -12,7 +12,6 @@ from django.db import models
 #from django_postgresql.manager import PgManager
 from django.contrib.gis.db import models
 #from django.contrib.gis.geos import GEOSGeometry
-import dbarray
 
 class CampaignManager(models.Manager):
     """@brief Define a natural key for the Campaign class and return
