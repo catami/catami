@@ -144,7 +144,8 @@ INSTALLED_APPS = (
 #tasks that jenkins will run on the build server
 JENKINS_TASKS = {
     'django_jenkins.tasks.run_pylint',
-    #'django_jenkins.tasks.with_coverage',
+    'django_jenkins.tasks.with_coverage',
+    'django_jenkins.tasks.run_pep8',
 }
 
 
