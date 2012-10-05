@@ -7,5 +7,5 @@ setup_test_environment()
 # Add Tests to start here
 #==================================================#
 
-execfile('test/importToolsUnitTest.py')
-execfile('test/forceViewsUnitTest.py')
+#execfile('test/importToolsUnitTest.py')
+#execfile('test/forceViewsUnitTest.py')
