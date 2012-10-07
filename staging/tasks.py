@@ -157,7 +157,8 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
                                     int(row['minute']), int(seconds),
                                     int(centiseconds) * 10000) # convert to microseconds
 
-        pose['image_position'] = "POINT ({0} {1})".format(row['latitude'], row['longitude'])
+        # GEO JSON is long-lat not lat-long
+        pose['image_position'] = "POINT ({0} {1})".format(row['longitude'], row['latitude'])
 
         pose['left_image_reference'] = image_base + "{0}.tif".format(os.path.splitext(limage)[0])
 
@@ -226,7 +227,7 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
 
     auvdeployment = {}
     auvdeployment['deployment_ptr'] = deployment_nk # the foreign key, whatever the natural key is
-    auvdeployment['transect_shape'] = "POLYGON(({0} {2}, {0} {3}, {1} {3}, {1} {2}, {0} {2} ))".format(lat_lim.minimum, lat_lim.maximum, lon_lim.minimum, lon_lim.maximum)
+    auvdeployment['transect_shape'] = "POLYGON(({0} {2}, {0} {3}, {1} {3}, {1} {2}, {0} {2} ))".format(lon_lim.minimum, lon_lim.maximum, lat_lim.minimum, lat_lim.maximum)
     auvdeployment['distance_covered'] = 100.0 # just make it up... will work out later
 
     deploy = { 'pk': None, 'model': 'Force.Deployment', 'fields': deployment }
