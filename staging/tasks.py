@@ -13,7 +13,6 @@ from django.db import transaction
 from django.core import serializers
 
 from .extras import update_progress
-from .models import Progress
 from .auvimport import NetCDFParser, LimitTracker, TrackParser
 
 def get_known_file(key, url):
