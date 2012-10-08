@@ -49,6 +49,15 @@ def auvdeployments(request):
         {'latest_auvdeployment_list': latest_auvdeployment_list},
         context_instance=RequestContext(request))
 
+def auvdeployments_map(request):
+    """@brief AUV Deployment map html for entire database
+
+    """
+    latest_auvdeployment_list = AUVDeployment.objects.all()
+    return render_to_response(
+        'Force/auvDeploymentMap.html',
+        {'latest_auvdeployment_list': latest_auvdeployment_list},
+        context_instance=RequestContext(request))
 
 def campaigns(request):
     """@brief Campaign list html for entire database

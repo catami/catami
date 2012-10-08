@@ -18,6 +18,8 @@ urlpatterns = patterns('',
 
     url(r'^addCampaign', 'Force.views.add_campaign'),
     url(r'^auvdeployments/$', 'Force.views.auvdeployments'),
+    url(r'^auvdeployments/map/$', 'Force.views.auvdeployments_map'),
+   
     url(r'^campaigns/$', 'Force.views.campaigns'),
     url(r'^campaigns/(?P<campaign_id>\d+)/$', 'Force.views.campaign_detail'),
     url(r'^auvdeployments/(?P<auvdeployment_id>\d+)/$', 'Force.views.auvdeployment_detail'),
