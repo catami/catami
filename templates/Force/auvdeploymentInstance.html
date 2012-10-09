@@ -78,11 +78,14 @@
 {% if image_list %}
 <ul class="nav nav-tabs" id="myTab">
   <li class="active"><a href="#list">Data List</a></li>
-  <li><a href="#viewer">Image Viewer</a></li>
+  <li><a href="#viewer">Map Viewer</a></li>
 </ul>
 
 <div class="tab-content">
-  <div class="tab-pane active" id="list">
+  <div class="tab-pane active" id="viewer">
+  	<div id='map_container2'></div>
+  </div>
+  <div class="tab-pane" id="list">
     <table class="table table-striped table-condensed">
       <thead>
         <tr>
@@ -121,9 +124,6 @@
       </tbody>
     </table>
   </div>
-  <div class="tab-pane" id="viewer">
-
-  </div>
   {% else %}
       <p>No imagery found for AUV Deployment.</p>
   {% endif %}
@@ -157,3 +157,34 @@
   });//]]>  
   </script>
   {% endblock %}
+
+{% block add_script %}
+    <script src='{{ STATIC_URL }}assets/openlayers/OpenLayers.js'> </script>
+    <script src='{{ STATIC_URL }}assets/esriOceanBasemap/map.js'></script>
+    
+    <script type="text/javascript">
+        var lon = 138;
+        var lat = -35;
+        var zoom = 4;
+        var map, layer;
+
+ function init(){
+            map = new OpenLayers.Map( 'map_container2' );
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic',numZoomLevels: 25} );
+            map.addLayer(layer);
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+var geojson_data = '{ "type": "FeatureCollection", "features": [ {"geometry": { "type": "GeometryCollection", "geometries": [\
+{% for image in image_list %}{% if not forloop.last %}{{image.image_position.geojson|safe}},{% else %}{{image.image_position.geojson|safe}}{% endif %}{% endfor %}] }, "type": "Feature", "properties": {}} ] }';
+           
+           var geojson_format = new OpenLayers.Format.GeoJSON();
+           var featurecollection = geojson_format.read(geojson_data);
+           
+           var vector_layer = new OpenLayers.Layer.Vector(); 
+           map.addLayer(vector_layer);
+           vector_layer.addFeatures(geojson_format.read(geojson_data));
+
+        }
+    </script>
+{% endblock %}

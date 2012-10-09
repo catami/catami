@@ -16,7 +16,7 @@ from django.shortcuts import render_to_response, redirect
 
 from vectorformats.Formats import Django, GeoJSON
 
-from Force.models import Campaign, AUVDeployment, StereoImage
+from Force.models import Campaign, AUVDeployment,BRUVDeployment, DOVDeployment, Deployment, StereoImage
 
 
 def index(request):
@@ -32,11 +32,37 @@ def index(request):
 
 
 def add_campaign(request):
-    """@brief root html for Catami data
+    """@brief redirect to admin view to create a campaign object
 
     """
 
     return redirect('/admin/Force/campaign/add/')  # Redirect after POST
+
+
+def deployments(request):
+    """@brief Deployment list html for entire database
+
+    """
+    auv_deployment_list = AUVDeployment.objects.all()
+    bruv_deployment_list = BRUVDeployment.objects.all()
+    dov_deployment_list = DOVDeployment.objects.all()
+    return render_to_response(
+        'Force/DeploymentIndex.html',
+        {'auv_deployment_list': auv_deployment_list,
+        'bruv_deployment_list': bruv_deployment_list,
+        'dov_deployment_list': dov_deployment_list},
+        context_instance=RequestContext(request))
+
+
+def deployments_map(request):
+    """@brief Deployment map html for entire database
+
+    """
+    latest_deployment_list = Deployment.objects.all()
+    return render_to_response(
+        'Force/DeploymentMap.html',
+        {'latest_deployment_list': latest_deployment_list},
+        context_instance=RequestContext(request))
 
 
 def auvdeployments(request):
@@ -49,6 +75,7 @@ def auvdeployments(request):
         {'latest_auvdeployment_list': latest_auvdeployment_list},
         context_instance=RequestContext(request))
 
+
 def auvdeployments_map(request):
     """@brief AUV Deployment map html for entire database
 
@@ -57,16 +84,6 @@ def auvdeployments_map(request):
     return render_to_response(
         'Force/auvDeploymentMap.html',
         {'latest_auvdeployment_list': latest_auvdeployment_list},
-        context_instance=RequestContext(request))
-
-def campaigns(request):
-    """@brief Campaign list html for entire database
-
-    """
-    latest_campaign_list = Campaign.objects.all()
-    return render_to_response(
-        'Force/campaignIndex.html',
-        {'latest_campaign_list': latest_campaign_list},
         context_instance=RequestContext(request))
 
 
@@ -93,6 +110,17 @@ def auvdeployment_detail(request, auvdeployment_id):
         context_instance=RequestContext(request))
 
 
+def campaigns(request):
+    """@brief Campaign list html for entire database
+
+    """
+    latest_campaign_list = Campaign.objects.all()
+    return render_to_response(
+        'Force/campaignIndex.html',
+        {'latest_campaign_list': latest_campaign_list},
+        context_instance=RequestContext(request))
+
+
 def campaign_detail(request, campaign_id):
     """@brief Campaign html for a specifed campaign object
 
@@ -100,13 +128,18 @@ def campaign_detail(request, campaign_id):
     campaign_object = Campaign.objects.get(id=campaign_id)
     djf = Django.Django(geodjango="", properties=[])
 
-    auvdeployment_list_for_campaign = AUVDeployment.objects.filter(campaign=campaign_object)
+    auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign_object)
+    bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign_object)
+    dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign_object)
+
     geoj = GeoJSON.GeoJSON()
     campaign_as_geojson = geoj.encode(djf.decode([Campaign.objects.get(id=campaign_id)]))
 
     return render_to_response(
         'Force/campaignInstance.html',
         {'campaign_object': campaign_object,
-        'auvdeployment_list_for_campaign': auvdeployment_list_for_campaign,
+        'auv_deployment_list': auv_deployment_list,
+        'bruv_deployment_list': bruv_deployment_list,
+        'dov_deployment_list': dov_deployment_list,
         'campaign_as_geojson': campaign_as_geojson},
         context_instance=RequestContext(request))

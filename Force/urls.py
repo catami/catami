@@ -16,13 +16,16 @@ urlpatterns = patterns('',
     #        context_object_name='campaignList',
     #        template_name='Force/CampaignList.html')),
 
-    url(r'^addCampaign', 'Force.views.add_campaign'),
     url(r'^auvdeployments/$', 'Force.views.auvdeployments'),
     url(r'^auvdeployments/map/$', 'Force.views.auvdeployments_map'),
-   
+    url(r'^auvdeployments/(?P<auvdeployment_id>\d+)/$', 'Force.views.auvdeployment_detail'),
+
+    url(r'^deployments/$', 'Force.views.deployments'),
+    url(r'^deployments/map/$', 'Force.views.deployments_map'),
+
+    url(r'^addCampaign', 'Force.views.add_campaign'),
     url(r'^campaigns/$', 'Force.views.campaigns'),
     url(r'^campaigns/(?P<campaign_id>\d+)/$', 'Force.views.campaign_detail'),
-    url(r'^auvdeployments/(?P<auvdeployment_id>\d+)/$', 'Force.views.auvdeployment_detail'),
 
     #url(r'^(?P<poll_id>\d+)/vote/$', 'polls.views.vote'),
 )
@@ -34,4 +37,3 @@ urlpatterns += patterns('',
     url(r'^accounts/login/$',  login),
     url(r'^accounts/logout/$', logout)
 )
-
