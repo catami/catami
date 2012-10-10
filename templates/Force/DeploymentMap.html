@@ -54,10 +54,12 @@
         var map, layer;
 
  function init(){
-            map = new OpenLayers.Map( 'map_container2' );
+
+            map = new OpenLayers.Map('map_container2');
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
                     "http://vmap0.tiles.osgeo.org/wms/vmap0",
                     {layers: 'basic'} );
+            
             map.addLayer(layer);
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
 var geojson_data = '{ "type": "FeatureCollection", "features": [ {"geometry": { "type": "GeometryCollection", "geometries": [\
