@@ -49,6 +49,25 @@ def auvprogress(request):
     return render_to_response('staging/auvprogress.html', context, rcon)
 
 @login_required
+def fileprogress(request):
+    """Used to return progress of an operation."""
+    context = {}
+
+    rcon = RequestContext(request)
+
+    uuid = request.GET.get('uuid', None)
+
+    file_key = uuid + "_file_key"
+
+    context['file_percent'] = cache.get(file_key)
+
+    if not uuid:
+        raise Exception("Coult not find uuid in cache.")
+
+    # contains three elements that are needed to render
+
+    return render_to_response('staging/fileprogress.html', context, rcon)
+
 def auvimport(request):
     """The auvimport view. Handles GET and POST for the form."""
     errors = ""
