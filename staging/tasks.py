@@ -11,9 +11,15 @@ import os.path
 
 from django.db import transaction
 from django.core import serializers
+from django.template.defaultfilters import slugify
 
 from .extras import update_progress
 from .auvimport import NetCDFParser, LimitTracker, TrackParser
+import metadata
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_known_file(key, url):
     """Download a file and return a file-like handle to it.
@@ -272,3 +278,64 @@ def json_real_load(data):
             raise
         else:
             transaction.commit()
+
+def metadata_type(metadata_file):
+    base, extension = os.path.splitext(metadata_file)
+
+    file_type = extension.lower()
+    logger.debug("metadata_type: file extension (normalised) is {0}.".format(file_type))
+
+    if file_type == ".xls":
+        logger.debug("metadata_type: file is xls format.")
+        return "xls"
+    elif file_type == ".xlsx":
+        logger.debug("metadata_type: file is xlsx format.")
+        return "xlsx"
+    else:
+        logger.debug("metadata_type: file is unknown format.")
+        return ""
+
+def metadata_sheet_names(metadata_file):
+    """Return a list of sheet names in the file."""
+    logger.debug("metadata_sheet_names: getting sheet names.")
+
+    structure = metadata_outline(metadata_file)
+
+    return structure.keys()
+
+def metadata_sheet_name_deslug(metadata_file, slugged_name):
+    """Get the deslugged version of the sheet name."""
+    sheet_names = metadata_sheet_names(metadata_file)
+
+    for sheet_name in sheet_names:
+        if slugify(sheet_name) == slugged_name:
+            return sheet_name
+
+    return None
+
+def metadata_outline(metadata_file, *args, **kwargs):
+    """Get an outline of the metadata file structure."""
+    logger.debug("metadata_outline: getting file outline: {0}".format(metadata_file))
+    data_type = metadata_type(metadata_file)
+
+    if data_type == "xls":
+        return metadata.xls_outline(metadata_file, *args, **kwargs)
+    elif data_type == "xlsx":
+        return metadata.xlsx_outline(metadata_file, *args, **kwargs)
+    else:
+        logger.warning("metadata_outline: cannot handle extension '{0}'".format(data_type))
+        return None
+
+def metadata_transform(metadata_file, *args, **kwargs):
+    """Transform the and extract data from the metadata file."""
+    logger.debug("metadata_transform: transforming file data.")
+    data_type = metadata_type(metadata_file)
+
+    if data_type == "xls":
+        return metadata.xls_transform(metadata_file, *args, **kwargs)
+    elif data_type == "xlsx":
+        return metadata.xlsx_transform(metadata_file, *args, **kwargs)
+    else:
+        logger.warning("metadata_outline: cannot handle extension '{0}'".format(data_type))
+        return None
+

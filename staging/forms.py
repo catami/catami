@@ -5,6 +5,8 @@ This includes AUVImportForm and FileImportForm.
 from django import forms
 from Force.models import Campaign, Deployment
 
+from .models import MetadataFile
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -74,3 +76,11 @@ class FileImportForm(forms.Form):
     upload_file = forms.FileField()
 
     upload_file.help_text = "JSON file in import format."
+
+class MetadataStagingForm(forms.ModelForm):
+    """Form to upload generic files that will need processing.
+    """
+    class Meta:
+        model = MetadataFile
+        exclude = ('owner',)
+

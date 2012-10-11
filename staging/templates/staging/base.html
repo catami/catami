@@ -57,7 +57,9 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a  href="{% url staging.views.auvimport %}"><i class="icon-upload"></i> AUV Deployment</a></li>
-                        <li><a  href="{% url staging.views.fileupload %}"><i class="icon-upload"></i> Upload File</a></li>
+                        <li><a  href="{% url staging.views.fileupload %}"><i class="icon-upload"></i> Import JSON</a></li>
+                        <li><a  href="{% url staging.views.metadatastage %}"><i class="icon-upload"></i> Stage Metadata</a></li>
+                        <li><a  href="{% url staging.views.metadatalist %}"><i class="icon-upload"></i> Import Metadata</a></li>
                     </ul>
               </li>
               <li><a href="#" rel="popover" title="About This Thing" data-placement="bottom" data-content="This is a first test of Catami data layout running in Django <br><br>">About</a>

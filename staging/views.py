@@ -2,14 +2,15 @@
 """
 
 from django.template import RequestContext
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
-from .forms import AUVImportForm, FileImportForm
+from .forms import AUVImportForm, FileImportForm, MetadataStagingForm
 from .extras import UploadProgressCachedHandler
 from . import tasks
+from .models import MetadataFile
 
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
@@ -209,4 +210,128 @@ def upload_progress(request):
         return HttpResponse(simplejson.dumps(data))
     else:
         return HttpResponseServerError('Server Error: You must provide X-Progress-ID header or query param.')
+
+@login_required
+def metadatastage(request):
+    """
+    Form to upload a generic file that needs more complex parsing.
+    """
+    context = {}
+    rcon = RequestContext(request)
+
+    if request.method == 'POST':
+        form = MetadataStagingForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            # this is where the import is performed...
+            # and the file is read in
+            logger.debug("metadatastage: validated, now saving.")
+            metadata_file = form.save(commit=False)
+            metadata_file.owner_id = request.user.pk
+            metadata_file.save()
+            logger.debug("metadatastage: saved, now redirecting.")
+
+            return redirect('staging.views.metadatalist')
+    else:
+        mfile = MetadataFile(owner_id=request.user.pk)
+        form = MetadataStagingForm(instance=mfile)
+
+    context['form'] = form
+
+    return render_to_response('staging/metadatastage.html', context, rcon)
+
+@login_required
+def metadatalist(request):
+    """
+    Page with lists of all metadata the user can access.
+
+    Currently shows only files they own.
+    """
+    owned_files = MetadataFile.objects.filter(owner=request.user)
+    public_files = MetadataFile.objects.filter(is_public=True)
+    public_files = public_files.exclude(owner=request.user)
+
+    rcon = RequestContext(request)
+    context = {}
+    context['owned_files'] = owned_files
+    context['public_files'] = public_files
+    context['user'] = request.user
+    return render_to_response('staging/metadatalist.html', context, rcon)
+
+@login_required
+def metadatabook(request, file_id):
+    """
+    Page with info about all the sheets in the file.
+    """
+
+    file_entry = MetadataFile.objects.get(pk=file_id)
+    # get the on disk location of the file
+    file_name = file_entry.metadata_file.name
+
+    workbook_descriptor = tasks.metadata_outline(file_name)
+    context = {}
+    context['book_id'] = file_entry.pk
+    context['book_name'] = file_entry.description
+    context['book'] = workbook_descriptor
+
+    rcon = RequestContext(request)
+
+    return render_to_response('staging/metadatabook.html', context, rcon)
+
+@login_required
+def metadatasheet(request, file_id, page_name):
+    """
+    Setup the sheet for importing.
+    """
+    # need to get the workbook first, then the sheet
+    file_entry = MetadataFile.objects.get(pk=file_id)
+    if file_entry.owner.username == request.user.username:
+        # get the sheet
+        filename = file_entry.metadata_file.name
+        sheet_name = tasks.metadata_sheet_name_deslug(filename, page_name)
+        structure = tasks.metadata_transform(filename, sheet_name)
+    else:
+        # permission denied
+        return HttpResponseForbidden("You do not have permission to view this metadata file.")
+
+    # process the structure to get what we need
+    # it is a set of dictionaries
+    headings = structure[0].keys()
+
+    data_rows = []
+    for row in structure:
+        new_row = []
+        for key in headings:
+            new_row.append(row[key])
+        data_rows.append(new_row)
+
+    # now setup the data to be displayed in a table
+    # so need the headings, and then lists of data in order
+    context = {}
+    rcon = RequestContext(request)
+
+    context['book_name'] = file_entry.description
+    context['sheet_name'] = sheet_name
+    context['headings'] = headings
+    context['data_rows'] = data_rows
+
+    return render_to_response('staging/metadatasheet.html', context, rcon)
+
+@login_required
+@login_required
+def metadatadelete(request, file_id):
+    """Command to delete metadata file.
+
+    Restricted to owner.
+    """
+    file_entry = MetadataFile.objects.get(pk=file_id)
+
+    if file_entry.owner.username == request.user.username:
+        # delete the file, this is the owner
+        file_entry.delete()
+    else:
+        # don't delete it, the owner is not here
+        return HttpResponseForbidden("You do not have permission to delete this metadata file.")
+
+    return redirect('staging.views.metadatalist')
 
