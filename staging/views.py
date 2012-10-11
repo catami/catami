@@ -43,7 +43,7 @@ def auvprogress(request):
     context['netcdf_percent'] = cache.get(netcdf_key)
 
     if not uuid:
-        return Error
+        raise Exception("Could not find uuid in cache.")
 
     # contains three elements that are needed to render
 
@@ -69,9 +69,9 @@ def fileprogress(request):
 
     return render_to_response('staging/fileprogress.html', context, rcon)
 
+@login_required
 def auvimport(request):
     """The auvimport view. Handles GET and POST for the form."""
-    errors = ""
     context = {}
     if request.method == 'POST':
         form = AUVImportForm(request.POST)
@@ -171,10 +171,10 @@ def _fileupload(request):
                     logger.debug("_fileupload: small file so pass string to json_sload.")
                     tasks.json_sload(upload.read())
                 
-            except Exception as e:
+            except Exception as exc:
                 errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
-                errors.append("{0}: {1}".format(e.__class__.__name__, e))
-                logger.debug('_fileupload: failed to import json contents: ({0}): {1}'.format(e.__class__.__name__, e))
+                errors.append("{0}: {1}".format(exc.__class__.__name__, exc))
+                logger.debug('_fileupload: failed to import json contents: ({0}): {1}'.format(exc.__class__.__name__, exc))
             else:
                 logger.debug("_fileupload: import successful, redirecting to fileuploaded.")
                 return redirect('staging.views.fileuploaded')
@@ -317,7 +317,6 @@ def metadatasheet(request, file_id, page_name):
 
     return render_to_response('staging/metadatasheet.html', context, rcon)
 
-@login_required
 @login_required
 def metadatadelete(request, file_id):
     """Command to delete metadata file.

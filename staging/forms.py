@@ -58,7 +58,7 @@ class AUVImportForm(forms.Form):
         mission_text = mission_name_parts[2]
 
         try:
-            existing = Deployment.objects.get(short_name=mission_text)
+            Deployment.objects.get(short_name=mission_text)
         except Deployment.DoesNotExist:
             # doesn't exist, so all good
             logger.debug("AUVImportForm.clean_mission_name: valid name.")
@@ -69,9 +69,9 @@ class AUVImportForm(forms.Form):
 
 
 class FileImportForm(forms.Form):
-    """Form to assist with uploading a file.
+    """Form to assist with uploading a json file.
 
-    Particularly targetted at json files.
+    Particularly targetted at files to directly deserialize.
     """
     upload_file = forms.FileField()
 
