@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
 from .forms import AUVImportForm, FileImportForm
-from .models import Progress
 from .extras import UploadProgressCachedHandler
 from . import tasks
 
