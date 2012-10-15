@@ -3,6 +3,7 @@
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerError
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
@@ -257,6 +258,36 @@ def metadatalist(request):
     context['public_files'] = public_files
     context['user'] = request.user
     return render_to_response('staging/metadatalist.html', context, rcon)
+
+#@login_required
+def change_public(request):
+    # extract the info from the query
+    current_user = request.user
+    try:
+        file_id = request.GET['id']
+        is_public = request.GET['ispublic'] == "true"
+    except MultiValueDictKeyError:
+        # want to raise a proper error indicating what went wrong...
+        # ie you didn't specify the required details
+        # but there is no http response that really works...
+        raise
+
+    # now get the metadata file object
+    # or return 404 if it doesn't exist
+    file_object = get_object_or_404(MetadataFile, pk=file_id)
+
+    # then check if the user is the owner
+    if file_object.owner != current_user:
+        # permission denied
+        return HttpResponseForbidden("You do not have permission to delete this metadata file.")
+    else:
+        # then if so set the is_public parameter
+        logger.debug("Setting file {0} public status to {1}".format(file_id, is_public))
+        file_object.is_public = is_public
+        file_object.save()
+        logger.debug("The object: {0}".format(file_object))
+        # return an empty response - we aren't looking for replies
+        return HttpResponse()
 
 @login_required
 def metadatabook(request, file_id):

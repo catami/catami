@@ -14,7 +14,10 @@
 </thead>
 {% for metadata_file in owned_files %}
 <tr><td>{{ metadata_file.description }}</td>
-    <td>{{ metadata_file.is_public }}</td>
+    <td>
+        <input id="{{ metadata_file.pk }}" type="checkbox"
+        {% if metadata_file.is_public %}checked=checked{% endif %}>
+    </td>
     <td><div class="pull-right input-append">
         <a class="btn btn-primary" href="{% url staging.views.metadatabook metadata_file.pk %}" >Info</a>
         <a class="btn btn-danger" href="{% url staging.views.metadatadelete metadata_file.pk %}" >Delete</a>
@@ -25,12 +28,12 @@
 {% endfor %}
 </table>
 
-<h2>Public Files </h2>
+<h2>Public Files (not owned by you) </h2>
 <table class="table">
 <thead>
 <tr><th>Description</th><th width=120px>Owner</th><th width=120px>Actions</th></tr>
 </thead>
-{% for metadata_file in owned_files %}
+{% for metadata_file in public_files %}
 <tr><td>{{ metadata_file.description }}</td>
     <td>{{ metadata_file.owner.username }}</td>
     <td><div class="pull-right input-append">
@@ -42,5 +45,22 @@
     <tr><td colspan=3>No files.</td></tr>
 {% endfor %}
 </table>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+$(document).on("change", 'input[type="checkbox"]', function(ev){
+    var url_base = '{% url staging.views.change_public %}'
+    $.ajax( url_base
+        ,{
+        type: 'GET',
+        data: { id: $(this).attr("id"), ispublic: $(this).is(':checked') },
+        }
+        );
+});
+
+</script>
 
 {% endblock %}
