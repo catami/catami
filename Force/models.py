@@ -13,7 +13,7 @@ from django.db import models
 from django.contrib.gis.db import models
 #from django.contrib.gis.geos import GEOSGeometry
 
-class CampaignManager(models.Manager):
+class CampaignManager(models.GeoManager):
     """@brief Define a natural key for the Campaign class and return
     date_start and short_name keypair
     
@@ -59,7 +59,7 @@ class Campaign(models.Model):
         """@brief defines the natural key pair"""
         unique_together = (('date_start','short_name'),)
 
-class DeploymentManager(models.Manager):
+class DeploymentManager(models.GeoManager):
     """@brief Define a natural key for the Deployment class and return
     start_time and short_name keypair
     
@@ -170,7 +170,7 @@ class AUVDeployment(Deployment):
     # Maybe need to add unique AUV fields here later when
     # we have more deployments
     #==================================================#
-
+    objects = models.GeoManager()
     transect_shape = models.PolygonField()
     distance_covered = models.FloatField()
 

@@ -214,7 +214,7 @@
 
 var geojson_data = '{ "type": "FeatureCollection", "features": [ {"geometry": { "type": "GeometryCollection", "geometries": [\
 {% for image in image_list %}{% if not forloop.last %}{{image.image_position.geojson|safe}},{% else %}{{image.image_position.geojson|safe}}{% endif %}{% endfor %}] }, "type": "Feature", "properties": {}} ] }';
-           
+
            var geojson_format = new OpenLayers.Format.GeoJSON();
            var feature_collection = geojson_format.read(geojson_data);
            var bounds;
