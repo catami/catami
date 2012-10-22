@@ -13,7 +13,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
-@login_required
+#@login_required
 def index(request):
     """@brief returns root catami html
 
@@ -48,11 +48,11 @@ def contact(request):
 
 
 def logout_view(request):
-    """@brief returns user to root html on logout
+    """@brief returns user to html calling the logout action
     
     """
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
     

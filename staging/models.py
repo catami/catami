@@ -6,25 +6,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class ProgressManager(models.Manager):
-    """Manager for progress objects.
+class MetadataFile(models.Model):
+    """Handles info about metadata files that have been uploaded.
 
-    Enables simpler creation of Progress objects.
+    These files are temporary in that once importing is complete they
+    are no longer needed.
     """
+    owner = models.ForeignKey('auth.user')
+    metadata_file = models.FileField(upload_to='staging/metadata')
+    is_public = models.BooleanField()
+    description = models.CharField(max_length=100)
 
-    def get_new(self):
-        """Create new Progress object and return the key.
-        """
-        prog = self.create(progress=0)
+    def __unicode__(self):
+        return "<MetadataFile {0}>".format(self.metadata_file)
 
-        prog.save()
-
-        logger.debug("ProgressManager.get_new created new progress pk='{0}'.".format(prog.pk))
-
-        return prog.pk
-
-class Progress(models.Model):
-    """A model to track progress of an action."""
-    objects = ProgressManager()
-
-    progress = models.IntegerField()

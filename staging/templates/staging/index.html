@@ -8,6 +8,8 @@
 <ul>
     <li><a href="{% url Force.views.add_campaign %}">AUV Campaign Create</a></li>
     <li><a href="{% url staging.views.auvimport %}">AUV Deployment Import</a></li>
-    <li><a href="{% url staging.views.fileupload %}">Generic File Upload</a></li>
+    <li><a href="{% url staging.views.fileupload %}">JSON (pre-processed) File Upload</a></li>
+    <li><a href="{% url staging.views.metadatastage %}">Metadata File Staging</a></li>
+    <li><a href="{% url staging.views.metadatalist %}">Metadata Files</a></li>
 </ul>
 {% endblock %}

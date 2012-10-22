@@ -1,18 +1,65 @@
-{% extends "base.html" %}
+{% extends "base-front.html" %}
 
 {% block leadtitle %}Catami Apps{% endblock %}
 
 	
 {% block content %}
 
-<table class="table">
+<div class="background-image" data-stellar-background-ratio="0.2">
 
-  <tr><td><a href="/data/addCampaign/" class="btn btn-large"> Add Campaign</a></td><td><p class="lead">Make a new campaign. Campaigns are the top level organisation of data.  Once you have a campaign you can add deployments that contain data.</p>
-  </td></tr>
-  <tr><td><a href="/staging/" class="btn btn-large"> Import Deployment</a></td><td><p class="lead">Import a deployment from the data fabric</p></td></tr>
-  <tr><td><a href="/data/" class="btn btn-large"> View Data</a></td><td><p class="lead">Browse campaigns and deployments</p></td></tr>
-  <tr><td><a href="/search/" class="btn btn-large "> SearchData</a></td><td><p class="lead">Search for campaigns and deployment</p></td></tr>
-</table>
+    <div id="main-wrapper">
+	    <br>  	 
+	    
+		<div class="row-fluid">
+		  <div class="span3 offset1">
+			  <div class="row">
+			  <img src="{{ STATIC_URL }}assets/img/catamiheader.png" alt="catami_icon_small" width="597" height="140" />
+			  </div>
+			  <br>
+			  <div class="row" style="background-color:#fff; border-radius:5px;padding:10px;">
+			  	<p class="lead"><strong>What is this?</strong>  This is the home of Catami, Collaborative and Annotation Tools for Analysis of Marine Imagery and Video.</p>
+			  	<p class="lead"><strong>What are we doing?</strong> We're changing data management, analysis and collaboration for marine researchers and community collaborators around Australia.</p>
+			  	<p class="lead"><strong>We're quite Agile</strong> We deploy new features every two weeks, so expect lots of changes.</p>
+			  </div>
+			  <br>
+			  <div class="row" style="background-color:#fff; border-radius:5px;padding:10px;">
+			  	<p class="lead">Catami is made possible by Nectar, ANDS and iVEC.</p><p>Background image provided by AIMS.</p>
+			  </div>
 
+		  </div>
+		  
+		  <div class="span2" style="background-color:#fff; border-radius:5px;padding:10px;">
+			  	<h2>News and new things</h2>
+			  	<span class="label label-info">New!</span><p> A new frontpage. As we add new features we'll be mentioning them here</p>
+			  	<span class="label label-info">New!</span><p> Spatial searching.  This release of Catami includes map based views and search. Give it a try.</p>
+		  	<h2>Get to work<p><small>with Catami interfaces</small></p></h2>
+		  	
+		  	<a href="/data" class="btn btn-block btn-primary"><h3>Catami Data</h3></a>
+		  	<a href="/staging" class="btn btn-block btn-primary"><h3>Import Data</h3></a>
+		  	<a href="/search" class="btn btn-block btn-primary"><h3>Search for Data</h3></a>
+		  	
+		  </div>
+		  
+		  <div class="span2" style="background-color:#fff; border-radius:5px;padding:10px;">
+		  	<h2>Keep in touch</h2>
+		  	<p class="well"> Catami is a <a href="https://catami.github.com">Open Source</a>,  <a href="https://catami.atlassian.net">Open Process</a> and open to <a href="mailto:catami@ivec.org">suggestions</a>. Follow what we're up to and get in touch.</p>
+		  	<p>Read our <a href="http://catami-australia.blogspot.com.au">blog</a> or follow us on <a href="http://plus.google.com/104765819602128308640">Google+</a>
+		  	<div class="g-plus" data-href="https://plus.google.com/104765819602128308640" rel="author"></div>
+
+		  </div>
+		
+		</div>
+	  
+   </div>
+	    
+</div>
+	
+	<script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
 {% endblock %}
 

@@ -1,0 +1,30 @@
+{% extends "staging/base.html" %}
+{% block title %}Catami Project - Spreadsheet Parser{% endblock %}
+
+{% block content %}
+<div class="page-header">
+<h1>Spreadsheet: {{ book_name }}</h1>
+</div>
+
+{% for sheet_name, headings in book.items %}
+    <div class="well">
+    <h2> {{ sheet_name }} </h2>
+    {% for heading in headings %}
+    {{ heading }}{% if forloop.last %}.{% else %}, {% endif %}
+
+    {% if forloop.last %}
+    {% comment %}
+        This is where we add the "import buttons"
+    {% endcomment %}
+    <br>
+    <a class="btn btn-primary" href="{% url staging.views.metadatasheet book_id sheet_name|slugify %}">Preview</a>
+    {% endif %}
+    {% empty %}
+    No headings found on sheet.
+    {% endfor %}
+    </div>
+{% empty %}
+    No valid work sheets.
+{% endfor %}
+
+{% endblock %}

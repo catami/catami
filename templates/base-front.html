@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Catami</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Gray markg@ivec.org">
+	<meta name="viewport" content="width=device-width,maximum-scale=1.0" />
+	<meta name="apple-mobile-web-app-capable" content="yes" /> 
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
+	
+    <!-- Le styles -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap.css" type="text/css" >
+
+    <style>
+		body {padding-top: 00px; /* 60px to make the container go all the way to the bottom of the topbar */}
+		
+		.no-sidebar {
+		  margin-left:0 !important;
+		}
+
+		.background-image {
+			background-image:url("{{ STATIC_URL }}assets/img/coral_background_02.jpg" );
+			border-radius: 0px;
+			background-attachment:fixed;
+			height: auto;
+			left: 0;
+			position: relative;
+			width: 2488px;
+			height:1280px;
+			z-index: 20;
+		}
+		
+		.footer-holder {
+			background-color: rgba(0, 0, 0, 0.2);
+			font-size: 14px;
+			line-height: 20px;
+			text-shadow: 0 0 1px black;
+			width: 100%;
+			position: fixed;
+			z-index: 40;
+		}
+    </style>
+    
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="{{ STATIC_URL }}assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ STATIC_URL }}assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ STATIC_URL }}assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ STATIC_URL }}assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="{{ STATIC_URL }}assets/ico/apple-touch-icon-57-precomposed.png">
+
+</head>
+
+<body>
+
+
+	{% block content_header %}{% endblock %}
+	{% block content %}{% endblock %}
+	
+	
+	
+	<!-- Le javascript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script type="text/javascript" src="{{ STATIC_URL }}assets/js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}assets/js/bootstrap.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}assets/js/jquery.stellar.js"></script>
+	
+	<!-- popover js -->
+	<script type="text/javascript">
+	    (function() {
+	        $("[rel=popover]").popover();
+	    })();
+	</script>
+	<script type="text/javascript"> 
+		$.stellar({
+			verticalScrolling: false,
+		});
+	</script> 
+
+</body>
+</html>

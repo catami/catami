@@ -21,10 +21,10 @@ urlpatterns = patterns('',
     url(r'^faq', 'catamiPortal.views.faq'),
     url(r'^contact', 'catamiPortal.views.contact'),
 
-    url(r'staging/', include('staging.urls')),
+    url(r'^staging/', include('staging.urls')),
 
     #to hide the database name
-    url(r'data/', include('Force.urls')),
+    url(r'^data/', include('Force.urls')),
     
     #haystack
     (r'^search/', include('haystack.urls')),
