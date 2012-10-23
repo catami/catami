@@ -3,9 +3,13 @@
 This includes AUVImportForm and FileImportForm.
 """
 from django import forms
+from django.contrib.gis.forms import fields as gisfields
+from django.db import models
 from Force.models import Campaign, Deployment
 
 from .models import MetadataFile
+
+from .widgets import PointField, MultiSourceField
 
 import logging
 
@@ -83,4 +87,49 @@ class MetadataStagingForm(forms.ModelForm):
     class Meta:
         model = MetadataFile
         exclude = ('owner',)
+
+class ModelImportForm(forms.Form):
+    """Form to handle general importing of data to deployments.
+
+    This takes data from existing structures and helps create
+    a mapping.
+
+    Internally it mimics a lot of code from django/forms/models.py
+    with regards to model introspection to get a list of fields.
+    """
+    def __init__(self, *args, **kwargs):
+        columns = kwargs.pop('columns')
+        model = kwargs.pop('model')
+
+        logger.debug("ModelImportForm init'ing parent")
+
+        # init the form
+        super(ModelImportForm, self).__init__(*args, **kwargs)
+
+        # get the model fields (the dbmodel)
+        # and add the form fields to match
+        if issubclass(model, models.Model):
+            # get the fields
+            logger.debug("ModelImportForm getting all fields of {0}".format(model))
+            all_model_fields = model._meta.fields
+            # this is a list of fields
+            # each field has:
+            # - name
+            # - model (class of actual model it is declared in)
+            # - formfield() constructs a matching form.field
+
+            for model_field in all_model_fields:
+                # create the default form field for that type
+                form_field = model_field.formfield()
+                logger.debug('ModelImportForm model field {0} has form field {1}'.format(model_field, form_field))
+                if form_field:
+                    if type(form_field) == forms.DateTimeField:
+                        form_field = forms.SplitDateTimeField()
+                    if type(form_field) == gisfields.GeometryField:
+                        form_field = PointField()
+                    self.fields[model_field.name] = MultiSourceField(base_field=form_field, columns=columns)
+
+        else:
+            # wrong type of class
+            raise TypeError("Expected subclass of django.db.models.Model")
 

@@ -18,5 +18,7 @@ urlpatterns = patterns('staging.views',
     url(r'^metadata/book/(?P<file_id>\d+)$', 'metadatabook', name='staging_metadata_book'), # list sheets and headings
     url(r'^metadata/delete/(?P<file_id>\d+)$', 'metadatadelete', name='staging_metadata_delete'), # delete a file
     url(r'^metadata/sheet/(?P<file_id>\d+)/(?P<page_name>[\w-]+)$', 'metadatasheet', name='staging_metadata_sheet'), # show sheet data/info
+    url(r'^metadata/import/(?P<file_id>\d+)/(?P<page_name>[\w-]+)$', 'metadataimport', name='staging_metadata_import'), # show import data/info
+    url(r'^metadata/imported$', 'metadataimported', name='staging_metadata_imported'), # thanks/confirmation of import
 )
 

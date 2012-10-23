@@ -8,10 +8,11 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
-from .forms import AUVImportForm, FileImportForm, MetadataStagingForm
+from .forms import AUVImportForm, FileImportForm, MetadataStagingForm, ModelImportForm
 from .extras import UploadProgressCachedHandler
 from . import tasks
 from .models import MetadataFile
+from Force.models import BRUVDeployment
 
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
@@ -341,12 +342,67 @@ def metadatasheet(request, file_id, page_name):
     context = {}
     rcon = RequestContext(request)
 
+    context['book_id'] = file_entry.pk
     context['book_name'] = file_entry.description
     context['sheet_name'] = sheet_name
     context['headings'] = headings
     context['data_rows'] = data_rows
 
     return render_to_response('staging/metadatasheet.html', context, rcon)
+
+@login_required
+def metadataimport(request, file_id, page_name):
+    """
+    Setup the sheet for importing.
+    """
+    # need to get the workbook first, then the sheet
+    file_entry = get_object_or_404(MetadataFile, pk=file_id)
+    if file_entry.is_public or file_entry.owner.username == request.user.username:
+        # get the sheet
+        filename = file_entry.metadata_file.name
+        sheet_name = tasks.metadata_sheet_name_deslug(filename, page_name)
+        structure = tasks.metadata_transform(filename, sheet_name)
+    else:
+        # permission denied
+        return HttpResponseForbidden("You do not have permission to use this metadata file.")
+
+    # process the structure to get what we need
+    # it is a set of dictionaries
+    headings = structure[0].keys()
+
+    context = {}
+    rcon = RequestContext(request)
+
+    context['book_name'] = file_entry.description
+    context['sheet_name'] = sheet_name
+    context['headings'] = headings
+
+    choices = zip(headings, headings)
+
+    if request.method == 'POST':
+        form = ModelImportForm(request.POST, model=BRUVDeployment, columns=choices)
+
+        if form.is_valid():
+            logger.debug('metadataimport: form is validated.')
+
+            # get the data in field list form ready for import
+            # also get the field mappings form the form
+            # and the model class
+            field_mappings = form.cleaned_data
+            fields_list = structure[1:]
+
+            # then call
+            tasks.metadata_import(BRUVDeployment, fields_list, field_mappings)
+
+            return redirect('staging.views.metadataimported')
+
+    else:
+        form = ModelImportForm(columns=choices, model=BRUVDeployment)
+        #form.set_choices(choices)
+
+    context['form'] = form
+
+    return render_to_response('staging/metadataimport.html', context, rcon)
 
 @login_required
 def metadatadelete(request, file_id):
@@ -364,4 +420,12 @@ def metadatadelete(request, file_id):
         return HttpResponseForbidden("You do not have permission to delete this metadata file.")
 
     return redirect('staging.views.metadatalist')
+
+@login_required
+def metadataimported(request):
+    """Displays the thankyou message on metadataimport success."""
+    context = {}
+    rcon = RequestContext(request)
+
+    return render_to_response('staging/metadataimported.html', context, rcon)
 

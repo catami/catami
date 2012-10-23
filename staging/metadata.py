@@ -5,8 +5,10 @@ __author__ = "Lachlan Toohey"
 
 from openpyxl import load_workbook # for xlsx
 from openpyxl.cell import column_index_from_string
-from xlrd import open_workbook
+from xlrd import open_workbook, xldate_as_tuple
 import os.path
+
+import datetime
 
 import logging
 
@@ -106,7 +108,35 @@ def xls_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields
 
         # get the values for each field
         for field, column in field_column_map.iteritems():
-            fields[field] = worksheet.cell_value(row, column)
+            cell = worksheet.cell(row, column)
+
+            ctype = cell.ctype
+
+            #if ftype == 1: # ie estimated DATE
+            if ctype == 3: # cell type marked as date
+                try:
+                    # if ambiguous throws an exception
+                    output = xldate_as_tuple(cell.value, workbook.datemode)
+                except:
+                    # exception, just store raw value
+                    fields[field] = cell.value
+                else:
+                    # got a tuple, process it!
+                    if output[0] == 0:
+                        # this is a time
+                        fields[field] = datetime.time(*output[3:])
+                    else:
+                        # datetime!
+                        # check that the time is not exactly midnight
+                        # this is a heuristic to hopefully reduce incorrect
+                        # recognitions of dates
+                        if output[0] < 1950 and output[3] == 0 and output[4] == 0 and output[5] == 0:
+                            # time is midnight... year is too early, likely mis-recognised
+                            fields[field] = cell.value
+                        else:
+                            fields[field] = datetime.datetime(*output)
+            else:
+                fields[field] = cell.value
 
         structure.append(fields)
 

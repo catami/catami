@@ -9,13 +9,15 @@ import datetime
 import tempfile
 import os.path
 
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.core import serializers
 from django.template.defaultfilters import slugify
 
 from .extras import update_progress
 from .auvimport import NetCDFParser, LimitTracker, TrackParser
 import metadata
+
+import Force.models
 
 import logging
 
@@ -338,4 +340,88 @@ def metadata_transform(metadata_file, *args, **kwargs):
     else:
         logger.warning("metadata_outline: cannot handle extension '{0}'".format(data_type))
         return None
+
+def metadata_import(model_class, fields_list, field_mappings):
+    """Import metadata into the database.
+
+    - model_class is the django model.Model being imported
+    - field_mappings are the objects that maps rows of data to fields
+    - fields_list is the raw data that is being imported
+    """
+
+    # we are going to make some checks/assumptions here
+    # first is that we *always* inherit from Deployment.
+    # second (that possibly will get removed) is that the levels
+    # are only one deep (ie AUV -> Deployment, not A -> B -> Deployment)
+
+    base_model = Force.models.Deployment
+
+    if len(model_class._meta.parents) != 1:
+        raise Exception("Model to import to has multiple parents!")
+
+    if model_class._meta.parents.keys()[0] != base_model:
+        raise Exception("Model must directly inherit from Deployment")
+
+    subclass_fields = model_class._meta.local_fields
+    subclass_field_names = [f.name for f in subclass_fields]
+    subclass_name = "{0}.{1}".format(model_class._meta.app_label,
+                                     model_class._meta.object_name)
+
+    base_fields = base_model._meta.local_fields
+    base_field_names = [f.name for f in base_fields]
+    base_name = "{0}.{1}".format(base_model._meta.app_label,
+                                 base_model._meta.object_name)
+
+    # only commit changes if no errors
+    # there are going to be metadata errors...
+    with transaction.commit_manually():
+        try:
+            # this is where all the magic happens
+            for row in fields_list:
+                # map to db fields
+                outfields = {}
+                try:
+                    for field_name, extractor in field_mappings.iteritems():
+                        outfields[field_name] = extractor.get_data(row)
+                except Exception as exc:# ValidationError as exc:
+                    # do nothing, just drop row and continue to
+                    # next
+                    logger.warning("Validation failed on row.")
+                    logger.warning("Error: " + str(exc))
+                    continue
+
+                # this gets fields and maps to the correct (sub)model
+                # still probably doesn't work well with natural key/pk
+                # and relationship fields
+                # mainly thinking of campaigns... but others may arise
+
+                # split to parent
+                base_fields = {field: value for field, value in outfields.iteritems() if field in base_field_names}
+
+
+                # and child
+                subclass_fields = {field: value for field, value in outfields.iteritems() if field in subclass_field_names}
+
+                # create data structures
+                # HACK: if creating like this create the model directly
+                #base_instance = base_model(**base_fields)
+                #base_instance.save()
+                # a little to hardcoded for my liking...
+                #subclass_fields['deployment_ptr'] = base_instance
+                #subclass_instance = model_class(**subclass_fields)
+                subclass_instance = model_class(**base_fields)
+
+                # save to the database
+                try:
+                    subclass_instance.save()
+                except IntegrityError as exc:
+                    logger.warning("IntegrityError: " + exc)
+                    continue
+        except:
+            logger.debug("Rolling back")
+            transaction.rollback()
+            raise
+        else:
+            transaction.commit()
+            logger.debug("Commiting")
 
