@@ -11,6 +11,7 @@ from django.core.cache import cache
 from .forms import AUVImportForm, FileImportForm, MetadataStagingForm, ModelImportForm
 from .extras import UploadProgressCachedHandler
 from . import tasks
+from . import metadata
 from .models import MetadataFile
 from Force.models import BRUVDeployment
 
@@ -337,6 +338,8 @@ def metadatasheet(request, file_id, page_name):
             new_row.append(row[key])
         data_rows.append(new_row)
 
+    model_mapping = metadata.metadata_models()
+
     # now setup the data to be displayed in a table
     # so need the headings, and then lists of data in order
     context = {}
@@ -347,11 +350,12 @@ def metadatasheet(request, file_id, page_name):
     context['sheet_name'] = sheet_name
     context['headings'] = headings
     context['data_rows'] = data_rows
+    context['models'] =  model_mapping.keys()
 
     return render_to_response('staging/metadatasheet.html', context, rcon)
 
 @login_required
-def metadataimport(request, file_id, page_name):
+def metadataimport(request, file_id, page_name, model_name):
     """
     Setup the sheet for importing.
     """
@@ -365,6 +369,10 @@ def metadataimport(request, file_id, page_name):
     else:
         # permission denied
         return HttpResponseForbidden("You do not have permission to use this metadata file.")
+
+    # map the name to the deployment model
+    model_mapping = metadata.metadata_models()
+    model = model_mapping[model_name] # throws if it doesn't exist
 
     # process the structure to get what we need
     # it is a set of dictionaries
@@ -380,7 +388,7 @@ def metadataimport(request, file_id, page_name):
     choices = zip(headings, headings)
 
     if request.method == 'POST':
-        form = ModelImportForm(request.POST, model=BRUVDeployment, columns=choices)
+        form = ModelImportForm(request.POST, model=model, columns=choices)
 
         if form.is_valid():
             logger.debug('metadataimport: form is validated.')
@@ -392,13 +400,12 @@ def metadataimport(request, file_id, page_name):
             fields_list = structure[1:]
 
             # then call
-            tasks.metadata_import(BRUVDeployment, fields_list, field_mappings)
+            tasks.metadata_import(model, fields_list, field_mappings)
 
             return redirect('staging.views.metadataimported')
 
     else:
-        form = ModelImportForm(columns=choices, model=BRUVDeployment)
-        #form.set_choices(choices)
+        form = ModelImportForm(columns=choices, model=model)
 
     context['form'] = form
 

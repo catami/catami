@@ -8,11 +8,20 @@ from openpyxl.cell import column_index_from_string
 from xlrd import open_workbook, xldate_as_tuple
 import os.path
 
+from Force.models import BRUVDeployment, DOVDeployment
+
 import datetime
 
 import logging
 
 logger = logging.getLogger(__name__)
+
+def metadata_models():
+    mapping = dict()
+    mapping['bruv'] = BRUVDeployment
+    mapping['dov'] = DOVDeployment
+
+    return mapping
 
 def xls_outline(metadata_file, heading_row=0):
     """Return a dictionary describing the file.

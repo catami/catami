@@ -12,7 +12,9 @@ a place to work with the data.
 </p>
 
 <p>
-<a class="btn btn-primary" href="{% url staging.views.metadataimport book_id sheet_name|slugify %}">Import</a>
+{% for model_name in models %}
+    <a class="btn" href="{% url staging.views.metadataimport book_id sheet_name|slugify model_name %}">Import as {{ model_name }}</a>
+{% endfor %}
 </p>
 
 <table class="table table-condensed table-striped table-bordered">
