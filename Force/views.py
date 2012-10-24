@@ -111,6 +111,44 @@ def auvdeployment_detail(request, auvdeployment_id):
         context_instance=RequestContext(request))
 
 
+def bruvdeployments(request):
+    """@brief BRUV Deployment list html for entire database
+
+    """
+    latest_bruvdeployment_list = BRUVDeployment.objects.all()
+    return render_to_response(
+        'Force/bruvDeploymentIndex.html',
+        {'latest_bruvdeployment_list': latest_bruvdeployment_list},
+        context_instance=RequestContext(request))
+
+
+def bruvdeployments_map(request):
+    """@brief BRUV Deployment map html for entire database
+
+    """
+    latest_bruvdeployment_list = BRUVDeployment.objects.all()
+    return render_to_response(
+        'Force/bruvDeploymentMap.html',
+        {'latest_bruvdeployment_list': latest_bruvdeployment_list},
+        context_instance=RequestContext(request))
+
+
+def bruvdeployment_detail(request, bruvdeployment_id):
+    """@brief BRUV Deployment html for a specifed AUV deployment
+
+    """
+
+    bruvdeployment_object = BRUVDeployment.objects.get(id=bruvdeployment_id)
+    image_list = StereoImage.objects.filter(deployment=bruvdeployment_id)
+
+    return render_to_response(
+        'Force/bruvdeploymentInstance.html',
+        {'bruvdeployment_object': bruvdeployment_object,
+        'deployment_as_geojson': bruvdeployment_object.start_position.geojson,
+        'image_list': image_list},
+        context_instance=RequestContext(request))
+
+
 def campaigns(request):
     """@brief Campaign list html for entire database
 
@@ -122,9 +160,13 @@ def campaigns(request):
         auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign)
         bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign)
         dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign)
+        if(len(auv_deployment_list) > 0):
+            sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign).extent())
+            campaign_rects.append(sm.envelope.geojson)
+        if(len(bruv_deployment_list) > 0):
+            sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign).extent())
+            campaign_rects.append(sm.envelope.geojson)
 
-        sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign).extent())
-        campaign_rects.append(sm.envelope.geojson)
 
     return render_to_response(
         'Force/campaignIndex.html',
@@ -138,7 +180,9 @@ def campaign_detail(request, campaign_id):
 
     """
     campaign_object = Campaign.objects.get(id=campaign_id)
-    djf = Django.Django(geodjango="extent", properties=[''])
+    campaign_rects=list()
+
+    #djf = Django.Django(geodjango="extent", properties=[''])
 
     auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign_object)
     bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign_object)
@@ -147,7 +191,14 @@ def campaign_detail(request, campaign_id):
     #geoj = GeoJSON.GeoJSON()
     #sm = AUVDeployment.objects.filter(transect_shape__bbcontains=pnt_wkt)
     #sm = AUVDeployment.objects.all().extent
-    sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign_object).extent())
+    #sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign_object).extent())
+
+    if(len(auv_deployment_list) > 0):
+        sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign_object).extent())
+        campaign_rects.append(sm.envelope.geojson)
+    if(len(bruv_deployment_list) > 0):
+        sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign_object).extent())
+        campaign_rects.append(sm.envelope.geojson)
 
     return render_to_response(
         'Force/campaignInstance.html',

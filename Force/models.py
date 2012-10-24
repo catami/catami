@@ -219,6 +219,8 @@ class Annotations(models.Model):
 
 class BRUVDeployment(Deployment):
     """@brief Model that holds the Baited RUV data """
+    objects = models.GeoManager()
+
 
 
 class DOVDeployment(Deployment):
