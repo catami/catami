@@ -92,7 +92,7 @@
             <td>{{bruv_deployment.min_depth}}m-{{bruv_deployment.max_depth}}m</td>
             <td>{{bruv_deployment.mission_aim}}</td>
             <td>{{bruv_deployment.start_position}}</td>
-            <td><a href="/data/bruv_deployments/{{bruv_deployment.id}}" class="btn btn-large btn-primary">Detail</a> 
+            <td><a href="/data/bruvdeployments/{{bruv_deployment.id}}" class="btn btn-large btn-primary">Detail</a> 
           <tr>
         {% endfor %}
         {% for dov_deployment in dov_deployment_list %}
@@ -104,7 +104,7 @@
             <td>{{dov_deployment.min_depth}}m-{{dov_deployment.max_depth}}m</td>
             <td>{{dov_deployment.mission_aim}}</td>
             <td>{{dov_deployment.start_position}}</td>
-            <td><a href="/data/dov_deployments/{{dov_deployment.id}}" class="btn btn-large btn-primary">Detail</a> 
+            <td><a href="/data/dovdeployments/{{dov_deployment.id}}" class="btn btn-large btn-primary">Detail</a> 
           <tr>
         {% endfor %}
     </tbody>
