@@ -120,14 +120,24 @@ class ModelImportForm(forms.Form):
 
             for model_field in all_model_fields:
                 # create the default form field for that type
-                form_field = model_field.formfield()
+                form_field = model_field.formfield(required=False)
                 logger.debug('ModelImportForm model field {0} has form field {1}'.format(model_field, form_field))
                 if form_field:
+                    # as long as there is a corresponding form field
+                    # (autofield - pk does not have one)
+
+                    # make a split date time, or use lat lon/not the geometry
+                    # field
                     if type(form_field) == forms.DateTimeField:
-                        form_field = forms.SplitDateTimeField()
-                    if type(form_field) == gisfields.GeometryField:
-                        form_field = PointField()
-                    self.fields[model_field.name] = MultiSourceField(base_field=form_field, columns=columns)
+                        form_field = forms.SplitDateTimeField(required=False)
+                    elif type(form_field) == gisfields.GeometryField:
+                        form_field = PointField(required=False)
+
+                    # a little bit improper but required=False prevents it
+                    # check all the sub fields. The compress phase does
+                    # actually check that it has a valid value
+                    # and ignores this required flag against convention.
+                    self.fields[model_field.name] = MultiSourceField(base_field=form_field, columns=columns, required=False)
 
         else:
             # wrong type of class
