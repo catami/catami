@@ -44,9 +44,17 @@ class PointField(MultiValueField):
     widget = PointWidget
 
     def __init__(self, *args, **kwargs):
+        lat_errors = {
+            'required': u'Latitude is required.',
+            'invalid': u'Enter a valid latitude.',
+        }
+        lon_errors = {
+            'required': u'Longitude is required.',
+            'invalid': u'Enter a valid longitude.',
+        }
         fields = (
-            FloatField(label='Latitude', min_value=-90.0, max_value=90.0),
-            FloatField(label='Longitude', min_value=-180.0, max_value=180.0)
+            FloatField(error_messages=lat_errors, initial='latitude', min_value=-90.0, max_value=90.0),
+            FloatField(error_messages=lon_errors, initial='longitude', min_value=-180.0, max_value=180.0)
         )
         super(PointField, self).__init__(fields, *args, **kwargs)
 
@@ -251,6 +259,12 @@ class MultiColumnWidget(MultiWidget):
 
 
 class MultiSourceField(MultiValueField):
+
+    default_error_messages = {
+        'invalid_source': u'Please select a data source.',
+        'invalid_value': u'Please enter a valid constant value.',
+        'invalid_columns': u'Please select a valid column.',
+    }
 
     def __init__(self, *args, **kwargs):
         # an instance of the field that is to be used
