@@ -115,11 +115,10 @@ class MultiSourceWidget(MultiWidget):
     It renders as radioboxes allowing selection of with method to
     use to import the data.
     """
-    def __init__(self, base_widget, attrs=None, choices=()):
+    def __init__(self, base_widget, attrs=None):
         self.radio = RadioSelect(attrs=attrs)
         self.cols = MultiColumnWidget(base_widget, attrs=attrs)
         self.base = base_widget
-        self.choices = choices
         widgets = (
             self.radio,
             self.cols,
@@ -135,7 +134,7 @@ class MultiSourceWidget(MultiWidget):
         if value:
             return value.decompress()
         else:
-            return [None, [None] * self.cols.length, None]
+            return ["column", [None] * self.cols.length, None]
 
     def render(self, name, value, attrs=None):
         if self.is_localized:
@@ -279,12 +278,11 @@ class MultiSourceField(MultiValueField):
         logger.debug("MultiSourceField base widget type '%s'", base_field.widget.__class__.__name__)
 
         # create an instance of the widget
-        widget = MultiSourceWidget(base_field.widget, choices=columns)
+        widget = MultiSourceWidget(base_field.widget)
 
-        # get the number of choices needed/column mappings
         fields = (
-            ChoiceField(widget=widget.radio, choices=selections),
-            MultiColumnField(widget=widget.cols, base_field=base_field, columns=columns),
+            ChoiceField(initial="column", widget=widget.radio, choices=selections),
+            MultiColumnField(widget=widget.cols, base_field=base_field, columns=columns, required=False),
             base_field
         )
         super(MultiSourceField, self).__init__(fields, widget=widget, *args, **kwargs)
@@ -302,8 +300,6 @@ class MultiSourceField(MultiValueField):
             if source == 'fixed' and data_list[2] in validators.EMPTY_VALUES:
                 raise ValidationError(self.error_messages['invalid_value'])
 
-            # don't really have a good way to combine them...
-            # semi-colon separated?
             return ExtractData(self.fields[2], *data_list)
 
         return None
