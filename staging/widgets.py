@@ -137,6 +137,11 @@ class MultiSourceWidget(MultiWidget):
             return ["column", [None] * self.cols.length, None]
 
     def render(self, name, value, attrs=None):
+        """This renders the MultiSourceWidget and its subwidgets.
+
+        It includes a large number of custom attributes built in and handles
+        enabling/disabling via javascript of the not in use option.
+        """
         if self.is_localized:
             for widget in self.widgets:
                 widget.is_localized = self.is_localized
@@ -146,8 +151,35 @@ class MultiSourceWidget(MultiWidget):
 
         # we want to render a table, labels down the side
         output = []
-        final_attrs = self.build_attrs(attrs)
-        id_ = final_attrs.get('id', None)
+        base_attrs = self.build_attrs(attrs)
+        id_ = base_attrs.get('id', None)
+
+        if id_:
+            # make the handler script for the top here...
+            script = """
+<script>
+function swapSource(column_radio, column_id_base, fixed_id_base)
+{
+    if ($("#"+column_radio).attr("checked"))
+    {
+        // checked enable column, disable fixed
+        $("[id^=" + column_id_base +"]").removeClass("uneditable-input");
+        $("[id^=" + column_id_base +"]").attr("disabled", false);
+        $("[id^=" + fixed_id_base + "]").addClass("uneditable-input");
+        $("[id^=" + fixed_id_base + "]").attr("disabled", true);
+    }
+    else
+    {
+        // unchecked disable column, enable fixed
+        $("[id^=" + column_id_base +"]").addClass("uneditable-input");
+        $("[id^=" + column_id_base +"]").attr("disabled", true);
+        $("[id^=" + fixed_id_base + "]").removeClass("uneditable-input");
+        $("[id^=" + fixed_id_base + "]").attr("disabled", false);
+    }
+}
+</script>"""
+            output.append(script)
+
 
         # make the heading...
         output.append(u'<table><thead><tr>')
@@ -155,10 +187,18 @@ class MultiSourceWidget(MultiWidget):
         output.append(u'<th>Data Source</th>')
 
         if id_:
-            final_attrs = dict(final_attrs, id="{0}_{1}".format(id_, 0))
+            column_id_base = "{0}_{1}".format(id_, 1)
+            fixed_id_base = "{0}_{1}".format(id_, 2)
+            radio_id_first = "{0}_{1}_{2}".format(id_, 0, 0)
+            onchange="swapSource('{0}', '{1}', '{2}')".format(radio_id_first, column_id_base, fixed_id_base)
+            radio_attrs = dict(base_attrs, id="{0}_{1}".format(id_, 0), onchange=onchange)
+        else:
+            radio_attrs = base_attrs
 
-        for ri in self.widgets[0].subwidgets("{0}_{1}".format(name, 0) , value[0], final_attrs):
+        for ri in self.widgets[0].subwidgets("{0}_{1}".format(name, 0) , value[0], radio_attrs):
             output.append(u'<th>{0}</th>'.format(ri))
+
+        final_attrs = base_attrs
 
         output.append(u'</tr></thead>')
 
@@ -175,11 +215,11 @@ class MultiSourceWidget(MultiWidget):
             logger.debug('{0} {1}'.format(col_widget, base_widget))
 
             if id_:
-                final_attrs = dict(final_attrs, id="{0}_{1}_{2}".format(id_, 1, 0))
+                final_attrs = dict(final_attrs, id="{0}_{1}".format(column_id_base, 0))
             subname = "{0}_{1}_{2}".format(name, 1, 0)
             col_widget_output = col_widget.render(subname, value[1][0], final_attrs)
             if id_:
-                final_attrs = dict(final_attrs, id="{0}_{1}".format(id_, 2))
+                final_attrs = dict(final_attrs, id="{0}_{1}".format(fixed_id_base, 2))
 
             subname = "{0}_{1}".format(name, 2)
             base_widget_output = base_widget.render(subname, value[2], final_attrs)
@@ -197,12 +237,12 @@ class MultiSourceWidget(MultiWidget):
                 col_widget, base_widget = widgets
 
                 if id_:
-                    final_attrs = dict(final_attrs, id="{0}_{1}_{2}".format(id_, 1, i))
+                    final_attrs = dict(final_attrs, id="{0}_{1}".format(column_id_base, i))
                 subname = "{0}_{1}_{2}".format(name, 1, i)
                 col_widget_output = col_widget.render(subname, value[1][i], final_attrs)
 
                 if id_:
-                    final_attrs = dict(final_attrs, id="{0}_{1}_{2}".format(id_, 2, i))
+                    final_attrs = dict(final_attrs, id="{0}_{1}".format(fixed_id_base, i))
                 subname = "{0}_{1}_{2}".format(name, 2, i)
                 base_widget_output = base_widget.render(subname, base_sub_values[i], final_attrs)
 
