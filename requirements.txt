@@ -2,10 +2,9 @@ django
 django-jenkins
 vectorformats
 psycopg2
-haystack
 simplejson
 PIL
 openpyxl
 xlrd
-#numpy
-#scipy
+pysolr
+-e git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystackvim re	
