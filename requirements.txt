@@ -1,0 +1,11 @@
+django
+django-jenkins
+vectorformats
+psycopg2
+haystack
+simplejson
+PIL
+openpyxl
+xlrd
+#numpy
+#scipy
