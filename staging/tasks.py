@@ -34,6 +34,19 @@ def get_known_file(key, url):
     the file on releasing of the handle.
     """
     # download the file async to get the file and give feedback
+
+    # if it is a list, go through each element until one works
+    # and return that one
+    if isinstance(url, (list, tuple)):
+        for u in url:
+            try:
+                return get_known_file(key, u)
+            except HTTPError:
+                continue
+        else:
+            raise Exception("File could not be downloaded.")
+
+        # we likely have an iterable...
     resp = urlopen(url)
 
     size = int(resp.headers["content-length"])
@@ -102,7 +115,10 @@ def auvfetch(base_url, campaign_date, campaign_name, mission_name):
     mission_base = base_url + "/" + campaign_name + "/" + mission_name
 
     # the track file that contains image positions and names
-    trackfile_name = "{0}/track_files/{1}_latlong.csv".format(mission_base, mission_text)
+    trackfile_new_name = "{0}/track_files/{1}_latlong.csv".format(mission_base, mission_text)
+    trackfile_old_name = "{0}/track_files/{2}_{1}_latlong.csv".format(mission_base, mission_text, mission_datetime)
+
+    trackfile_name = [trackfile_new_name, trackfile_old_name]
 
     # the netcdf that give water condition measurements
     netcdf_base = mission_base + '/hydro_netcdf/'
