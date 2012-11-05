@@ -14,6 +14,10 @@ from scipy.io import netcdf
 # for trackfiles from the data fabric
 import csv
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 def thumbnailer(filename):
     """Returns a string containing base64 encoded JPEG thumbnails.
 
