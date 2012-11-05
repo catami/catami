@@ -89,6 +89,21 @@ class Deployment(models.Model):
     max_depth = models.FloatField()
     campaign = models.ForeignKey(Campaign)
 
+    def __unicode__(self):
+        # want to attempt to autodetect which subtype this is...
+        subtypes = ['bruvdeployment', 'auvdeployment', 'dovdeployment']
+
+        for subtype in subtypes:
+            try:
+                subclass = getattr(self, subtype)
+            except self.DoesNotExist:
+                continue # go to the next
+            else:
+                return subclass.__unicode__()
+        else:
+            # if we don't match a subtype...
+            return "Deployment: {0} - {1}".format(self.start_time_stamp, self.short_name)
+
     def natural_key(self):
         """@return natural_key start_time_stamp short_name """
         return (self.start_time_stamp, self.short_name)
@@ -174,6 +189,9 @@ class AUVDeployment(Deployment):
     transect_shape = models.PolygonField()
     distance_covered = models.FloatField()
 
+    def __unicode__(self):
+        return "AUV: {0} - {1}".format(self.start_time_stamp, self.short_name)
+
 class StereoImage(Image):
     """@brief Extends the image class to include right images"""
     #==================================================#
@@ -196,7 +214,7 @@ class StereoImage(Image):
     right_thumbnail_reference = models.URLField()
     right_image_reference = models.URLField()
 
-class Annotations(models.Model):
+class Annotation(models.Model):
     """@brief Model that hold the annotation data refering to the images"""
 
     # ??? Do we want differnt annotation types?  ie an abstract class ???
@@ -221,10 +239,15 @@ class BRUVDeployment(Deployment):
     """@brief Model that holds the Baited RUV data """
     objects = models.GeoManager()
 
+    def __unicode__(self):
+        return "BRUV: {0} - {1}".format(self.start_time_stamp, self.short_name)
 
 
 class DOVDeployment(Deployment):
     """@brief Model that holds the Diver Operated data """
+    objects = models.GeoManager()
 
     diver_name = models.TextField()
     
+    def __unicode__(self):
+        return "DOV: {0} - {1}".format(self.start_time_stamp, self.short_name)
