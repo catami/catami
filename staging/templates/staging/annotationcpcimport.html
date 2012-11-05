@@ -1,0 +1,16 @@
+{% extends "staging/base.html" %}
+{% block title %}Catami Project - Metadata File List{% endblock %}
+
+{% block content %}
+<div class="page-header">
+<h1>Metadata Import</h1>
+</div>
+
+<div class="span5">
+    <form enctype="multipart/form-data" class="well" action="" method="post">{% csrf_token %}
+        {{ form }}
+        <input class="btn" type="submit" value="Import" />
+    </form>
+</div>
+
+{% endblock %}

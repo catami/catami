@@ -8,7 +8,7 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
-from .forms import AUVImportForm, FileImportForm, MetadataStagingForm, ModelImportForm
+from .forms import AUVImportForm, FileImportForm, MetadataStagingForm, ModelImportForm, AnnotationCPCImportForm
 from .extras import UploadProgressCachedHandler
 from . import tasks
 from . import metadata
@@ -436,3 +436,40 @@ def metadataimported(request):
 
     return render_to_response('staging/metadataimported.html', context, rcon)
 
+@login_required
+def annotationcpcimport(request):
+    context = {}
+    rcon = RequestContext(request)
+
+    if request.method == 'POST':
+        # attach the existing POST data
+        form = AnnotationCPCImportForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            # get the list of files
+            cpc_files = request.FILES.getlist('cpc_files')
+
+            # get the annotating user
+            user = form.cleaned_data['user']
+
+            # do the importing magic!
+            tasks.annotation_cpc_import(user, form.cleaned_data['deployment'], cpc_files)
+
+            # redirect on completion
+            return redirect('staging.views.annotationcpcimported')
+        else:
+            logger.debug("INVALID FORM")
+    else:
+        form = AnnotationCPCImportForm()
+
+    context['form'] = form
+
+    return render_to_response('staging/annotationcpcimport.html', context, rcon)
+
+@login_required
+def annotationcpcimported(request):
+    """Displays the thankyou message on metadataimport success."""
+    context = {}
+    rcon = RequestContext(request)
+
+    return render_to_response('staging/annotationcpcimported.html', context, rcon)

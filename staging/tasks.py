@@ -15,6 +15,7 @@ from django.template.defaultfilters import slugify
 
 from .extras import update_progress
 from .auvimport import NetCDFParser, LimitTracker, TrackParser
+from .annotations import CPCFileParser
 import metadata
 
 import Force.models
@@ -425,3 +426,45 @@ def metadata_import(model_class, fields_list, field_mappings):
             transaction.commit()
             logger.debug("Commiting")
 
+def annotation_cpc_import(user, deployment, cpc_file_handles):
+    """Import CPC annotations into the database.
+
+    This is currently targetted at AUV dives. Not sure if used
+    beyond that realm.
+    """
+
+    # deployment is used to reduce the search space/chance of collision with images
+    # still also need mapping of local ids to catami users
+
+    subset = Force.models.Image.objects.filter(deployment=deployment)
+
+    # we are assuming AUV naming conventions for the image...
+
+    # get the date time to look the image reference up from the
+    # name of the file... this will assume AUV imagery.
+    # Videos probably come from some other idea anyway...
+
+    for cpc_handle in cpc_file_handles:
+        annotations = CPCFileParser(cpc_handle)
+
+        image_name = annotations.image_file_name
+
+        # extract the timing info from the file name
+        image_datetime = datetime.datetime.strptime(image_name, "PR_%Y%m%d_%H%M%S_%f_LC16")
+
+        # now look it up... hopefully the timestamp will match something in the database
+
+        image = subset.get(date_time=image_datetime)
+
+        for a in annotations:
+            an = Force.models.Annotation()
+            an.image_reference = image
+            an.method = "50 Point CPC"
+            an.code = a['label']
+            an.point = "POINT({0} {1})".format(a['x'], a['y'])
+            an.comments = a['notes']
+            an.user_who_annotated = user
+
+            an.save()
+
+    # annotations are done!

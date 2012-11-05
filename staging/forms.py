@@ -5,11 +5,12 @@ This includes AUVImportForm and FileImportForm.
 from django import forms
 from django.contrib.gis.forms import fields as gisfields
 from django.db import models
-from Force.models import Campaign, Deployment
+from Force.models import Campaign, Deployment, User
 
 from .models import MetadataFile
 
 from .widgets import PointField, MultiSourceField
+from .fields import MultiFileField
 
 import logging
 
@@ -143,3 +144,8 @@ class ModelImportForm(forms.Form):
             # wrong type of class
             raise TypeError("Expected subclass of django.db.models.Model")
 
+class AnnotationCPCImportForm(forms.Form):
+
+    cpc_files = MultiFileField()
+    deployment = forms.ModelChoiceField(queryset=Deployment.objects.all())
+    user = forms.ModelChoiceField(queryset=User.objects.all())
