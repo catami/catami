@@ -160,10 +160,8 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         pose = dict()
         pose['deployment'] = deployment_nk # the foreign key, whatever the natural key is
         seconds, centiseconds = row['second'].split('.')
-        pose['date_time'] = datetime.datetime(int(row['year']), int(row['month']), 
-                                    int(row['day']), int(row['hour']), 
-                                    int(row['minute']), int(seconds),
-                                    int(centiseconds) * 10000) # convert to microseconds
+        image_datetime = datetime.datetime.strptime(os.path.splitext(limage)[0], "PR_%Y%m%d_%H%M%S_%f_LC16")
+        pose['date_time'] = image_datetime
 
         # GEO JSON is long-lat not lat-long
         pose['image_position'] = "POINT ({0} {1})".format(row['longitude'], row['latitude'])
