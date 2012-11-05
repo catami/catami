@@ -73,6 +73,16 @@ class AUVImportForm(forms.Form):
             raise forms.ValidationError('Mission Name already exists.')
 
 
+class AUVManualImportForm(AUVImportForm):
+    """Form to enable manual specification of Metadata Files."""
+    attrs = {'class': 'span12'}
+    track_widget = forms.TextInput(attrs=attrs)
+    netcdf_widget = forms.TextInput(attrs=attrs)
+
+    trackfile_url = forms.URLField(widget=track_widget)
+    netcdffile_url = forms.URLField(widget=netcdf_widget)
+
+
 class FileImportForm(forms.Form):
     """Form to assist with uploading a json file.
 
