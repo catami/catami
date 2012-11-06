@@ -7,7 +7,7 @@ Edits :: Name : Date : description
 
 """
 from haystack import indexes
-from Force.models import Campaign, AUVDeployment, BRUVDeployment
+from Force.models import Campaign, AUVDeployment, BRUVDeployment, Deployment
 
 class CampaignIndex(indexes.SearchIndex, indexes.Indexable):
     """@brief Campaign Index
@@ -22,17 +22,17 @@ class CampaignIndex(indexes.SearchIndex, indexes.Indexable):
         return self.get_model().objects.all()
 
 
-# class DeploymentIndex(indexes.SearchIndex, indexes.Indexable):
-#     """@brief Deployment Index
+class DeploymentIndex(indexes.SearchIndex, indexes.Indexable):
+    """@brief Deployment Index
 
-#     """
-#     text = indexes.CharField(document=True, use_template=True)
+    """
+    text = indexes.CharField(document=True, use_template=True)
 
-#     def get_model(self):
-#         return Deployment
+    def get_model(self):
+        return Deployment
  
-#     def index_queryset(self):
-#         return self.get_model().objects.all()
+    def index_queryset(self):
+        return self.get_model().objects.all()
 
 
 class AUVDeploymentIndex(indexes.SearchIndex, indexes.Indexable):
@@ -40,7 +40,7 @@ class AUVDeploymentIndex(indexes.SearchIndex, indexes.Indexable):
 
     """
     text = indexes.CharField(document=True, use_template=True)
-    #location = indexes.LocationField(model_attr='start_position')
+    location = indexes.LocationField(model_attr='start_position')
 
     def get_model(self):
         return AUVDeployment
@@ -54,7 +54,7 @@ class BRUVDeploymentIndex(indexes.SearchIndex, indexes.Indexable):
 
     """
     text = indexes.CharField(document=True, use_template=True)
-    #location = indexes.LocationField(model_attr='start_position')
+    location = indexes.LocationField(model_attr='start_position')
 
     def get_model(self):
         return BRUVDeployment

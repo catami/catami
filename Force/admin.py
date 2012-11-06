@@ -9,6 +9,7 @@ class AUVDeploymentAdmin(admin.ModelAdmin):
 
 #admin.site.register(AUVDeployment, AUVDeploymentAdmin)
 #admin.site.register(Campaign)
+admin.site.register(Deployment, admin.GeoModelAdmin)
 admin.site.register(AUVDeployment, admin.GeoModelAdmin)
 admin.site.register(BRUVDeployment, admin.GeoModelAdmin)
 admin.site.register(DOVDeployment, admin.GeoModelAdmin)
