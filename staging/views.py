@@ -8,7 +8,7 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
-from .forms import AUVImportForm, AUVManualImportForm, FileImportForm, MetadataStagingForm, ModelImportForm, AnnotationCPCImportForm
+from .forms import AUVImportForm, AUVManualImportForm, FileImportForm, MetadataStagingForm, ModelImportForm, AnnotationCPCImportForm, CampaignCreateForm
 from .extras import UploadProgressCachedHandler
 from . import tasks
 from . import metadata
@@ -29,6 +29,32 @@ def index(request):
     rcon = RequestContext(request)
 
     return render_to_response('staging/index.html', context, rcon)
+
+@login_required
+def campaigncreate(request):
+    context = {}
+
+    if request.method == 'POST':
+        form = CampaignCreateForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('staging.views.campaigncreated')
+    else:
+        form = CampaignCreateForm()
+
+    rcon = RequestContext(request)
+    context['form'] = form
+
+    return render_to_response('staging/campaigncreate.html', context, rcon)
+
+@login_required
+def campaigncreated(request):
+    """Displays the thankyou message on campaigncreate success."""
+    context = {}
+    rcon = RequestContext(request)
+
+    return render_to_response('staging/campaigncreated.html', context, rcon)
 
 @login_required
 def auvprogress(request):
