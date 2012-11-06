@@ -16,6 +16,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+class CampaignCreateForm(forms.ModelForm):
+    class Meta:
+        model = Campaign
+
+
 class AUVImportForm(forms.Form):
     """Form to handle importing AUV data from the data fabric."""
     # widget format adjusting

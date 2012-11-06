@@ -7,6 +7,8 @@ from django.conf.urls import patterns, url
 urlpatterns = patterns('staging.views',
     url(r'^$', 'index', name='staging_index'),
     url(r'^upload_progress/$', 'upload_progress'),
+    url(r'^campaign/create$', 'campaigncreate'),
+    url(r'^campaign/created$', 'campaigncreated'),
     url(r'^auv/import$', 'auvimport', name='staging_auv_import'),
     url(r'^auv/manualimport$', 'auvmanualimport', name='staging_auv_import_manual'),
     url(r'^auv/progress$', 'auvprogress'),
