@@ -5,11 +5,12 @@ This includes AUVImportForm and FileImportForm.
 from django import forms
 from django.contrib.gis.forms import fields as gisfields
 from django.db import models
-from Force.models import Campaign, Deployment
+from Force.models import Campaign, Deployment, User
 
 from .models import MetadataFile
 
 from .widgets import PointField, MultiSourceField
+from .fields import MultiFileField
 
 import logging
 
@@ -70,6 +71,16 @@ class AUVImportForm(forms.Form):
         else:
             logger.debug("AUVImportForm.clean_mission_name: name already exists.")
             raise forms.ValidationError('Mission Name already exists.')
+
+
+class AUVManualImportForm(AUVImportForm):
+    """Form to enable manual specification of Metadata Files."""
+    attrs = {'class': 'span12'}
+    track_widget = forms.TextInput(attrs=attrs)
+    netcdf_widget = forms.TextInput(attrs=attrs)
+
+    trackfile_url = forms.URLField(widget=track_widget)
+    netcdffile_url = forms.URLField(widget=netcdf_widget)
 
 
 class FileImportForm(forms.Form):
@@ -143,3 +154,8 @@ class ModelImportForm(forms.Form):
             # wrong type of class
             raise TypeError("Expected subclass of django.db.models.Model")
 
+class AnnotationCPCImportForm(forms.Form):
+
+    cpc_files = MultiFileField()
+    deployment = forms.ModelChoiceField(queryset=Deployment.objects.all())
+    user = forms.ModelChoiceField(queryset=User.objects.all())

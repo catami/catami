@@ -15,6 +15,7 @@ from django.template.defaultfilters import slugify
 
 from .extras import update_progress
 from .auvimport import NetCDFParser, LimitTracker, TrackParser
+from .annotations import CPCFileParser
 import metadata
 
 import Force.models
@@ -33,6 +34,19 @@ def get_known_file(key, url):
     the file on releasing of the handle.
     """
     # download the file async to get the file and give feedback
+
+    # if it is a list, go through each element until one works
+    # and return that one
+    if isinstance(url, (list, tuple)):
+        for u in url:
+            try:
+                return get_known_file(key, u)
+            except HTTPError:
+                continue
+        else:
+            raise Exception("File could not be downloaded.")
+
+        # we likely have an iterable...
     resp = urlopen(url)
 
     size = int(resp.headers["content-length"])
@@ -101,7 +115,10 @@ def auvfetch(base_url, campaign_date, campaign_name, mission_name):
     mission_base = base_url + "/" + campaign_name + "/" + mission_name
 
     # the track file that contains image positions and names
-    trackfile_name = "{0}/track_files/{1}_latlong.csv".format(mission_base, mission_text)
+    trackfile_new_name = "{0}/track_files/{1}_latlong.csv".format(mission_base, mission_text)
+    trackfile_old_name = "{0}/track_files/{2}_{1}_latlong.csv".format(mission_base, mission_text, mission_datetime)
+
+    trackfile_name = [trackfile_new_name, trackfile_old_name]
 
     # the netcdf that give water condition measurements
     netcdf_base = mission_base + '/hydro_netcdf/'
@@ -159,10 +176,8 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         pose = dict()
         pose['deployment'] = deployment_nk # the foreign key, whatever the natural key is
         seconds, centiseconds = row['second'].split('.')
-        pose['date_time'] = datetime.datetime(int(row['year']), int(row['month']), 
-                                    int(row['day']), int(row['hour']), 
-                                    int(row['minute']), int(seconds),
-                                    int(centiseconds) * 10000) # convert to microseconds
+        image_datetime = datetime.datetime.strptime(os.path.splitext(limage)[0], "PR_%Y%m%d_%H%M%S_%f_LC16")
+        pose['date_time'] = image_datetime
 
         # GEO JSON is long-lat not lat-long
         pose['image_position'] = "POINT ({0} {1})".format(row['longitude'], row['latitude'])
@@ -425,3 +440,45 @@ def metadata_import(model_class, fields_list, field_mappings):
             transaction.commit()
             logger.debug("Commiting")
 
+def annotation_cpc_import(user, deployment, cpc_file_handles):
+    """Import CPC annotations into the database.
+
+    This is currently targetted at AUV dives. Not sure if used
+    beyond that realm.
+    """
+
+    # deployment is used to reduce the search space/chance of collision with images
+    # still also need mapping of local ids to catami users
+
+    subset = Force.models.Image.objects.filter(deployment=deployment)
+
+    # we are assuming AUV naming conventions for the image...
+
+    # get the date time to look the image reference up from the
+    # name of the file... this will assume AUV imagery.
+    # Videos probably come from some other idea anyway...
+
+    for cpc_handle in cpc_file_handles:
+        annotations = CPCFileParser(cpc_handle)
+
+        image_name = annotations.image_file_name
+
+        # extract the timing info from the file name
+        image_datetime = datetime.datetime.strptime(image_name, "PR_%Y%m%d_%H%M%S_%f_LC16")
+
+        # now look it up... hopefully the timestamp will match something in the database
+
+        image = subset.get(date_time=image_datetime)
+
+        for a in annotations:
+            an = Force.models.Annotation()
+            an.image_reference = image
+            an.method = "50 Point CPC"
+            an.code = a['label']
+            an.point = "POINT({0} {1})".format(a['x'], a['y'])
+            an.comments = a['notes']
+            an.user_who_annotated = user
+
+            an.save()
+
+    # annotations are done!

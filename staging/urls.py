@@ -8,6 +8,7 @@ urlpatterns = patterns('staging.views',
     url(r'^$', 'index', name='staging_index'),
     url(r'^upload_progress/$', 'upload_progress'),
     url(r'^auv/import$', 'auvimport', name='staging_auv_import'),
+    url(r'^auv/manualimport$', 'auvmanualimport', name='staging_auv_import_manual'),
     url(r'^auv/progress$', 'auvprogress'),
     url(r'^auv/imported$', 'auvimported', name='staging_auv_imported'),
     url(r'^file/import$', 'fileupload', name='staging_file_import'),
@@ -20,5 +21,8 @@ urlpatterns = patterns('staging.views',
     url(r'^metadata/sheet/(?P<file_id>\d+)/(?P<page_name>[\w-]+)$', 'metadatasheet', name='staging_metadata_sheet'), # show sheet data/info
     url(r'^metadata/import/(?P<file_id>\d+)/(?P<page_name>[\w-]+)/(?P<model_name>[\w-]+)$', 'metadataimport', name='staging_metadata_import'), # show import data/info
     url(r'^metadata/imported$', 'metadataimported', name='staging_metadata_imported'), # thanks/confirmation of import
+    # annotations
+    url(r'^annotations/cpc/import$', 'annotationcpcimport', name='staging_annotation_cpc_import'),
+    url(r'^annotations/cpc/imported$', 'annotationcpcimported', name='staging_annotation_cpc_imported'),
 )
 

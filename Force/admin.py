@@ -15,4 +15,5 @@ admin.site.register(BRUVDeployment, admin.GeoModelAdmin)
 admin.site.register(DOVDeployment, admin.GeoModelAdmin)
 admin.site.register(Campaign, admin.GeoModelAdmin)
 
+admin.site.register(User, admin.ModelAdmin)
 

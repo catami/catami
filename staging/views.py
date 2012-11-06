@@ -8,7 +8,7 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 
-from .forms import AUVImportForm, FileImportForm, MetadataStagingForm, ModelImportForm
+from .forms import AUVImportForm, AUVManualImportForm, FileImportForm, MetadataStagingForm, ModelImportForm, AnnotationCPCImportForm
 from .extras import UploadProgressCachedHandler
 from . import tasks
 from . import metadata
@@ -126,6 +126,62 @@ def auvimport(request):
     context['form'] = form
 
     return render_to_response('staging/auvimport.html', context, rcon)
+
+@login_required
+def auvmanualimport(request):
+    """The auvmanualimport view. Handles GET and POST for the form."""
+    context = {}
+    if request.method == 'POST':
+        form = AUVManualImportForm(request.POST)
+        if form.is_valid():
+            # try and get the files and import
+            try:
+                data = form.cleaned_data
+
+                # get the uuid - not part of POST
+                # but appears in the GET maybe?
+                uuid = request.REQUEST.get('uuid')
+
+                track_key = uuid + "_track_key"
+                netcdf_key = uuid + "_netcdf_key"
+
+                cache.add(track_key, 0, 300) # last for 5 minutes
+                cache.add(netcdf_key, 0, 300) # last for 5 minutes
+
+                input_params = (data['base_url'], str(data['campaign_name'].date_start), data['campaign_name'].short_name, data['mission_name'])
+
+                # get the file names out
+                track_url = data['trackfile_url']
+                netcdf_url = data['netcdffile_url']
+
+                logger.debug("auvmanualimport: fetching remote track file.")
+                track_file = tasks.get_known_file(track_key, track_url)
+                logger.debug("auvmanualimport: fetching remote netcdf file.")
+                netcdf_file = tasks.get_known_file(netcdf_key, netcdf_url)
+
+
+                logger.debug("auvmanualimport: processing remote files to create json string.")
+                json_string = tasks.auvprocess(track_file, netcdf_file, *input_params)
+
+                logger.debug("auvmanualimport: importing json string into database.")
+                tasks.json_sload(json_string)
+
+            except Exception as exc:
+                errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
+                errors.append("{0}: {1}".format(exc.__class__.__name__, exc))
+                logger.debug('auvmanualimport: failed to import auv mission: ({0}): {1}'.format(exc.__class__.__name__, exc))
+
+            else:
+                logger.debug("auvmanualimport: import successful, redirecting to auvimported.")
+                return redirect('staging.views.auvimported')
+
+    else:
+        form = AUVManualImportForm()
+
+    rcon = RequestContext(request)
+    context['form'] = form
+
+    return render_to_response('staging/auvmanualimport.html', context, rcon)
 
 @login_required
 def auvimported(request):
@@ -436,3 +492,40 @@ def metadataimported(request):
 
     return render_to_response('staging/metadataimported.html', context, rcon)
 
+@login_required
+def annotationcpcimport(request):
+    context = {}
+    rcon = RequestContext(request)
+
+    if request.method == 'POST':
+        # attach the existing POST data
+        form = AnnotationCPCImportForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            # get the list of files
+            cpc_files = request.FILES.getlist('cpc_files')
+
+            # get the annotating user
+            user = form.cleaned_data['user']
+
+            # do the importing magic!
+            tasks.annotation_cpc_import(user, form.cleaned_data['deployment'], cpc_files)
+
+            # redirect on completion
+            return redirect('staging.views.annotationcpcimported')
+        else:
+            logger.debug("INVALID FORM")
+    else:
+        form = AnnotationCPCImportForm()
+
+    context['form'] = form
+
+    return render_to_response('staging/annotationcpcimport.html', context, rcon)
+
+@login_required
+def annotationcpcimported(request):
+    """Displays the thankyou message on metadataimport success."""
+    context = {}
+    rcon = RequestContext(request)
+
+    return render_to_response('staging/annotationcpcimported.html', context, rcon)
