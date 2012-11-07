@@ -9,13 +9,13 @@ urlpatterns = patterns('staging.views',
     url(r'^upload_progress/$', 'upload_progress'),
 
     # campaign creating
-    url(r'^campaign/create$', 'campaigncreate'),
-    url(r'^campaign/created$', 'campaigncreated'),
+    url(r'^campaign/create$', 'campaigncreate', name='staging_campaign_create'),
+    url(r'^campaign/created$', 'campaigncreated', name='staging_campaign_created'),
 
     # auv deployment (via datafabric importing)
     url(r'^auv/import$', 'auvimport', name='staging_auv_import'),
     url(r'^auv/manualimport$', 'auvmanualimport', name='staging_auv_import_manual'),
-    url(r'^auv/progress$', 'auvprogress'),
+    url(r'^auv/progress$', 'auvprogress', name='staging_auv_progress'),
     url(r'^auv/imported$', 'auvimported', name='staging_auv_imported'),
 
     # django json deserialisation
