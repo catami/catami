@@ -3,7 +3,7 @@
 {% block sidebar %}
         <div id="sidebar-nav" class="span3" style="padding-left:10px;">
     
-          <h1>Search</h1>  
+          <h1>Data Search</h1>  
           <div class="well well-small" style="align:center;">
 
             <p class="lead">Find things</p>
@@ -15,51 +15,52 @@
 
 {% block content %}
 
-<form action="." method="get">
-    <table>
-        {{ form.as_table }}
-    </table>
-    <input type="submit" value="Search"/>
-    <br><br>
-    {% if query %}
-
-
-        <div class="span8">
-	        <p>You searched for <strong>{{ query }}</strong>, 
-	    	we found {{ page.object_list|length }} Objects</p>
-			    	
-        	<div id='map_container2'></div>
-        	<table class="table">
-            {% for result in page.object_list %}
-            	<tr>
-                {% if result.model_name == 'campaign' %}
-                    {% include 'search/_result_object_campaign.html' %}
-                {% elif result.model_name == 'auvdeployment' %}
-                    {% include 'search/_result_object_auvdeployment.html' %}
-                {% elif result.model_name == 'bruvdeployment' %}
-                    {% include 'search/_result_object_bruvdeployment.html' %}
-                {% else %}
-                    <div class="alert alert-error"><p>If you're seeing this, then there is a bug. Please let someone at Catami know.</p></div>
-                {% endif %}
-
-                {% empty %}<div class="alert alert-info alert-block"><h4>No results found for <strong>{{ query }}</strong>. Oh snap!</h4>Perhaps try a different search?  If you think this is a bug, get in touch.</div>
-                </tr>
-            {% endfor %}
-             </table>
-
-        </div>
-
-        {% if page.has_previous or page.has_next %}
-            <div>{% if page.has_previous %}<a href="?q={{ query }}&page={{ page.previous_page_number }}">{% endif %}« Previous{% if page.has_previous %}</a>{% endif %}
-            |
-            {% if page.has_next %}<a href="?q={{ query }}&page={{ page.next_page_number }}">{% endif %}Next »{% if page.has_next %}</a>{% endif %}</div>
-        {% endif %}</div>
-
-    {% else %}
-
-{% endif %}
-</form>
-
+	<form action="." method="get">
+	    <table>
+	        {{ form.as_table }}
+	    </table>
+	    <input type="submit" value="Search"/>
+	    <br><br>
+	    {% if query %}
+	
+	
+	        <div class="span8">
+		        <p>You searched for <strong>{{ query }}</strong>, 
+		    	we found {{ page.object_list|length }} Objects</p>
+				    	
+	        	<div id='map_container2'></div>
+	        	<table class="table">
+	            {% for result in page.object_list %}
+	            	<tr>
+	                {% if result.model_name == 'campaign' %}
+	                    {% include 'search/_result_object_campaign.html' %}
+	                {% elif result.model_name == 'auvdeployment' %}
+	                    {% include 'search/_result_object_auvdeployment.html' %}
+	                {% elif result.model_name == 'bruvdeployment' %}
+	                    {% include 'search/_result_object_bruvdeployment.html' %}
+	                {% elif result.model_name == 'deployment' %}
+	                    {% include 'search/_result_object_deployment.html' %}
+	                {% else %}
+	                    <div class="alert alert-error"><p>If you're seeing this, then there is a bug. Please let someone at Catami know. Returned model type is >{{result.model_name}}<</p></div>
+	                {% endif %}
+	
+	                {% empty %}<div class="alert alert-info alert-block"><h4>No results found for <strong>{{ query }}</strong>. Oh snap!</h4>Perhaps try a different search?  If you think this is a bug, get in touch.</div>
+	                </tr>
+	            {% endfor %}
+	             </table>
+	
+	        </div>
+	
+	        {% if page.has_previous or page.has_next %}
+	            <div>{% if page.has_previous %}<a href="?q={{ query }}&page={{ page.previous_page_number }}">{% endif %}« Previous{% if page.has_previous %}</a>{% endif %}
+	            |
+	            {% if page.has_next %}<a href="?q={{ query }}&page={{ page.next_page_number }}">{% endif %}Next »{% if page.has_next %}</a>{% endif %}</div>
+	        {% endif %}</div>
+	
+	    {% else %}
+	
+	{% endif %}
+	</form>
 {% endblock %}
 
 {% block add_script %}

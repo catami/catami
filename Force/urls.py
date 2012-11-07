@@ -32,6 +32,8 @@ urlpatterns = patterns('',
     url(r'^campaigns/$', 'Force.views.campaigns'),
     url(r'^campaigns/(?P<campaign_id>\d+)/$', 'Force.views.campaign_detail'),
 
+    url(r'^spatialsearch/$', 'Force.views.spatialsearch'),
+
     #url(r'^(?P<poll_id>\d+)/vote/$', 'polls.views.vote'),
 )
 
