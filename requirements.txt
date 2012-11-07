@@ -7,4 +7,5 @@ PIL
 openpyxl
 xlrd
 pysolr
+pep8
 -e git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystackvim
