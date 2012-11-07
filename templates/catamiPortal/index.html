@@ -5,55 +5,76 @@
 	
 {% block content %}
 
+
 <div class="background-image" data-stellar-background-ratio="0.2">
+
 
     <div id="main-wrapper">
 	    <br>  	 
-	    
 		<div class="row-fluid">
-		  <div class="span3 offset1">
-			  <div class="row">
-			  <img src="{{ STATIC_URL }}assets/img/catamiheader.png" alt="catami_icon_small" width="597" height="140" />
-			  </div>
-			  <br>
-			  <div class="row" style="background-color:#fff; border-radius:5px;padding:10px;">
-			  	<p class="lead"><strong>What is this?</strong>  This is the home of Catami, Collaborative and Annotation Tools for Analysis of Marine Imagery and Video.</p>
-			  	<p class="lead"><strong>What are we doing?</strong> We're changing data management, analysis and collaboration for marine researchers and community collaborators around Australia.</p>
-			  	<p class="lead"><strong>We're quite Agile</strong> We deploy new features every two weeks, so expect lots of changes.</p>
-			  </div>
-			  <br>
-			  <div class="row" style="background-color:#fff; border-radius:5px;padding:10px;">
-			  	<p class="lead">Catami is made possible by Nectar, ANDS and iVEC.</p><p>Background image provided by AIMS.</p>
-			  </div>
+		
+				<div class="span1" id="news"></div>
+				
 
-		  </div>
-		  
-		  <div class="span2" style="background-color:#fff; border-radius:5px;padding:10px;">
-			  	<h2>News and new things</h2>
-			  	<span class="label label-info">New!</span><p> A new frontpage. As we add new features we'll be mentioning them here</p>
-			  	<span class="label label-info">New!</span><p> Spatial searching.  This release of Catami includes map based views and search. Give it a try.</p>
-		  	<h2>Get to work<p><small>with Catami interfaces</small></p></h2>
-		  	
-		  	<a href="/data" class="btn btn-block btn-primary"><h3>Catami Data</h3></a>
-		  	<a href="/staging" class="btn btn-block btn-primary"><h3>Import Data</h3></a>
-		  	<a href="/search" class="btn btn-block btn-primary"><h3>Search for Data</h3></a>
-		  	
-		  </div>
-		  
-		  <div class="span2" style="background-color:#fff; border-radius:5px;padding:10px;">
-		  	<h2>Keep in touch</h2>
-		  	<p class="well"> Catami is a <a href="https://catami.github.com">Open Source</a>,  <a href="https://catami.atlassian.net">Open Process</a> and open to <a href="mailto:catami@ivec.org">suggestions</a>. Follow what we're up to and get in touch.</p>
-		  	<p>Read our <a href="http://catami-australia.blogspot.com.au">blog</a> or follow us on <a href="http://plus.google.com/104765819602128308640">Google+</a>
-		  	<div class="g-plus" data-href="https://plus.google.com/104765819602128308640" rel="author"></div>
+			   <div class="span3" id="news01">
+				   	<div class="row">
+				  	<img src="{{ STATIC_URL }}assets/img/catamiheader.png" alt="catami_icon_small" width="597" height="140" />
+				  </div>
+				  <br><br>
+				  <div class="row" style="background-color:#fff; border-radius:5px;padding:10px;">
 
-		  </div>
+					<h2>News and new things</h2>
+					<span class="label label-info">New!</span><p>New search and data types.</p>
+					<h2>Get to work<p><small>with Catami interfaces</small></p></h2>
+					
+					<a href="/data" class="btn btn-block btn-primary"><h3>Catami Data</h3></a>
+					<a href="/staging" class="btn btn-block btn-primary"><h3>Import Data</h3></a>
+					<a href="/search" class="btn btn-block btn-primary"><h3>Search for Data</h3></a>
+				  </div>
+			  </div>
+			  <div class="span3" id="about">
+				  <div class="row" style="background-color:#fff; border-radius:5px;padding:10px;">
+				  	<p class="lead"><strong>What is this?</strong>  This is the home of Catami, Collaborative and Annotation Tools for Analysis of Marine Imagery and Video.</p>
+				  	<p class="lead"><strong>What are we doing?</strong> We're changing data management, analysis and collaboration for marine researchers and community collaborators around Australia.</p>
+				  	<p class="lead"><strong>We're quite Agile</strong> We deploy new features every two weeks, so expect lots of changes.</p>
+				  </div>
+				  <br>
+				  <div class="row" style="background-color:#fff; border-radius:5px;padding:10px;">
+				  	<p class="lead">Catami is made possible by funding from NeCTAR and ANDS.</p><p>Background image provided by AIMS.</p>
+				  </div>
+	
+			  </div>
+			
+		  
+			  <div class="span3" style="background-color:#fff; border-radius:5px;padding:10px;" id="contact">
+			  	<h2>Keep in touch</h2>
+			  	<p class="well"> Catami is a <a href="https://catami.github.com">Open Source</a>,  <a href="https://catami.atlassian.net">Open Process</a> and open to <a href="mailto:catami@ivec.org">suggestions</a>. Follow what we're up to and get in touch.</p>
+			  	<p>Read our <a href="http://catami-australia.blogspot.com.au">blog</a> or follow us on <a href="http://plus.google.com/104765819602128308640">Google+</a></p>
+			  	<div class="g-plus" data-href="https://plus.google.com/104765819602128308640" rel="author"></div>
+	
+			  </div>
 		
 		</div>
-	  
-   </div>
-	    
-</div>
 	
+   </div>
+
+
+</div>
+   <div class="navbar navbar-fixed-bottom">
+	   <div class="pagination pagination-centered">
+
+		   <ul>
+		   
+			    <li><a href="#news">News</a></li>
+			    <li><a href="#about">About</a></li>
+			    <li><a href="#contact">Contact</a></li>
+			</ul>
+	   </div>
+   </div>
+
+{% endblock %}
+{% block add_script %}
+	<script src="{{ STATIC_URL }}assets/js/query.smooth-scroll.js"></script>
 	<script type="text/javascript">
       (function() {
         var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
@@ -61,5 +82,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
       })();
     </script>
+  <script>
+    $(document).ready(function() {
+
+      $('ul.mainnav a').smoothScroll();
+
+
+    });
+
+  </script>
 {% endblock %}
 

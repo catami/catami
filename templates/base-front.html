@@ -41,6 +41,11 @@
 			position: fixed;
 			z-index: 40;
 		}
+		 .mainnav {
+		   position: fixed;
+		   margin-left: 0px;
+		   width: 140px;
+		 }
     </style>
     
 
@@ -73,6 +78,8 @@
 	<script type="text/javascript" src="{{ STATIC_URL }}assets/js/bootstrap.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}assets/js/jquery.stellar.js"></script>
 	
+	{% block add_script %}{% endblock %}
+
 	<!-- popover js -->
 	<script type="text/javascript">
 	    (function() {
