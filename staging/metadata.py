@@ -8,7 +8,7 @@ from openpyxl.cell import column_index_from_string
 from xlrd import open_workbook, xldate_as_tuple
 import os.path
 
-from Force.models import BRUVDeployment, DOVDeployment
+from Force.models import BRUVDeployment, DOVDeployment, TIDeployment, TVDeployment
 
 import datetime
 
@@ -20,6 +20,8 @@ def metadata_models():
     mapping = dict()
     mapping['bruv'] = BRUVDeployment
     mapping['dov'] = DOVDeployment
+    mapping['ti'] = TIDeployment
+    mapping['tv'] = TVDeployment
 
     return mapping
 
