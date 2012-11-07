@@ -343,18 +343,16 @@ def metadatalist(request):
     context['user'] = request.user
     return render_to_response('staging/metadatalist.html', context, rcon)
 
-#@login_required
+@login_required
 def change_public(request):
     # extract the info from the query
     current_user = request.user
-    try:
+    if 'id' in request.GET and 'ispublic' in request.GET:
         file_id = request.GET['id']
         is_public = request.GET['ispublic'] == "true"
-    except MultiValueDictKeyError:
-        # want to raise a proper error indicating what went wrong...
-        # ie you didn't specify the required details
-        # but there is no http response that really works...
-        raise
+    else:
+        # invalid... missing arguments
+        return HttpResponseBadRequest()
 
     # now get the metadata file object
     # or return 404 if it doesn't exist
