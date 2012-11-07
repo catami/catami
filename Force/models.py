@@ -251,3 +251,19 @@ class DOVDeployment(Deployment):
     
     def __unicode__(self):
         return "DOV: {0} - {1}".format(self.start_time_stamp, self.short_name)
+
+
+class TVDeployment(Deployment):
+    """@brief Model that holds the Towed Video data """
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return "TV: {0} - {1}".format(self.start_time_stamp, self.short_name)
+
+
+class TIDeployment(Deployment):
+    """@brief Model that holds the Towed Imagery data """
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return "TI: {0} - {1}".format(self.start_time_stamp, self.short_name)
