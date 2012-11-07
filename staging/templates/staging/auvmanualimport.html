@@ -3,30 +3,28 @@
 
 {% block content %}
 <div class="page-header">
-<h1>AUV Import</h1>
+    <h1>AUV Import</h1>
 </div>
-    <div class="span4">
-        <form class="well" action="" method="post">{% csrf_token %}
+<div class="span4">
+    <form class="well" action="" method="post">{% csrf_token %}
         {% if form.errors %}
         <div class="alert alert-error">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <strong> Error!</strong> {{ form.errors }}
         </div>
         {% endif %}
-{% for field in form %}
+        {% for field in form %}
             <div class="control-group">
                 {{ field.label_tag }}
                 {{ field }}
                 <span class="help-block">{{ field.help_text }}</span>
             </div>
-{% endfor %}
-            <input class="btn" type="submit" value="Import" />
-        </form>
-    </div>
-
-    <div id="upload_panel"></div>
+        {% endfor %}
+        <input class="btn" type="submit" value="Import" />
+    </form>
 </div>
-
+<div id="upload_panel"></div>
+</div>
 {% endblock %}
 
 {% block add_script %}
