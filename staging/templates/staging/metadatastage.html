@@ -5,8 +5,15 @@
 <div class="page-header">
 <h1>Metadata File Upload</h1>
 </div>
+<p class="lead span9">
+This is designed to import Excel files (either xls or xlsx).
+To properly import the data the expected format is a single row for column 
+headings with each following row representing a single deployment.
 
-<div class="span6">
+<a href="{{ STATIC_URL }}templates/genericdeployment.xlsx">This</a> template 
+can be used as a base, add extra columns as necessary.
+</p>
+<div class="span4">
     <form enctype="multipart/form-data" class="well" action="" method="post">{% csrf_token %}
     {% if form.errors %}
     <div class="alert alert-error">
