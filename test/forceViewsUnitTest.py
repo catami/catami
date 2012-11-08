@@ -16,7 +16,7 @@ class AddTest(TestCase):
     # test environment before all the tests have run.
     def setUp(self):
         '''Verify environment is setup properly''' # Printed if test fails
-        import catamiWebPortal
+        import catami_web_portal
         os.environ['DJANGO_SETTINGS_MODULE'] = 'catamiPortal.settings'
         setup_test_environment()
 

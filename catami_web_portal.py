@@ -2,7 +2,6 @@
 import logging
 import logging.config
 import ConfigParser
-import src.importTools as importTools
 from Force.models import *
 import os
 
