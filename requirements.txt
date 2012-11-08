@@ -9,5 +9,5 @@ xlrd
 pysolr
 pep8
 mox
-dateutil
+python-dateutil
 -e git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystackvim
