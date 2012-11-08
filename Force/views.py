@@ -18,7 +18,7 @@ from django.shortcuts import render_to_response, redirect, render
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
-from Force.models import Campaign, AUVDeployment,BRUVDeployment, DOVDeployment, Deployment, StereoImage
+from Force.models import Campaign, AUVDeployment,BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation
 
 class spatial_search_form(forms.Form):
     """@brief Simple spatial search form for Catami data
@@ -155,8 +155,15 @@ def auvdeployment_detail(request, auvdeployment_id):
     #geoj = GeoJSON.GeoJSON()
     #deployment_as_geojson = geoj.encode(djf.decode([AUVDeployment.objects.get(id=auvdeployment_id)]))
 
+    
     auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
     image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
+
+    #get annotation list. Not all images have annotation
+    annotated_imagelist = list()
+    for image in image_list:
+        if(Annotation.objects.filter(image_reference=image).count() > 0):
+            annotated_imagelist.append(image)
 
     # the easy way is to just return
     # auvdeployment_object.transect_shape.geojson
@@ -164,7 +171,67 @@ def auvdeployment_detail(request, auvdeployment_id):
         'Force/auvdeploymentInstance.html',
         {'auvdeployment_object': auvdeployment_object,
         'deployment_as_geojson': auvdeployment_object.transect_shape.geojson,
-        'image_list': image_list},
+        'image_list': image_list,
+        'annotated_imagelist': annotated_imagelist},
+        context_instance=RequestContext(request))
+
+
+
+def annotationview(request,auvdeployment_id, image_index):
+    """@brief AUV annotation view
+
+    """
+    auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
+
+    image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
+    get_index = 1
+    initial_image_index = int(image_index)
+    local_image_index = 0
+
+    styled_annotation_data = list()
+    #initial_image_index =local_image_index
+    #get annotation list. Not all images have annotation
+
+
+    if(initial_image_index == 0):
+        #find first annotated image
+        for image in image_list:
+            local_image_index = local_image_index + 1
+
+            if(Annotation.objects.filter(image_reference=image).count() > 0):
+                return render_to_response(
+                    'Force/annotationview.html',
+                    {'auvdeployment_object':auvdeployment_object,
+                     'image_index':local_image_index,
+                     'image_index_prev':local_image_index-1,
+                     'image_index_next':local_image_index+1,
+                     'annotated_image':image,
+                     'annotation_list':Annotation.objects.filter(image_reference=image)},
+                    context_instance=RequestContext(request))
+
+    for image in image_list:
+        local_image_index = local_image_index + 1
+        if(Annotation.objects.filter(image_reference=image).count() > 0):
+            if(local_image_index > initial_image_index):
+
+                for annotation in Annotation.objects.filter(image_reference=image):
+                    text="<p style='z-index:100; position:absolute;  color:white; font-size:12px; font-weight:normal; left:"+str(annotation.point.x*100)+"%; top:"+str(str(annotation.point.y*100))+"%;'>"+annotation.code+"</p>"
+                    styled_annotation_data.append(text)
+                return render_to_response(
+                    'Force/annotationview.html',
+                    {'auvdeployment_object':auvdeployment_object,
+                    'image_index':local_image_index,
+                     'image_index_prev':local_image_index-1,
+                     'image_index_next':local_image_index+1,
+                     'annotated_image':image,
+                     'styled_annotation_data':styled_annotation_data,
+                     'annotation_list':Annotation.objects.filter(image_reference=image)},
+                    context_instance=RequestContext(request))
+
+    return render_to_response(
+        'Force/annotationview.html',
+        {'auvdeployment_object':auvdeployment_object,
+        'image_notfound_index':image_index},
         context_instance=RequestContext(request))
 
 
