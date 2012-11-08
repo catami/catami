@@ -60,7 +60,7 @@ Install and configure virtualenv, virtualenvwrapper and pip
 Create a virtual environment for the catami project (so we don't mess up the system libraries with the catami versions)
 -----------------------------------------------------------------------------------------------------------------------
 
-    mkvirtualev catami --system-site-packages
+    mkvirtualenv catami --system-site-packages
     workon catami
 
 Checkout the code and GO!
