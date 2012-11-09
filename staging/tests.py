@@ -59,7 +59,7 @@ class StagingTests(TestCase):
         test_urls.append(reverse('staging_metadata_book_update_public'))
         test_urls.append(reverse('staging_metadata_book', args=['0']))
         test_urls.append(reverse('staging_metadata_delete', args=['0']))
-        test_urls.append(reverse('staging_metadata_sheet', args=['0','name'])
+        test_urls.append(reverse('staging_metadata_sheet', args=['0','name']))
         test_urls.append(reverse('staging_metadata_import', args=['0','name','model']))
         test_urls.append(reverse('staging_metadata_imported'))
         test_urls.append(reverse('staging_annotation_cpc_import'))
