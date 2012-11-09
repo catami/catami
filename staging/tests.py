@@ -13,9 +13,10 @@ from django.contrib.auth.models import User
 from .auvimport import LimitTracker
 from . import tasks
 
-from Force.models import Campaign, AUVDeployment
+from Force.models import Campaign
 
 import datetime
+
 
 def setup_login(self):
     # create a testing user
@@ -37,7 +38,6 @@ class StagingTests(TestCase):
         """Set up the test variables/parameters."""
         setup_login(self)
 
-
     def test_loginprotection(self):
         """
         Test that the core pages can be accessed.
@@ -56,11 +56,11 @@ class StagingTests(TestCase):
         test_urls.append(reverse('staging_file_imported'))
         test_urls.append(reverse('staging_metadata_stage'))
         test_urls.append(reverse('staging_metadata_list'))
-        test_urls.append(reverse('staging_metadata_book_update_public')) # requires ? parms
-        test_urls.append(reverse('staging_metadata_book', args=['0'])) # file_id
-        test_urls.append(reverse('staging_metadata_delete', args=['0'])) # file_id
-        test_urls.append(reverse('staging_metadata_sheet', args=['0','name'])) # file_id, page_name
-        test_urls.append(reverse('staging_metadata_import', args=['0','name','model'])) # file_id, page_name, model_name
+        test_urls.append(reverse('staging_metadata_book_update_public'))
+        test_urls.append(reverse('staging_metadata_book', args=['0']))
+        test_urls.append(reverse('staging_metadata_delete', args=['0']))
+        test_urls.append(reverse('staging_metadata_sheet', args=['0','name'])
+        test_urls.append(reverse('staging_metadata_import', args=['0','name','model']))
         test_urls.append(reverse('staging_metadata_imported'))
         test_urls.append(reverse('staging_annotation_cpc_import'))
         test_urls.append(reverse('staging_annotation_cpc_imported'))
@@ -87,11 +87,11 @@ class StagingTests(TestCase):
         response = self.client.post('/accounts/login/', self.login)
 
         test_urls = []
-        test_urls.append((reverse('staging_index'),'staging/index.html'))
-        test_urls.append((reverse('staging_auv_import'),'staging/auvimport.html'))
-        test_urls.append((reverse('staging_auv_imported'),'staging/auvimported.html'))
-        test_urls.append((reverse('staging_file_import'),'staging/fileupload.html'))
-        test_urls.append((reverse('staging_file_imported'),'staging/fileuploaded.html'))
+        test_urls.append((reverse('staging_index'), 'staging/index.html'))
+        test_urls.append((reverse('staging_auv_import'), 'staging/auvimport.html'))
+        test_urls.append((reverse('staging_auv_imported'), 'staging/auvimported.html'))
+        test_urls.append((reverse('staging_file_import'), 'staging/fileupload.html'))
+        test_urls.append((reverse('staging_file_imported'), 'staging/fileuploaded.html'))
 
         for test_url, template in test_urls:
             response = self.client.get(test_url)
@@ -132,13 +132,15 @@ class StagingTests(TestCase):
 
         self.assertEqual(dict_value_track.maximum, 10.0)
         self.assertEqual(dict_value_track.minimum, -10.0)
+
+
+
 class StagingNetworkTests(TestCase):
     """Tests for Staging that require the internet to access things."""
     
     def setUp(self):
         """Set up the test variables/parameters."""
         setup_login(self)
-
 
     def test_auv_import(self):
         """Test AUV importing."""
@@ -180,4 +182,3 @@ class StagingNetworkTests(TestCase):
         # we are done once we reach this point
         # if done without error... of course
         # should query this once a few parameters of the mission are known
-
