@@ -114,6 +114,11 @@ class ModelImportForm(forms.Form):
     with regards to model introspection to get a list of fields.
     """
     def __init__(self, *args, **kwargs):
+        """Create the ModelImportForm from a model.
+
+        This creates all the fields 'on the fly' from the model enabling
+        it to adapt to any models given to it.
+        """
         columns = kwargs.pop('columns')
         model = kwargs.pop('model')
 
@@ -160,7 +165,7 @@ class ModelImportForm(forms.Form):
             raise TypeError("Expected subclass of django.db.models.Model")
 
 class AnnotationCPCImportForm(forms.Form):
-
+    """Form to enable importing of multiple CPC files for a deployment."""
     cpc_files = MultiFileField()
     deployment = forms.ModelChoiceField(queryset=Deployment.objects.all())
     user = forms.ModelChoiceField(queryset=User.objects.all())
