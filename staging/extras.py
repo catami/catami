@@ -5,7 +5,7 @@ from django.core.cache import cache
 
 def update_progress(key, percent):
     """Updates the percent for key."""
-    cache.set(key, percent, 30) # timeout in 30 seconds
+    cache.set(key, percent, 300) # timeout in 30 seconds
 
 class UploadProgressCachedHandler(FileUploadHandler):
     """
