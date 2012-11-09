@@ -10,22 +10,34 @@ from django.core.urlresolvers import reverse
 
 from django.contrib.auth.models import User
 
+from .auvimport import LimitTracker
+from . import tasks
+
+from Force.models import Campaign, AUVDeployment
+
+import datetime
+
+def setup_login(self):
+    # create a testing user
+    self.username = 'testing'
+    self.email = 'testing@example.com'
+    self.password = User.objects.make_random_password()
+    self.login = {'username': self.username, 'password': self.password}
+
+    self.login_url = '/accounts/login/?next='
+
+    # this creates the testing user and saves it
+    self.user = User.objects.create_user(self.username, self.email, self.password)
+
 
 class StagingTests(TestCase):
     """Tests for the staging application."""
 
     def setUp(self):
         """Set up the test variables/parameters."""
-        # create a testing user
-        self.username = 'testing'
-        self.email = 'testing@example.com'
-        self.password = User.objects.make_random_password()
-        self.login = {'username': self.username, 'password': self.password}
+        setup_login(self)
 
-        self.login_url = '/accounts/login/?next='
 
-        # this creates the testing user and saves it
-        self.user = User.objects.create_user(self.username, self.email, self.password)
     def test_loginprotection(self):
         """
         Test that the core pages can be accessed.
@@ -90,4 +102,82 @@ class StagingTests(TestCase):
 
         # logout, don't check carefully, the other test does that
         response = self.client.get('/accounts/logout/')
+
+    def test_limit_tracker(self):
+        """Test LimitTracker used in auvimport."""
+
+        # check direct values
+        direct_track = LimitTracker()
+
+        direct_track.check(1.0)
+
+        self.assertEqual(direct_track.minimum, 1.0)
+        self.assertEqual(direct_track.maximum, 1.0)
+
+        direct_track.check(10.0)
+        direct_track.check(-10.0)
+
+        self.assertEqual(direct_track.minimum, -10.0)
+        self.assertEqual(direct_track.maximum, 10.0)
+
+        # check values in a dictionary
+        dict_value_track = LimitTracker('val')
+
+        dict_value_track.check({'val': 1.0})
+
+        self.assertEqual(dict_value_track.minimum, 1.0)
+
+        dict_value_track.check({'val': 10.0})
+        dict_value_track.check({'val': -10.0})
+
+        self.assertEqual(dict_value_track.maximum, 10.0)
+        self.assertEqual(dict_value_track.minimum, -10.0)
+class StagingNetworkTests(TestCase):
+    """Tests for Staging that require the internet to access things."""
+    
+    def setUp(self):
+        """Set up the test variables/parameters."""
+        setup_login(self)
+
+
+    def test_auv_import(self):
+        """Test AUV importing."""
+        # here we don't want to go downloading, we are testing file name
+        # construction and correct results from a known 'mission'
+
+        # create a campaign
+        campaign = Campaign()
+        campaign.short_name = "Tasmania201106"
+        campaign.description = "IMOS Repeat Survey"
+        campaign.associated_researchers = "ACFR, UTas"
+        campaign.associated_publications = "Pending"
+        campaign.associated_research_grant = "Pending"
+        campaign.date_start = datetime.date(2011, 6, 1)
+        campaign.date_end = datetime.date(2011, 6, 30)
+
+        campaign.save()
+
+        # now load data into it
+        base_url = "http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV/"
+        campaign_name = campaign.short_name
+        campaign_start = campaign.date_start
+        mission_name = "r20110614_055332_flindersCMRnorth_09_canyongrids"
+
+        input_params = (base_url, str(campaign_start), campaign_name, mission_name)
+
+        track_key = "track_key"
+        netcdf_key = "netcdf_key"
+
+        return_values = tasks.auvfetch(*input_params)
+        track_url, netcdf_urlpattern, start_time = return_values 
+
+        track_file = tasks.get_known_file(track_key, track_url)
+        netcdf_file = tasks.get_netcdf_file(netcdf_key, netcdf_urlpattern, start_time)
+        json_string = tasks.auvprocess(track_file, netcdf_file, *input_params)
+
+        tasks.json_sload(json_string)
+
+        # we are done once we reach this point
+        # if done without error... of course
+        # should query this once a few parameters of the mission are known
 
