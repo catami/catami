@@ -138,7 +138,8 @@ INSTALLED_APPS = (
     'Force',
     'staging',
     'haystack',
-    'django_jenkins'
+    'django_jenkins',
+    'south'
 )
 
 #tasks that jenkins will run on the build server
