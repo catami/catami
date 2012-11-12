@@ -1,5 +1,6 @@
 django
 django-jenkins
+south
 vectorformats
 psycopg2
 simplejson
