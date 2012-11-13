@@ -21,12 +21,15 @@ class CampaignIndex(indexes.SearchIndex, indexes.Indexable):
     def index_queryset(self):
         return self.get_model().objects.all()
 
-
 class DeploymentIndex(indexes.SearchIndex, indexes.Indexable):
     """@brief Deployment Index
 
     """
     text = indexes.CharField(document=True, use_template=True)
+    start_time = indexes.DateTimeField(model_attr='start_time_stamp')
+    end_time = indexes.DateTimeField(model_attr='end_time_stamp')
+    min_depth = indexes.FloatField(model_attr='min_depth')
+    max_depth = indexes.FloatField(model_attr='max_depth')
 
     def get_model(self):
         return Deployment

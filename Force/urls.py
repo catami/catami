@@ -25,6 +25,14 @@ urlpatterns = patterns('',
     url(r'^bruvdeployments/map/$', 'Force.views.bruvdeployments_map'),
     url(r'^bruvdeployments/(?P<bruvdeployment_id>\d+)/$', 'Force.views.bruvdeployment_detail'),
 
+    url(r'^dovdeployments/$', 'Force.views.dovdeployments'),
+    url(r'^dovdeployments/(?P<dovdeployment_id>\d+)/$', 'Force.views.dovdeployment_detail'),
+
+    url(r'^tvdeployments/$', 'Force.views.tvdeployments'),
+    url(r'^tvdeployments/(?P<tvdeployment_id>\d+)/$', 'Force.views.tvdeployment_detail'),
+
+    url(r'^tideployments/$', 'Force.views.tideployments'),
+    url(r'^tideployments/(?P<tideployment_id>\d+)/$', 'Force.views.tideployment_detail'),
 
     url(r'^deployments/$', 'Force.views.deployments'),
     url(r'^deployments/map/$', 'Force.views.deployments_map'),

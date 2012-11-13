@@ -10,7 +10,7 @@ Edits :: Name : Date : description
 # Create your views here.
 from django import forms
 from django.template import RequestContext
-#from django.http import Http404
+from django.http import Http404
 from django.shortcuts import render_to_response, redirect, render
 #from django.core import serializers
 #from django.contrib.gis.geos import GEOSGeometry
@@ -18,7 +18,7 @@ from django.shortcuts import render_to_response, redirect, render
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
-from Force.models import Campaign, AUVDeployment,BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation
+from Force.models import Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment
 
 class spatial_search_form(forms.Form):
     """@brief Simple spatial search form for Catami data
@@ -155,8 +155,14 @@ def auvdeployment_detail(request, auvdeployment_id):
     #geoj = GeoJSON.GeoJSON()
     #deployment_as_geojson = geoj.encode(djf.decode([AUVDeployment.objects.get(id=auvdeployment_id)]))
 
-    
-    auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
+    try:
+        auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
+    except AUVDeployment.DoesNotExist:
+        error_string = 'This is the error_string'
+        return render_to_response(
+           'Force/data_missing.html',context_instance=RequestContext(request))
+        #raise Http404
+
     image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
 
     #get annotation list. Not all images have annotation
@@ -262,13 +268,118 @@ def bruvdeployment_detail(request, bruvdeployment_id):
 
     """
 
-    bruvdeployment_object = BRUVDeployment.objects.get(id=bruvdeployment_id)
+    try:
+        bruvdeployment_object = BRUVDeployment.objects.get(id=bruvdeployment_id)
+    except BRUVDeployment.DoesNotExist:
+        error_string = 'This is the error_string'
+        return render_to_response(
+           'Force/data_missing.html',context_instance=RequestContext(request))
+
     image_list = StereoImage.objects.filter(deployment=bruvdeployment_id)
 
     return render_to_response(
         'Force/bruvdeploymentInstance.html',
         {'bruvdeployment_object': bruvdeployment_object,
         'deployment_as_geojson': bruvdeployment_object.start_position.geojson,
+        'image_list': image_list},
+        context_instance=RequestContext(request))
+
+
+def dovdeployments(request):
+    """@brief DOV Deployment list html for entire database
+
+    """
+    latest_dovdeployment_list = DOVDeployment.objects.all()
+    return render_to_response(
+        'Force/dovDeploymentIndex.html',
+        {'latest_dovdeployment_list': latest_dovdeployment_list},
+        context_instance=RequestContext(request))
+
+
+def dovdeployment_detail(request, dovdeployment_id):
+    """@brief DOV Deployment html for a specifed AUV deployment
+
+    """
+
+    try:
+        dovdeployment_object = DOVDeployment.objects.get(id=dovdeployment_id)
+    except DOVDeployment.DoesNotExist:
+        error_string = 'This is the error_string'
+        return render_to_response(
+           'Force/data_missing.html',context_instance=RequestContext(request))
+
+    image_list = StereoImage.objects.filter(deployment=dovdeployment_id)
+
+    return render_to_response(
+        'Force/tvdeploymentInstance.html',
+        {'dovdeployment_object': dovdeployment_object,
+        'deployment_as_geojson': dovdeployment_object.start_position.geojson,
+        'image_list': image_list},
+        context_instance=RequestContext(request))
+
+
+def tvdeployments(request):
+    """@brief TV Deployment list html for entire database
+
+    """
+    latest_tvdeployment_list = TVDeployment.objects.all()
+    return render_to_response(
+        'Force/tvDeploymentIndex.html',
+        {'latest_tvdeployment_list': latest_tvdeployment_list},
+        context_instance=RequestContext(request))
+
+
+def tvdeployment_detail(request, tvdeployment_id):
+    """@brief TV Deployment html for a specifed AUV deployment
+
+    """
+
+    try:
+        tvdeployment_object = TVDeployment.objects.get(id=tvdeployment_id)
+    except TVDeployment.DoesNotExist:
+        error_string = 'This is the error_string'
+        return render_to_response(
+           'Force/data_missing.html',context_instance=RequestContext(request))
+
+    image_list = StereoImage.objects.filter(deployment=tvdeployment_id)
+
+    return render_to_response(
+        'Force/tvdeploymentInstance.html',
+        {'tvdeployment_object': tvdeployment_object,
+        'deployment_as_geojson': tvdeployment_object.start_position.geojson,
+        'image_list': image_list},
+        context_instance=RequestContext(request))
+
+
+def tideployments(request):
+    """@brief TI Deployment list html for entire database
+
+    """
+    latest_tideployment_list = TIDeployment.objects.all()
+    return render_to_response(
+        'Force/tiDeploymentIndex.html',
+        {'latest_tideployment_list': latest_tideployment_list},
+        context_instance=RequestContext(request))
+
+
+def tideployment_detail(request, tideployment_id):
+    """@brief TI Deployment html for a specifed AUV deployment
+
+    """
+
+    try:
+        tideployment_object = TIDeployment.objects.get(id=tideployment_id)
+    except TIDeployment.DoesNotExist:
+        error_string = 'This is the error_string'
+        return render_to_response(
+           'Force/data_missing.html',context_instance=RequestContext(request))
+
+    image_list = StereoImage.objects.filter(deployment=tideployment_id)
+
+    return render_to_response(
+        'Force/tideploymentInstance.html',
+        {'tideployment_object': tideployment_object,
+        'deployment_as_geojson': tideployment_object.start_position.geojson,
         'image_list': image_list},
         context_instance=RequestContext(request))
 
@@ -303,7 +414,12 @@ def campaign_detail(request, campaign_id):
     """@brief Campaign html for a specifed campaign object
 
     """
-    campaign_object = Campaign.objects.get(id=campaign_id)
+    try:
+        campaign_object = Campaign.objects.get(id=campaign_id)
+    except Campaign.DoesNotExist:
+        error_string = 'This is the error_string'
+        return render_to_response(
+           'Force/data_missing.html',context_instance=RequestContext(request))
     campaign_rects=list()
 
     #djf = Django.Django(geodjango="extent", properties=[''])
@@ -324,9 +440,11 @@ def campaign_detail(request, campaign_id):
     if(len(bruv_deployment_list) > 0):
         sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign_object).extent())
         campaign_rects.append(sm.envelope.geojson)
-    
-    sm_envelope = sm.envelope.geojson
-
+    try:
+        sm_envelope = sm.envelope.geojson
+    except AttributeError:
+        sm_envelope = ''
+        
     return render_to_response(
         'Force/campaignInstance.html',
         {'campaign_object': campaign_object,
