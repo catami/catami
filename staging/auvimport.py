@@ -3,6 +3,7 @@
 
 # date handling
 import datetime
+from dateutil.tz import tzutc
 
 # needed for thumbnailing
 import Image
@@ -116,7 +117,7 @@ class NetCDFParser:
 
     def unix_to_datetime(self, unix_time):
         """Short hand to convert unix to datetime."""
-        return datetime.datetime.fromtimestamp(unix_time)
+        return datetime.datetime.fromtimestamp(unix_time, tz=tzutc())
 
     def imos_to_datetime(self, imos_time):
         """Convert IMOS time to python datetime object.
@@ -124,7 +125,7 @@ class NetCDFParser:
         Utility function that chains the imos to unix and
         unix to datetime functions.
         """
-        return datetime.datetime.fromtimestamp(self.imos_to_unix(imos_time))
+        return datetime.datetime.fromtimestamp(self.imos_to_unix(imos_time), tz=tzutc())
 
     def next(self):
         """Get the next row in the NetCDF File.
