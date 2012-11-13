@@ -6,6 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class MetadataFile(models.Model):
     """Handles info about metadata files that have been uploaded.
 
@@ -19,4 +20,3 @@ class MetadataFile(models.Model):
 
     def __unicode__(self):
         return "<MetadataFile {0}>".format(self.metadata_file)
-

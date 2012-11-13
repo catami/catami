@@ -21,6 +21,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @login_required
 def index(request):
     """The home/index view for staging."""
@@ -29,6 +30,7 @@ def index(request):
     rcon = RequestContext(request)
 
     return render_to_response('staging/index.html', context, rcon)
+
 
 @login_required
 def campaigncreate(request):
@@ -48,6 +50,7 @@ def campaigncreate(request):
 
     return render_to_response('staging/campaigncreate.html', context, rcon)
 
+
 @login_required
 def campaigncreated(request):
     """Displays the thankyou message on campaigncreate success."""
@@ -55,6 +58,7 @@ def campaigncreated(request):
     rcon = RequestContext(request)
 
     return render_to_response('staging/campaigncreated.html', context, rcon)
+
 
 @login_required
 def auvprogress(request):
@@ -73,10 +77,10 @@ def auvprogress(request):
 
     if not uuid:
         raise Exception("Could not find uuid in cache.")
-
     # contains three elements that are needed to render
 
     return render_to_response('staging/auvprogress.html', context, rcon)
+
 
 @login_required
 def fileprogress(request):
@@ -93,10 +97,10 @@ def fileprogress(request):
 
     if not uuid:
         raise Exception("Coult not find uuid in cache.")
-
     # contains three elements that are needed to render
 
     return render_to_response('staging/fileprogress.html', context, rcon)
+
 
 @login_required
 def auvimport(request):
@@ -116,8 +120,8 @@ def auvimport(request):
                 track_key = uuid + "_track_key"
                 netcdf_key = uuid + "_netcdf_key"
 
-                cache.add(track_key, 0, 300) # last for 5 minutes
-                cache.add(netcdf_key, 0, 300) # last for 5 minutes
+                cache.add(track_key, 0, 300)  # last for 5 minutes
+                cache.add(netcdf_key, 0, 300)  # last for 5 minutes
 
                 input_params = (data['base_url'], str(data['campaign_name'].date_start), data['campaign_name'].short_name, data['mission_name'])
 
@@ -153,6 +157,7 @@ def auvimport(request):
 
     return render_to_response('staging/auvimport.html', context, rcon)
 
+
 @login_required
 def auvmanualimport(request):
     """The auvmanualimport view. Handles GET and POST for the form."""
@@ -171,8 +176,8 @@ def auvmanualimport(request):
                 track_key = uuid + "_track_key"
                 netcdf_key = uuid + "_netcdf_key"
 
-                cache.add(track_key, 0, 300) # last for 5 minutes
-                cache.add(netcdf_key, 0, 300) # last for 5 minutes
+                cache.add(track_key, 0, 300)  # last for 5 minutes
+                cache.add(netcdf_key, 0, 300)  # last for 5 minutes
 
                 input_params = (data['base_url'], str(data['campaign_name'].date_start), data['campaign_name'].short_name, data['mission_name'])
 
@@ -184,7 +189,6 @@ def auvmanualimport(request):
                 track_file = tasks.get_known_file(track_key, track_url)
                 logger.debug("auvmanualimport: fetching remote netcdf file.")
                 netcdf_file = tasks.get_known_file(netcdf_key, netcdf_url)
-
 
                 logger.debug("auvmanualimport: processing remote files to create json string.")
                 json_string = tasks.auvprocess(track_file, netcdf_file, *input_params)
@@ -209,6 +213,7 @@ def auvmanualimport(request):
 
     return render_to_response('staging/auvmanualimport.html', context, rcon)
 
+
 @login_required
 def auvimported(request):
     """Displays the thankyou message on auvimport success."""
@@ -216,6 +221,7 @@ def auvimported(request):
     rcon = RequestContext(request)
 
     return render_to_response('staging/auvimported.html', context, rcon)
+
 
 # to enable the handler to exist...
 @login_required
@@ -230,6 +236,7 @@ def fileupload(request):
     # data
     request.upload_handlers.insert(0, UploadProgressCachedHandler(request))
     return _fileupload(request)
+
 
 @csrf_protect
 def _fileupload(request):
@@ -255,7 +262,7 @@ def _fileupload(request):
                 else:
                     logger.debug("_fileupload: small file so pass string to json_sload.")
                     tasks.json_sload(upload.read())
-                
+
             except Exception as exc:
                 errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
                 errors.append("{0}: {1}".format(exc.__class__.__name__, exc))
@@ -270,6 +277,7 @@ def _fileupload(request):
 
     return render_to_response('staging/fileupload.html', context, rcon)
 
+
 @login_required
 def fileuploaded(request):
     """Thankyou message after uploaded file imported successfully."""
@@ -277,6 +285,7 @@ def fileuploaded(request):
     rcon = RequestContext(request)
 
     return render_to_response('staging/fileuploaded.html', context, rcon)
+
 
 @login_required
 def upload_progress(request):
@@ -295,6 +304,7 @@ def upload_progress(request):
         return HttpResponse(simplejson.dumps(data))
     else:
         return HttpResponseServerError('Server Error: You must provide X-Progress-ID header or query param.')
+
 
 @login_required
 def metadatastage(request):
@@ -325,6 +335,7 @@ def metadatastage(request):
 
     return render_to_response('staging/metadatastage.html', context, rcon)
 
+
 @login_required
 def metadatalist(request):
     """
@@ -342,6 +353,7 @@ def metadatalist(request):
     context['public_files'] = public_files
     context['user'] = request.user
     return render_to_response('staging/metadatalist.html', context, rcon)
+
 
 @login_required
 def change_public(request):
@@ -371,6 +383,7 @@ def change_public(request):
         # return an empty response - we aren't looking for replies
         return HttpResponse()
 
+
 @login_required
 def metadatabook(request, file_id):
     """
@@ -390,6 +403,7 @@ def metadatabook(request, file_id):
     rcon = RequestContext(request)
 
     return render_to_response('staging/metadatabook.html', context, rcon)
+
 
 @login_required
 def metadatasheet(request, file_id, page_name):
@@ -430,9 +444,10 @@ def metadatasheet(request, file_id, page_name):
     context['sheet_name'] = sheet_name
     context['headings'] = headings
     context['data_rows'] = data_rows
-    context['models'] =  model_mapping.keys()
+    context['models'] = model_mapping.keys()
 
     return render_to_response('staging/metadatasheet.html', context, rcon)
+
 
 @login_required
 def metadataimport(request, file_id, page_name, model_name):
@@ -452,7 +467,7 @@ def metadataimport(request, file_id, page_name, model_name):
 
     # map the name to the deployment model
     model_mapping = metadata.metadata_models()
-    model = model_mapping[model_name] # throws if it doesn't exist
+    model = model_mapping[model_name]  # throws if it doesn't exist
 
     # process the structure to get what we need
     # it is a set of dictionaries
@@ -491,6 +506,7 @@ def metadataimport(request, file_id, page_name, model_name):
 
     return render_to_response('staging/metadataimport.html', context, rcon)
 
+
 @login_required
 def metadatadelete(request, file_id):
     """Command to delete metadata file.
@@ -508,6 +524,7 @@ def metadatadelete(request, file_id):
 
     return redirect('staging.views.metadatalist')
 
+
 @login_required
 def metadataimported(request):
     """Displays the thankyou message on metadataimport success."""
@@ -515,6 +532,7 @@ def metadataimported(request):
     rcon = RequestContext(request)
 
     return render_to_response('staging/metadataimported.html', context, rcon)
+
 
 @login_required
 def annotationcpcimport(request):
@@ -545,6 +563,7 @@ def annotationcpcimport(request):
     context['form'] = form
 
     return render_to_response('staging/annotationcpcimport.html', context, rcon)
+
 
 @login_required
 def annotationcpcimported(request):

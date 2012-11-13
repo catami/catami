@@ -13,8 +13,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class PointWidget(MultiWidget):
     """A form widget to represent the gis Point model field."""
+
     def __init__(self, attrs=None):
         widgets = (
             TextInput(attrs=attrs),
@@ -77,9 +79,9 @@ class ExtractData:
 
     def __init__(self, base_field, source, column_labels, fixed_data):
         """Creates an object to be used in processing data."""
-        self.source = source # the string denoting the source 'fixed' or 'column'
-        self.column_labels = column_labels # the labels to be used
-        self.fixed_data = fixed_data # the fixed value to use
+        self.source = source  # the string denoting the source 'fixed' or 'column'
+        self.column_labels = column_labels  # the labels to be used
+        self.fixed_data = fixed_data  # the fixed value to use
         self.base_field = base_field
 
     def decompress(self):
@@ -115,6 +117,7 @@ class MultiSourceWidget(MultiWidget):
     It renders as radioboxes allowing selection of with method to
     use to import the data.
     """
+
     def __init__(self, base_widget, attrs=None):
         self.radio = RadioSelect(attrs=attrs)
         self.cols = MultiColumnWidget(base_widget, attrs=attrs)
@@ -180,7 +183,6 @@ function swapSource(column_radio, column_id_base, fixed_id_base)
 </script>"""
             output.append(script)
 
-
         # make the heading...
         output.append(u'<table><thead><tr>')
 
@@ -190,12 +192,12 @@ function swapSource(column_radio, column_id_base, fixed_id_base)
             column_id_base = "{0}_{1}".format(id_, 1)
             fixed_id_base = "{0}_{1}".format(id_, 2)
             radio_id_first = "{0}_{1}_{2}".format(id_, 0, 0)
-            onchange="swapSource('{0}', '{1}', '{2}')".format(radio_id_first, column_id_base, fixed_id_base)
+            onchange = "swapSource('{0}', '{1}', '{2}')".format(radio_id_first, column_id_base, fixed_id_base)
             radio_attrs = dict(base_attrs, id="{0}_{1}".format(id_, 0), onchange=onchange)
         else:
             radio_attrs = base_attrs
 
-        for ri in self.widgets[0].subwidgets("{0}_{1}".format(name, 0) , value[0], radio_attrs):
+        for ri in self.widgets[0].subwidgets("{0}_{1}".format(name, 0), value[0], radio_attrs):
             output.append(u'<th>{0}</th>'.format(ri))
 
         final_attrs = base_attrs
@@ -224,7 +226,7 @@ function swapSource(column_radio, column_id_base, fixed_id_base)
             subname = "{0}_{1}".format(name, 2)
             base_widget_output = base_widget.render(subname, value[2], final_attrs)
 
-            label = "" #self.widgets[2]
+            label = ""  # self.widgets[2]
 
             output.append(u'<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>'.format(label, col_widget_output, base_widget_output))
         else:
@@ -256,7 +258,6 @@ function swapSource(column_radio, column_id_base, fixed_id_base)
                     if isinstance(self.widgets[2], PointWidget):
                         # now get the labels...
                         pass
-
                 #label = "{0}".format(dir(base_widget))
                 #label = "{0}".format(base_widget.id_for_label)
 
@@ -382,4 +383,3 @@ class MultiColumnField(MultiValueField):
             return data_list
 
         return None
-

@@ -36,4 +36,3 @@ urlpatterns = patterns('staging.views',
     url(r'^annotations/cpc/import$', 'annotationcpcimport', name='staging_annotation_cpc_import'),
     url(r'^annotations/cpc/imported$', 'annotationcpcimported', name='staging_annotation_cpc_imported'),
 )
-
