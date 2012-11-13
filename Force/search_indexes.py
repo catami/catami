@@ -9,15 +9,16 @@ Edits :: Name : Date : description
 from haystack import indexes
 from Force.models import Campaign, AUVDeployment, BRUVDeployment, Deployment
 
+
 class CampaignIndex(indexes.SearchIndex, indexes.Indexable):
     """@brief Campaign Index
 
     """
     text = indexes.CharField(document=True, use_template=True)
- 
+
     def get_model(self):
         return Campaign
- 
+
     def index_queryset(self):
         return self.get_model().objects.all()
 
@@ -30,7 +31,7 @@ class DeploymentIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Deployment
- 
+
     def index_queryset(self):
         return self.get_model().objects.all()
 
@@ -44,7 +45,7 @@ class AUVDeploymentIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return AUVDeployment
- 
+
     def index_queryset(self):
         return self.get_model().objects.all()
 
@@ -58,6 +59,6 @@ class BRUVDeploymentIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return BRUVDeployment
- 
+
     def index_queryset(self):
         return self.get_model().objects.all()

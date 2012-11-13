@@ -3,7 +3,7 @@
 
 __author__ = "Lachlan Toohey"
 
-from openpyxl import load_workbook # for xlsx
+from openpyxl import load_workbook  # for xlsx
 from openpyxl.cell import column_index_from_string
 from xlrd import open_workbook, xldate_as_tuple
 import os.path
@@ -16,6 +16,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def metadata_models():
     mapping = dict()
     mapping['bruv'] = BRUVDeployment
@@ -24,6 +25,7 @@ def metadata_models():
     mapping['tv'] = TVDeployment
 
     return mapping
+
 
 def xls_outline(metadata_file, heading_row=0):
     """Return a dictionary describing the file.
@@ -51,6 +53,7 @@ def xls_outline(metadata_file, heading_row=0):
 
     return descriptor
 
+
 def xlsx_outline(metadata_file, heading_row=0):
     """Return a dictionary describing the file.
 
@@ -77,6 +80,7 @@ def xlsx_outline(metadata_file, heading_row=0):
         descriptor[sheet] = headings
 
     return descriptor
+
 
 def xls_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields={}, heading_row=0):
     """Prepares rows of excel file to 'structure' format for further processing.
@@ -113,7 +117,7 @@ def xls_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields
     logger.debug("xls_transform: mapping {0} columns.".format(len(field_column_map)))
 
     structure = []
-    for row in xrange(heading_row+1, nrows):
+    for row in xrange(heading_row + 1, nrows):
         # initialise using the shared base
         fields = dict(shared_fields)
 
@@ -124,7 +128,7 @@ def xls_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields
             ctype = cell.ctype
 
             #if ftype == 1: # ie estimated DATE
-            if ctype == 3: # cell type marked as date
+            if ctype == 3:  # cell type marked as date
                 try:
                     # if ambiguous throws an exception
                     output = xldate_as_tuple(cell.value, workbook.datemode)
@@ -152,6 +156,7 @@ def xls_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields
         structure.append(fields)
 
     return structure
+
 
 def xlsx_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields={}, heading_row=0):
     """Prepares rows of excel file to 'structure' format for further processing.
@@ -188,7 +193,7 @@ def xlsx_transform(metadata_file, sheet_name, field_heading_map={}, shared_field
 
     structure = []
     # now extract the real rows of interest
-    for data_row in xrange(heading_row+1, worksheet.get_highest_row()+1):
+    for data_row in xrange(heading_row + 1, worksheet.get_highest_row() + 1):
 
         # initialise using the shared base
         fields = dict(shared_fields)
@@ -200,4 +205,3 @@ def xlsx_transform(metadata_file, sheet_name, field_heading_map={}, shared_field
         structure.append(fields)
 
     return structure
-

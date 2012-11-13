@@ -24,6 +24,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def get_known_file(key, url):
     """Download a file and return a file-like handle to it.
 
@@ -73,6 +74,7 @@ def get_known_file(key, url):
 
     return file_handle
 
+
 def get_netcdf_file(key, pattern, start_time):
     """Search for then download a file that has a naming pattern based on time.
 
@@ -85,9 +87,9 @@ def get_netcdf_file(key, pattern, start_time):
     If the file is not found an error an IO error is thrown.
     """
     search_seconds = 10
-    
+
     for i in xrange(search_seconds):
-        start_time += datetime.timedelta(0, 1) # add a second
+        start_time += datetime.timedelta(0, 1)  # add a second
         url = pattern.format(date_string=start_time.strftime('%Y%m%dT%H%M%S'))
         try:
             file_handle = get_known_file(key, url)
@@ -100,6 +102,7 @@ def get_netcdf_file(key, pattern, start_time):
         raise IOError(0, "Cannot find netcdf file.", pattern)
 
     return file_handle
+
 
 def auvfetch(base_url, campaign_date, campaign_name, mission_name):
     """Calculate the track file url and the netcdf url pattern.
@@ -131,6 +134,7 @@ def auvfetch(base_url, campaign_date, campaign_name, mission_name):
 
     return (trackfile_name, netcdfseabird_name, datetime_object)
 
+
 def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_name, mission_name, limit=None):
     """Process the track and netcdf files into the importable json string."""
     # recreate the mission parameters etc.
@@ -142,7 +146,7 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
     mission_base = base_url + "/" + campaign_name + "/" + mission_name
 
     # the base directory for the geotiffs
-    image_base =  mission_base + "/i" + mission_datetime + "_gtif/"
+    image_base = mission_base + "/i" + mission_datetime + "_gtif/"
 
     # these have the precise local names of the files
     netcdf_seabird = NetCDFParser(netcdf_file)
@@ -151,8 +155,7 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
     datetime_object = datetime.datetime.strptime(mission_datetime, "%Y%m%d_%H%M%S")
     start_datestring = str(datetime_object)
 
-    deployment_nk = [start_datestring , mission_text]
-
+    deployment_nk = [start_datestring, mission_text]
 
     # the running max and min survey depths
     depth_lim = LimitTracker('depth')
@@ -174,7 +177,7 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         rimage = row['rightimage']
 
         pose = dict()
-        pose['deployment'] = deployment_nk # the foreign key, whatever the natural key is
+        pose['deployment'] = deployment_nk  # the foreign key, whatever the natural key is
         seconds, centiseconds = row['second'].split('.')
         image_datetime = datetime.datetime.strptime(os.path.splitext(limage)[0], "PR_%Y%m%d_%H%M%S_%f_LC16")
         pose['date_time'] = image_datetime
@@ -212,7 +215,6 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         lat_lim.check(row)
         lon_lim.check(row)
 
-    
         # get the actual image (probably png/tiff)
         #pose['left_thumbnail_reference'] = thumbnailer(os.path.join(img_dir_name, pose['left_image_reference']))
         #pose['right_thumbnail_reference'] = thumbnailer(os.path.join(img_dir_name, pose['right_image_reference']))
@@ -220,13 +222,11 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         # quick hax to use instead of embedding the thumbnail
         pose['left_thumbnail_reference'] = pose['left_image_reference']
 
-
         # add the stereo here
         stereopose = {}
-        stereopose['image_ptr'] = [deployment_nk, pose['date_time']] #list(deployment_nk).append(pose['date_time'])
+        stereopose['image_ptr'] = [deployment_nk, pose['date_time']]  # list(deployment_nk).append(pose['date_time'])
         stereopose['right_image_reference'] = image_base + "{0}.tif".format(os.path.splitext(rimage)[0])
         stereopose['right_thumbnail_reference'] = stereopose['right_image_reference']
-
 
         print "Added pose at ", pose['date_time']
 
@@ -235,42 +235,44 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
 
     deployment = {}
     # take the position of the first image
-    deployment['campaign'] = [ campaign_datestring, campaign_name] # the foreign key
+    deployment['campaign'] = [campaign_datestring, campaign_name]  # the foreign key
     deployment['short_name'] = mission_text
     deployment['start_position'] = poselist[0]['fields']['image_position']
     # the start from the mission time - potentially should shift to first image?
-    deployment['start_time_stamp'] = start_datestring 
+    deployment['start_time_stamp'] = start_datestring
     # from the last image taken (last image, not stereoImages)
     deployment['end_time_stamp'] = poselist[-2]['fields']['date_time']
     deployment['mission_aim'] = "The aim of the mission."
     deployment['min_depth'] = depth_lim.minimum
     deployment['max_depth'] = depth_lim.maximum
 
-
     auvdeployment = {}
-    auvdeployment['deployment_ptr'] = deployment_nk # the foreign key, whatever the natural key is
+    auvdeployment['deployment_ptr'] = deployment_nk  # the foreign key, whatever the natural key is
     auvdeployment['transect_shape'] = "POLYGON(({0} {2}, {0} {3}, {1} {3}, {1} {2}, {0} {2} ))".format(lon_lim.minimum, lon_lim.maximum, lat_lim.minimum, lat_lim.maximum)
-    auvdeployment['distance_covered'] = 100.0 # just make it up... will work out later
+    auvdeployment['distance_covered'] = 100.0  # just make it up... will work out later
 
-    deploy = { 'pk': None, 'model': 'Force.Deployment', 'fields': deployment }
-    auvdeploy = { 'pk': None, 'model': 'Force.AUVDeployment', 'fields': auvdeployment }
+    deploy = {'pk': None, 'model': 'Force.Deployment', 'fields': deployment}
+    auvdeploy = {'pk': None, 'model': 'Force.AUVDeployment', 'fields': auvdeployment}
 
     structure = [deploy, auvdeploy]
     structure.extend(poselist)
 
     return json.dumps(structure)
 
+
 def json_sload(json_string):
     """Load the json string into the database."""
-    # now load into the database 
+    # now load into the database
     json_real_load(json_string)
+
 
 def json_fload(file_name):
     """Load the json in file 'file_name' in to the database."""
-    # now load into the database 
+    # now load into the database
     json_file = open(file_name, 'r')
     print file_name
     json_real_load(json_file)
+
 
 def json_real_load(data):
     """The function that does the real load of json into the database.
@@ -296,6 +298,7 @@ def json_real_load(data):
         else:
             transaction.commit()
 
+
 def metadata_type(metadata_file):
     base, extension = os.path.splitext(metadata_file)
 
@@ -312,6 +315,7 @@ def metadata_type(metadata_file):
         logger.debug("metadata_type: file is unknown format.")
         return ""
 
+
 def metadata_sheet_names(metadata_file):
     """Return a list of sheet names in the file."""
     logger.debug("metadata_sheet_names: getting sheet names.")
@@ -319,6 +323,7 @@ def metadata_sheet_names(metadata_file):
     structure = metadata_outline(metadata_file)
 
     return structure.keys()
+
 
 def metadata_sheet_name_deslug(metadata_file, slugged_name):
     """Get the deslugged version of the sheet name."""
@@ -329,6 +334,7 @@ def metadata_sheet_name_deslug(metadata_file, slugged_name):
             return sheet_name
 
     return None
+
 
 def metadata_outline(metadata_file, *args, **kwargs):
     """Get an outline of the metadata file structure."""
@@ -343,6 +349,7 @@ def metadata_outline(metadata_file, *args, **kwargs):
         logger.warning("metadata_outline: cannot handle extension '{0}'".format(data_type))
         return None
 
+
 def metadata_transform(metadata_file, *args, **kwargs):
     """Transform the and extract data from the metadata file."""
     logger.debug("metadata_transform: transforming file data.")
@@ -356,6 +363,7 @@ def metadata_transform(metadata_file, *args, **kwargs):
         logger.warning("metadata_outline: cannot handle extension '{0}'".format(data_type))
         return None
 
+
 def metadata_import(model_class, fields_list, field_mappings):
     """Import metadata into the database.
 
@@ -363,7 +371,6 @@ def metadata_import(model_class, fields_list, field_mappings):
     - field_mappings are the objects that maps rows of data to fields
     - fields_list is the raw data that is being imported
     """
-
     # we are going to make some checks/assumptions here
     # first is that we *always* inherit from Deployment.
     # second (that possibly will get removed) is that the levels
@@ -398,7 +405,7 @@ def metadata_import(model_class, fields_list, field_mappings):
                 try:
                     for field_name, extractor in field_mappings.iteritems():
                         outfields[field_name] = extractor.get_data(row)
-                except Exception as exc:# ValidationError as exc:
+                except Exception as exc:  # ValidationError as exc:
                     # do nothing, just drop row and continue to
                     # next
                     logger.warning("Validation failed on row.")
@@ -412,7 +419,6 @@ def metadata_import(model_class, fields_list, field_mappings):
 
                 # split to parent
                 base_fields = {field: value for field, value in outfields.iteritems() if field in base_field_names}
-
 
                 # and child
                 subclass_fields = {field: value for field, value in outfields.iteritems() if field in subclass_field_names}
@@ -440,13 +446,13 @@ def metadata_import(model_class, fields_list, field_mappings):
             transaction.commit()
             logger.debug("Commiting")
 
+
 def annotation_cpc_import(user, deployment, cpc_file_handles):
     """Import CPC annotations into the database.
 
     This is currently targetted at AUV dives. Not sure if used
     beyond that realm.
     """
-
     # deployment is used to reduce the search space/chance of collision with images
     # still also need mapping of local ids to catami users
 
@@ -465,7 +471,6 @@ def annotation_cpc_import(user, deployment, cpc_file_handles):
 
         # extract the timing info from the file name
         image_datetime = datetime.datetime.strptime(image_name, "PR_%Y%m%d_%H%M%S_%f_LC16")
-
         # now look it up... hopefully the timestamp will match something in the database
 
         image = subset.get(date_time=image_datetime)

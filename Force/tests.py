@@ -7,4 +7,3 @@ Replace this with more appropriate tests for your application.
 """
 
 execfile('runUnitTests.py')
-
