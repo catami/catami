@@ -18,6 +18,8 @@ from .auvimport import NetCDFParser, LimitTracker, TrackParser
 from .annotations import CPCFileParser
 import metadata
 
+from dateutil.tz import tzutc
+
 import Force.models
 
 import logging
@@ -131,6 +133,7 @@ def auvfetch(base_url, campaign_date, campaign_name, mission_name):
     netcdfseabird_name = netcdf_base + 'IMOS_AUV_ST_{date_string}Z_SIRIUS_FV00.nc'
 
     datetime_object = datetime.datetime.strptime(mission_datetime, "%Y%m%d_%H%M%S")
+    datetime_object = datetime_object.replace(tzinfo=tzutc())
 
     return (trackfile_name, netcdfseabird_name, datetime_object)
 
@@ -153,6 +156,7 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
     trackparser = TrackParser(track_file)
 
     datetime_object = datetime.datetime.strptime(mission_datetime, "%Y%m%d_%H%M%S")
+    datetime_object = datetime_object.replace(tzinfo=tzutc())
     start_datestring = str(datetime_object)
 
     deployment_nk = [start_datestring, mission_text]
@@ -180,6 +184,7 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         pose['deployment'] = deployment_nk  # the foreign key, whatever the natural key is
         seconds, centiseconds = row['second'].split('.')
         image_datetime = datetime.datetime.strptime(os.path.splitext(limage)[0], "PR_%Y%m%d_%H%M%S_%f_LC16")
+        image_datetime = image_datetime.replace(tzinfo=tzutc())
         pose['date_time'] = image_datetime
 
         # GEO JSON is long-lat not lat-long
@@ -228,8 +233,6 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         stereopose['right_image_reference'] = image_base + "{0}.tif".format(os.path.splitext(rimage)[0])
         stereopose['right_thumbnail_reference'] = stereopose['right_image_reference']
 
-        print "Added pose at ", pose['date_time']
-
         poselist.append({'pk': None, 'model': 'Force.Image', 'fields': pose})
         poselist.append({'pk': None, 'model': 'Force.StereoImage', 'fields': stereopose})
 
@@ -270,7 +273,6 @@ def json_fload(file_name):
     """Load the json in file 'file_name' in to the database."""
     # now load into the database
     json_file = open(file_name, 'r')
-    print file_name
     json_real_load(json_file)
 
 
@@ -471,6 +473,7 @@ def annotation_cpc_import(user, deployment, cpc_file_handles):
 
         # extract the timing info from the file name
         image_datetime = datetime.datetime.strptime(image_name, "PR_%Y%m%d_%H%M%S_%f_LC16")
+        image_datetime = image_datetime.replace(tz=utc)
         # now look it up... hopefully the timestamp will match something in the database
 
         image = subset.get(date_time=image_datetime)
