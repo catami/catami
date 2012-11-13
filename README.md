@@ -18,6 +18,7 @@ Prerequists
 * Libproj Dev
 * GDAL
 * Scientific Python
+* south
 
 Install system prerequisits with apt-get
 ----------------------------------------
@@ -69,12 +70,7 @@ Checkout the code and GO!
     git clone https://github.com/catami/catami.git
     cd catami
     pip install -r requirements.txt
-    ./managepy syncdb
-    ./managepy runserver
-
-
-
-
-
-
-
+    ./manage.py syncdb
+    ./manage.py schemamigration Force --initial
+    ./manage.py migrate Force --auto
+    ./manage.py runserver
