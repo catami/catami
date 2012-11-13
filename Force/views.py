@@ -18,7 +18,7 @@ from django.shortcuts import render_to_response, redirect, render
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
-from Force.models import Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation
+from Force.models import Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment
 
 
 class spatial_search_form(forms.Form):
