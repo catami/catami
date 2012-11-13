@@ -18,7 +18,8 @@ from django.shortcuts import render_to_response, redirect, render
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
-from Force.models import Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment
+from Force.models import Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation
+
 
 class spatial_search_form(forms.Form):
     """@brief Simple spatial search form for Catami data
@@ -45,19 +46,19 @@ def spatialsearch(request):
     """@brief Spatial search for Catami data
 
     """
-    if request.method == 'POST': # If the form has been submitted...
-        form = spatial_search_form(request.POST) # A form bound to the POST data
-        if form.is_valid(): # All validation rules pass
+    if request.method == 'POST':  # If the form has been submitted...
+        form = spatial_search_form(request.POST)  # A form bound to the POST data
+        if form.is_valid():  # All validation rules pass
             # Process the data in form.cleaned_data
             # ...
-            deployment_points=list()
+            deployment_points = list()
             deployment_objects = list()
 
             latitude = form.cleaned_data['latitude']
             longitude = form.cleaned_data['longitude']
-            searchradius =  form.cleaned_data['searchradius']
+            searchradius = form.cleaned_data['searchradius']
 
-            geom =  fromstr('POINT(%s %s)' % (longitude, latitude))
+            geom = fromstr('POINT(%s %s)' % (longitude, latitude))
             # get deployments within distance
             auv_deployment_list = AUVDeployment.objects.filter(start_position__distance_lte=(geom, D(km=searchradius)))
             bruv_deployment_list = BRUVDeployment.objects.filter(start_position__distance_lte=(geom, D(km=searchradius)))
@@ -75,18 +76,18 @@ def spatialsearch(request):
             # make geojson for appended set
             return render_to_response('Force/spatialSearch.html', {
                           'form': form,
-                          'latitude':latitude,
-                          'longitude':longitude,
-                          'searchradius':searchradius,
-                          'deployment_points':deployment_points,
-                          'deployment_objects':deployment_objects,},
+                          'latitude': latitude,
+                          'longitude': longitude,
+                          'searchradius': searchradius,
+                          'deployment_points': deployment_points,
+                          'deployment_objects': deployment_objects, },
                           context_instance=RequestContext(request))
     else:
-        form = spatial_search_form() # An unbound form
+        form = spatial_search_form()  # An unbound form
 
     return render_to_response('Force/spatialSearch.html', {
         'form': form,
-    },context_instance=RequestContext(request))
+    }, context_instance=RequestContext(request))
 
 
 def add_campaign(request):
@@ -182,8 +183,7 @@ def auvdeployment_detail(request, auvdeployment_id):
         context_instance=RequestContext(request))
 
 
-
-def annotationview(request,auvdeployment_id, image_index):
+def annotationview(request, auvdeployment_id, image_index):
     """@brief AUV annotation view
 
     """
@@ -207,12 +207,12 @@ def annotationview(request,auvdeployment_id, image_index):
             if(Annotation.objects.filter(image_reference=image).count() > 0):
                 return render_to_response(
                     'Force/annotationview.html',
-                    {'auvdeployment_object':auvdeployment_object,
-                     'image_index':local_image_index,
-                     'image_index_prev':local_image_index-1,
-                     'image_index_next':local_image_index+1,
-                     'annotated_image':image,
-                     'annotation_list':Annotation.objects.filter(image_reference=image)},
+                    {'auvdeployment_object': auvdeployment_object,
+                     'image_index': local_image_index,
+                     'image_index_prev': local_image_index - 1,
+                     'image_index_next': local_image_index + 1,
+                     'annotated_image': image,
+                     'annotation_list': Annotation.objects.filter(image_reference=image)},
                     context_instance=RequestContext(request))
 
     for image in image_list:
@@ -221,23 +221,23 @@ def annotationview(request,auvdeployment_id, image_index):
             if(local_image_index > initial_image_index):
 
                 for annotation in Annotation.objects.filter(image_reference=image):
-                    text="<p style='z-index:100; position:absolute;  color:white; font-size:12px; font-weight:normal; left:"+str(annotation.point.x*100)+"%; top:"+str(str(annotation.point.y*100))+"%;'>"+annotation.code+"</p>"
+                    text = "<p style='z-index:100; position:absolute;  color:white; font-size:12px; font-weight:normal; left:" + str(annotation.point.x * 100) + "%; top:" + str(str(annotation.point.y * 100)) + "%;'>" + annotation.code + "</p>"
                     styled_annotation_data.append(text)
                 return render_to_response(
                     'Force/annotationview.html',
-                    {'auvdeployment_object':auvdeployment_object,
-                    'image_index':local_image_index,
-                     'image_index_prev':local_image_index-1,
-                     'image_index_next':local_image_index+1,
-                     'annotated_image':image,
-                     'styled_annotation_data':styled_annotation_data,
-                     'annotation_list':Annotation.objects.filter(image_reference=image)},
+                    {'auvdeployment_object': auvdeployment_object,
+                    'image_index': local_image_index,
+                     'image_index_prev': local_image_index - 1,
+                     'image_index_next': local_image_index + 1,
+                     'annotated_image': image,
+                     'styled_annotation_data': styled_annotation_data,
+                     'annotation_list': Annotation.objects.filter(image_reference=image)},
                     context_instance=RequestContext(request))
 
     return render_to_response(
         'Force/annotationview.html',
-        {'auvdeployment_object':auvdeployment_object,
-        'image_notfound_index':image_index},
+        {'auvdeployment_object': auvdeployment_object,
+        'image_notfound_index': image_index},
         context_instance=RequestContext(request))
 
 
@@ -389,7 +389,7 @@ def campaigns(request):
 
     """
     latest_campaign_list = Campaign.objects.all()
-    campaign_rects=list()
+    campaign_rects = list()
 
     for campaign in latest_campaign_list:
         auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign)
@@ -402,11 +402,10 @@ def campaigns(request):
             sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign).extent())
             campaign_rects.append(sm.envelope.geojson)
 
-
     return render_to_response(
         'Force/campaignIndex.html',
         {'latest_campaign_list': latest_campaign_list,
-        'campaign_rects':campaign_rects},
+        'campaign_rects': campaign_rects},
         context_instance=RequestContext(request))
 
 
@@ -427,13 +426,12 @@ def campaign_detail(request, campaign_id):
     auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign_object)
     bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign_object)
     dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign_object)
-
     #geoj = GeoJSON.GeoJSON()
     #sm = AUVDeployment.objects.filter(transect_shape__bbcontains=pnt_wkt)
     #sm = AUVDeployment.objects.all().extent
     #sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign_object).extent())
-    
-    sm=' '
+
+    sm = ' '
     if(len(auv_deployment_list) > 0):
         sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign_object).extent())
         campaign_rects.append(sm.envelope.geojson)

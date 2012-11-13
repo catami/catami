@@ -13,6 +13,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
+
 #@login_required
 def index(request):
     """@brief returns root catami html
@@ -20,8 +21,8 @@ def index(request):
     """
     context = {}
 
-    return render_to_response('catamiPortal/index.html', 
-        context, 
+    return render_to_response('catamiPortal/index.html',
+        context,
         RequestContext(request))
 
 
@@ -31,8 +32,8 @@ def faq(request):
     """
     context = {}
 
-    return render_to_response('catamiPortal/faq.html', 
-        context, 
+    return render_to_response('catamiPortal/faq.html',
+        context,
         RequestContext(request))
 
 
@@ -42,8 +43,8 @@ def contact(request):
     """
     context = {}
 
-    return render_to_response('catamiPortal/contact.html', 
-        context, 
+    return render_to_response('catamiPortal/contact.html',
+        context,
         RequestContext(request))
 
 
@@ -53,6 +54,3 @@ def logout_view(request):
     """
     logout(request)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
-
-
-    

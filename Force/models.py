@@ -11,6 +11,7 @@ Edits :: Name : Date : description
 from django.db import models
 #from django_postgresql.manager import PgManager
 from django.contrib.gis.db import models
+
 #from django.contrib.gis.geos import GEOSGeometry
 
 class CampaignManager(models.GeoManager):
@@ -18,13 +19,14 @@ class CampaignManager(models.GeoManager):
     date_start and short_name keypair
     
     """
-    
+
     def get_by_natural_key(self, date_start, short_name):
         """@brief Accessor method for natural key
         @return natural_key pair
 
         """
         return self.get(date_start=date_start, short_name=short_name)
+
 
 class Campaign(models.Model):
     """@brief A campain describes a field campaign that has many deployments."""
@@ -57,7 +59,8 @@ class Campaign(models.Model):
 
     class Meta:
         """@brief defines the natural key pair"""
-        unique_together = (('date_start','short_name'),)
+        unique_together = (('date_start', 'short_name'), )
+
 
 class DeploymentManager(models.GeoManager):
     """@brief Define a natural key for the Deployment class and return
@@ -72,6 +75,7 @@ class DeploymentManager(models.GeoManager):
         """
         return self.get(start_time_stamp=start_time_stamp,
                         short_name=short_name)
+
 
 class Deployment(models.Model):
     """ @brief This is the super deployment class which holds all
@@ -97,7 +101,7 @@ class Deployment(models.Model):
             try:
                 subclass = getattr(self, subtype)
             except self.DoesNotExist:
-                continue # go to the next
+                continue  # go to the next
             else:
                 return subclass.__unicode__()
         else:
@@ -110,8 +114,9 @@ class Deployment(models.Model):
 
     class Meta:
         """@brief defines the natural key pair"""
-        unique_together = (('start_time_stamp','short_name'),)
-    
+        unique_together = (('start_time_stamp', 'short_name'), )
+
+
 class ImageManager(models.Manager):
     """@brief Define a natural key for the Image class and return
     date_start and short_name keypair
@@ -125,6 +130,7 @@ class ImageManager(models.Manager):
         """
         deployment = Deployment.objects.get_by_natural_key(*deployment_key)
         return self.get(deployment=deployment, date_time=date_time)
+
 
 class Image(models.Model):
     """@brief This is the super image class, mono images reference use the left
@@ -148,12 +154,13 @@ class Image(models.Model):
 
     def natural_key(self):
         """@return natural_key deployment date_time  """
-        return self.deployment.natural_key() + (self.dateTime,)
+        return self.deployment.natural_key() + (self.dateTime, )
     natural_key.dependencies = ['Force.deployment']
 
     class Meta:
         """@brief defines the natural key pair"""
-        unique_together = (('deployment', 'date_time'),)
+        unique_together = (('deployment', 'date_time'), )
+
 
 class User(models.Model):
     '''
@@ -170,6 +177,7 @@ class User(models.Model):
     title = models.CharField(max_length=200)
     organisation = models.CharField(max_length=200)
     email = models.EmailField()
+
 
 class AUVDeployment(Deployment):
     """@brief Deployment model for AUV data"""
@@ -191,6 +199,7 @@ class AUVDeployment(Deployment):
 
     def __unicode__(self):
         return "AUV: {0} - {1}".format(self.start_time_stamp, self.short_name)
+
 
 class StereoImage(Image):
     """@brief Extends the image class to include right images"""
@@ -214,9 +223,9 @@ class StereoImage(Image):
     right_thumbnail_reference = models.URLField()
     right_image_reference = models.URLField()
 
+
 class Annotation(models.Model):
     """@brief Model that hold the annotation data refering to the images"""
-
     # ??? Do we want differnt annotation types?  ie an abstract class ???
 
     #==================================================#
@@ -235,6 +244,7 @@ class Annotation(models.Model):
     user_who_annotated = models.ForeignKey(User)
     comments = models.TextField()
 
+
 class BRUVDeployment(Deployment):
     """@brief Model that holds the Baited RUV data """
     objects = models.GeoManager()
@@ -248,7 +258,7 @@ class DOVDeployment(Deployment):
     objects = models.GeoManager()
 
     diver_name = models.TextField()
-    
+
     def __unicode__(self):
         return "DOV: {0} - {1}".format(self.start_time_stamp, self.short_name)
 

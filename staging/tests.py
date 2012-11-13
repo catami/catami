@@ -59,8 +59,8 @@ class StagingTests(TestCase):
         test_urls.append(reverse('staging_metadata_book_update_public'))
         test_urls.append(reverse('staging_metadata_book', args=['0']))
         test_urls.append(reverse('staging_metadata_delete', args=['0']))
-        test_urls.append(reverse('staging_metadata_sheet', args=['0','name']))
-        test_urls.append(reverse('staging_metadata_import', args=['0','name','model']))
+        test_urls.append(reverse('staging_metadata_sheet', args=['0', 'name']))
+        test_urls.append(reverse('staging_metadata_import', args=['0', 'name', 'model']))
         test_urls.append(reverse('staging_metadata_imported'))
         test_urls.append(reverse('staging_annotation_cpc_import'))
         test_urls.append(reverse('staging_annotation_cpc_imported'))
@@ -134,10 +134,9 @@ class StagingTests(TestCase):
         self.assertEqual(dict_value_track.minimum, -10.0)
 
 
-
 class StagingNetworkTests(TestCase):
     """Tests for Staging that require the internet to access things."""
-    
+
     def setUp(self):
         """Set up the test variables/parameters."""
         setup_login(self)
@@ -171,7 +170,7 @@ class StagingNetworkTests(TestCase):
         netcdf_key = "netcdf_key"
 
         return_values = tasks.auvfetch(*input_params)
-        track_url, netcdf_urlpattern, start_time = return_values 
+        track_url, netcdf_urlpattern, start_time = return_values
 
         track_file = tasks.get_known_file(track_key, track_url)
         netcdf_file = tasks.get_netcdf_file(netcdf_key, netcdf_urlpattern, start_time)

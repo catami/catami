@@ -16,6 +16,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class CampaignCreateForm(forms.ModelForm):
     class Meta:
         model = Campaign
@@ -46,7 +47,6 @@ class AUVImportForm(forms.Form):
     campaign_name.help_text = "Campaign to add deployment to."
     mission_name.help_text = "Short Name/Folder Name of the mission to import."
     base_url.help_text = "Base URL to import from."
-
     # extra validation/clearning
 
     def clean_mission_name(self):
@@ -97,12 +97,15 @@ class FileImportForm(forms.Form):
 
     upload_file.help_text = "JSON file in import format."
 
+
 class MetadataStagingForm(forms.ModelForm):
     """Form to upload generic files that will need processing.
     """
+
     class Meta:
         model = MetadataFile
-        exclude = ('owner',)
+        exclude = ('owner', )
+
 
 class ModelImportForm(forms.Form):
     """Form to handle general importing of data to deployments.
@@ -113,6 +116,7 @@ class ModelImportForm(forms.Form):
     Internally it mimics a lot of code from django/forms/models.py
     with regards to model introspection to get a list of fields.
     """
+
     def __init__(self, *args, **kwargs):
         """Create the ModelImportForm from a model.
 
@@ -163,6 +167,7 @@ class ModelImportForm(forms.Form):
         else:
             # wrong type of class
             raise TypeError("Expected subclass of django.db.models.Model")
+
 
 class AnnotationCPCImportForm(forms.Form):
     """Form to enable importing of multiple CPC files for a deployment."""

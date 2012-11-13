@@ -1,6 +1,5 @@
 import os
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
-
 # Django settings for catamiPortal project.
 
 DEBUG = True
@@ -15,12 +14,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE':'django.contrib.gis.db.backends.postgis', #'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'Force',                      # Or path to database file if using sqlite3.
-        'USER': 'pocock',                      # Not used with sqlite3.
-        'PASSWORD': 'qwer789ASDF456zxcv123',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.contrib.gis.db.backends.postgis', #'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'Force', # Or path to database file if using sqlite3.
+        'USER': 'pocock', # Not used with sqlite3.
+        'PASSWORD': 'qwer789ASDF456zxcv123', # Not used with sqlite3.
+        'HOST': '', # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '', # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -150,11 +149,10 @@ JENKINS_TASKS = {
     'django_jenkins.tasks.django_tests'
 }
 
-PROJECT_APPS=(
+PROJECT_APPS = (
     'Force',
     'staging'
 )
-
 
 #haystack support
 HAYSTACK_CONNECTIONS = {

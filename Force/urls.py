@@ -50,6 +50,6 @@ from django.contrib.auth.views import login, logout
 
 urlpatterns += patterns('',
     # existing patterns here...
-    url(r'^accounts/login/$',  login),
+    url(r'^accounts/login/$', login),
     url(r'^accounts/logout/$', logout)
 )

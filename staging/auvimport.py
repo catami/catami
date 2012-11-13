@@ -3,6 +3,7 @@
 
 # date handling
 import datetime
+from dateutil.tz import tzutc
 
 # needed for thumbnailing
 import Image
@@ -17,6 +18,7 @@ import csv
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def thumbnailer(filename):
     """Returns a string containing base64 encoded JPEG thumbnails.
@@ -41,6 +43,7 @@ def thumbnailer(filename):
 
     return output
 
+
 class LimitTracker:
     """A class to easily track limits of a value/field.
 
@@ -50,6 +53,7 @@ class LimitTracker:
 
     minimum and maximum specify starting points.
     """
+
     def __init__(self, field=None, minimum=float("inf"), maximum=float("-inf")):
         self.maximum = maximum
         self.minimum = minimum
@@ -113,7 +117,7 @@ class NetCDFParser:
 
     def unix_to_datetime(self, unix_time):
         """Short hand to convert unix to datetime."""
-        return datetime.datetime.fromtimestamp(unix_time)
+        return datetime.datetime.fromtimestamp(unix_time, tz=tzutc())
 
     def imos_to_datetime(self, imos_time):
         """Convert IMOS time to python datetime object.
@@ -121,7 +125,7 @@ class NetCDFParser:
         Utility function that chains the imos to unix and
         unix to datetime functions.
         """
-        return datetime.datetime.fromtimestamp(self.imos_to_unix(imos_time))
+        return datetime.datetime.fromtimestamp(self.imos_to_unix(imos_time), tz=tzutc())
 
     def next(self):
         """Get the next row in the NetCDF File.
@@ -133,9 +137,9 @@ class NetCDFParser:
         sal = self.reader.variables['PSAL'].data[i]
         temp = self.reader.variables['TEMP'].data[i]
 
-        return {'date_time': self.imos_to_datetime(time), 
-                    'salinity':sal, 
-                    'temperature':temp}
+        return {'date_time': self.imos_to_datetime(time),
+                    'salinity': sal,
+                    'temperature': temp}
 
 
 class TrackParser:
@@ -145,6 +149,7 @@ class TrackParser:
     a dictionary using the header row to determine the keys and the values
     for each row.
     """
+
     def __init__(self, file_handle):
         """Open a parser for AUV track files.
 
@@ -159,7 +164,6 @@ class TrackParser:
             if len(row) >= 1 and row[0] == 'year':
                 self.header = row
                 break
-
         # the next line is the first data line
         # so construction is finished
 
@@ -170,4 +174,3 @@ class TrackParser:
 
     def __iter__(self):
         return self
-

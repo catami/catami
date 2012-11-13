@@ -25,7 +25,7 @@ urlpatterns = patterns('',
 
     #to hide the database name
     url(r'^data/', include('Force.urls')),
-    
+
     #haystack
     url(r'^search/', include('haystack.urls')),
 

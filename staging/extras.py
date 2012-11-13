@@ -3,9 +3,11 @@
 from django.core.files.uploadhandler import FileUploadHandler
 from django.core.cache import cache
 
+
 def update_progress(key, percent):
     """Updates the percent for key."""
-    cache.set(key, percent, 300) # timeout in 30 seconds
+    cache.set(key, percent, 300)  # timeout in 30 seconds
+
 
 class UploadProgressCachedHandler(FileUploadHandler):
     """
@@ -38,12 +40,10 @@ class UploadProgressCachedHandler(FileUploadHandler):
             percent = int(float(100.0 * self.current_length) / float(self.content_length))
             update_progress(self.file_key, percent)
         return raw_data
-    
+
     def file_complete(self, file_size):
         pass
 
     def upload_complete(self):
         if self.cache_key:
             cache.delete(self.file_key)
-
-
