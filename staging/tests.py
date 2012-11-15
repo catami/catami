@@ -8,6 +8,8 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+from django.core.serializers.base import DeserializationError
+
 from django.contrib.auth.models import User
 
 from .auvimport import LimitTracker
@@ -106,7 +108,20 @@ class StagingTests(TestCase):
         response = self.client.get('/accounts/logout/')
 
 
-class AUVImportTests(TestCase):
+class JSONImport(TestCase):
+    """Test the JSON importing."""
+
+    def test_json_fload_protection(self):
+        non_force_file_name = "staging/fixtures/non_force_model.json"
+        invalid_model_file_name = "staging/fixtures/invalid_model.json"
+        invalid_file_name = "staging/fixtures/klsdfkldfskldf.json"
+
+        self.assertRaises(ValueError, tasks.json_fload, non_force_file_name)
+        self.assertRaises(DeserializationError, tasks.json_fload, invalid_model_file_name)
+        self.assertRaises(IOError, tasks.json_fload, invalid_file_name)
+
+
+class AUVImportTools(TestCase):
     """Test the components in auvimport.py."""
 
     def test_limit_tracker(self):
