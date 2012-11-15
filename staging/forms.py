@@ -36,7 +36,7 @@ class AUVImportForm(forms.Form):
     campaign_options['empty_label'] = None
 
     # auv import base
-    import_base = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV/'
+    import_base = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV'
 
     # the fields themselves
     campaign_name = forms.ModelChoiceField(**campaign_options)
