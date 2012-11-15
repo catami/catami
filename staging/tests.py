@@ -189,6 +189,30 @@ class AUVImportTools(TestCase):
         self.assertEqual(data[1]['label'], "RUG")
 
 
+class MetadataImport(TestCase):
+    """Tests the metadata tasks."""
+
+    def setUp(self):
+        """Set the names of the metadata files to test with."""
+        self.xls_file_name = "staging/fixtures/bruv_metadata.xls"
+        self.xls_sheet_names = [u"Offshore BRUVS Co-ord",
+            u"Inshore BRUVS co-ord", u"BRUVS Lengths", u"BRUVS MaxN"]
+
+    def test_type_recognition(self):
+        """Test type recognition with the files."""
+
+        self.assertEqual("xls", tasks.metadata_type(self.xls_file_name))
+
+    def test_sheet_names(self):
+        """Test that sheet names are correctly extracted."""
+
+        self.assertEqual(self.xls_sheet_names, tasks.metadata_sheet_names(self.xls_file_name))
+
+    def test_outline(self):
+        """Test that the outlines work correctly."""
+        self.assertIsNotNone(tasks.metadata_outline(self.xls_file_name))
+
+
 class AUVImport(TestCase):
     """Tests for Staging that require the internet to access things."""
 
