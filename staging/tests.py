@@ -182,15 +182,16 @@ class AUVImport(TestCase):
         mission_name = "r20090611_063540_freycinet_mpa_03_reef_south"
         self.input_params = (base_url, str(campaign_start), campaign_name, mission_name)
 
-
     def test_auv_fetch_names(self):
         """Test auv_fetch name generation."""
-        # now load data into it
 
-
+        # call the function we are testing
         return_values = tasks.auvfetch(*self.input_params)
+
+        # break out the return values
         track_url, netcdf_urlpattern, start_time = return_values
 
+        # calculate the values to compare against, and compare them
         files_base = "{0}/{2}/{3}".format(*self.input_params)
         self.assertEqual(track_url[0], files_base + "/track_files/freycinet_mpa_03_reef_south_latlong.csv")
         self.assertEqual(netcdf_urlpattern, files_base + "/hydro_netcdf/IMOS_AUV_ST_{date_string}Z_SIRIUS_FV00.nc")
