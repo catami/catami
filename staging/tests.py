@@ -139,6 +139,23 @@ class AUVImportTests(TestCase):
         self.assertEqual(dict_value_track.maximum, 10.0)
         self.assertEqual(dict_value_track.minimum, -10.0)
 
+        # the final (odd) cases
+        # should throw error... or silently ignore?
+
+        # using a dict, but give it a value
+        self.assertRaises(TypeError, dict_value_track.check, (20.0))
+        # or a dict with the wrong key
+        dict_value_track.check({'other': -20.0})
+
+        self.assertEqual(dict_value_track.maximum, 10.0)
+        self.assertEqual(dict_value_track.minimum, -10.0)
+
+        # using a value but give it a dict
+        self.assertRaises(TypeError, direct_track.check, ({'val': 20.0}))
+
+        self.assertEqual(direct_track.minimum, -10.0)
+        self.assertEqual(direct_track.maximum, 10.0)
+
     def test_cpc_importer(self):
         """Test CPCFileParser used in annotation import."""
         cpc_file = open('staging/fixtures/cpctest.cpc')
