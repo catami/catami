@@ -31,6 +31,7 @@ class AddTest(TestCase):
         transect_shape_y = [113.12, 113.34, 112.9, 112.82, 113.12]
         min_depth = 5.0
         max_depth = 25.0
+        time_start_00 = '2011-10-19 10:21:54+08:00'
         time_start = '2011-10-19 10:23:54+08:00'
         time_end = '2011-10-19 18:23:54+08:00'
         distance_covered = 20.3
@@ -73,7 +74,7 @@ class AddTest(TestCase):
             left_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
             right_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
             right_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            date_time = time_start,
+            date_time = time_start_00,
             image_position = 'POINT(' + str(transect_shape_x[0]) + ' ' + str(transect_shape_y[0]) + ')',
             temperature = 12.0,
             salinity = 35.0,
