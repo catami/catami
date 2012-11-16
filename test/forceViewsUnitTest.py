@@ -53,6 +53,7 @@ class AddTest(TestCase):
         )
         transect_shape_x = [-23.15, -23.53, -23.67, -23.25, -23.15]
         transect_shape_y = [113.12, 113.34, 112.9, 112.82, 113.12]
+
         auv_deployment = AUVDeployment.objects.create(
             start_position='POINT(' + str(transect_shape_x[0]) + ' ' + str(transect_shape_y[0]) + ')',
             start_time_stamp=time_start,
@@ -66,6 +67,39 @@ class AddTest(TestCase):
             transect_shape='POLYGON((' + str(transect_shape_x[0]) + ' ' + str(transect_shape_y[0]) + ', ' + str(transect_shape_x[1]) + ' ' + str(transect_shape_y[1]) + ', ' + str(transect_shape_x[2]) + ' ' + str(transect_shape_y[2]) + ', ' + str(transect_shape_x[3]) + ' ' + str(transect_shape_y[3]) + ', ' + str(transect_shape_x[4]) + ' ' + str(transect_shape_y[4]) + '))'
         )
 
+        image_01 = StereoImage.objects.create(
+            deployment = auv_deployment,
+            left_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            left_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            right_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            right_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            date_time = time_start,
+            image_position = 'POINT(' + str(transect_shape_x[0]) + ' ' + str(transect_shape_y[0]) + ')',
+            temperature = 12.0,
+            salinity = 35.0,
+            pitch = 0.05,
+            roll = 0.02,
+            yaw = .38,
+            altitude = 35.5,
+            depth = 1.49
+        )
+
+        test_user = User.objects.create(
+            name = 'Test Test',
+            title = 'Mr',
+            organisation = 'Not Really',
+            email = 'devnull@127.0.0.1'
+        )
+
+        annotation_01 = Annotation.objects.create(
+            method = '1 point imaginary method',
+            image_reference = image_01,
+            code = 'sand',
+            point = 'POINT(10 10)',
+            user_who_annotated = test_user,
+            comments = 'none'
+        )
+        
         bruv_deployment = BRUVDeployment.objects.create(
             start_position='POINT(' + str(transect_shape_x[0]) + ' ' + str(transect_shape_y[0]) + ')',
             start_time_stamp=time_start,
@@ -153,12 +187,21 @@ class AddTest(TestCase):
         response = self.client.get("/data/campaigns/99999/")
         self.assertEqual(response.status_code, 200)
 
-        #self.assertEqual(response.templates, 'Force/data_missing.html')
 
-        #test all deployments
-        # AUV
+    #test all deployments
     def test_deployments(self):
         """@brief Test deployment browser interfaces
+
+        """
+        response = self.client.get("/data/deployments/")
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get("/data/deployments/map/")
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_auvdeployments(self):
+        """@brief Test AUV deployment browser interfaces
 
         """
         response = self.client.get("/data/auvdeployments/")
@@ -167,9 +210,17 @@ class AddTest(TestCase):
         response = self.client.get("/data/auvdeployments/1/")
         self.assertEqual(response.status_code, 200)
 
+        response = self.client.get("/data/auvdeployments/1/annotationview/0/")
+        self.assertEqual(response.status_code, 200)
+
         response = self.client.get("/data/auvdeployments/99999/")
         self.assertEqual(response.status_code, 200)
-        # BRUV
+
+
+    def test_bruvdeployments(self):
+        """@brief Test BRUV deployment browser interfaces
+
+        """        
         response = self.client.get("/data/bruvdeployments/")
         self.assertEqual(response.status_code, 200)
 
@@ -179,7 +230,11 @@ class AddTest(TestCase):
         response = self.client.get("/data/bruvdeployments/99999/")
         self.assertEqual(response.status_code, 200)
 
-        # DOV
+
+    def test_dovdeployments(self):
+        """@brief Test DOV deployment browser interfaces
+
+        """             
         response = self.client.get("/data/dovdeployments/")
         self.assertEqual(response.status_code, 200)
 
@@ -189,7 +244,10 @@ class AddTest(TestCase):
         response = self.client.get("/data/dovdeployments/99999/")
         self.assertEqual(response.status_code, 200)
 
-        # TV
+    def test_tveployments(self):
+        """@brief Test TV deployment browser interfaces
+
+        """          
         response = self.client.get("/data/tvdeployments/")
         self.assertEqual(response.status_code, 200)
 
@@ -199,7 +257,10 @@ class AddTest(TestCase):
         response = self.client.get("/data/tvdeployments/99999/")
         self.assertEqual(response.status_code, 200)
 
-        # TI
+    def test_tideployments(self):
+        """@brief Test TI deployment browser interfaces
+
+        """          
         response = self.client.get("/data/tideployments/")
         self.assertEqual(response.status_code, 200)
 
@@ -215,16 +276,15 @@ class AddTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         #deliberate form error (missing)
-        request = self.factory.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15'})
-        response = spatialsearch(request)
+        response = self.client.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15'})
         self.assertEqual(response.status_code, 200)
-        #self.assertEqual(response.context['form']['searchradius'].errors, [u'This field is required.'])
+        self.assertEqual(response.context['form']['searchradius'].errors, [u'This field is required.'])
+
 
         #deliberate form error (non-numeric)
-        request = self.factory.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': 'asd'})
-        response = spatialsearch(request)
+        response = self.client.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': 'asd'})
         self.assertEqual(response.status_code, 200)
-        #self.assertEqual(response.context['form']['searchradius'].errors, [u'Enter a number.'])
+        self.assertEqual(response.context['form']['searchradius'].errors, [u'Enter a number.'])
 
         #test the spatial search function
         request = self.factory.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': '100.0'})
