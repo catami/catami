@@ -1,5 +1,6 @@
 from django.utils import unittest
 from django.test.utils import setup_test_environment
+from django.test.client import RequestFactory
 setup_test_environment()
 import sys
 import os
@@ -7,6 +8,7 @@ import time
 from dateutil import parser
 from django.test import TestCase
 from Force.models import *
+from Force.views import *
 
 
 # The following is the class in which all functions will be ran by unittest
@@ -16,10 +18,13 @@ class AddTest(TestCase):
     # The function "setUp" will always be ran in order to setup the
     # test environment before all the tests have run.
     def setUp(self):
+
         '''Verify environment is setup properly'''  # Printed if test fails
         import catami_web_portal
         os.environ['DJANGO_SETTINGS_MODULE'] = 'catamiPortal.settings'
         setup_test_environment()
+
+        self.factory = RequestFactory()
 
         #test data
         transect_shape_x = [-23.15, -23.53, -23.67, -23.25, -23.15]
@@ -205,18 +210,27 @@ class AddTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_spatialsearch(self):
+        #test the actual URL
         response = self.client.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': '100.0'})
         self.assertEqual(response.status_code, 200)
 
         #deliberate form error (missing)
-        response = self.client.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15'})
+        request = self.factory.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15'})
+        response = spatialsearch(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form']['searchradius'].errors, [u'This field is required.'])
 
         #deliberate form error (non-numeric)
-        response = self.client.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': 'asd'})
+        request = self.factory.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': 'asd'})
+        response = spatialsearch(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form']['searchradius'].errors, [u'Enter a number.'])
+
+        #test the spatial search function
+        request = self.factory.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': '100.0'})
+        response = spatialsearch(request)
+        self.assertEqual(response.status_code, 200)
+
 
 if __name__ == '__main__':
     unittest.main()
