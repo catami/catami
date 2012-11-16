@@ -67,6 +67,23 @@ class AddTest(TestCase):
             transect_shape='POLYGON((' + str(transect_shape_x[0]) + ' ' + str(transect_shape_y[0]) + ', ' + str(transect_shape_x[1]) + ' ' + str(transect_shape_y[1]) + ', ' + str(transect_shape_x[2]) + ' ' + str(transect_shape_y[2]) + ', ' + str(transect_shape_x[3]) + ' ' + str(transect_shape_y[3]) + ', ' + str(transect_shape_x[4]) + ' ' + str(transect_shape_y[4]) + '))'
         )
 
+        image_00 = StereoImage.objects.create(
+            deployment = auv_deployment,
+            left_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            left_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            right_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            right_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            date_time = time_start,
+            image_position = 'POINT(' + str(transect_shape_x[0]) + ' ' + str(transect_shape_y[0]) + ')',
+            temperature = 12.0,
+            salinity = 35.0,
+            pitch = 0.05,
+            roll = 0.02,
+            yaw = .38,
+            altitude = 35.5,
+            depth = 1.49
+        )
+
         image_01 = StereoImage.objects.create(
             deployment = auv_deployment,
             left_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',

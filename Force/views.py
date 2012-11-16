@@ -90,14 +90,6 @@ def spatialsearch(request):
     }, context_instance=RequestContext(request))
 
 
-def add_campaign(request):
-    """@brief redirect to admin view to create a campaign object
-
-    """
-
-    return redirect('/admin/Force/campaign/add/')  # Redirect after POST
-
-
 def deployments(request):
     """@brief Deployment list html for entire database
 
