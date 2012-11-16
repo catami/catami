@@ -5,6 +5,8 @@ from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 POSTGIS_VERSION = (1, 5, 2)
+SOUTH_TESTS_MIGRATE = False # To disable migrations and use syncdb instead
+SKIP_SOUTH_TESTS = True # To disable South's own unit tests
 
 ADMINS = (
      ('Dan Marrable', 'd.marrable@ivec.org'),
@@ -138,8 +140,11 @@ INSTALLED_APPS = (
     'staging',
     'haystack',
     'django_jenkins',
-    'south'
+    'rebels',
+    'south',
 )
+
+
 
 #tasks that jenkins will run on the build server
 JENKINS_TASKS = {
@@ -151,7 +156,8 @@ JENKINS_TASKS = {
 
 PROJECT_APPS = (
     'Force',
-    'staging'
+    'staging', 
+    'rebels'
 )
 
 #haystack support
@@ -218,6 +224,10 @@ LOGGING = {
         'catamiPortal': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
-        }
+        },
+        'rebels': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
     }
 }
