@@ -234,6 +234,9 @@ class AddTest(TestCase):
         response = self.client.get("/data/auvdeployments/1/annotationview/0/")
         self.assertEqual(response.status_code, 200)
 
+        response = self.client.get("/data/auvdeployments/1/annotationview/1/")
+        self.assertEqual(response.status_code, 200)
+        
         response = self.client.get("/data/auvdeployments/99999/")
         self.assertEqual(response.status_code, 200)
 
