@@ -37,7 +37,6 @@ urlpatterns = patterns('',
     url(r'^deployments/$', 'Force.views.deployments'),
     url(r'^deployments/map/$', 'Force.views.deployments_map'),
 
-    url(r'^addCampaign/$', 'Force.views.add_campaign'),
     url(r'^campaigns/$', 'Force.views.campaigns'),
     url(r'^campaigns/(?P<campaign_id>\d+)/$', 'Force.views.campaign_detail'),
 
