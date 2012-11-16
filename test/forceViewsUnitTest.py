@@ -202,6 +202,9 @@ class AddTest(TestCase):
         response = self.client.get("/data/campaigns/1/")
         self.assertEqual(response.status_code, 200)
 
+        response = self.client.get("/data/campaigns/2/")
+        self.assertEqual(response.status_code, 200)
+
         response = self.client.get("/data/campaigns/99999/")
         self.assertEqual(response.status_code, 200)
 
