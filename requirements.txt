@@ -4,8 +4,7 @@ south
 vectorformats
 psycopg2
 simplejson
-PIL
-openpyxl
+openpyxl==1.5.8
 xlrd
 pysolr
 pep8
