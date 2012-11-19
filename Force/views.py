@@ -153,7 +153,7 @@ def auvdeployment_detail(request, auvdeployment_id):
     except AUVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'Force/data_missing.html',context_instance=RequestContext(request))
+           'Force/data_missing.html', context_instance=RequestContext(request))
         #raise Http404
 
     image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
@@ -265,7 +265,7 @@ def bruvdeployment_detail(request, bruvdeployment_id):
     except BRUVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'Force/data_missing.html',context_instance=RequestContext(request))
+           'Force/data_missing.html', context_instance=RequestContext(request))
 
     image_list = StereoImage.objects.filter(deployment=bruvdeployment_id)
 
@@ -298,7 +298,7 @@ def dovdeployment_detail(request, dovdeployment_id):
     except DOVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'Force/data_missing.html',context_instance=RequestContext(request))
+           'Force/data_missing.html', context_instance=RequestContext(request))
 
     image_list = StereoImage.objects.filter(deployment=dovdeployment_id)
 
@@ -331,7 +331,7 @@ def tvdeployment_detail(request, tvdeployment_id):
     except TVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'Force/data_missing.html',context_instance=RequestContext(request))
+           'Force/data_missing.html', context_instance=RequestContext(request))
 
     image_list = StereoImage.objects.filter(deployment=tvdeployment_id)
 
@@ -364,7 +364,7 @@ def tideployment_detail(request, tideployment_id):
     except TIDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'Force/data_missing.html',context_instance=RequestContext(request))
+           'Force/data_missing.html', context_instance=RequestContext(request))
 
     image_list = StereoImage.objects.filter(deployment=tideployment_id)
 
@@ -410,9 +410,8 @@ def campaign_detail(request, campaign_id):
     except Campaign.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'Force/data_missing.html',context_instance=RequestContext(request))
-    campaign_rects=list()
-
+           'Force/data_missing.html', context_instance=RequestContext(request))
+    campaign_rects = list()
     #djf = Django.Django(geodjango="extent", properties=[''])
 
     auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign_object)
@@ -420,8 +419,6 @@ def campaign_detail(request, campaign_id):
     dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign_object)
     ti_deployment_list = TIDeployment.objects.filter(campaign=campaign_object)
     tv_deployment_list = TVDeployment.objects.filter(campaign=campaign_object)
-
-
     #geoj = GeoJSON.GeoJSON()
     #sm = AUVDeployment.objects.filter(transect_shape__bbcontains=pnt_wkt)
     #sm = AUVDeployment.objects.all().extent
@@ -438,7 +435,7 @@ def campaign_detail(request, campaign_id):
         sm_envelope = sm.envelope.geojson
     except AttributeError:
         sm_envelope = ''
-        
+
     return render_to_response(
         'Force/campaignInstance.html',
         {'campaign_object': campaign_object,
