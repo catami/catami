@@ -418,6 +418,10 @@ def campaign_detail(request, campaign_id):
     auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign_object)
     bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign_object)
     dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign_object)
+    ti_deployment_list = TIDeployment.objects.filter(campaign=campaign_object)
+    tv_deployment_list = TVDeployment.objects.filter(campaign=campaign_object)
+
+
     #geoj = GeoJSON.GeoJSON()
     #sm = AUVDeployment.objects.filter(transect_shape__bbcontains=pnt_wkt)
     #sm = AUVDeployment.objects.all().extent
@@ -441,5 +445,8 @@ def campaign_detail(request, campaign_id):
         'auv_deployment_list': auv_deployment_list,
         'bruv_deployment_list': bruv_deployment_list,
         'dov_deployment_list': dov_deployment_list,
+        'ti_deployment_list': ti_deployment_list,
+        'tv_deployment_list': tv_deployment_list,
+
         'campaign_as_geojson': sm_envelope},
         context_instance=RequestContext(request))
