@@ -374,8 +374,9 @@ class MultiColumnField(MultiValueField):
         super(MultiColumnField, self).__init__(fields, **kwargs)
 
     def compress(self, data_list):
-        n = len(self.fields)
         if data_list:
+            if len(data_list) != len(self.fields):
+                raise ValidationError("Not enough columns in MultiColumnField")
             for val in data_list:
                 if val in validators.EMPTY_VALUES:
                     raise ValidationError("MultiColumnField values empty")
