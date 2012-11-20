@@ -8,12 +8,17 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+from django.core.exceptions import ValidationError
+
 from django.core.serializers.base import DeserializationError
 
 from django.contrib.auth.models import User
 
+from django.forms import FloatField
+
 from .auvimport import LimitTracker
 from . import tasks
+from . import widgets
 from .annotations import CPCFileParser
 
 from Force.models import Campaign
@@ -221,6 +226,122 @@ class MetadataImport(TestCase):
     def test_transform(self):
         self.assertIsNotNone(tasks.metadata_transform(self.xls_file_name, self.xls_sheet_names[0]))
         self.assertIsNotNone(tasks.metadata_transform(self.xlsx_file_name, self.xlsx_sheet_names[0]))
+
+
+class WidgetTest(TestCase):
+    """Tests the multi-value widgets that were created."""
+
+    def test_point_widget_field(self):
+        """Test the PointField and PointWidget."""
+        point_widget = widgets.PointWidget()
+        point_value = widgets.PointField()
+
+        # invalid strings
+        self.assertEqual([None, None], point_widget.decompress(None))
+        self.assertEqual([None, None], point_widget.decompress(""))
+        self.assertEqual([None, None], point_widget.decompress("a string"))
+        self.assertEqual([None, None], point_widget.decompress("1.5456 6.23345"))
+        self.assertEqual([None, None], point_widget.decompress("POINT(5.6, 36.3)"))
+        self.assertEqual([None, None], point_widget.decompress("POINT(5.636.3)"))
+        self.assertEqual([None, None], point_widget.decompress("POINT(5.6363)"))
+
+        # valid strings
+        self.assertEqual([1.5, 2.5], point_widget.decompress("POINT(2.5 1.5)"))
+        self.assertEqual([1.5, 2.5], point_widget.decompress("POINT     (2.5 1.5)"))
+        self.assertEqual([1.5, 2.5], point_widget.decompress("POINT ( 2.5   1.5  )"))
+
+        self.assertEqual([-1.5, 2.5], point_widget.decompress("POINT(+2.5 -1.5)"))
+        self.assertEqual([-1.5, 2.5], point_widget.decompress("POINT     ( 2.5 -1.5)"))
+
+        # empty value
+        self.assertIsNone(point_value.compress(None))
+
+        # actual values
+        self.assertEqual("POINT(2.0 2.0)", point_value.compress([2.0, 2.0]))
+        self.assertEqual("POINT(4.5 4.5)", point_value.compress([4.5, 4.5]))
+        self.assertEqual("POINT(8.25 8.25)", point_value.compress([8.25, 8.25]))
+        self.assertEqual("POINT(-8.25 4.25)", point_value.compress([4.25, -8.25]))
+        self.assertEqual("POINT(1.25 -8.25)", point_value.compress([-8.25, 1.25]))
+
+        # now check the compress and decompress work together as expected
+        values = [[1.5, 1.5], [2.0, 1.5], [1.0, 10.0], [-10.0, 5.0]]
+
+        for value in values:
+            self.assertEqual(value, point_widget.decompress(point_value.compress(value)))
+
+    def test_extract_single_column(self):
+        """Test the utility used to wrap data chunks in the multi fields/widgets."""
+        columns = {'first': '1.0', 'second': '2.0', 'third': '3.0'}
+        base_field = FloatField()  # the field this is all based on
+        source = 'fixed'  # 'fixed' or 'column' depending on source sub widget
+        labels = ['first']  # the column label selected
+        fixed_data = 4.5  # the fixed data entered (post cleaning)
+
+
+        extractor = widgets.ExtractData(base_field, source, labels, fixed_data)
+
+        decompressed = [source, labels, fixed_data]
+        self.assertEqual(extractor.decompress(), decompressed)
+
+        self.assertEqual(extractor.get_data(columns), 4.5)
+        extractor.source = 'columns'
+        self.assertEqual(extractor.get_data(columns), 1.0)
+
+    def test_extract_multiple_columns(self):
+        """Test the utility used to wrap data chunks in the multi fields/widgets."""
+        columns = {'first': '1.0', 'second': '2.0', 'third': '3.0'}
+        base_field = widgets.PointField()  # the field this is all based on
+        source = 'fixed'  # 'fixed' or 'column' depending on source sub widget
+        labels = ['first', 'third']  # the column label selected
+        fixed_data = "POINT(1.0 2.0)"  # the fixed data entered (post cleaning)
+        cleaned_data = "POINT(3.0 1.0)"  # the fixed data entered (post cleaning)
+
+
+        extractor = widgets.ExtractData(base_field, source, labels, fixed_data)
+
+        decompressed = [source, labels, fixed_data]
+        self.assertEqual(extractor.decompress(), decompressed)
+
+        self.assertEqual(extractor.get_data(columns), fixed_data)
+        extractor.source = 'columns'
+        self.assertEqual(extractor.get_data(columns), cleaned_data)
+
+    def test_multiple_source_field(self):
+        """Tests the MultiSourceField."""
+
+        base_field = FloatField()
+        headings = ['first', 'second', 'third', 'fourth']
+        choices = zip(headings, headings)
+        field = widgets.MultiSourceField(base_field=base_field, columns=choices)
+
+        # test a full working instance
+        data = ['fixed', 'first', 4.5]
+        ex = field.compress(data)
+
+        # check the compressed matches expected
+        self.assertEqual(ex.source, data[0])
+        self.assertEqual(ex.fixed_data, data[2])
+        self.assertEqual(ex.column_labels, data[1])
+
+        # test partial working instance
+        data = ['column', 'column_name', None]
+        field.compress(data)
+
+        data = ['fixed', None, 4.5]
+        field.compress(data)
+
+        # test completely empty instance
+        self.assertIsNone(field.compress(None))
+
+        # now test error inducing variations
+        data = ['fixed', 'column_name', None]
+        self.assertRaises(ValidationError, field.compress, data)
+
+        data = ['column', None, 4.5]
+        self.assertRaises(ValidationError, field.compress, data)
+
+        data = [None, 'column_name', 4.5]
+        self.assertRaises(ValidationError, field.compress, data)
 
 
 class AUVImport(TestCase):

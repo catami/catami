@@ -26,6 +26,7 @@ class TestViews(TestCase):
 
     first_campaign_id = 0
     second_campaign_id = 0
+
     # The function "setUp" will always be ran in order to setup the
     # test environment before all the tests have run.
     def setUp(self):
@@ -85,74 +86,72 @@ class TestViews(TestCase):
         )
 
         image_00 = StereoImage.objects.create(
-            deployment = auv_deployment,
-            left_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            left_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            right_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            right_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            date_time = time_start_00,
-            image_position = 'POINT(' + str(transect_shape_x[0]) + ' ' + str(transect_shape_y[0]) + ')',
-            temperature = 12.0,
-            salinity = 35.0,
-            pitch = 0.05,
-            roll = 0.02,
-            yaw = .38,
-            altitude = 35.5,
-            depth = 1.49
+            deployment=auv_deployment,
+            left_thumbnail_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            left_image_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            right_thumbnail_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            right_image_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            date_time=time_start_00,
+            image_position='POINT(' + str(transect_shape_x[0]) + ' ' + str(transect_shape_y[0]) + ')',
+            temperature=12.0,
+            salinity=35.0,
+            pitch=0.05,
+            roll=0.02,
+            yaw=.38,
+            altitude=35.5,
+            depth=1.49
         )
 
         image_01 = StereoImage.objects.create(
-            deployment = auv_deployment,
-            left_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            left_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            right_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            right_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            date_time = time_start,
-            image_position = 'POINT(' + str(transect_shape_x[1]) + ' ' + str(transect_shape_y[1]) + ')',
-            temperature = 12.0,
-            salinity = 35.0,
-            pitch = 0.05,
-            roll = 0.02,
-            yaw = .38,
-            altitude = 35.5,
-            depth = 1.49
+            deployment=auv_deployment,
+            left_thumbnail_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            left_image_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            right_thumbnail_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            right_image_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            date_time=time_start,
+            image_position='POINT(' + str(transect_shape_x[1]) + ' ' + str(transect_shape_y[1]) + ')',
+            temperature=12.0,
+            salinity=35.0,
+            pitch=0.05,
+            roll=0.02,
+            yaw=.38,
+            altitude=35.5,
+            depth=1.49
         )
-
 
         image_02 = StereoImage.objects.create(
-            deployment = auv_deployment,
-            left_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            left_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            right_thumbnail_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            right_image_reference = 'http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
-            date_time = time_start_01,
-            image_position = 'POINT(' + str(transect_shape_x[2]) + ' ' + str(transect_shape_y[2]) + ')',
-            temperature = 12.0,
-            salinity = 35.0,
-            pitch = 0.05,
-            roll = 0.02,
-            yaw = .38,
-            altitude = 35.5,
-            depth = 1.49
+            deployment=auv_deployment,
+            left_thumbnail_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            left_image_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            right_thumbnail_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            right_image_reference='http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV//Tasmania200810/r20081006_231255_waterfall_05_transect/i20081006_231255_gtif/PR_20081006_231732_335_LC16.tif',
+            date_time=time_start_01,
+            image_position='POINT(' + str(transect_shape_x[2]) + ' ' + str(transect_shape_y[2]) + ')',
+            temperature=12.0,
+            salinity=35.0,
+            pitch=0.05,
+            roll=0.02,
+            yaw=.38,
+            altitude=35.5,
+            depth=1.49
         )
 
-
         test_user = User.objects.create(
-            name = 'Test Test',
-            title = 'Mr',
-            organisation = 'Not Really',
-            email = 'devnull@127.0.0.1'
+            name='Test Test',
+            title='Mr',
+            organisation='Not Really',
+            email='devnull@127.0.0.1'
         )
 
         annotation_01 = Annotation.objects.create(
-            method = '1 point imaginary method',
-            image_reference = image_01,
-            code = 'sand',
-            point = 'POINT(10 10)',
-            user_who_annotated = test_user,
-            comments = 'none'
+            method='1 point imaginary method',
+            image_reference=image_01,
+            code='sand',
+            point='POINT(10 10)',
+            user_who_annotated=test_user,
+            comments='none'
         )
-        
+
         bruv_deployment = BRUVDeployment.objects.create(
             start_position='POINT(' + str(transect_shape_x[0]) + ' ' + str(transect_shape_y[0]) + ')',
             start_time_stamp=time_start,
@@ -228,7 +227,6 @@ class TestViews(TestCase):
         response = self.client.get("/data/spatialsearch/")
         self.assertEqual(response.status_code, 200)
 
-
     def test_campaigns(self):
         """@brief Test campaign browser interfaces
 
@@ -237,24 +235,23 @@ class TestViews(TestCase):
 
         response = self.client.get("/data/campaigns/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['latest_campaign_list'].count(),2)
-        self.assertEqual(response.context['latest_campaign_list'][0].id,int(first_campaign_id))
+        self.assertEqual(response.context['latest_campaign_list'].count(), 2)
+        self.assertEqual(response.context['latest_campaign_list'][0].id, int(first_campaign_id))
 
-        response = self.client.get("/data/campaigns/"+str(first_campaign_id)+"/")
+        response = self.client.get("/data/campaigns/" + str(first_campaign_id) + "/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.template[0].name,u'Force/campaignInstance.html')
+        self.assertEqual(response.template[0].name, u'Force/campaignInstance.html')
         self.assertEqual(response.context['auv_deployment_list'].count(), 1)
         self.assertEqual(response.context['bruv_deployment_list'].count(), 1)
         self.assertEqual(response.context['dov_deployment_list'].count(), 1)
         self.assertEqual(response.context['ti_deployment_list'].count(), 1)
         self.assertEqual(response.context['tv_deployment_list'].count(), 1)
 
-        response = self.client.get("/data/campaigns/"+str(second_campaign_id)+"/")
+        response = self.client.get("/data/campaigns/" + str(second_campaign_id) + "/")
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get("/data/campaigns/99999/")
         self.assertEqual(response.status_code, 200)
-
 
     #test all deployments
     def test_deployments(self):
@@ -266,7 +263,6 @@ class TestViews(TestCase):
 
         response = self.client.get("/data/deployments/map/")
         self.assertEqual(response.status_code, 200)
-
 
     def test_auvdeployments(self):
         """@brief Test AUV deployment browser interfaces
@@ -283,15 +279,14 @@ class TestViews(TestCase):
 
         response = self.client.get("/data/auvdeployments/1/annotationview/1/")
         self.assertEqual(response.status_code, 200)
-        
+
         response = self.client.get("/data/auvdeployments/99999/")
         self.assertEqual(response.status_code, 200)
-
 
     def test_bruvdeployments(self):
         """@brief Test BRUV deployment browser interfaces
 
-        """        
+        """
         response = self.client.get("/data/bruvdeployments/")
         self.assertEqual(response.status_code, 200)
 
@@ -301,11 +296,10 @@ class TestViews(TestCase):
         response = self.client.get("/data/bruvdeployments/99999/")
         self.assertEqual(response.status_code, 200)
 
-
     def test_dovdeployments(self):
         """@brief Test DOV deployment browser interfaces
 
-        """             
+        """
         response = self.client.get("/data/dovdeployments/")
         self.assertEqual(response.status_code, 200)
 
@@ -318,7 +312,7 @@ class TestViews(TestCase):
     def test_tveployments(self):
         """@brief Test TV deployment browser interfaces
 
-        """          
+        """
         response = self.client.get("/data/tvdeployments/")
         self.assertEqual(response.status_code, 200)
 
@@ -331,7 +325,7 @@ class TestViews(TestCase):
     def test_tideployments(self):
         """@brief Test TI deployment browser interfaces
 
-        """          
+        """
         response = self.client.get("/data/tideployments/")
         self.assertEqual(response.status_code, 200)
 
@@ -350,7 +344,6 @@ class TestViews(TestCase):
         response = self.client.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15'})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form']['searchradius'].errors, [u'This field is required.'])
-
 
         #deliberate form error (non-numeric)
         response = self.client.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': 'asd'})
