@@ -10,6 +10,7 @@ from django.utils import unittest
 from django.test.utils import setup_test_environment
 from django.test.client import RequestFactory
 setup_test_environment()
+from django.core import management
 import sys
 import os
 import time
@@ -361,6 +362,18 @@ class TestViews(TestCase):
         response = spatialsearch(request)
         self.assertEqual(response.status_code, 200)
 
+        
+    def test_checkdb(self):
+        """Check that the checkdb command checks the database
+
+        ./manage checkdb is used to check the bounds on Force data
+        """
+        from StringIO import StringIO
+        content = StringIO()
+        management.call_command('checkdb', stderr=content, interactive=False)
+        content.seek(0)
+        data = content.read()
+        self.assertTrue(data,'Detected 0 errors in 0 models')
 
 if __name__ == '__main__':
     unittest.main()
