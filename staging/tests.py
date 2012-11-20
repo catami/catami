@@ -402,6 +402,8 @@ class WidgetTest(TestCase):
     def test_widget_rendering(self):
         """A generic test to make sure the custom widgets render."""
 
+        # also test the MultiSourceWidget decompress paths
+
         # single column
         base_field = FloatField()
         headings = ['first', 'second', 'third', 'fourth']
@@ -409,12 +411,18 @@ class WidgetTest(TestCase):
         field = widgets.MultiSourceField(base_field=base_field, columns=choices)
         widget = field.widget
         widget.render("widget_name", ["fixed", headings[0], 4.3], {'id': 'name'})
+        widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], 4.2]))
+
+        self.assertEqual(widget.decompress(None), ["column", [None], None])
 
         # multi column
         base_field = widgets.PointField()
         field = widgets.MultiSourceField(base_field=base_field, columns=choices)
         widget = field.widget
+        widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], "POINT(2.0 1.0)"]), {'id': 'name'})
         widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], "POINT(2.0 1.0)"]))
+
+        self.assertEqual(widget.decompress(None), ["column", [None] * 2, None])
 
 
 class AUVImport(TestCase):
