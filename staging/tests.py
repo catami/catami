@@ -14,7 +14,7 @@ from django.core.serializers.base import DeserializationError
 
 from django.contrib.auth.models import User
 
-from django.forms import FloatField
+from django.forms import FloatField, TextInput
 
 from .auvimport import LimitTracker
 from . import tasks
@@ -263,6 +263,10 @@ class WidgetTest(TestCase):
         self.assertEqual("POINT(-8.25 4.25)", point_value.compress([4.25, -8.25]))
         self.assertEqual("POINT(1.25 -8.25)", point_value.compress([-8.25, 1.25]))
 
+        # check exceptions
+        self.assertRaises(ValidationError, point_value.compress, [None, 4.5])
+        self.assertRaises(ValidationError, point_value.compress, [4.5, None])
+
         # now check the compress and decompress work together as expected
         values = [[1.5, 1.5], [2.0, 1.5], [1.0, 10.0], [-10.0, 5.0]]
 
@@ -276,7 +280,6 @@ class WidgetTest(TestCase):
         source = 'fixed'  # 'fixed' or 'column' depending on source sub widget
         labels = ['first']  # the column label selected
         fixed_data = 4.5  # the fixed data entered (post cleaning)
-
 
         extractor = widgets.ExtractData(base_field, source, labels, fixed_data)
 
@@ -295,7 +298,6 @@ class WidgetTest(TestCase):
         labels = ['first', 'third']  # the column label selected
         fixed_data = "POINT(1.0 2.0)"  # the fixed data entered (post cleaning)
         cleaned_data = "POINT(3.0 1.0)"  # the fixed data entered (post cleaning)
-
 
         extractor = widgets.ExtractData(base_field, source, labels, fixed_data)
 
@@ -342,6 +344,77 @@ class WidgetTest(TestCase):
 
         data = [None, 'column_name', 4.5]
         self.assertRaises(ValidationError, field.compress, data)
+
+    def test_multiple_column_field(self):
+        """Tests the MultiColumnField."""
+
+        # common elements
+        headings = ['first', 'second', 'third']
+        columns = zip(headings, headings)
+
+        # simplest case, single column
+        base_field = FloatField()
+        base_widget = base_field.widget
+        widget = widgets.MultiColumnWidget(base_widget)
+        field = widgets.MultiColumnField(base_field, columns, widget=widget)
+
+        # now test the compress routine
+        self.assertIsNone(field.compress(None))
+        data = ["first"]
+        self.assertEqual(field.compress(data), data)
+        self.assertRaises(ValidationError, field.compress, [None])
+
+        # more complex, multiple column
+        base_field = widgets.PointField()
+        base_widget = base_field.widget
+        widget = widgets.MultiColumnWidget(base_widget)
+        field = widgets.MultiColumnField(base_field, columns, widget=widget)
+
+        # now test the compress routine
+        self.assertIsNone(field.compress(None))
+        data = ["first", "second"]
+        self.assertEqual(field.compress(data), data)
+        self.assertRaises(ValidationError, field.compress, [None, None])
+        self.assertRaises(ValidationError, field.compress, [None, "second"])
+        self.assertRaises(ValidationError, field.compress, ["first", None])
+        self.assertRaises(ValidationError, field.compress, ["only"])
+
+        # error inducing
+        base_field = widgets.PointWidget()
+        base_widget = None
+        self.assertRaises(Exception, widgets.MultiColumnField, base_field, columns, widget=widget)
+
+    def test_multi_column_widget(self):
+        """Test initialise and decompress of MultiColumnWidget."""
+        base_widget = widgets.PointWidget()
+        widget = widgets.MultiColumnWidget(base_widget)
+
+        self.assertEqual(widget.decompress(None), [None] * 2)
+        data = ["first", "second"]
+        self.assertEqual(widget.decompress(data), data)
+
+        base_widget = TextInput()
+        widget = widgets.MultiColumnWidget(base_widget)
+        self.assertEqual(widget.decompress(None), [None])
+        data = ["first"]
+        self.assertEqual(widget.decompress(data), data)
+
+    def test_widget_rendering(self):
+        """A generic test to make sure the custom widgets render."""
+
+        # single column
+        base_field = FloatField()
+        headings = ['first', 'second', 'third', 'fourth']
+        choices = zip(headings, headings)
+        field = widgets.MultiSourceField(base_field=base_field, columns=choices)
+        widget = field.widget
+        widget.render("widget_name", ["fixed", headings[0], 4.3], {'id': 'name'})
+
+        # multi column
+        base_field = widgets.PointField()
+        field = widgets.MultiSourceField(base_field=base_field, columns=choices)
+        widget = field.widget
+        widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], "POINT(2.0 1.0)"]))
 
 
 class AUVImport(TestCase):
