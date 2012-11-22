@@ -41,9 +41,6 @@ class with_progress_meter(ProgressBase):
     def update(self, at):
         self.at = at
         now = time.time()
-        if self.last + 0.5 < now:
-            self.last = now
-            self._show(self._progress())
    
     def stop(self):
         self._show(self.done or '')
@@ -58,12 +55,4 @@ class with_progress_meter(ProgressBase):
         self.stop()
    
     def _progress(self):
-        text = '%3d%%' % int(self.at * 100 / self.total if self.total else 100)
-        if self.at > 0:
-            spent = time.time() - self.start_time
-            remaining = (self.total - self.at) * spent / self.at
-            text += ' (ETA: %d:%02d.%03d)' % (
-                int(remaining) / 60,
-                int(remaining) % 60,
-                int(remaining * 1000) % 1000)
-        return text
+        pass
