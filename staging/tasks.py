@@ -201,7 +201,7 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
 
         # get the two measurements either side of the stereo pose
         while pose['date_time'] > later_seabird['date_time']:
-            earlier_seabird, later_seabird = later_seabird, netcdf_seabird.next()
+            later_seabird, earlier_seabird = earlier_seabird, netcdf_seabird.next()
 
         # find which is closer - could use interpolation instead
         if (later_seabird['date_time'] - pose['date_time']) > (pose['date_time'] - earlier_seabird['date_time']):
