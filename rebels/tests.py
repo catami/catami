@@ -28,3 +28,6 @@ class DatabaseTest(TestCase):
 
     def test_make_local_backup(self):
         self.assertTrue(self.bender.make_local_backup())
+        self.assertTrue(self.bender.make_local_backup(do_zip=False))
+        self.assertFalse(self.bender.make_local_backup(do_zip=False,unit_test = 'corrupt'))
+        self.assertFalse(self.bender.make_local_backup(unit_test = 'corrupt'))

@@ -16,43 +16,6 @@ class ProgressBase(object):
         sys.stderr.write(self._str)
  
  
-class with_spinner(ProgressBase):
-    """
-   A spinner for long loops of unknown duration, written on stderr.
- 
-   Wrap this around any iterable, for example:
-   for line in with_spinner(lines, action = 'Processing lines...')
-   """
- 
-    chars = '|/-\\'
- 
-    def __init__(self, iterable = None, action = None, done = 'done'):
-        super(with_spinner, self).__init__()
-        self.iterable = iterable
-        self.frame = 0
-        self.last = time.time()
-        self.done = done
-        if action:
-            sys.stderr.write(action + ' ')
- 
-    def update(self):
-        now = time.time()
-        if self.last + 0.5 < now:
-            self.last = now
-            self.frame = (self.frame + 1) % len(with_spinner.chars)
-            self._show(with_spinner.chars[self.frame])
-   
-    def stop(self):
-        self._show(self.done or '')
-        sys.stderr.write('\n')
- 
-    def __iter__(self):
-        for item in self.iterable:
-            yield item
-            self.update()
-        self.stop()
-   
- 
 class with_progress_meter(ProgressBase):
     """
    A progress meter for long loops of known length, written on stderr.

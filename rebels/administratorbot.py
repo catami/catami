@@ -53,6 +53,7 @@ class Robot():
         do_zip [True] :: compress or not.
         compression_type [gz] :: gz or bz2
         file_format [json] :: raw data output fomat. :: json, xml, yaml
+        unit_test [off] :: set to test corruption procedure :: off, corrupt
         """
 
         # Extract any kwargs that are parsed
@@ -62,6 +63,10 @@ class Robot():
         compression_type = kwargs.get('compression_type', 'gz')
         do_zip = kwargs.get('do_zip', True)
         file_format = kwargs.get('file_format', 'json')
+        unit_test = kwargs.get('unit_test','off')
+
+        #assume our unit tests are true unless otherwise failed
+        test = {'checksum':True,'archive':True,'copy':True}
 
         # Setup the files to write data to.
         fname = str(datetime.now()) + '-' + dbname + '.bak'
@@ -106,6 +111,10 @@ class Robot():
                                            fname + '.tar.'
                                            + compression_type)
 
+            # For testing we intentionally corrupt the data
+            if unit_test == 'corrupt':
+                chk_copy = '0000000000000'
+
             logger.debug(directory + 'copy_'
                          + fname + '.tar.' +
                          compression_type +
@@ -114,9 +123,12 @@ class Robot():
 
             if chk_file == chk_copy:
                 logger.debug('backup archive copied correctly')
+                test['checksum'] = True
             else:
                 logger.error('backup archive check sum fail')
-                return False
+                #return False
+                test['checksum'] = False
+
 
             # Check to see if file is in the archive
             tar = tarfile.open(directory +
@@ -131,11 +143,18 @@ class Robot():
                              str(tarinfo.size) +
                              " bytes in size")
 
-            if tarinfo.name == fname:
+            if unit_test == 'corrupt':
+                tar_name = '000000'
+            else:
+                tar_name = tarinfo.name
+                
+            if tar_name == fname:
                 logger.debug('File name in archive matches backup file')
+                test['archive'] = True
             else:
                 logger.error('File name in archive does not match backup file')
-                return False
+                #return False
+                test['archive'] = False
 
             # Extract the data file from the copied archive and
             #checksum against the original
@@ -148,11 +167,16 @@ class Robot():
                          ' Checksum :: '
                          + str(chk_tmp_file))
 
+            if unit_test == 'corrupt':
+                chk_file = '0000000000'
+                
             if chk_file == chk_tmp_file:
                 logger.debug('backup file copied correctly')
+                test['copy'] = True
             else:
                 logger.error('backup file check sum fail')
-                return False
+                test['copy'] = False
+                #return False
 
             tar.close()
 
@@ -168,15 +192,27 @@ class Robot():
             f.close()
             fcopy.close()
 
-            if (self.check_sum_file('/tmp/' + fname, 'w') ==
-                self.check_sum_file(directory + fname, 'w')):
+            chk_temp = self.check_sum_file('/tmp/' + fname)
+            chk_file = self.check_sum_file(directory + fname)
+
+            if unit_test == 'corrupt':
+                chk_temp = '0000000000'
+            
+
+            if (chk_temp ==  chk_file):
 
                 logger.debug('File and copy checksums agree')
+                test['checksum'] = True
             else:
                 logger.error('File and copy checksums dont agree')
-        # Check to see if the file is there.
+                test['checksum'] = False                
+        # Check to see if the file isthere.
 
-        return True
+        if test['checksum'] == False or test['archive'] == False or test['copy'] == False:
+            
+            return False
+        else:
+            return True
 
     def check_sum_file(self, fname):
         """Generate md5sum of a file
