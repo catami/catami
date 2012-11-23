@@ -97,10 +97,16 @@ class StagingTests(TestCase):
 
         test_urls = []
         test_urls.append((reverse('staging_index'), 'staging/index.html'))
+        test_urls.append((reverse('staging_campaign_create'), 'staging/campaigncreate.html'))
+        test_urls.append((reverse('staging_campaign_created'), 'staging/campaigncreated.html'))
         test_urls.append((reverse('staging_auv_import'), 'staging/auvimport.html'))
+        test_urls.append((reverse('staging_auv_import_manual'), 'staging/auvmanualimport.html'))
         test_urls.append((reverse('staging_auv_imported'), 'staging/auvimported.html'))
         test_urls.append((reverse('staging_file_import'), 'staging/fileupload.html'))
         test_urls.append((reverse('staging_file_imported'), 'staging/fileuploaded.html'))
+        test_urls.append((reverse('staging_file_imported'), 'staging/fileuploaded.html'))
+        test_urls.append((reverse('staging_metadata_stage'), 'staging/metadatastage.html'))
+        test_urls.append((reverse('staging_metadata_list'), 'staging/metadatalist.html'))
 
         for test_url, template in test_urls:
             response = self.client.get(test_url)
