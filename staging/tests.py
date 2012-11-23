@@ -173,6 +173,36 @@ class StagingTests(TestCase):
         response = self.client.post(auv_import, post)
         self.assertEqual(302, response.status_code)
 
+    def test_views_post_metadata(self):
+        """Test the metadata component."""
+        response = self.client.post('/accounts/login/', self.login)
+
+        # create the campaign to load into
+        campaign_create = reverse('staging_campaign_create')
+        post = dict()
+        post["short_name"] = "Tasmania200906"
+        post["description"] = "IMOS Survey"
+        post["date_start"] = "2009-06-01"
+        post["date_end"] = "2009-06-30"
+        post["associated_publications"] = "{Publications}"
+        post["associated_researchers"] = "{IMOS}, {TAFI}"
+        post["associated_research_grant"] = "{ARC LIEF}"
+
+        # this works, redirects to created
+        response = self.client.post(campaign_create, post)
+        self.assertEqual(302, response.status_code)
+
+        # now stage a file
+        metadata_staging = reverse('staging_metadata_stage')
+        post = dict()
+        post["is_public"] = "on"
+        post["description"] = "IMOS Survey"
+        post["metadata_file"] = open('staging/fixtures/bruv_metadata.xls','r')
+
+        # this works, redirects to created
+        response = self.client.post(metadata_staging, post)
+        self.assertEqual(302, response.status_code)
+
 
 class JSONImport(TestCase):
     """Test the JSON importing."""
