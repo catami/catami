@@ -14,7 +14,7 @@ from django.core.serializers.base import DeserializationError
 
 from django.contrib.auth.models import User
 
-from django.forms import FloatField, TextInput
+from django.forms import FloatField, TextInput, SplitDateTimeField
 
 from .auvimport import LimitTracker
 from . import tasks
@@ -519,6 +519,10 @@ class WidgetTest(TestCase):
 
         self.assertEqual(widget.decompress(None), ["column", [None] * 2, None])
 
+        base_field = SplitDateTimeField()
+        field = widgets.MultiSourceField(base_field=base_field, columns=choices)
+        widget = field.widget
+        widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], ""]), {'id': 'name'})
 
 class AUVImport(TestCase):
     """Tests for Staging that require the internet to access things."""
