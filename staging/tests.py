@@ -296,12 +296,14 @@ class MetadataImport(TestCase):
             u"Inshore BRUVS co-ord", u"BRUVS Lengths", u"BRUVS MaxN"]
         self.xlsx_sheet_names = [u"Offshore BRUVS Co-ord",
             u"Inshore BRUVS co-ord", u"BRUVS Lengths", u"BRUVS MaxN"]
+        self.invalid_file_name = "staging/fixtures/invalid.extension"
 
     def test_type_recognition(self):
         """Test type recognition with the files."""
 
         self.assertEqual("xls", tasks.metadata_type(self.xls_file_name))
         self.assertEqual("xlsx", tasks.metadata_type(self.xlsx_file_name))
+        self.assertEqual("", tasks.metadata_type(self.invalid_file_name))
 
     def test_sheet_names(self):
         """Test that sheet names are correctly extracted."""
@@ -313,11 +315,13 @@ class MetadataImport(TestCase):
         """Test that the outlines work correctly."""
         self.assertIsNotNone(tasks.metadata_outline(self.xls_file_name))
         self.assertIsNotNone(tasks.metadata_outline(self.xlsx_file_name))
+        self.assertIsNone(tasks.metadata_outline(self.invalid_file_name))
 
     def test_transform(self):
         self.assertIsNotNone(tasks.metadata_transform(self.xls_file_name, self.xls_sheet_names[0]))
         self.assertIsNotNone(tasks.metadata_transform(self.xlsx_file_name, self.xlsx_sheet_names[0]))
 
+        self.assertIsNone(tasks.metadata_transform(self.invalid_file_name, ""))
 
 class WidgetTest(TestCase):
     """Tests the multi-value widgets that were created."""
