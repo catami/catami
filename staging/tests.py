@@ -118,6 +118,61 @@ class StagingTests(TestCase):
         # logout, don't check carefully, the other test does that
         response = self.client.get('/accounts/logout/')
 
+    def test_views_post_auv(self):
+        """Test posting to the main views."""
+        response = self.client.post('/accounts/login/', self.login)
+        test_urls = []
+
+        campaign_create = reverse('staging_campaign_create')
+        post = dict()
+        post["short_name"] = "Tasmania200906"
+        post["description"] = "IMOS Survey"
+        post["date_start"] = "2009-06-01"
+        post["date_end"] = "2009-06-30"
+        post["associated_publications"] = "{Publications}"
+        post["associated_researchers"] = "{IMOS}, {TAFI}"
+        post["associated_research_grant"] = "{ARC LIEF}"
+
+        # this works, redirects to created
+        response = self.client.post(campaign_create, post)
+        self.assertEqual(302, response.status_code)
+
+        # clone for 'failure' mode (incomplete)
+        del post["date_start"]
+        # invalid, return 200 with updated form
+        response = self.client.post(campaign_create, post)
+        self.assertEqual(200, response.status_code)
+
+        # now auv import
+        auv_import = reverse('staging_auv_import')
+
+        # get the previous campaign to make sure it imported
+        # and we can then use its pk
+        campaign = Campaign.objects.get(short_name=post["short_name"])
+
+        post = dict()
+        post["campaign_name"] = str(campaign.pk)
+        post["mission_name"] = "r20090611_131909_freycinet_mpa_04_mid_reef"
+        post["base_url"] = "http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV"
+        post["uuid"] = "23gfd65w"
+
+        response = self.client.post(auv_import, post)
+        self.assertEqual(302, response.status_code)
+
+        del post["mission_name"]
+        response = self.client.post(auv_import, post)
+        self.assertEqual(200, response.status_code)
+
+        # now to auvmanual import
+        post["mission_name"] = "r20090612_010629_freycinet_mpa_05_patch_reef"
+        post["trackfile_url"] = "http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV/Tasmania200906/r20090612_010629_freycinet_mpa_05_patch_reef/track_files/freycinet_mpa_05_patch_reef_latlong.csv"
+        post["netcdffile_url"] = "http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV/Tasmania200906/r20090612_010629_freycinet_mpa_05_patch_reef/hydro_netcdf/IMOS_AUV_ST_20090612T010632Z_SIRIUS_FV00.nc"
+
+        auv_manual_import = reverse('staging_auv_import_manual')
+        response = self.client.get('/accounts/logout/')
+        response = self.client.post(auv_import, post)
+        self.assertEqual(302, response.status_code)
+
 
 class JSONImport(TestCase):
     """Test the JSON importing."""
