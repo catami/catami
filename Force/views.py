@@ -12,6 +12,7 @@ from django import forms
 from django.template import RequestContext
 from django.http import Http404
 from django.shortcuts import render_to_response, redirect, render
+from django.db.models import Max, Min
 #from django.core import serializers
 #from django.contrib.gis.geos import GEOSGeometry
 #from django.contrib.gis.geos import *
@@ -164,6 +165,14 @@ def auvdeployment_detail(request, auvdeployment_id):
         if(Annotation.objects.filter(image_reference=image).count() > 0):
             annotated_imagelist.append(image)
 
+    #valmax = image_list.aggregate(Max('depth'))
+    #valmax = image_list.aggregate(Max('depth'))
+    depth_range = {'max':image_list.aggregate(Max('depth'))['depth__max'],'min':image_list.aggregate(Min('depth'))['depth__min']}
+    salinity_range = {'max':image_list.aggregate(Max('salinity'))['salinity__max'],'min':image_list.aggregate(Min('salinity'))['salinity__min']}
+    temperature_range = {'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
+
+
+
     # the easy way is to just return
     # auvdeployment_object.transect_shape.geojson
     return render_to_response(
@@ -171,7 +180,10 @@ def auvdeployment_detail(request, auvdeployment_id):
         {'auvdeployment_object': auvdeployment_object,
         'deployment_as_geojson': auvdeployment_object.transect_shape.geojson,
         'image_list': image_list,
-        'annotated_imagelist': annotated_imagelist},
+        'annotated_imagelist': annotated_imagelist,
+        'depth_range': depth_range,
+        'salinity_range': salinity_range,
+        'temperature_range': temperature_range},
         context_instance=RequestContext(request))
 
 
