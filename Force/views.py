@@ -187,6 +187,25 @@ def auvdeployment_detail(request, auvdeployment_id):
         context_instance=RequestContext(request))
 
 
+def auvimage_list(request, auvdeployment_id):
+    """@brief AUV image list view
+
+    """
+    try:
+        auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
+    except AUVDeployment.DoesNotExist:
+        error_string = 'This is the error_string'
+        return render_to_response(
+           'Force/data_missing.html', context_instance=RequestContext(request))
+        #raise Http404
+
+    image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
+    return render_to_response(
+        'Force/auv_image_list.html',
+        {'auvdeployment_object': auvdeployment_object,
+        'image_list': image_list},
+        context_instance=RequestContext(request))
+
 def annotationview(request, auvdeployment_id, image_index):
     """@brief AUV annotation view
 
