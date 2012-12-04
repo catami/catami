@@ -14,38 +14,51 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap.css" type="text/css" >
 
     <style>
-		body {padding-top: 00px; /* 60px to make the container go all the way to the bottom of the topbar */}
+		body {padding-top: 00px; background-color: #d7d8d9; /* 60px to make the container go all the way to the bottom of the topbar */}
+		#header{
+		    height: 130px;
+		    margin: -6px 0 0 0;
+		    padding: 0 100px;
+		    position: relative;
+		   
+		}
+		.content-container{
+		    margin: 30px 30px 30px 30px;
+		    -moz-border-radius: 8px;
+		    -webkit-border-radius: 8px;
+		    border-radius: 8px;
+		    -moz-box-shadow: 0 0 5px #333;
+		    -webkit-box-shadow: 0 0 5px #333;
+		    box-shadow: 0px 0px 5px #333;
+			background-color: #f0f7ff;
+			border: 1px solid #fff;
+			padding: 0px 10px;
+		}
+		hr.fancy-style {
+		    border: 0;
+		    height: 0;
+		    border-top: 1px solid rgba(0, 0, 0, 0.1);
+		    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+		}
 		
-		.no-sidebar {
-		  margin-left:0 !important;
+		.fancy-box {
+			background-color: #ffffff;
+			-moz-border-radius: 8px;
+		    -webkit-border-radius: 8px;
+		    border-radius: 8px;
+		    -moz-box-shadow: 0 0 5px #333;
+		    -webkit-box-shadow: 0 0 5px #333;
+		    box-shadow: 0px 0px 5px #333;
+		    border: 1px solid #fff;
+			padding: 0px 10px;
 		}
-
-		.background-image {
-			background-image:url("{{ STATIC_URL }}assets/img/coral_background_02.jpg" );
-			border-radius: 0px;
-			background-attachment:fixed;
-			height: auto;
-			left: 0;
-			position: relative;
-			width: 2488px;
-			height:1280px;
-			z-index: 20;
+		.wordwrap { 
+		   white-space: pre-wrap;      /* CSS3 */   
+		   white-space: -moz-pre-wrap; /* Firefox */    
+		   white-space: -pre-wrap;     /* Opera <7 */   
+		   white-space: -o-pre-wrap;   /* Opera 7 */    
+		   word-wrap: break-word;      /* IE */
 		}
-		
-		.footer-holder {
-			background-color: rgba(0, 0, 0, 0.2);
-			font-size: 14px;
-			line-height: 20px;
-			text-shadow: 0 0 1px black;
-			width: 100%;
-			position: fixed;
-			z-index: 40;
-		}
-		 .mainnav {
-		   position: fixed;
-		   margin-left: 0px;
-		   width: 140px;
-		 }
     </style>
     
 
@@ -76,21 +89,8 @@
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script type="text/javascript" src="{{ STATIC_URL }}assets/js/jquery-1.8.0.min.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}assets/js/bootstrap.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}assets/js/jquery.stellar.js"></script>
 	
 	{% block add_script %}{% endblock %}
-
-	<!-- popover js -->
-	<script type="text/javascript">
-	    (function() {
-	        $("[rel=popover]").popover();
-	    })();
-	</script>
-	<script type="text/javascript"> 
-		$.stellar({
-			verticalScrolling: false,
-		});
-	</script> 
 
 </body>
 </html>

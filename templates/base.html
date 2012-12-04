@@ -12,10 +12,13 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/bootstrap.css" type="text/css" >
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/fullscreenMap.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/overlay-basic.css" type="text/css">
+    {% block add_styles %}{% endblock %}
 
     <style>
       body {padding-top: 40px; /* 60px to make the container go all the way to the bottom of the topbar */}
-      #map_container2 { height: 600px; width: 100%;}
+      #map_container2 { height: 600px; width: 100%; border:2px;}
+      #leaflet_container { height: 100%; width: 100%; border:2px;}
+
       img.olTileImage { max-width: 256px !important; }
       div.contentWrap { height:800px; overflow-y:auto;}
       .sidebar-nav {
@@ -33,6 +36,7 @@
       .no-sidebar {
           margin-left:0 !important;
       }
+      .navbar .brand{max-height:40px; overflow: visible; padding-top: 0px; padding-bottom: 0px}
 
     </style>
 
@@ -62,7 +66,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/">Catami</a>
+          <a class="brand" href="/"><img src="{{ STATIC_URL }}assets/img/catamiheader-blue.png" alt="catami_icon_small" width="140" /></a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class=""><a href="/"><i class="icon-home icon-white"></i> Home</a></li>
@@ -110,20 +114,6 @@
         </div>
       </div>
     </div>
-
-    <!--<div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span12">
-          <div id='map_container'>
-              <!-- <div style="bottom;position:absolute;z-index:10000;">
-                <p>
-                  <button class="btn btn-primary" type="button">Default button</button>
-                </p> 
-              </div>
-          </div>
-        </div>
-      </div>
-    </div>  -->
 
     <div class="container-fluid">
       {% block sidebar %} {% endblock %}

@@ -1,4 +1,7 @@
 {% extends "base-nosidebar.html" %}
+
+{% load force_extras %}
+
 {% block add_styles %}
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/leaflet.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/Control.MiniMap.css" />
@@ -167,7 +170,7 @@
 				fillOpacity: 0.6
 			};
 			L.circleMarker([{{image.image_position.y}}, {{image.image_position.x}}], markerOptions).addTo(map)
-				.bindPopup('<table><tr><td><strong>Instrument</strong><br><table><tr><td>Latitude</td><td> {{image.image_position.y}}</td></tr> <tr><td>Longitude</td><td>{{image.image_position.x}}</td></tr> <tr><td>Roll </td><td>{{image.roll}}</td></tr> <tr><td>Pitch </td><td>{{image.pitch}}</td></tr> <tr><td>Yaw </td><td>{{image.yaw}}</td></tr> <tr><td>Altitude </td><td>{{image.altitude}}</td></tr> </table><br><strong>Water Properties</strong><br><table><tr><td>Depth</td><td>{{image.depth}} </td></tr> <tr><td>Salinity</td><td>{{image.depth}}</td></tr> <tr><td> Temperature</td><td>{{image.temperature}}</td></tr> </table></td><td><img src="{{image.left_thumbnail_reference}}"width="150" height="150"></td></tr> </table> ');
+				.bindPopup('<table><tr><td><strong>Instrument</strong><br><table><tr><td>Latitude</td><td> {{image.image_position.y}}</td></tr> <tr><td>Longitude</td><td>{{image.image_position.x}}</td></tr> <tr><td>Roll </td><td>{{image.roll}}</td></tr> <tr><td>Pitch </td><td>{{image.pitch}}</td></tr> <tr><td>Yaw </td><td>{{image.yaw}}</td></tr> <tr><td>Altitude </td><td>{{image.altitude}}</td></tr> </table><br><strong>Water Properties</strong><br><table><tr><td>Depth</td><td>{{image.depth}} </td></tr> <tr><td>Salinity</td><td>{{image.depth}}</td></tr> <tr><td> Temperature</td><td>{{image.temperature}}</td></tr> </table></td><td><img src="{{image.left_thumbnail_reference|thumbnail:"150x0"}}" width="150" height="150"/></td></tr> </table> ');
 			{% endfor %}		
 		}
 
