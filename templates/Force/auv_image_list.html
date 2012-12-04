@@ -6,7 +6,8 @@
     <li><a href="/data/">Data</a> <span class="divider">></span></li>
     <li><a href="/data/campaigns/">Campaign List</a> <span class="divider">></span></li>
     <li><a href="/data/campaigns/{{auvdeploymentObject.campaign.id}}">{{auvdeployment_object.campaign.short_name}}</a> <span class="divider">></span></li>
-    <li class="active">{{auvdeployment_object.short_name}}</li>
+    <li><a href="/data/auvdeployments/{{auvdeployment_object.id}}">{{auvdeployment_object.short_name}}</a> <span class="divider">></span></li>
+    <li class="active">Image List</li>
   </ul>
   
 {% endblock %}
@@ -27,33 +28,28 @@
     </tr>
   </thead>
   <tbody>
-
-        <tr>
-          <td>{{auvdeployment_object.start_time_stamp}}</td>
-          <td>{{auvdeployment_object.end_time_stamp}}</td>
-          <td>{{auvdeployment_object.min_depth}}</td>
-          <td>{{auvdeployment_object.max_depth}}</td>
-          <td>{{auvdeployment_object.mission_aim}}</td>
-          <td>{{auvdeployment_object.transect_shape}}</td>
-          <td>{{auvdeployment_object.distance_covered}}</td>
-        <tr>
-
+    <tr>
+      <td>{{auvdeployment_object.start_time_stamp}}</td>
+      <td>{{auvdeployment_object.end_time_stamp}}</td>
+      <td>{{auvdeployment_object.min_depth}}</td>
+      <td>{{auvdeployment_object.max_depth}}</td>
+      <td>{{auvdeployment_object.mission_aim}}</td>
+      <td>{{auvdeployment_object.transect_shape}}</td>
+      <td>{{auvdeployment_object.distance_covered}}</td>
+    <tr>
   </tbody>
 </table>
 {% else %}
     <p>No auvdeployments are available.</p>
 {% endif %}
 
-<h3>AUV Deployment Data</h3>
-
+<div class="span12">
+<h3>AUV Deployment Data   <a href="/data/auvdeployments/{{auvdeployment_object.id}}/annotationview/1" class="btn btn-mini btn-primary">Annotations ></a></h3>
+</div>
 {% if image_list %}
-<ul class="nav nav-tabs" id="myTab">
-  <li class="active"><a href="#list" data-toggle="tab">Image List</a></li>
-  <li><a href="#annotations" data-toggle="tab">Annotated Image List</a></li>
-</ul>
 
-<div class="tab-content">
-  <div class="tab-pane" id="list">
+
+<div class="span12" style="height: 400px; width: 100%; ;overflow: scroll;">
     <table class="table table-striped table-condensed">
       <thead>
         <tr>
@@ -92,32 +88,10 @@
       {% endfor %}
       </tbody>
     </table>
-  </div>
-  <div class="tab-pane" id="annotations">
-  	<a class="btn" href="/data/auvdeployments/{{auvdeployment_object.id}}/annotationview/0">Annotation Viewer</a><br>
-  	<table class="table table-striped table-condensed">
-      <thead>
-        <tr>
-          <th>date time</th>
-          <th>position</th>
-        </tr>
-      </thead>
-      <tbody>
-
-          {% for image in annotated_imagelist %}
-            <tr>
-              <td>{{image.date_time}}</v>
-              <td>{{image.image_position}}</td>
-            <tr>
-
-          {% endfor %}
-      </tbody>
-    </table>
-    
-  </div>
-  {% else %}
-      <p>No imagery found for AUV Deployment.</p>
-  {% endif %}
+</div>
+{% else %}
+	<p>No imagery found for AUV Deployment.</p>
+{% endif %}
 
 
   <!-- Modal -->
