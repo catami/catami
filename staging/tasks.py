@@ -248,11 +248,14 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
     deployment['mission_aim'] = "The aim of the mission."
     deployment['min_depth'] = depth_lim.minimum
     deployment['max_depth'] = depth_lim.maximum
+    deployment['license'] = "CC-BY"
+    deployment['descriptive_keywords'] = "keywords"
+    deployment['contact_person'] = "Catami <catami@ivec.org>"
 
     auvdeployment = {}
     auvdeployment['deployment_ptr'] = deployment_nk  # the foreign key, whatever the natural key is
     auvdeployment['transect_shape'] = "POLYGON(({0} {2}, {0} {3}, {1} {3}, {1} {2}, {0} {2} ))".format(lon_lim.minimum, lon_lim.maximum, lat_lim.minimum, lat_lim.maximum)
-    auvdeployment['distance_covered'] = 100.0  # just make it up... will work out later
+    auvdeployment['distance_covered'] = -100.0  # just make it up... will work out later
 
     deploy = {'pk': None, 'model': 'Force.Deployment', 'fields': deployment}
     auvdeploy = {'pk': None, 'model': 'Force.AUVDeployment', 'fields': auvdeployment}

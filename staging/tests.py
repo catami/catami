@@ -132,6 +132,7 @@ class StagingTests(TestCase):
         post["associated_publications"] = "{Publications}"
         post["associated_researchers"] = "{IMOS}, {TAFI}"
         post["associated_research_grant"] = "{ARC LIEF}"
+        post["contact_person"] = "Catami <catami@ivec.org>"
 
         # this works, redirects to created
         response = self.client.post(campaign_create, post)
@@ -187,6 +188,7 @@ class StagingTests(TestCase):
         post["associated_publications"] = "{Publications}"
         post["associated_researchers"] = "{IMOS}, {TAFI}"
         post["associated_research_grant"] = "{ARC LIEF}"
+        post["contact_person"] = "Catami <catami@ivec.org>"
 
         # this works, redirects to created
         response = self.client.post(campaign_create, post)
@@ -540,6 +542,7 @@ class AUVImport(TestCase):
         campaign.associated_research_grant = "Pending"
         campaign.date_start = datetime.date(2009, 6, 1)
         campaign.date_end = datetime.date(2009, 6, 30)
+        campaign.contact_person = "Catami <catami@ivec.org>"
 
         campaign.save()
 

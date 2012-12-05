@@ -50,6 +50,8 @@ class Campaign(models.Model):
     date_start = models.DateField()
     date_end = models.DateField()
 
+    contact_person = models.TextField()
+
     def __unicode__(self):
         return "{0} - {1}".format(self.date_start, self.short_name)
 
@@ -92,6 +94,10 @@ class Deployment(models.Model):
     min_depth = models.FloatField()
     max_depth = models.FloatField()
     campaign = models.ForeignKey(Campaign)
+
+    contact_person = models.TextField()
+    descriptive_keywords = models.TextField()
+    license = models.TextField()
 
     def __unicode__(self):
         # want to attempt to autodetect which subtype this is...
