@@ -107,6 +107,9 @@ class StagingTests(TestCase):
         test_urls.append((reverse('staging_file_imported'), 'staging/fileuploaded.html'))
         test_urls.append((reverse('staging_metadata_stage'), 'staging/metadatastage.html'))
         test_urls.append((reverse('staging_metadata_list'), 'staging/metadatalist.html'))
+        test_urls.append((reverse('staging_metadata_imported'), 'staging/metadataimported.html'))
+        test_urls.append((reverse('staging_annotation_cpc_import'), 'staging/annotationcpcimport.html'))
+        test_urls.append((reverse('staging_annotation_cpc_imported'), 'staging/annotationcpcimported.html'))
 
         for test_url, template in test_urls:
             response = self.client.get(test_url)
