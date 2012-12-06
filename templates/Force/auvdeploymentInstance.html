@@ -184,9 +184,9 @@
 		    var d2 = [];
 		    var d3 = [];
 		
-		    var d1 = [{% for image in image_list %}{% if not forloop.last %}[{{forloop.counter}},{{image.depth}}],{% else %}[{{forloop.counter}},{{image.depth}}]{% endif %}{% endfor %}]
-		    var d2 = [{% for image in image_list %}{% if not forloop.last %}[{{forloop.counter}},{{image.salinity}}],{% else %}[{{forloop.counter}},{{image.salinity}}]{% endif %}{% endfor %}]
-		    var d3 = [{% for image in image_list %}{% if not forloop.last %}[{{forloop.counter}},{{image.temperature}}],{% else %}[{{forloop.counter}},{{image.temperature}}]{% endif %}{% endfor %}]
+		    var d1 = [{% for value in depth_data %}{% if not forloop.last %}[{{forloop.counter}},{{value}}],{% else %}[{{forloop.counter}},{{value}}]{% endif %}{% endfor %}]
+		    var d2 = [{% for value in salinity_data %}{% if not forloop.last %}[{{forloop.counter}},{{value}}],{% else %}[{{forloop.counter}},{{value}}]{% endif %}{% endfor %}]
+		    var d3 = [{% for value in temperature_data %}{% if not forloop.last %}[{{forloop.counter}},{{value}}],{% else %}[{{forloop.counter}},{{value}}]{% endif %}{% endfor %}]
 		    
 		    $.plot($("#placeholder_01"), [ 
 		    	{
