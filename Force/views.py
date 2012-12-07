@@ -161,9 +161,9 @@ def auvdeployment_detail(request, auvdeployment_id):
 
     #get annotation list. Not all images have annotation
     annotated_imagelist = list()
-    for image in image_list:
-        if(Annotation.objects.filter(image_reference=image).count() > 0):
-            annotated_imagelist.append(image)
+    # for image in image_list:
+    #     if(Annotation.objects.filter(image_reference=image).count() > 0):
+    #         annotated_imagelist.append(image)
 
     #valmax = image_list.aggregate(Max('depth'))
     #valmax = image_list.aggregate(Max('depth'))
@@ -171,8 +171,19 @@ def auvdeployment_detail(request, auvdeployment_id):
     salinity_range = {'max':image_list.aggregate(Max('salinity'))['salinity__max'],'min':image_list.aggregate(Min('salinity'))['salinity__min']}
     temperature_range = {'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
 
+    depth_data_sampled = list()
+    salinity_data_sampled = list()
+    temperature_data_sampled = list()
+    
+    #we only need about 300 points for the plots
+    subsample = int(image_list.count()/300.)+1
+    #if subsample >= 2:
+        #resample 
+    depth_data_sampled = image_list.values_list('depth',flat=True).order_by('id')[0::subsample]
+    salinity_data_sampled = image_list.values_list('salinity',flat=True).order_by('id')[0::subsample]
+    temperature_data_sampled = image_list.values_list('temperature',flat=True).order_by('id')[0::subsample]
 
-
+    #depth_data_sampled = depth_data_sampled[0::subsample]
     # the easy way is to just return
     # auvdeployment_object.transect_shape.geojson
     return render_to_response(
@@ -181,6 +192,9 @@ def auvdeployment_detail(request, auvdeployment_id):
         'deployment_as_geojson': auvdeployment_object.transect_shape.geojson,
         'image_list': image_list,
         'annotated_imagelist': annotated_imagelist,
+        'depth_data': depth_data_sampled,
+        'salinity_data': salinity_data_sampled,
+        'temperature_data': temperature_data_sampled,
         'depth_range': depth_range,
         'salinity_range': salinity_range,
         'temperature_range': temperature_range},

@@ -107,6 +107,9 @@ class StagingTests(TestCase):
         test_urls.append((reverse('staging_file_imported'), 'staging/fileuploaded.html'))
         test_urls.append((reverse('staging_metadata_stage'), 'staging/metadatastage.html'))
         test_urls.append((reverse('staging_metadata_list'), 'staging/metadatalist.html'))
+        test_urls.append((reverse('staging_metadata_imported'), 'staging/metadataimported.html'))
+        test_urls.append((reverse('staging_annotation_cpc_import'), 'staging/annotationcpcimport.html'))
+        test_urls.append((reverse('staging_annotation_cpc_imported'), 'staging/annotationcpcimported.html'))
 
         for test_url, template in test_urls:
             response = self.client.get(test_url)
@@ -132,6 +135,7 @@ class StagingTests(TestCase):
         post["associated_publications"] = "{Publications}"
         post["associated_researchers"] = "{IMOS}, {TAFI}"
         post["associated_research_grant"] = "{ARC LIEF}"
+        post["contact_person"] = "Catami <catami@ivec.org>"
 
         # this works, redirects to created
         response = self.client.post(campaign_create, post)
@@ -187,6 +191,7 @@ class StagingTests(TestCase):
         post["associated_publications"] = "{Publications}"
         post["associated_researchers"] = "{IMOS}, {TAFI}"
         post["associated_research_grant"] = "{ARC LIEF}"
+        post["contact_person"] = "Catami <catami@ivec.org>"
 
         # this works, redirects to created
         response = self.client.post(campaign_create, post)
@@ -540,6 +545,7 @@ class AUVImport(TestCase):
         campaign.associated_research_grant = "Pending"
         campaign.date_start = datetime.date(2009, 6, 1)
         campaign.date_end = datetime.date(2009, 6, 30)
+        campaign.contact_person = "Catami <catami@ivec.org>"
 
         campaign.save()
 
