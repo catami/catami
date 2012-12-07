@@ -12,6 +12,3 @@ mox
 python-dateutil
 -e git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystackvim
 django_coverage
-numpy
-scipy
--f http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-1.0.1/matplotlib-1.0.1.tar.gz matplotlib
