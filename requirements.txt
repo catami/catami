@@ -12,4 +12,6 @@ mox
 python-dateutil
 -e git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystackvim
 django_coverage
+numpy
+scipy
 matplotlib
