@@ -1,8 +1,9 @@
 """Views for the administratorbot"""
 # Create your views here.
-import pylab
+#import pylab
 import scipy
-#from pylab import figure, axes, pie, title, plot
+import matplotlib.pyplot as mpl
+#from mpl import figure, axes, pie, title, plot
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from django.http import HttpResponse
 from django.db import connection, transaction
@@ -13,8 +14,8 @@ from django.test.client import RequestFactory
 def query_database_size(request):
 
     cursor = connection.cursor()
-    f = pylab.figure(figsize=(10, 10))
-    pylab.subplot(1, 2, 1)
+    f = mpl.figure(figsize=(10, 10))
+    mpl.subplot(1, 2, 1)
 
     query = "SELECT nspname || '.' || relname AS \"relation\", pg_size_pretty(pg_total_relation_size(C.oid)) AS \"total_size\" FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN ('pg_catalog', 'information_schema') AND C.relkind <> 'i' AND nspname !~ '^pg_toast' ORDER BY pg_total_relation_size(C.oid) DESC LIMIT 10;"
 
@@ -22,8 +23,8 @@ def query_database_size(request):
 
     cursor.execute("SELECT pg_database_size('Force')")
     p = cursor.fetchone()
-    pylab.bar(0, p[0] / 100000)
-    pylab.title('Database size (mB)')
+    mpl.bar(0, p[0] / 100000)
+    mpl.title('Database size (mB)')
 
     db_size_str = []
     db_size = []
@@ -44,12 +45,12 @@ def query_database_size(request):
         if temp[1] == 'gB':
             db_size[i] = db_size[i] * 1000000000.0
 
-    ax = pylab.subplot(1, 2, 2)
+    ax = mpl.subplot(1, 2, 2)
     x = scipy.arange(len(db_size))
 
     y = scipy.float32(db_size) / 1000000.0
-    pylab.bar(x, y, align='center')
-    pylab.title('Top 10 Table size (mB)')
+    mpl.bar(x, y, align='center')
+    mpl.title('Top 10 Table size (mB)')
     ax.set_xticklabels(bar_label)
     ax.set_xticks(x)
     f.autofmt_xdate()
