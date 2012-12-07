@@ -154,6 +154,16 @@
 			
 			map.addLayer(osmLayer);
 			
+			var CMPA_layer = L.tileLayer.wms("http://geoserver.imos.org.au/geoserver/aodn/wms", {
+			    layers: 'aodn:comm_mpa',
+			    format: 'image/png',
+			    transparent: true,
+			    version: '1.1.0',
+			    attribution: "Commonwealth Marine Protected Area"
+			});
+
+			map.addLayer(CMPA_layer)
+			
 			// set the map's starting view to zoom on the deployment bounding rect
 			var deployment_bounds = [];
 			deployment_bounds =[{% for val in auvdeployment_object.transect_shape.extent %}{% if not forloop.last %}{{val}}, {% else %}{{val}}{% endif %}{% endfor %}];
