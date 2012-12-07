@@ -14,6 +14,9 @@ from django.core import management
 #from django.core import mail
 from datetime import datetime
 from StringIO import StringIO
+from Force.models import *
+from rebels.models import Data_logger
+from django.db import connection, transaction
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +27,7 @@ class Robot():
     def __init__(self):
         """class constructor for setting up the bot parameters"""
         # how often to poll the server for connection in sec
-        self.dt_connection = 10
+        self.dt_connection = 10  # not used, using cron instead
 
     def check_database_connection(self, dbname='Force'):
         """Check to see if database connection is open. Return True or False
@@ -63,10 +66,10 @@ class Robot():
         compression_type = kwargs.get('compression_type', 'gz')
         do_zip = kwargs.get('do_zip', True)
         file_format = kwargs.get('file_format', 'json')
-        unit_test = kwargs.get('unit_test','off')
+        unit_test = kwargs.get('unit_test', 'off')
 
         #assume our unit tests are true unless otherwise failed
-        test = {'checksum':True,'archive':True,'copy':True}
+        test = {'checksum': True, 'archive': True, 'copy': True}
 
         # Setup the files to write data to.
         fname = str(datetime.now()) + '-' + dbname + '.bak'
@@ -129,7 +132,6 @@ class Robot():
                 #return False
                 test['checksum'] = False
 
-
             # Check to see if file is in the archive
             tar = tarfile.open(directory +
                                'copy_' +
@@ -147,7 +149,7 @@ class Robot():
                 tar_name = '000000'
             else:
                 tar_name = tarinfo.name
-                
+
             if tar_name == fname:
                 logger.debug('File name in archive matches backup file')
                 test['archive'] = True
@@ -157,7 +159,7 @@ class Robot():
                 test['archive'] = False
 
             # Extract the data file from the copied archive and
-            #checksum against the original
+            # checksum against the original
             tar.extractall(path=directory)
             chk_file = self.check_sum_file(directory + fname)
             logger.debug(directory + fname + ' Checksum :: ' + str(chk_file))
@@ -169,7 +171,7 @@ class Robot():
 
             if unit_test == 'corrupt':
                 chk_file = '0000000000'
-                
+
             if chk_file == chk_tmp_file:
                 logger.debug('backup file copied correctly')
                 test['copy'] = True
@@ -197,19 +199,19 @@ class Robot():
 
             if unit_test == 'corrupt':
                 chk_temp = '0000000000'
-            
 
-            if (chk_temp ==  chk_file):
+
+            if (chk_temp == chk_file):
 
                 logger.debug('File and copy checksums agree')
                 test['checksum'] = True
             else:
                 logger.error('File and copy checksums dont agree')
-                test['checksum'] = False                
+                test['checksum'] = False
         # Check to see if the file isthere.
 
         if test['checksum'] == False or test['archive'] == False or test['copy'] == False:
-            
+
             return False
         else:
             return True
@@ -228,3 +230,120 @@ class Robot():
 
     def make_remote_backup(self, ipaddress, dbname='Force', **kwargs):
         """Make a back up of an offsite database"""
+
+
+class ReportTools():
+    """Contains tools for querying the database and reporting metrics"""
+
+    def __init__(self):
+        """Set the parameters that to report on"""
+
+        # The name of the models.
+        # TODO: Refector to query them from Django
+        self.str_force_models = ['Campaign',
+                            'Deployment',
+                            'User',
+                            'Image',
+                            'AUVDeployment',
+                            'StereoImage',
+                            'Annotation',
+                            'BRUVDeployment',
+                            'DOVDeployment',
+                            'TVDeployment',
+                            'TIDeployment']
+
+        for model in self.str_force_models:
+            self.stat_fields = {model: 0}
+
+        # List of model instances
+        self.force_models = [Campaign,
+                            Deployment,
+                            User,
+                            Image,
+                            AUVDeployment,
+                            StereoImage,
+                            Annotation,
+                            BRUVDeployment,
+                            DOVDeployment,
+                            TVDeployment,
+                            TIDeployment]
+                
+    def collect_number_of_fields(self):
+
+        i = 0
+        for i in range(0, len(self.force_models)):
+
+            self.stat_fields[self.str_force_models[i]] = len(self.force_models[i].objects.all())
+
+        logger.debug(str(self.stat_fields))
+        return True
+
+    def query_table_size(self):
+        cursor = connection.cursor()
+
+        bar_label = []
+        tb_size_str = []
+        tb_size = []
+
+        query = "SELECT nspname || '.' || relname AS \"relation\", pg_size_pretty(pg_total_relation_size(C.oid)) AS \"total_size\" FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN ('pg_catalog', 'information_schema') AND C.relkind <> 'i' AND nspname !~ '^pg_toast' ORDER BY pg_total_relation_size(C.oid) DESC LIMIT 10;"
+
+        cursor = connection.cursor()
+        cursor.execute(query)
+        for p in cursor.fetchall():
+            bar_label.append(p[0])
+            tb_size_str.append(p[1])
+
+
+        for i in range(0, len(tb_size_str)):
+            temp = tb_size_str[i].split(" ")
+            tb_size.append(temp[0])
+            if temp[1] == 'kB':
+                tb_size[i] = int(tb_size[i]) * 1000.0
+            if temp[1] == 'mB':
+                tb_size[i] = db_size[i] * 1000000.0
+            if temp[1] == 'gB':
+                tb_size[i] = db_size[i] * 1000000000.0
+
+        return tb_size
+    
+    def query_database_size(self, dbase='Force'):
+        """Queries the size of the database on the disk"""
+        cursor = connection.cursor()
+
+        cursor.execute("SELECT pg_database_size('" + dbase + "')")
+        self.db_size = cursor.fetchone()
+
+        return int(self.db_size[0])
+
+    def save(self):
+
+        data = Data_logger.objects.create(
+            collection_time=datetime.now(),
+            num_campaigns=self.stat_fields['Campaign'],
+            num_deployments=self.stat_fields['Deployment'],
+            num_users=self.stat_fields['User'],
+            num_images=self.stat_fields['Image'],
+            num_auv_deployments=self.stat_fields['AUVDeployment'],
+            num_stereo_images=self.stat_fields['StereoImage'],
+            num_annotations=self.stat_fields['Annotation'],
+            num_bruv_deployments=self.stat_fields['BRUVDeployment'],
+            num_dov_deployments=self.stat_fields['DOVDeployment'],
+            num_tv_deployments=self.stat_fields['TVDeployment'],
+            num_ti_deployments=self.stat_fields['TIDeployment'],
+            db_size_on_disk=self.query_database_size()
+            )
+
+        data.save()
+
+    def collect_stats(self):
+        """Main method for collecting the stats"""
+
+        try:
+            logger.debug('Collecting stats')
+            self.collect_number_of_fields()
+            self.save()
+
+            return True
+        except:
+            logger.error('Could not collect stats')
+            return False

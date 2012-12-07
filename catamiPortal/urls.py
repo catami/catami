@@ -29,6 +29,9 @@ urlpatterns = patterns('',
     #haystack
     url(r'^search/', include('haystack.urls')),
 
+    # plots
+    url(r'^report/', include('rebels.urls')),
+
 
 
     # Uncomment the admin/doc line below to enable admin documentation:
