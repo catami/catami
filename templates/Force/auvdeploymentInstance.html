@@ -123,7 +123,7 @@
 				for (var i = 10; i > -1; i--) {
 					data= ({{depth_range.max}}-{{depth_range.min}})/10. * i + {{depth_range.min}};
 	
-					labels.push('<i style="background:#' + rainbow.colourAt(Math.round(data)) + '"></i> ' + Math.round(data));
+					labels.push('<i style="background:#' + rainbow.colourAt(data) + '"></i> ' + Math.round(data));
 				}
 				labels.push('<strong>Depth(m)</strong>');
 				div.innerHTML = labels.join('<br>');
@@ -159,11 +159,17 @@
 			    format: 'image/png',
 			    transparent: true,
 			    version: '1.1.0',
-			    attribution: "Commonwealth Marine Protected Area"
+			    attribution: "IMOS"
 			});
 
-			map.addLayer(CMPA_layer)
+			//map.addLayer(CMPA_layer)
 			
+			var overlayMaps = {
+				"Commonwealth Marine Protected Area": CMPA_layer
+			}
+			
+			L.control.layers(null, overlayMaps).addTo(map);
+
 			// set the map's starting view to zoom on the deployment bounding rect
 			var deployment_bounds = [];
 			deployment_bounds =[{% for val in auvdeployment_object.transect_shape.extent %}{% if not forloop.last %}{{val}}, {% else %}{{val}}{% endif %}{% endfor %}];
@@ -171,8 +177,8 @@
 			var miniMap = new L.Control.MiniMap(osmLayer2).addTo(map);
 			
 			{% for image in image_list %}
-			hex_color = '#' + rainbow.colourAt(Math.round({{image.depth}}));
-			
+			hex_color = '#' + rainbow.colourAt({{image.depth}});
+
 			var markerOptions = {
 				stroke:false,
 				radius: 4,
