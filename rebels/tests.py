@@ -43,6 +43,6 @@ class DatabaseTest(TestCase):
         self.assertTrue(isinstance(self.april.query_database_size(), int))
         self.assertTrue(isinstance(self.april.query_table_size(), list))
 
-    def test_db_stats_view(self):
-        response = self.client.get("/report/")
-        self.assertEqual(response.status_code, 200)
+    #def test_db_stats_view(self):
+        #response = self.client.get("/report/")
+        #self.assertEqual(response.status_code, 200)
