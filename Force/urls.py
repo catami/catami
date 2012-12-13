@@ -18,7 +18,8 @@ urlpatterns = patterns('',
 
     url(r'^auvdeployments/$', 'Force.views.auvdeployments'),
     url(r'^auvdeployments/map/$', 'Force.views.auvdeployments_map'),
-    url(r'^auvdeployments/(?P<auvdeployment_id>\d+)/$', 'Force.views.auvdeployment_detail'),
+    url(r'^auvdeployments/(?P<auvdeployment_id>\d+)/$', 'Force.views.auvdeployment_display'),
+    url(r'^auvdeployments/(?P<auvdeployment_id>\d+)/detail/$', 'Force.views.auvdeployment_detail'),
     url(r'^auvdeployments/(?P<auvdeployment_id>\d+)/images/$', 'Force.views.auvimage_list'),
     url(r'^auvdeployments/(?P<auvdeployment_id>\d+)/annotationview/(?P<image_index>\d+)/$', 'Force.views.annotationview'),
 

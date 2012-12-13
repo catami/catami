@@ -139,8 +139,27 @@ def auvdeployments_map(request):
         context_instance=RequestContext(request))
 
 
+def auvdeployment_display(request, auvdeployment_id):
+    """@brief AUV Deployment page for specifed AUV deployment
+
+    """
+
+    try:
+        auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
+    except AUVDeployment.DoesNotExist:
+        error_string = 'This is the error_string'
+        return render_to_response(
+           'Force/data_missing.html', context_instance=RequestContext(request))
+        #raise Http404
+
+    return render_to_response(
+        'Force/auvdeployment_display.html',
+        {'auvdeployment_object': auvdeployment_object},
+        context_instance=RequestContext(request))
+
+
 def auvdeployment_detail(request, auvdeployment_id):
-    """@brief AUV Deployment html for a specifed AUV deployment
+    """@brief AUV Deployment map and data plot for specifed AUV deployment
 
     """
     # the hard way. All columns in the geojson
@@ -187,7 +206,7 @@ def auvdeployment_detail(request, auvdeployment_id):
     # the easy way is to just return
     # auvdeployment_object.transect_shape.geojson
     return render_to_response(
-        'Force/auvdeploymentInstance.html',
+        'Force/auvdeploymentDetail.html',
         {'auvdeployment_object': auvdeployment_object,
         'deployment_as_geojson': auvdeployment_object.transect_shape.geojson,
         'image_list': image_list,
