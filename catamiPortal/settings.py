@@ -1,9 +1,15 @@
 import os
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+import socket
 # Django settings for catamiPortal project.
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+
+if socket.gethostname() == 'catami.ivec.org':
+    DEBUG = TEMPLATE_DEBUG = False
+else:
+    DEBUG = True
+    TEMPLATE_DEBUG = DEBUG
+
 POSTGIS_VERSION = (1, 5, 2)
 SOUTH_TESTS_MIGRATE = False # To disable migrations and use syncdb instead
 SKIP_SOUTH_TESTS = True # To disable South's own unit tests
