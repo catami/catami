@@ -71,8 +71,14 @@
 				<a class="brand" href="/"><img src="{{ STATIC_URL }}assets/img/catamiheader-blue-small.png" alt="catami_icon_small" width="140" /></a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li class=""><a href="/"><i class="icon-home icon-white"></i> Home</a></li>
-						<li class="dropdown">
+						<li class=""><a href="/"><i class="icon-home icon-white"></i> Home </a></li>
+                        <li><a  href="/data"><i class="icon-list-alt"></i> Explore </a></li>
+
+                        {% if user.is_authenticated %}
+                        <li><a  href="{% url staging.views.index %}"><i class="icon-upload"></i> Import </a></li>
+                        {% endif %}
+<!--
+                        <li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<b class="caret"></b>
 								Interfaces
@@ -84,6 +90,7 @@
 							
 							</ul>
 						</li>
+-->
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<b class="caret"></b>
@@ -93,8 +100,8 @@
 							    <li><a  href="/faq"><i class="icon-question-sign"></i> FAQ</a></li>
 							    <li><a  href="/contact"><i class="icon-envelope"></i> Contact us</a></li>
 							</ul>
-						</li>              
-						<li><a href="#" rel="popover" title="About This Thing" data-placement="bottom" data-content="This is a first test of Catami data layout running in Django <br>">About</a>
+						</li>
+                        <li><a href="#" rel="popover" title="Collaborative and Annotation Tools for Analysis of Marine Imagery and Video" data-placement="bottom" data-content=" This project includes development funded by the Australian National Data Service (ANDS, http://ands.org.au) and the National eResearch Collaboration Tools and Resources (NeCTAR, http://nectar.org.au). ANDS is supported by the Australian Government through the National Collaborative Research Infrastructure Strategy Program and the Education Investment Fund (EIF) Super Science Initiative. NeCTAR is an Australian Government project conducted as part of the Super Science initiative and financed by the Education Investment Fund. The University of Melbourne has been appointed the lead agent by the Commonwealth of Australia, Department of Industry, Innovation, Science, Research and Tertiary Education.">About</a>
 							<li class="divider-vertical"></li>
 						</li>
 					</ul>
@@ -103,7 +110,7 @@
 			            <a href="/logout/" class="btn btn-small pull-right"> Logout</a>
 			            <p class="navbar-text pull-right"><i class="icon-user icon-white"></i> Logged in as <a href="#"> {{ user.username }} </a>&nbsp;</p>    
 					{% else %}
-						<a role="button" class="btn btn-small pull-right" data-toggle="modal" data-target="#myModal" href="/accounts/login/">Login</a>            
+						<a href="/accounts/login/" role="button" class="btn btn-small pull-right" data-toggle="modal" >Login</a>
 						<p class="navbar-text pull-right"><i class="icon-user icon-white"></i> Welcome visitor! <a href="#"> {{ user.username }} </a>&nbsp;</p>			   
 					{% endif %}
 
