@@ -46,8 +46,8 @@ def get_known_file(key, url):
                 return get_known_file(key, u)
             except HTTPError:
                 continue
-    else:
-        raise Exception("File could not be downloaded: " + url)
+        else:
+            raise Exception("File could not be downloaded: " + url)
 
         # we likely have an iterable...
     resp = urlopen(url)
