@@ -36,7 +36,7 @@
 -->
 	<div class="row-fluid">		<! pretty pictures row>	
 		<div class="span12" id="about">
-				{% if image_link_list %}
+				{% if image_link_list|length != 0 %}
 				<ul class="thumbnails">
 	
 					{% for image_link in image_link_list %}
@@ -49,8 +49,7 @@
 				</ul>
 			{% else %}
 				<div class="alert alert-error">
-				<p><strong>OK, so this is bad.</strong>  You're seeing this error because the database is 
-				either down or really, really broken. Either way, we're sorry. We're working on getting everything back up and working.</p>
+				<p><strong>No Images found.</strong>  You're seeing this error because there are no available images in the database to display.  Please contact catami@ivec.org.</p>
 	  			</div>
 			{% endif %}	
 				
@@ -64,7 +63,7 @@
 		<h3 style="color:#555;">Recent deployments ... </h3>
 		</div>			
 		<div class="span10 offset1">
-			{% if styled_deployment_list %}
+			{% if styled_deployment_list|length != 0 %}
 				{% for styled_deployment in styled_deployment_list %}
 					<div class="span3 fancy-box wordwrap">
 						<strong>{{styled_deployment.deployment_type}}</strong>
@@ -78,8 +77,7 @@
 
 			{% else %}
 				<div class="alert alert-error">
-				<p><strong>OK, so this is bad.</strong>  You're seeing this error because the database is 
-				either down or really, really broken. Either way, we're sorry. We're working on getting everything back up and working.</p>
+				<p><strong>No Images found.</strong>  You're seeing this error because there are no available images in the database to display.  Please contact catami@ivec.org.</p>
 	  			</div>
 			{% endif %}
 		</div>
