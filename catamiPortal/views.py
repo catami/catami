@@ -28,24 +28,24 @@ def index(request):
     image_link_list = []
 
     for image in random_images:
-        try: 
+        try:
             AUVDeployment.objects.get(id=image.deployment.id)
         except:
             pass
         else:
             image_link = {"deployment_url":"/data/auvdeployments/"+str(image.deployment.id),"image":image}
 
-        try: 
+        try:
             TIDeployment.objects.get(id=image.deployment.id)
         except:
             pass
         else:
             image_link = {"deployment_url":"/data/tideployments/"+str(image.deployment.id),"image":image}
-        
+
         image_link_list.append(image_link)
 
     for deployment in recent_deployments:
-        try: 
+        try:
             AUVDeployment.objects.get(id=deployment.id)
         except:
             pass
@@ -53,15 +53,15 @@ def index(request):
             deployment_type= "AUV Deployment"
             deployment_url = "/data/auvdeployments/"+str(deployment.id)
 
-        try: 
+        try:
             BRUVDeployment.objects.get(id=deployment.id)
         except:
             pass
         else:
             deployment_type= "BRUV Deployment"
             deployment_url = "/data/bruvdeployments/"+str(deployment.id)
- 
-        try: 
+
+        try:
             BRUVDeployment.objects.get(id=deployment.id)
         except:
             pass
@@ -69,7 +69,7 @@ def index(request):
             deployment_type= "DOV Deployment"
             deployment_url = "/data/dovdeployments/"+str(deployment.id)
 
-        try: 
+        try:
             TIDeployment.objects.get(id=deployment.id)
         except:
             pass
@@ -77,14 +77,14 @@ def index(request):
             deployment_type= "TI Deployment"
             deployment_url = "/data/tideployments/"+str(deployment.id)
 
-        try: 
+        try:
             BRUVDeployment.objects.get(id=deployment.id)
         except:
             pass
         else:
             deployment_type= "TV Deployment"
             deployment_url = "/data/tvdeployments/"+str(deployment.id)
-           
+
         styled_deployment = {"deployment_type":deployment_type,"deployment_url":deployment_url,"deployment":deployment}
         styled_deployment_list.append(styled_deployment)
 
@@ -96,7 +96,7 @@ def index(request):
 
 def faq(request):
     """@brief returns catami faq html
-    
+
     """
     context = {}
 
@@ -107,7 +107,7 @@ def faq(request):
 
 def contact(request):
     """@brief returns catami contact html
-    
+
     """
     context = {}
 
@@ -115,10 +115,18 @@ def contact(request):
         context,
         RequestContext(request))
 
+def attribution(request):
+    """@brief returns catami atribution html"""
+
+    context = {}
+
+    return render_to_response('catamiPortal/attribution.html',
+        context,
+        RequestContext(request))
 
 def logout_view(request):
     """@brief returns user to html calling the logout action
-    
+
     """
     logout(request)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])

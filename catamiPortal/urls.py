@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^$', 'catamiPortal.views.index'),
     url(r'^faq', 'catamiPortal.views.faq'),
     url(r'^contact', 'catamiPortal.views.contact'),
+    url(r'^attribution','catamiPortal.views.attribution'),
 
     url(r'^staging/', include('staging.urls')),
 
