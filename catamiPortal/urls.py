@@ -31,9 +31,10 @@ urlpatterns = patterns('',
     url(r'^search/', include('haystack.urls')),
 
     # plots
-    url(r'^report/', include('rebels.urls')),
+    url(r'^report/', include('dbadmintool.urls')),
 
-
+    # userena
+    (r'^accounts/', include('userena.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

@@ -26,15 +26,14 @@ from Force.models import Campaign
 import datetime
 from dateutil.tz import tzutc
 
-
 def setup_login(self):
     # create a testing user
     self.username = 'testing'
     self.email = 'testing@example.com'
     self.password = User.objects.make_random_password()
-    self.login = {'username': self.username, 'password': self.password}
+    self.login = {'identification': self.username, 'password': self.password}
 
-    self.login_url = '/accounts/login/?next='
+    self.login_url = '/accounts/signin/?next='
 
     # this creates the testing user and saves it
     self.user = User.objects.create_user(self.username, self.email, self.password)
@@ -81,7 +80,6 @@ class StagingTests(TestCase):
 
     def test_login_and_logout(self):
         """Test that logging in and out can be done."""
-
         # redirect to staging index after login
         index_url = reverse('staging_index')
         response = self.client.post(self.login_url + index_url, self.login)
@@ -90,10 +88,11 @@ class StagingTests(TestCase):
         response = self.client.get('logout/')
         #self.assertRedirects(response, '/')
 
+
     def test_views_get(self):
         """Test getting the views (after login)."""
         # login, don't check carefully the other test does that
-        response = self.client.post('/accounts/login/', self.login)
+        response = self.client.post(self.login_url, self.login)
 
         test_urls = []
         test_urls.append((reverse('staging_index'), 'staging/index.html'))
@@ -113,6 +112,7 @@ class StagingTests(TestCase):
 
         for test_url, template in test_urls:
             response = self.client.get(test_url)
+            print test_url
             # check you can get them all
             self.assertEqual(response.status_code, 200)
             self.assertTemplateUsed(response, template)
@@ -123,7 +123,7 @@ class StagingTests(TestCase):
 
     def test_views_post_auv(self):
         """Test posting to the main views."""
-        response = self.client.post('/accounts/login/', self.login)
+        response = self.client.post('/accounts/signin/', self.login)
         test_urls = []
 
         campaign_create = reverse('staging_campaign_create')
@@ -179,7 +179,7 @@ class StagingTests(TestCase):
 
     def test_views_post_metadata(self):
         """Test the metadata component."""
-        response = self.client.post('/accounts/login/', self.login)
+        response = self.client.post('/accounts/signin/', self.login)
 
         # create the campaign to load into
         campaign_create = reverse('staging_campaign_create')

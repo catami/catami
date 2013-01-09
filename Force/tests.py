@@ -32,10 +32,10 @@ class TestViews(TestCase):
     def setUp(self):
         global first_campaign_id, second_campaign_id
 
-        '''Verify environment is setup properly'''  # Printed if test fails
-        import catami_web_portal
-        os.environ['DJANGO_SETTINGS_MODULE'] = 'catamiPortal.settings'
-        setup_test_environment()
+        #'''Verify environment is setup properly'''  # Printed if test fails
+        #import catami_web_portal
+        #os.environ['DJANGO_SETTINGS_MODULE'] = 'catamiPortal.settings'
+        #setup_test_environment()
 
         self.factory = RequestFactory()
 

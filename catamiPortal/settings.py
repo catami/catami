@@ -13,6 +13,8 @@ else:
 POSTGIS_VERSION = (1, 5, 2)
 SOUTH_TESTS_MIGRATE = False # To disable migrations and use syncdb instead
 SKIP_SOUTH_TESTS = True # To disable South's own unit tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+#REUSE_DB = 1
 
 ADMINS = (
      ('Dan Marrable', 'd.marrable@ivec.org'),
@@ -129,6 +131,12 @@ TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, '../templates')
 )
 
+AUTHENTICATION_BACKENDS = (
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -146,9 +154,13 @@ INSTALLED_APPS = (
     'staging',
     'haystack',
     'django_jenkins',
-    'rebels',
+    'dbadmintool',
     'south',
     'django_coverage',
+    'accounts',
+    'guardian',
+    'easy_thumbnails',
+    'django_nose',
 )
 
 
@@ -164,7 +176,8 @@ JENKINS_TASKS = {
 PROJECT_APPS = (
     'Force',
     'staging', 
-    'rebels'
+    'dbadmintool',
+    'accounts',
 )
 
 #haystack support
@@ -174,6 +187,23 @@ HAYSTACK_CONNECTIONS = {
         'URL': 'http://127.0.0.1:8983/solr'
     },
 }
+
+ANONYMOUS_USER_ID = -1  
+
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+#EMAIL_USE_TLS = True
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = 587
+#EMAIL_HOST_USER = 'none@none.none'
+#EMAIL_HOST_PASSWORD = 'none'
+#AUTH_PROFILE_MODULE = "accounts.UserProfile"
+AUTH_PROFILE_MODULE = 'accounts.MyProfile'  
+  
+LOGIN_REDIRECT_URL = '/accounts/%(username)s/'  
+LOGIN_URL = '/accounts/signin/'  
+LOGOUT_URL = '/accounts/signout/'  
+
+USERENA_ACTIVATION_REQUIRED = 0
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -232,9 +262,14 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
         },
-        'rebels': {
+        'dbadmintool': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
         },
+        'Force': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
+
     }
 }
