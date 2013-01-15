@@ -18,6 +18,7 @@ urlpatterns = patterns('staging.views',
     # auv deployment (via datafabric importing)
     url(r'^auv/import$', 'auvimport', name='staging_auv_import'),
     url(r'^auv/manualimport$', 'auvmanualimport', name='staging_auv_import_manual'),
+    url(r'^auv/localimport$', 'auvlocalimport', name='staging_auv_import_local'),
     url(r'^auv/progress$', 'auvprogress', name='staging_auv_progress'),
     url(r'^auv/imported$', 'auvimported', name='staging_auv_imported'),
 
@@ -38,4 +39,6 @@ urlpatterns = patterns('staging.views',
     # annotations
     url(r'^annotations/cpc/import$', 'annotationcpcimport', name='staging_annotation_cpc_import'),
     url(r'^annotations/cpc/imported$', 'annotationcpcimported', name='staging_annotation_cpc_imported'),
+
+    url(r'^listing/(?P<path>.*)$', 'listdirectory'),
 )

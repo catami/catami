@@ -1,0 +1,29 @@
+{% load staging_extras %}
+    <div class="span12">
+        <ul class="breadcrumb">
+        {% for name,location in dirs %}
+            <li {% if forloop.last %}class="active" {% endif %}>
+            <a onclick="$('#id_mission_path').val('{{ location }}');$('#folderview').load('{% url staging.views.listdirectory location %}');">{{ name }}</a>
+            <span class="divider">/</span></li>
+        {% endfor %}
+        </ul>
+    </div>
+<div class="row-fluid">
+    <div class="span6">
+        <ul class="unstyled">
+{% for name, location in subdirs|listsplit:"0,2" %}
+        <li><a onclick="$('#id_mission_path').val('{{ location }}');$('#folderview').load('{% url staging.views.listdirectory location %}');" >{{ name }}</a></li>
+{% empty %}
+        No folders.
+{% endfor %}
+        </ul>
+    </div>
+    <div class="span6">
+        <ul class="unstyled">
+{% for name, location in subdirs|listsplit:"1,2" %}
+        <li><a onclick="$('#id_mission_path').val('{{ location }}');$('#folderview').load('{% url staging.views.listdirectory location %}');" >{{ name }}</a></li>
+{% empty %}
+{% endfor %}
+        </ul>
+    </div>
+</div>

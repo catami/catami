@@ -44,7 +44,7 @@ def get_known_file(key, url):
         for u in url:
             try:
                 return get_known_file(key, u)
-            except HTTPError:
+            except (HTTPError, IOError):
                 continue
         else:
             raise Exception("File could not be downloaded.")
@@ -95,7 +95,7 @@ def get_netcdf_file(key, pattern, start_time):
         url = pattern.format(date_string=start_time.strftime('%Y%m%dT%H%M%S'))
         try:
             file_handle = get_known_file(key, url)
-        except HTTPError:
+        except (HTTPError, IOError):
             pass
         else:
             # no error in finding the file - have the right one so escape

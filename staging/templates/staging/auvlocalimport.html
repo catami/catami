@@ -1,0 +1,95 @@
+{% extends "staging/base.html" %}
+{% block title %}Catami Project - AUV Import {% endblock %}
+
+{% block insert_style %}
+{{ block.super }}
+.modal-wide {
+    width: 900px;
+    margin: -250px 0 0 -450px;
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>AUV Import</h1>
+</div>
+<div class="row-fluid">
+<div class="span3">
+    <form class="well" action="" method="post">{% csrf_token %}
+        {% if form.errors %}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong> Error!</strong> {{ form.errors }}
+        </div>
+        {% endif %}
+        <div class="control-group">
+            Campaign to insert deployment into:
+            {{ form.campaign_name }}
+            <span class="help-block">{{ form.campaign_name.help_text }}</span>
+        </div>
+        <div class="control-group">
+        Base folder of mission:{{ form.mission_path }}<a onclick="$('#folderview').load('{% url staging.views.listdirectory "" %}' + $('#id_mission_path').val());" href="#browse" role="button" class="btn" data-toggle="modal">Browse</a>
+        </div>
+        <div id="browse" class="modal modal-wide hide fade" tabindex="-1" role="dialog" aria-labelledby="browselabel" aria-hidden="true">
+            <div class="modal-header">
+                <button  type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h3 id="browselabel">Mission Browse</h3>
+            </div>
+            <div class="modal-body">
+                <div id="folderview"></div>
+            </div>
+            </div>
+        <input class="btn" type="submit" value="Import" />
+    </form>
+</div>
+</div>
+<div id="upload_panel"></div>
+{% endblock %}
+
+{% block add_script %}
+<script>
+$('#folderview').load("{% url staging.views.listdirectory "" %}");
+
+// uuid generation function
+function get_uuid() {
+    var uuid = "";
+    for (var i=0; i < 32; i++) {
+        uuid += Math.floor(Math.random() * 16).toString(16);
+    }
+    return uuid;
+}
+
+$(document).ready(function(){ // on page load completion
+
+    var freq = 1000;
+    var progress_url = '{% url staging.views.auvprogress %}';
+    var uuid = get_uuid();
+
+    progress_url += '?uuid=' + uuid;
+
+    // this is the function that does the updating
+    function update_progress() {
+        $('#upload_panel').load(progress_url, function(){
+            // queue the next update
+            window.setTimeout(update_progress, freq); // the timer to update it
+        });
+    };
+
+    $("form").submit(function(){ // set a trigger on a button
+
+        // only submit if not already submitted...
+        if ($.data(this, 'submitted')) return false;
+
+        // set the timer to update the progress section
+        window.setTimeout(update_progress, freq);
+
+
+        this.action += (this.action.indexOf('?') == -1 ? '?' : '&') + 'uuid=' + uuid;
+
+        // mark form as submitted
+        $.data(this, 'submitted', true);
+    });
+});
+
+</script>
+
+{% endblock %}
