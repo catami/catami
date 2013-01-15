@@ -255,6 +255,8 @@ class TestViews(TestCase):
 
     #test all deployments
     def test_deployments(self):
+        pass
+    
         """@brief Test deployment browser interfaces
 
         """
