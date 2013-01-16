@@ -1,0 +1,4 @@
+{% extends "base-topmenu.html" %}
+{% block title %}{{ block.super }} {{ request.get_full_path }}{% endblock %}
+{% block content %}Some content {{ request.path }}{% endblock %}
+{% block add_script %}{% endblock %} 

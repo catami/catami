@@ -1,0 +1,10 @@
+{% extends "base-topmenu.html" %}
+{% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
+{% block content %}
+<div class="row-fluid">
+    <div class="hero-unit">
+        <h1>Subsets</h1>
+        <p>A Subset is a set consisting of elements of a Collection, chosen according to some user-defined criteria.</p>
+    </div>
+</div>
+{% endblock %}

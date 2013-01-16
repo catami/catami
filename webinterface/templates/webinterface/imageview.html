@@ -1,0 +1,40 @@
+{% extends "base-imageview.html" %}
+{% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
+
+{% block leftpane %}
+<a href="#" class="btn" rel="popover-roll" data-placement="right" style="padding:7px; width:20px;" data-html="true" data-content="<img src='{{ STATIC_URL }}images/simple_annotate.png' width='100%' alt='Map'><p>This will be optionally pinnable to the side so that it is always viewable.</p>" data-original-title="Map info"><i class="icon-globe"></i></a><br>
+            <a href="#" class="btn" rel="popover-roll" data-placement="right" style="padding:7px; width:20px;" data-html="true" data-content="<img src='{{ STATIC_URL }}images/mini-divedata.png' width='100%' alt='Map'><p>This will be optionally pinnable to the side so that it is always viewable.</p>" data-original-title="Image information" ><i class="icon-info-sign"></i></a><br>
+            <a href="#" class="btn" rel="popover-roll" data-placement="right" style="padding:7px; width:20px;" data-content="This will be a snippet of information that is useful in the context of the current section." data-original-title="Other information"><i class="icon-th-list"></i></a><br>
+{% endblock %}
+
+{% block imageview %}
+<img src="{{ STATIC_URL }}images/PR_20090727_025242_115_LC16.png" />
+{% endblock %}
+
+{% block rightpane %}
+<div class="well infopane">
+    <h1>View</h1>
+    Something useful
+</div>
+{% endblock %}
+
+{% block leftfootpane %}&nbsp;{% endblock %}
+
+{% block linfofootpane %}
+<i class="icon-zoom-out"></i> <input style="width:100px;" type="range" min="0" max="100" value="0" step="3"/> <i class="icon-zoom-in"></i>
+{% endblock %}
+
+{% block midfootpane %}
+<a href="#" class="btn" id="showthumnails"><i class="icon-circle-arrow-up"></i><br>Thumbnails</a>
+{% endblock %}
+
+{% block rinfofootpane %}&nbsp;{% endblock %}
+
+{% block rightfootpane %}
+<a href="/webinterface/imageview" class="btn btn-inverse" style="width: 60px;margin: 0;" title="View"><i class="icon-eye-open"></i><br>View</a>
+<a href="/webinterface/imageannotate" class="btn" style="width: 60px;margin: 0;" title="Annotate"><i class="icon-tag"></i><br>Annotate</a>
+<a href="/webinterface/imageedit" class="btn" style="width: 60px;margin: 0;" title="Edit"><i class="icon-edit"></i><br>Edit</a>
+{% endblock %}
+
+
+

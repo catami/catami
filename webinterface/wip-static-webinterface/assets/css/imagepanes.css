@@ -1,0 +1,94 @@
+body, html {
+	height:100%;
+}
+.leftpane{
+	width: 30px;
+	background-color: #ccc; 
+	border-right: 1px solid #000000;
+	padding: 5px;
+}
+.rightpane{
+	width:270px;
+	background-color: #ccc; 
+	padding: 5px;
+	border-left: 1px solid #000000;
+	vertical-align:top;
+}
+.footpane{
+    background-color: #ccc; 
+    padding: 5px;
+    /*border-top: 1px solid #000000;*/
+    text-align: center;
+    height: 60px;
+    vertical-align:middle;
+}
+.zoompanel{
+    width: 250px;
+    text-align: left;
+}
+.thumbnail{
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    width:640px;
+    margin-left: -320px;
+    text-align: center;
+    background-color: #878787;
+    display: none;
+}
+.infopane {
+    background-color: #d9d9d9;
+    margin: 5px;
+    padding: 5px;
+}
+.divfixedh200 {
+    height:200px;
+    overflow:auto;
+    border: 1px solid #e0e0e0;
+}
+.infopane h1{
+    font-size: 15px;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+}
+.infopane h2{
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+}
+
+
+
+
+.sidbar-fullheight {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+}
+.footer{
+    position:absolute;
+    bottom:0px;
+    right: 221px;
+    left: 41px;
+	height:70px;
+	background-color: #ccc; 
+	border-top: 1px solid #000000;
+	text-align: center;
+}
+.content{
+	position: absolute; 
+	left: 41px; 
+	right: 238px; 
+	bottom: 71px; 
+	background-color: #3a3a3a; 
+	padding: 0;
+	text-align: center;
+}
+/*
+640+41+301
+482+81
+*/
+

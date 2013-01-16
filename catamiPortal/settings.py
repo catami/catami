@@ -152,6 +152,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'Force',
     'staging',
+    'webinterface',
     'haystack',
     'django_jenkins',
     'dbadmintool',
@@ -176,6 +177,7 @@ JENKINS_TASKS = {
 PROJECT_APPS = (
     'Force',
     'staging', 
+    'webinterface',
     'dbadmintool',
     'accounts',
 )
@@ -255,6 +257,10 @@ LOGGING = {
             'propagate': True,
         },
         'staging': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
+        'webinterface': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
         },

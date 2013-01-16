@@ -24,6 +24,8 @@ urlpatterns = patterns('',
 
     url(r'^staging/', include('staging.urls')),
 
+    url(r'^webinterface/', include('webinterface.urls')),
+
     #to hide the database name
     url(r'^data/', include('Force.urls')),
 
