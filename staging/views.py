@@ -7,13 +7,16 @@ from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerE
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
+from django.conf import settings
+from django.core.urlresolvers import reverse
 
-from .forms import AUVImportForm, AUVManualImportForm, FileImportForm, MetadataStagingForm, ModelImportForm, AnnotationCPCImportForm, CampaignCreateForm
+from .forms import AUVImportForm, AUVManualImportForm, AUVLocalImportForm, FileImportForm, MetadataStagingForm, ModelImportForm, AnnotationCPCImportForm, CampaignCreateForm
 from .extras import UploadProgressCachedHandler
 from . import tasks
 from . import metadata
 from .models import MetadataFile
 from Force.models import BRUVDeployment
+import os.path
 
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
@@ -212,6 +215,133 @@ def auvmanualimport(request):
     context['form'] = form
 
     return render_to_response('staging/auvmanualimport.html', context, rcon)
+
+@login_required
+def listdirectory(request, path):
+    context = {}
+    rcon = RequestContext(request)
+    base_dir = settings.STAGING_ROOT_DIR
+
+    # break into component parts for breadcrumbs
+    if path:
+        dirs = path.split("/")
+        urls = []
+        recurse_path = ""
+        for d in dirs:
+            recurse_path = os.path.join(recurse_path, d)
+            # check the path exists in the system
+            system_path = os.path.join(base_dir, recurse_path)
+            if os.path.exists(system_path) and os.path.isdir(system_path):
+                # then all good
+                urls.append(recurse_path)
+            else:
+                # error!
+                return HttpResponseForbidden()
+
+        # check we are not escaping the container at any point
+        if ".." in dirs:
+            return HttpResponseForbidden()
+
+        # add the base level so we can return to the top
+        dirs.insert(0, "Path:")
+        urls.insert(0, "")
+        
+    else:
+        # if we are at the base level
+        dirs = ["Path:"]
+        urls = [""]
+        system_path = base_dir
+        recurse_path = ""
+
+    # now calculate the directories in the top level
+    names = os.listdir(system_path)
+    subdirs = []
+    suburls = []
+    for n in names:
+        full_name = os.path.join(system_path, n)
+        link_path = os.path.join(path, n)
+        # check it is a directory
+        if os.path.isdir(full_name):
+            subdirs.append(n)
+            suburls.append(link_path)
+
+    # get the url prefix to be used (the location of this view)
+    context["prefix"] = reverse("staging.views.listdirectory", args=[""])
+    # and then zip the breadcrumb dirs, and current directory dirs so
+    # the basename and location are together
+    context["dirs"] = zip(dirs, urls)
+    context["subdirs"] = zip(subdirs, suburls)
+    context["subdirs"].sort(key=lambda x: x[0])
+
+    # render and return - this is not complete html doc, only a div to be dropped
+    # in and used
+    return render_to_response('staging/directorylisting.html', context, rcon)
+
+
+@login_required
+def auvlocalimport(request):
+    """The auvlocalimport view. Handles GET and POST for the form."""
+    context = {}
+    base_dir = settings.STAGING_ROOT_DIR
+    if request.method == 'POST':
+        form = AUVLocalImportForm(request.POST)
+        if form.is_valid():
+            # try and get the files and import
+            try:
+                data = form.cleaned_data
+
+                uuid = request.REQUEST.get('uuid')
+
+                track_key = uuid + "_track_key"
+                netcdf_key = uuid + "_netcdf_key"
+
+                cache.add(track_key, 0, 300)  # last for 5 minutes
+                cache.add(netcdf_key, 0, 300)  # last for 5 minutes
+
+                # all up to the mission name
+                mission_base, mission_name = os.path.split(data['mission_path'])
+                mission_base, campaign_name = os.path.split(mission_base)
+                base_url = "file://{0}/{1}".format(base_dir, mission_base)
+                # the mission folder name
+
+                input_params = (base_url, str(data['campaign_name'].date_start), data['campaign_name'].short_name, mission_name)
+
+                logger.debug("auvimport: determining remote files to fetch.")
+                (track_url, netcdf_urlpattern, start_time) = tasks.auvfetch(*input_params)
+
+                logger.debug("auvimport: fetching remote track file.")
+                track_file = tasks.get_known_file(track_key, track_url)
+
+                logger.debug("auvimport: fetching remote netcdf file.")
+                netcdf_file = tasks.get_netcdf_file(netcdf_key, netcdf_urlpattern, start_time)
+
+                #logger.debug("auvlocalimport: opening track file.")
+                #track_file = open(track_url)
+                #logger.debug("auvlocalimport: opening netcdf file.")
+                #netcdf_file = open(netcdf_url)
+
+                logger.debug("auvlocalimport: processing files to create json string.")
+                json_string = tasks.auvprocess(track_file, netcdf_file, *input_params)
+
+                logger.debug("auvmanualimport: importing json string into database.")
+                tasks.json_sload(json_string)
+
+            except Exception as exc:
+                errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
+                errors.append("{0}: {1}".format(exc.__class__.__name__, exc))
+                logger.debug('auvlocalimport: failed to import auv mission: ({0}): {1}'.format(exc.__class__.__name__, exc))
+
+            else:
+                logger.debug("auvlocalimport: import successful, redirecting to auvimported.")
+                return redirect('staging.views.auvimported')
+
+    else:
+        form = AUVLocalImportForm()
+
+    rcon = RequestContext(request)
+    context['form'] = form
+
+    return render_to_response('staging/auvlocalimport.html', context, rcon)
 
 
 @login_required
