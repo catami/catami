@@ -1,4 +1,4 @@
-django
+django==1.4.1
 django-jenkins
 south
 vectorformats
