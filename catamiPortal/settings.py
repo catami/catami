@@ -156,7 +156,6 @@ INSTALLED_APPS = (
     'Force',
     'staging',
     'webinterface',
-    'haystack',
     'django_jenkins',
     'dbadmintool',
     'south',
@@ -187,12 +186,12 @@ PROJECT_APPS = (
 )
 
 #haystack support
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://127.0.0.1:8983/solr'
-    },
-}
+#HAYSTACK_CONNECTIONS = {
+#    'default': {
+#        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+#        'URL': 'http://127.0.0.1:8983/solr'
+#    },
+#}
 
 ANONYMOUS_USER_ID = -1  
 
