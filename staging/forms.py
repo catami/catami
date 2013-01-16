@@ -87,6 +87,9 @@ class AUVManualImportForm(AUVImportForm):
     trackfile_url = forms.URLField(widget=track_widget)
     netcdffile_url = forms.URLField(widget=netcdf_widget)
 
+class AUVLocalImportForm(forms.Form):
+    campaign_name = forms.ModelChoiceField(queryset=Campaign.objects.all())
+    mission_path = forms.CharField(max_length=500)
 
 class FileImportForm(forms.Form):
     """Form to assist with uploading a json file.

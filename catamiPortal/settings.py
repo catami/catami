@@ -14,6 +14,9 @@ POSTGIS_VERSION = (1, 5, 2)
 SOUTH_TESTS_MIGRATE = False # To disable migrations and use syncdb instead
 SKIP_SOUTH_TESTS = True # To disable South's own unit tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# The root directory for staging/local storage.
+STAGING_ROOT_DIR = '/media/water/'
 #REUSE_DB = 1
 
 ADMINS = (
@@ -162,8 +165,9 @@ INSTALLED_APPS = (
     'guardian',
     'easy_thumbnails',
     'django_nose',
+    'userena'
 )
-
+#    'haystack', # disabled 16th Jan 2013
 
 
 #tasks that jenkins will run on the build server
