@@ -152,7 +152,6 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'Force',
     'staging',
-    'haystack',
     'django_jenkins',
     'dbadmintool',
     'south',
@@ -163,7 +162,7 @@ INSTALLED_APPS = (
     'django_nose',
     'userena'
 )
-
+#    'haystack', # disabled 16th Jan 2013
 
 
 #tasks that jenkins will run on the build server
