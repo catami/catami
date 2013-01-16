@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     url(r'^data/', include('Force.urls')),
 
     #haystack
-    url(r'^search/', include('haystack.urls')),
+    #url(r'^search/', include('haystack.urls')),
 
     # plots
     url(r'^report/', include('dbadmintool.urls')),
