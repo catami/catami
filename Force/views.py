@@ -20,7 +20,7 @@ from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
 from Force.models import Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment
-
+import simplejson
 
 class spatial_search_form(forms.Form):
     """@brief Simple spatial search form for Catami data
@@ -158,6 +158,23 @@ def auvdeployment_display(request, auvdeployment_id):
         context_instance=RequestContext(request))
 
 
+#subsamples lists of numbers and makes them suitable to be swallowed up by flot charts
+def subsample_list(list):
+    list_length = len(list)
+
+    #this is used to scale down the list, so that flot isn't overwhelmed with points to render
+    scale_factor = 4
+
+    #try and pre-allocate some space in memory for the list
+    #new_list = list_length/scale_factor*[None]
+    new_list = []
+
+    #iterate through points and subsample based on the scale_factor
+    for i in range(0,list_length,scale_factor):
+        new_list.append([i, list[i]])
+
+    return new_list
+
 def auvdeployment_detail(request, auvdeployment_id):
     """@brief AUV Deployment map and data plot for specifed AUV deployment
 
@@ -173,7 +190,7 @@ def auvdeployment_detail(request, auvdeployment_id):
     except AUVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'Force/data_missing.html', context_instance=RequestContext(request))
+            'Force/data_missing.html', context_instance=RequestContext(request))
         #raise Http404
 
     image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
@@ -190,33 +207,39 @@ def auvdeployment_detail(request, auvdeployment_id):
     salinity_range = {'max':image_list.aggregate(Max('salinity'))['salinity__max'],'min':image_list.aggregate(Min('salinity'))['salinity__min']}
     temperature_range = {'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
 
-    depth_data_sampled = list()
-    salinity_data_sampled = list()
-    temperature_data_sampled = list()
-    
-    #we only need about 300 points for the plots
-    subsample = int(image_list.count()/300.)+1
-    #if subsample >= 2:
-        #resample 
-    depth_data_sampled = image_list.values_list('depth',flat=True).order_by('id')[0::subsample]
-    salinity_data_sampled = image_list.values_list('salinity',flat=True).order_by('id')[0::subsample]
-    temperature_data_sampled = image_list.values_list('temperature',flat=True).order_by('id')[0::subsample]
+    #subsample these values to display in flot
+    depth_data_sampled = subsample_list(image_list.values_list('depth',flat=True).order_by('id'))
+    salinity_data_sampled = subsample_list(image_list.values_list('salinity',flat=True).order_by('id'))
+    temperature_data_sampled = subsample_list(image_list.values_list('temperature',flat=True).order_by('id'))
 
-    #depth_data_sampled = depth_data_sampled[0::subsample]
-    # the easy way is to just return
-    # auvdeployment_object.transect_shape.geojson
+    #create a data structure for our data so it can be converted to json
+    #i'm not using django's model to json serialization because it is too slow
+    new_image_list = list()
+    for image_model in image_list:
+        new_image_list.append({"depth": image_model.depth,
+                               "x": image_model.image_position.x,
+                               "y": image_model.image_position.y,
+                               "roll": image_model.roll,
+                               "pitch": image_model.pitch,
+                               "yaw": image_model.yaw,
+                               "altitude": image_model.altitude,
+                               "temperature": image_model.temperature,
+                               "left_image_reference": image_model.left_image_reference})
+
+    new_image_list = simplejson.dumps(new_image_list, ensure_ascii=True)
+
     return render_to_response(
         'Force/auvdeploymentDetail.html',
         {'auvdeployment_object': auvdeployment_object,
-        'deployment_as_geojson': auvdeployment_object.transect_shape.geojson,
-        'image_list': image_list,
-        'annotated_imagelist': annotated_imagelist,
-        'depth_data': depth_data_sampled,
-        'salinity_data': salinity_data_sampled,
-        'temperature_data': temperature_data_sampled,
-        'depth_range': depth_range,
-        'salinity_range': salinity_range,
-        'temperature_range': temperature_range},
+         'deployment_as_geojson': auvdeployment_object.transect_shape.geojson,
+         'image_list': new_image_list,
+         'annotated_imagelist': annotated_imagelist,
+         'depth_data': depth_data_sampled,
+         'salinity_data': salinity_data_sampled,
+         'temperature_data': temperature_data_sampled,
+         'depth_range': depth_range,
+         'salinity_range': salinity_range,
+         'temperature_range': temperature_range},
         context_instance=RequestContext(request))
 
 
