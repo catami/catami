@@ -1,0 +1,10 @@
+{% extends "base-topmenu.html" %}
+{% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
+{% block content %}
+<div class="row-fluid">
+    <div class="hero-unit">
+        <h1>My Collections</h1>
+        <p>A Collection is a set of data (images and associated metadata) that has been prepared by a user for further processing, downloading or sharing. The data may come from one or more deployments, surveys or campaigns. This page shows a list of collections that you have created and saved.</p>
+    </div>
+</div>
+{% endblock %}

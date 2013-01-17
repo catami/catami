@@ -155,6 +155,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'Force',
     'staging',
+    'webinterface',
     'django_jenkins',
     'dbadmintool',
     'south',
@@ -179,17 +180,18 @@ JENKINS_TASKS = {
 PROJECT_APPS = (
     'Force',
     'staging', 
+    'webinterface',
     'dbadmintool',
     'accounts',
 )
 
 #haystack support
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://127.0.0.1:8983/solr'
-    },
-}
+#HAYSTACK_CONNECTIONS = {
+#    'default': {
+#        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+#        'URL': 'http://127.0.0.1:8983/solr'
+#    },
+#}
 
 ANONYMOUS_USER_ID = -1  
 
@@ -258,6 +260,10 @@ LOGGING = {
             'propagate': True,
         },
         'staging': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
+        'webinterface': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
         },
