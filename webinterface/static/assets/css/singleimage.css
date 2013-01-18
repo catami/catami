@@ -57,19 +57,33 @@ body, html {
     overflow:auto;
     border: 1px solid #e0e0e0;
 }
+.divfixedh70 {
+    height:70px;
+    overflow:auto;
+    border: 1px solid #e0e0e0;
+}
 .infopane h1{
-    font-size: 15px;
-    text-transform: uppercase;
-    margin: 0;
+    font-size: 18px;
+    /*text-transform: uppercase;*/
+    margin: 0 0 5px 0;
     padding: 0;
     line-height: normal;
 }
 .infopane h2{
-    font-size: 12px;
+    font-size: 15px;
     margin: 0;
-    padding: 0;
+    padding: 0 0 5px 0;
     line-height: normal;
+    border-bottom: solid 1px #FFF;
 }
+.infopane h1 a, .infopane h2 a {
+    color: #000;
+    text-decoration:none;
+}
+.infopane td {
+    padding:2px;
+}
+
 
 
 
