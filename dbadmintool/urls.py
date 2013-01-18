@@ -7,6 +7,6 @@ Edits :: Name : Date : description
 """
 from django.conf.urls import patterns, url
 
-urlpatterns = patterns('',
-    url(r'^$', 'dbadmintool.views.query_database_size'),
-                       )
+urlpatterns = patterns('',)
+#    url(r'^$', 'dbadmintool.views.query_database_size'),
+#                       )
