@@ -269,6 +269,10 @@ class ReportTools():
                             TIDeployment]
                 
     def collect_number_of_fields(self):
+        """Query the number of entries inteh DB
+
+        returns logical saves data to self.stat_fields class property
+        """
 
         i = 0
         for i in range(0, len(self.force_models)):
@@ -279,6 +283,10 @@ class ReportTools():
         return True
 
     def query_table_size(self):
+        """Query the size of the database table on the disk
+        returns the table size in bytes.
+
+        """
         cursor = connection.cursor()
 
         bar_label = []
@@ -316,6 +324,7 @@ class ReportTools():
         return int(self.db_size[0])
 
     def save(self):
+        """Saves the stat fields to the database """
 
         data = Data_logger.objects.create(
             collection_time=datetime.now(),
@@ -347,3 +356,9 @@ class ReportTools():
         except:
             logger.error('Could not collect stats')
             return False
+
+    def get_stats(self):
+        """Return the stats_field dictionary"""
+
+        self.collect_stats()
+        return self.stat_fields

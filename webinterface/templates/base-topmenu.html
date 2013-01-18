@@ -48,23 +48,24 @@
                 <a class="brand" href="#"><img src="{{ STATIC_URL }}assets/img/catamiheader-blue-small.png" alt="catami_icon_small" width="140"></a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
-                        <li class="{% ifequal request.path "/webinterface/" %}active{% endifequal %}"><a href="/webinterface/"><i class="icon-home icon-white"></i> Home</a></li>
-                        <li class="{% ifequal request.path "/webinterface/explore/" %}active{% endifequal %}"><a href="/webinterface/explore/"><i class="icon-search icon-white"></i> Explore</a></li>
-                        <li class="dropdown {% ifequal request.path "/webinterface/allcollections/" %}active{% endifequal %}"><a href="/webinterface/allcollections/" class="dropdown-toggle"><i class="icon-list-alt icon-white"></i> Collections <b class="caret"></b></a>
+                        <li class="{% ifequal request.path "/webinterface/" %}active{% endifequal %}"><a href="{% url webinterface.views.index %}"><i class="icon-home icon-white"></i> Home</a></li>
+                        <li class="{% ifequal request.path "/webinterface/explore" %}active{% endifequal %}"><a href="/webinterface/explore"><i class="icon-search icon-white"></i> Explore</a></li>
+                        <li class="dropdown {% ifequal request.path "/webinterface/allcollections" %}active{% endifequal %}"><a href="/webinterface/allcollections" class="dropdown-toggle"><i class="icon-list-alt icon-white"></i> Collections <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li class="{% ifequal request.path "/webinterface/mycollections/" %}active{% endifequal %}"><a href="/webinterface/mycollections/"><i class="icon-heart"></i> My Collections</a></li>
-                                <li class="{% ifequal request.path "/webinterface/publiccollections/" %}active{% endifequal %}"><a href="/webinterface/publiccollections/"><i class="icon-star"></i> Public Collections</a></li>
-                                <li class="{% ifequal request.path "/webinterface/explore/" %}active{% endifequal %}"><a href="/webinterface/explore/"><i class="icon-plus-sign"></i> Create new Collection</a></li>
+                                <li class="{% ifequal request.path "/webinterface/mycollections" %}active{% endifequal %}"><a href="/webinterface/mycollections"><i class="icon-heart"></i> My Collections</a></li>
+                                <li class="{% ifequal request.path "/webinterface/publiccollections" %}active{% endifequal %}"><a href="/webinterface/publiccollections"><i class="icon-star"></i> Public Collections</a></li>
+                                <li class="{% ifequal request.path "/webinterface/explore" %}active{% endifequal %}"><a href="/webinterface/explore"><i class="icon-plus-sign"></i> Create new Collection</a></li>
                             </ul>
                         </li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle"><i class="icon-tasks icon-white"></i> Data Tasks <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="/webinterface/viewcollection"><i class="icon-eye-open"></i> View</a></li>
-                                <li><a href="/webinterface/imageannotate" class="various" data-fancybox-type="iframe" ><i class="icon-tag"></i> Annotate</a></li>
-                                   <li><a href="#"><i class="icon-th-list"></i> Create subset</a></li>
-                                   <li><a href="#"><i class="icon-cog"></i> Auto-classify</a></li>
-                                   <li><a href="#"><i class="icon-download"></i> Download</a></li>
-                                <li><a href="#"><i class="icon-upload"></i> Upload</a></li>
+                                <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-eye-open"></i> View Collection</a></li>
+                                <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-cog"></i> Cluster Collection</a></li>
+                                <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-th-list"></i> Create Workset</a></li>
+                                <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal" ><i class="icon-tag"></i> Annotate Workset</a></li>
+                                   <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-sitemap"></i> Auto-classify Collection</a></li>
+                                   <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-download-alt"></i> Download data</a></li>
+                                <li><a href="/staging/"><i class="icon-cloud-upload"></i> Upload data</a></li>
                             </ul>
                         </li>
                         <!--<li class="dropdown">
@@ -109,6 +110,22 @@
     <div class="container-fluid">
         {% block content %}{% endblock %}
     </div>
+    
+    <!-- Data Task Modal -->
+    <div id="TaskModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Select Context-relevant Options</h3>
+        </div>
+            <div class="modal-body">
+            <p>The idea of these Data Tasks are to provide a user-centric, task oriented interface.</p>
+            <p>Each of the Data Tasks will link to/pop up a modal window to select a relevant Collection/Workset to perform the selected Data Task.</p>
+            <p>For the mean time, you can demo these Tasks from the Collection section.</p>
+        </div>
+            <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+    </div>
 	
 	 
     <!-- Le javascript
@@ -132,8 +149,7 @@
             $("[rel=tooltip]").tooltip();
         })();
         $(document).ready(function() {
-            $(".fancybox").fancybox();
-            $(".various").fancybox({
+            $(".imageframe").fancybox({
         		maxWidth	: 965,
         		maxHeight	: 555,
         		fitToView	: false,
@@ -142,7 +158,7 @@
         		autoSize	: false,
         		closeClick	: false,
         		openEffect	: 'fade',
-        		closeEffect	: 'none'
+        		closeEffect	: 'none',
         	});
         	$("#tab-menu").bind('tabsselect', function(event, ui) {
                 window.location.href=ui.tab;

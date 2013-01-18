@@ -1,5 +1,145 @@
 {% extends "base-topmenu.html" %}
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
+{% block tail_head %}
+<style type="text/css">
+    body {
+        padding: 10px;
+    }
+    img {
+        width: 99%;
+        height: auto;
+    }
+    /*select, button {
+        vertical-align: top;
+    }*/
+    td {
+        vertical-align: middle;
+    }
+    .viewpane {
+        padding-left: 10px;
+        border-left-style: solid;
+        border-left-width: 1px;
+        border-color: #ddd;
+    }
+    .viewobj {
+        border-style: solid;
+        border-width: 2px;
+        border-color: #ddd;
+    }
+    .workpane {
+        width: 99%;
+        margin:0;
+    }
+    input[type='number']{
+        padding: 0px;
+        margin: 0px;
+        width: 40px;
+    }
+</style>
+{% endblock %}
 {% block content %}
-<iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps/ms?msid=213974848010458145648.0004cae0e054a0c5a9094&amp;msa=0&amp;ie=UTF8&amp;t=p&amp;ll=-43.087194,148.002319&amp;spn=0.120352,0.219727&amp;z=12&amp;output=embed"></iframe><br /><small>View <a href="https://maps.google.com/maps/ms?msid=213974848010458145648.0004cae0e054a0c5a9094&amp;msa=0&amp;ie=UTF8&amp;t=p&amp;ll=-43.087194,148.002319&amp;spn=0.120352,0.219727&amp;z=12&amp;source=embed" style="color:#0000FF;text-align:left">Tasmania Dives</a> in a larger map</small>
+<div class="row-fluid">
+
+<div class="span2"> 
+    <h3>Search:</h3>
+
+    <form>
+        <form class="form">
+            <label>
+                Year: 
+                <input type="number" min="2006" step="1"
+                value="2007">
+            </label>
+            Source:
+            <select style="width: 100%">
+                <option selected>AUV
+                <option>BRUVs
+                <option>Towed Video
+            </select>
+            Campaign:
+            <select multiple="multiple" class="workpane" >
+                <option selected>Tasmania 2008</option>
+                <option>Tasmania 2009</option>
+                <option>Tasmania 2010</option>
+                <option>Scott Reef 2009</option>
+                <option>Scott Reef 2011</option>
+                <option>Bateman's Bay 2010</option>
+            </select>
+            Depth (min): <br>
+            <form class="form-inline">
+                0 <input style="width: 50%" type="range" min="0" max="1000"
+                 value="100" id="drange"/> 1000m
+            </form>
+            Depth (max): <br>
+            <form class="form-inline">
+                0 <input style="width: 50%" type="range" min="0" max="1000"
+                value="600" id="drange"/> 1000m
+            </form>
+        </form>
+    </form>
+
+    <div> 
+        <button class="btn btn-primary">Save Collection</button>
+    </div>
+
+    <!--<table class="table table-striped">
+        <tr>
+            <td>Year</td>
+            <td>2008</td>
+        </tr>
+        <tr>
+            <td>Source</td>
+            <td>AUV</td>
+        </tr>
+        <tr>
+            <td>Depth</td>
+            <td>30-100m</td>
+        </tr>
+        <tr>
+            <td>Surveys</td>
+            <td>
+                <a href="#" rel="popover-roll" data-title="Surveys" 
+                    data-content="
+                        <ol>
+                            <li>r20081008_032854_patchreefnorth_08_tightpatch</li>
+                            <li>r20081008_224114_hippoN_09_transect</li>
+                        </ol>"
+                    data-html='true'
+                    data-placement='right'>List</a>
+            </td>
+        </tr>
+    </table>-->
+
+</div>
+
+<div class="span10 viewpane" >
+
+    
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#map" data-toggle="tab">Map</a></li>
+        <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
+        <li><a href="#thm" data-toggle="tab">Thumbnails</a></li>
+    </ul>
+
+
+    <div class="tab-content">
+
+        <div class="tab-pane active" id="map">
+            <iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps/ms?msid=213974848010458145648.0004cae0e054a0c5a9094&amp;msa=0&amp;ie=UTF8&amp;t=p&amp;ll=-43.087194,148.002319&amp;spn=0.120352,0.219727&amp;z=12&amp;output=embed"></iframe><br />
+        </div>
+
+        <div class="tab-pane" id="tax">
+            <img src="{{ STATIC_URL }}images/tax_tree.png" name="taxtree" />
+        </div>
+        
+        <div class="tab-pane" id="thm">
+            <a href="/webinterface/imageview" class="btn btn-primary imageframe" data-fancybox-group="1"  data-fancybox-type="iframe"><img class="viewobj" src="{{ STATIC_URL }}images/ThumbnailPane.png" name="thumbs"/></a>
+        </div>
+
+       
+
+    </div>
+</div>
+</div>
+
 {% endblock %}

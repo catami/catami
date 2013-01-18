@@ -14,3 +14,5 @@ python-dateutil
 django_coverage
 django-userena
 django-nose
+python-memcached
+django-memcached
