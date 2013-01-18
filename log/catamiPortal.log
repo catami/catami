@@ -1,0 +1,17 @@
+2013-01-18 11:28:37,223 - staging.forms - DEBUG - clean_mission_name: cleaning name r20090726_074343_scott_05_long_transect_auv2
+2013-01-18 11:28:37,226 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-01-18 11:28:37,227 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-01-18 11:28:37,229 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-01-18 11:28:42,282 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-01-18 11:28:43,575 - staging.views - DEBUG - auvimport: processing remote files to create json string.
+2013-01-18 11:28:46,177 - staging.views - DEBUG - auvimport: importing json string into database.
+2013-01-18 11:28:46,740 - staging.views - DEBUG - auvimport: failed to import auv mission: (IntegrityError): null value in column "transect_line" violates not-null constraint
+
+2013-01-18 12:35:51,167 - staging.forms - DEBUG - clean_mission_name: cleaning name r20090726_074343_scott_05_long_transect_auv2
+2013-01-18 12:35:51,169 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-01-18 12:35:51,170 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-01-18 12:35:51,172 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-01-18 12:35:55,040 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-01-18 12:35:58,006 - staging.views - DEBUG - auvimport: processing remote files to create json string.
+2013-01-18 12:36:00,723 - staging.views - DEBUG - auvimport: importing json string into database.
+2013-01-18 12:38:32,999 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.

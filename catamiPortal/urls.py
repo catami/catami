@@ -36,7 +36,7 @@ urlpatterns = patterns('',
     url(r'^report/', include('dbadmintool.urls')),
 
     # userena
-    (r'^accounts/', include('userena.urls')),
+    (r'^accounts/', include('accounts.urls')),
 
     #dbadmin tool
 
