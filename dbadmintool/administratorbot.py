@@ -361,4 +361,8 @@ class ReportTools():
         """Return the stats_field dictionary"""
 
         self.collect_stats()
+
+        #Query the DB
+
+
         return self.stat_fields
