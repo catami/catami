@@ -1,17 +1,373 @@
 {% extends "base-topmenu.html" %}
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
+{% block tail_head %}
+<style type="text/css">
+    body {
+        padding: 10px;
+    }
+    img {
+        width: 99%;
+        height: auto;
+    }
+    a img {
+        background-color:none;
+        padding:0;
+        margin:0;
+        color:none;
+        border:none;
+        border-width:0;
+    }
+    /*select, button {
+        vertical-align: top;
+    }*/
+    td {
+        vertical-align: middle;
+    }
+    .viewpane {
+        padding-left: 10px;
+        border-left-style: solid;
+        border-left-width: 1px;
+        border-color: #ddd;
+    }
+    .viewobj {
+        border-style: solid;
+        border-width: 2px;
+        border-color: #ddd;
+    }
+    .workpane {
+        width: 99%;
+        margin:0;
+    }
+    input[type='number']{
+        padding: 0px;
+        margin: 0px;
+        width: 40px;
+    }
+</style>
+{% endblock %}
 {% block content %}
+<div class="row-fluid">
 
-<ul class="nav nav-tabs" id="tab-menu">
-    <li><a href="#home" data-toggle="tab">Home</a></li>
-    <li><a href="#profile" data-toggle="tab">Profile</a></li>
-    <li><a href="#messages" data-toggle="tab">Messages</a></li>
-    <li><a href="#settings" data-toggle="tab">Settings</a></li>
-</ul>
-<div class="tab-content">
-    <div class="tab-pane" id="home">home</div>
-    <div class="tab-pane" id="profile">profile</div>
-    <div class="tab-pane" id="messages">messages</div>
-    <div class="tab-pane" id="settings">settings</div>
+<div class="span2"> 
+    <h3>Properties:</h3>
+
+    <table class="table table-striped">
+        <tr>
+            <td>Year</td>
+            <td>2008</td>
+        </tr>
+        <tr>
+            <td>Source</td>
+            <td>AUV</td>
+        </tr>
+        <tr>
+            <td>Depth</td>
+            <td>30-100m</td>
+        </tr>
+        <tr>
+            <td>Surveys</td>
+            <td>
+                <a href="#" rel="popover-roll" data-title="Surveys" 
+                    data-content="
+                        <ol>
+                            <li>r20081008_032854_patchreefnorth_08_tightpatch</li>
+                            <li>r20081008_224114_hippoN_09_transect</li>
+                        </ol>"
+                    data-html='true'
+                    data-placement='right'>List</a>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<div class="span10 viewpane" >
+
+    
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#map" data-toggle="tab">Map</a></li>
+        <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
+        <li><a href="#cst" data-toggle="tab">Visual Clusters</a></li>
+        <li><a href="#thm" data-toggle="tab">Thumbnails</a></li>
+        <li><a href="#wks" data-toggle="tab">Worksets</a></li>
+        <li class="pull-right"><a href="#dwn" data-toggle="tab">Download</a></li>
+    </ul>
+
+
+    <div class="tab-content">
+
+        <div class="tab-pane active" id="map">
+            <a href="/webinterface/imageview" class="btn btn-primary imageframe" data-fancybox-group="1"  data-fancybox-type="iframe"><img class="viewobj" src="{{ STATIC_URL }}images/cluster_map.png" name="intmap"/></a>
+        </div>
+
+        <div class="tab-pane" id="tax">
+            <img src="{{ STATIC_URL }}images/tax_tree.png" name="taxtree" />
+        </div>
+        
+        <div class="tab-pane" id="cst">
+
+            <form class="form-inline"> 
+                Previous results:
+                <select>
+                    <option>None
+                    <option selected>8-cluster 17/02/2013 (BGMM)
+                </select>&emsp;
+
+                New visual clustering:
+                <button class="btn btn-primary">
+                    <i class="icon-play-circle icon-white"></i> Go!
+                </button>
+
+                <a href="#" rel="popover" 
+                    data-content="
+                    <p>In here will be settings such as:
+                        <ol>
+                            <li>Clustering algorithm</li>
+                            <li>Cluster granularity/number of clusters</li>
+                        </ol>
+                    </p>"
+                    data-original-title="Cluster Settings" data-html='true'
+                    data-placement='bottom'>
+                    <button class="btn"><i class="icon-wrench"></i> Settings</button></a>
+            </form>
+            
+            <ul class="nav nav-pills">
+                <li class="active"><a href="#rand" data-toggle="tab">Random</a></li>
+                <li> <a href="#high" data-toggle="tab">High Likelihood</a></li>
+                <li> <a href="#low" data-toggle="tab">Low Likelihood</a></li>
+            </ul>
+
+            <div class="tab-content">
+                
+                <div class="tab-pane active" id="rand">
+                    <table cellspacing="0">
+                        <tr>
+                            <td valign="middle"><input style="height: 20px" name="cluster1" value="cluster1" type="checkbox"/></td>
+                            <td><img name="cluster1" src="{{ STATIC_URL }}images/ran/c1.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster2" value="cluster2" type="checkbox"/></td>
+                            <td><img name="cluster2" src="{{ STATIC_URL }}images/ran/c2.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster3" value="cluster3" type="checkbox"/></td>
+                            <td><img name="cluster3" src="{{ STATIC_URL }}images/ran/c3.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster4" value="cluster4" type="checkbox"/></td>
+                            <td><img name="cluster4" src="{{ STATIC_URL }}images/ran/c4.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster5" value="cluster5" type="checkbox"/></td>
+                            <td><img name="cluster5" src="{{ STATIC_URL }}images/ran/c5.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster7" value="cluster7" type="checkbox"/></td>
+                            <td><img name="cluster7" src="{{ STATIC_URL }}images/ran/c7.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster8" value="cluster8" type="checkbox"/></td>
+                            <td><img name="cluster8" src="{{ STATIC_URL }}images/ran/c8.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster14" value="cluster14" type="checkbox"/></td>
+                            <td><img name="cluster14" src="{{ STATIC_URL }}images/ran/c14.png"></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="tab-pane" id="high">
+                    <table cellspacing="0">
+                        <tr>
+                            <td><input name="cluster1" value="cluster1" type="checkbox"/></td>
+                            <td><img name="cluster1" src="{{ STATIC_URL }}images/high/c1.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster2" value="cluster2" type="checkbox"/></td>
+                            <td><img name="cluster2" src="{{ STATIC_URL }}images/high/c2.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster3" value="cluster3" type="checkbox"/></td>
+                            <td><img name="cluster3" src="{{ STATIC_URL }}images/high/c3.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster4" value="cluster4" type="checkbox"/></td>
+                            <td><img name="cluster4" src="{{ STATIC_URL }}images/high/c4.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster5" value="cluster5" type="checkbox"/></td>
+                            <td><img name="cluster5" src="{{ STATIC_URL }}images/high/c5.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster7" value="cluster7" type="checkbox"/></td>
+                            <td><img name="cluster7" src="{{ STATIC_URL }}images/high/c7.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster8" value="cluster8" type="checkbox"/></td>
+                            <td><img name="cluster8" src="{{ STATIC_URL }}images/high/c8.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster14" value="cluster14" type="checkbox"/></td>
+                            <td><img name="cluster14" src="{{ STATIC_URL }}images/high/c14.png"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="tab-pane" id="low">
+                    <table cellspacing="0">
+                        <tr>
+                            <td><input name="cluster1" value="cluster1" type="checkbox"/></td>
+                            <td><img name="cluster1" src="{{ STATIC_URL }}images/low/c1.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster2" value="cluster2" type="checkbox"/></td>
+                            <td><img name="cluster2" src="{{ STATIC_URL }}images/low/c2.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster3" value="cluster3" type="checkbox"/></td>
+                            <td><img name="cluster3" src="{{ STATIC_URL }}images/low/c3.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster4" value="cluster4" type="checkbox"/></td>
+                            <td><img name="cluster4" src="{{ STATIC_URL }}images/low/c4.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster5" value="cluster5" type="checkbox"/></td>
+                            <td><img name="cluster5" src="{{ STATIC_URL }}images/low/c5.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster7" value="cluster7" type="checkbox"/></td>
+                            <td><img name="cluster7" src="{{ STATIC_URL }}images/low/c7.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster8" value="cluster8" type="checkbox"/></td>
+                            <td><img name="cluster8" src="{{ STATIC_URL }}images/low/c8.png"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="cluster14" value="cluster14" type="checkbox"/></td>
+                            <td><img name="cluster14" src="{{ STATIC_URL }}images/low/c14.png"></td>
+                        </tr>
+                    </table>
+                </div>
+            
+            </div>
+
+        </div>
+
+
+        <div class="tab-pane" id="thm">
+            <a href="/webinterface/imageview" class="btn btn-primary imageframe" data-fancybox-group="2"  data-fancybox-type="iframe"><img class="viewobj" src="{{ STATIC_URL }}images/ThumbnailPane.png" name="thumbs"/></a>
+        </div>
+
+        <div class="tab-pane" id="wks">
+            <h3>My Worksets</h3>
+                <p>Select a previously saved workset:</p>
+                <select multiple="multiple" class="workpane" >
+                    <option>Test Workset 1 | 17/02/2013 | Random (incomplete)</option>
+                    <option>Test Workset 2 | 17/02/2013 | Stratified</option>
+                    <option>Test Workset 3 | 16/02/2013 | Random</option>
+                    <option>Test Workset 4 | 16/02/2013 | Active Learning</option>
+                    <option>Test Workset 5 | 15/02/2013 | Random</option>
+                </select> 
+                <div class="pull-right">
+                    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="3"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
+                    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
+                </div>
+            <h3>Public Worksets</h3>
+                <p>Select a previously saved workset:</p>
+                <select multiple="multiple" class="workpane" >
+                    <option>Public Workset 1 | 15/02/2013 | Random (incomplete)</option>
+                    <option>Public Workset 2 | 15/02/2013 | Stratified</option>
+                    <option>Public Workset 3 | 15/02/2013 | Random</option>
+                    <option>Public Workset 4 | 13/02/2013 | Active Learning</option>
+                    <option>Public Workset 5 | 12/02/2013 | Random</option>
+                </select>
+                <div class="pull-right">
+                    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="4"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
+                    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
+                </div>
+            <h3>Create a new Workset</h3>
+                <p>Select a sampling strategy:</p>
+                <div class="tabbable tabs-left">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#rndq" data-toggle="tab">Random (sequential)</a>
+                        </li>
+                        <li> 
+                            <a href="#rndp" data-toggle="tab">Random (spatial)</a>
+                        </li>
+                        <li> 
+                            <a href="#strq" data-toggle="tab">Stratified (sequential)</a>
+                        </li>
+                        <li> 
+                            <a href="#strp" data-toggle="tab">Stratified (spatial)</a>
+                        </li>
+                        <li> 
+                            <a href="#alrn" data-toggle="tab">Active learning (auto)</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active well" id="rndq">
+                            <p>Random sampling sequentially from transect. May not lead to even spatial distribution.</p>
+                            <form class="form" style="margin:0; padding:0;">
+                                <label>
+                                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br><label>
+                                    Number of images in the workset:
+                                    <input class="flat" type="number" min="1" step="1" value="50">
+                                </label>
+                                <button class="btn">Save Workset</button>
+                            </form>
+                        </div>
+                        <div class="tab-pane well" id="rndp">
+                            <p>Random spatially distributed sampling.</p>
+                            <form class="form" style="margin:0; padding:0;">
+                                <label>
+                                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br><label>
+                                    Number of images in the workset:
+                                    <input class="flat" type="number" min="1" step="1" value="50">
+                                </label>
+                            </form>
+                            <button class="btn">Save Workset</button>
+                        </div>
+                        <div class="tab-pane well" id="strq">
+                            <p>Stratified sampling sequentially from transect.</p>
+                            <form class="form" style="margin:0; padding:0;">
+                                <label>
+                                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br><label>
+                                    Spacing:
+                                    <input class="flat" type="number" min="1"
+                                    step="1" value="2"> m (2m spacing will give 500 images in the workset)
+                                </label>
+                            </form>
+                            <button class="btn">Save Workset</button>
+                        </div>
+                        <div class="tab-pane well" id="strp">
+                            <p>Stratified spatial sampling from transect.</p>
+                            <form class="form" style="margin:0; padding:0;">
+                                <label>
+                                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br>
+                                <label>
+                                    Spacing: <input class="flat" type="number" min="1"
+                                    step="1" value="2"> m (2m spacing will give 500 images in the workset)
+                                </label>
+                                
+                            </form>
+                            <button class="btn">Save Workset</button>
+                        </div>
+                        <div class="tab-pane well" id="alrn">
+                            <p>Active learning: automagically figure out what to sample for training an automated classifier.</p>
+                            <label>
+                                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br>
+                            <button class="btn">Save Workset</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <div class="tab-pane" id="dwn">
+        </div>
+
+    </div>
+</div>
 </div>
 {% endblock %}
