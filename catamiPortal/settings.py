@@ -161,6 +161,7 @@ INSTALLED_APPS = (
     'south',
     'django_coverage',
     'accounts',
+    'collection',
     'guardian',
     'easy_thumbnails',
     'django_nose',
@@ -183,6 +184,7 @@ PROJECT_APPS = (
     'webinterface',
     'dbadmintool',
     'accounts',
+    'collection',
 )
 
 #haystack support
