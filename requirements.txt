@@ -16,3 +16,4 @@ django-userena
 django-nose
 python-memcached
 django-memcached
+django-tastypie
