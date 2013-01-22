@@ -155,6 +155,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'Force',
     'staging',
+    'api',
     'webinterface',
     'django_jenkins',
     'dbadmintool',
@@ -165,7 +166,9 @@ INSTALLED_APPS = (
     'guardian',
     'easy_thumbnails',
     'django_nose',
-    'userena'
+    'userena',
+    'tastypie',
+
 )
 #    'haystack', # disabled 16th Jan 2013
 
@@ -185,6 +188,7 @@ PROJECT_APPS = (
     'dbadmintool',
     'accounts',
     'collection',
+    'api',
 )
 
 #haystack support
