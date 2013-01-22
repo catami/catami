@@ -8,6 +8,7 @@ v1_api = Api(api_name='v1')
 dev_api.register(collection.api.CollectionResource())
 
 urlpatterns = patterns('',
+    (r'^$', 'api.views.help'),
     (r'', include(dev_api.urls)),
     (r'', include(v1_api.urls)),
 )
