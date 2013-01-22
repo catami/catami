@@ -164,7 +164,8 @@ INSTALLED_APPS = (
     'guardian',
     'easy_thumbnails',
     'django_nose',
-    'userena'
+    'userena',
+    'features',
 )
 #    'haystack', # disabled 16th Jan 2013
 
