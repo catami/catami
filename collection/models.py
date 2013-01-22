@@ -12,5 +12,5 @@ class Collection(models.Model):
     modified_date = models.DateTimeField()
     is_public = models.BooleanField()
     is_locked = models.BooleanField()
-    parent = models.ForeignKey('Collection', blank=True)
+    parent = models.ForeignKey('Collection', null=True, blank=True, default = None)
     images = models.ManyToManyField(Image)
