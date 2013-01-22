@@ -10,7 +10,7 @@ def collection_from_deployment(user, deployment):
     # create and prefill the collection as much as possible
     c = Collection()
     c.name = deployment.short_name
-    c.owner = owner
+    c.owner = user
     c.creation_date = datetime.now()
     c.modified_date = datetime.now()
     c.is_public = True
@@ -20,7 +20,7 @@ def collection_from_deployment(user, deployment):
     c.save()
 
     # now add all the images
-    for image in deployment.image_set:
+    for image in deployment.image_set.all():
         c.images.add(image)
 
-    return collection
+    return c
