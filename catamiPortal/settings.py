@@ -155,7 +155,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'Force',
     'staging',
-    'api',
+    'jsonapi',
     'webinterface',
     'django_jenkins',
     'dbadmintool',
@@ -188,7 +188,7 @@ PROJECT_APPS = (
     'dbadmintool',
     'accounts',
     'collection',
-    'api',
+    'jsonapi',
 )
 
 #haystack support

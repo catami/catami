@@ -6,4 +6,4 @@ def help(request):
 
     rcon = RequestContext(request)
 
-    return render_to_response('api/help.html', context, rcon)
+    return render_to_response('jsonapi/help.html', context, rcon)
