@@ -50,7 +50,7 @@
                     <ul class="nav">
                         <li class="{% ifequal request.path "/webinterface/" %}active{% endifequal %}"><a href="{% url webinterface.views.index %}"><i class="icon-home icon-white"></i> Home</a></li>
                         <li class="{% ifequal request.path "/webinterface/explore" %}active{% endifequal %}"><a href="/webinterface/explore"><i class="icon-search icon-white"></i> Explore</a></li>
-                        <li class="dropdown {% ifequal request.path "/webinterface/allcollections" %}active{% endifequal %}"><a href="/webinterface/allcollections" class="dropdown-toggle"><i class="icon-list-alt icon-white"></i> Collections <b class="caret"></b></a>
+                        <li class="dropdown {% ifequal request.path "/webinterface/collections" %}active{% endifequal %}"><a href="/webinterface/collections" class="dropdown-toggle"><i class="icon-list-alt icon-white"></i> Collections <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li class="{% ifequal request.path "/webinterface/mycollections" %}active{% endifequal %}"><a href="/webinterface/mycollections"><i class="icon-heart"></i> My Collections</a></li>
                                 <li class="{% ifequal request.path "/webinterface/publiccollections" %}active{% endifequal %}"><a href="/webinterface/publiccollections"><i class="icon-star"></i> Public Collections</a></li>

@@ -20,4 +20,5 @@ urlpatterns = patterns('webinterface.views',
     url(r'^imageview$', 'imageview'),
     url(r'^imageannotate$', 'imageannotate'),
     url(r'^imageedit$', 'imageedit'),
+    url(r'^collections$', 'collections'),
 )
