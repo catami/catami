@@ -1,0 +1,38 @@
+{% extends "base-topmenu.html" %}
+{% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
+{% block content %}
+<div class="row-fluid">
+    <div class="hero-unit">
+        <h1>Public Collections</h1>
+        <p>This page shows a list of publicly shared collections. A Collection is a set of data (images and associated metadata) that has been prepared by a user for further processing, downloading or sharing. The data may come from one or more deployments, surveys or campaigns.</p>
+    </div>
+</div>
+<div id="publiccollections_all">
+<table class="table table-hover" style="width:90%;" align="center">
+  <thead>
+  <tr>
+      <th>Collection</th><th>Date</th><th>User</th><th style="text-align: right;">Data Tasks</th>
+  </tr>
+  </thead>
+  <tbody>
+      {% for collection_item in public_collections %}
+          <tr>
+              <td><a href="/webinterface/viewcollection" rel='popover-roll' data-content="<p>{{collection_item.description}}<p>" data-original-title="{{collection_item.name}}" data-html='true' data-placement='right' >{{collection_item.name}}</a></td>
+              <td>{{collection_item.creation_date}}</td>
+              <td>{{collection_item.owner}}</td>
+              <td style="text-align: right;">
+                  <a href="/webinterface/viewcollection#map" rel="tooltip" title="View Collection"><i class="icon-eye-open"></i></a>
+<!--
+                  <a href="/webinterface/viewcollection#cst" rel="tooltip" title="Cluster Collection"><i class="icon-cog"></i></a>
+                  <a href="/webinterface/viewcollection#wks" rel="tooltip" title="Create/view Workset"><i class="icon-th-list"></i></a>
+                  <a href="/webinterface/allsubsets" class="imageframe" data-fancybox-group="1" data-fancybox-type="iframe" rel="tooltip" title="Annotate Workset1"><i class="icon-tag"></i></a>
+                  <a href="/webinterface/viewcollection" rel="tooltip" title="Auto-classify Collection"><i class="icon-sitemap"></i></a>
+                  <a href="/webinterface/viewcollection" rel="tooltip" title="Download Data"><i class="icon-download-alt"></i></a>
+-->
+              </td>
+          </tr>
+      {% endfor %}
+  </tbody>
+ </table>
+</div>
+{% endblock %}

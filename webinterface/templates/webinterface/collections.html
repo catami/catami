@@ -1,0 +1,35 @@
+{% extends "base-topmenu.html" %}
+{% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
+{% block content %}
+
+<div class="row-fluid">
+    <div class="hero-unit">
+        <h1>Collections</h1>
+    </div>
+</div>
+      
+      
+        <div class="span6">
+          <h2>My Collections</h2>
+          <p>My most recent public collections. </p>
+          <div id="mycollections_recent"></div>
+          <p><a class="btn" href="/webinterface/mycollections">View more &raquo;</a>
+<!--           <a href="/webinterface/explore" class="btn btn-primary pull-right"><i class="icon-plus-sign icon-white"></i> New Collection</a></p> -->
+        </div><!--/span-->
+        <div class="span6">
+          <h2>Public Collections</h2>
+          <p>Most recent public collections. </p>
+          <div id="publiccollections_recent"></div>
+          <p><a class="btn" href="/webinterface/publiccollections">View more &raquo;</a></p>
+        </div><!--/span-->
+       
+{% endblock %}
+{% block add_script %}
+	<script>
+	  $('#mycollections_recent').load('/webinterface/mycollections_recent #mycollections_recent');
+	</script>
+	<script>
+	  $('#publiccollections_recent').load('/webinterface/publiccollections_recent #publiccollections_recent');
+	</script>
+{% endblock %}   
+
