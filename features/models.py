@@ -12,4 +12,5 @@ class ImageFeature(models.Model):
 
     feature = ArrayField(dbtype='double precision')
     image = models.OneToOneField(Image)
+    objects = Manager()
 

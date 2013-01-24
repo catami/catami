@@ -8,23 +8,25 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'MetadataFile'
-        db.create_table('staging_metadatafile', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('metadata_file', self.gf('django.db.models.fields.files.FileField')(max_length=100)),
-            ('is_public', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('description', self.gf('django.db.models.fields.CharField')(max_length=100)),
-        ))
-        db.send_create_signal('staging', ['MetadataFile'])
+        # Deleting field 'MyProfile.favourite_snack'
+        db.delete_column('accounts_myprofile', 'favourite_snack')
 
 
     def backwards(self, orm):
-        # Deleting model 'MetadataFile'
-        db.delete_table('staging_metadatafile')
+        # Adding field 'MyProfile.favourite_snack'
+        db.add_column('accounts_myprofile', 'favourite_snack',
+                      self.gf('django.db.models.fields.CharField')(default='None', max_length=5),
+                      keep_default=False)
 
 
     models = {
+        'accounts.myprofile': {
+            'Meta': {'object_name': 'MyProfile'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mugshot': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
+            'privacy': ('django.db.models.fields.CharField', [], {'default': "'registered'", 'max_length': '15'}),
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': "orm['auth.User']"})
+        },
         'auth.group': {
             'Meta': {'object_name': 'Group'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -60,15 +62,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'staging.metadatafile': {
-            'Meta': {'object_name': 'MetadataFile'},
-            'description': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'metadata_file': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         }
     }
 
-    complete_apps = ['staging']
+    complete_apps = ['accounts']

@@ -167,6 +167,7 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'django_nose',
     'features',
+    'clustering',
     'tastypie',
     'userena',
 )
@@ -188,7 +189,9 @@ PROJECT_APPS = (
     'dbadmintool',
     'accounts',
     'collection',
+    'features',
     'jsonapi',
+    'clustering',
 )
 
 #haystack support
