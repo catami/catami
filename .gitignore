@@ -5,3 +5,6 @@
 *.lint
 *.orig
 *.bak
+staging/metadata
+imports
+dbadmintool/backup/*.bak.tar.gz
