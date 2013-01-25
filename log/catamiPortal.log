@@ -15,3 +15,39 @@
 2013-01-18 12:35:58,006 - staging.views - DEBUG - auvimport: processing remote files to create json string.
 2013-01-18 12:36:00,723 - staging.views - DEBUG - auvimport: importing json string into database.
 2013-01-18 12:38:32,999 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-01-18 15:49:38,365 - staging.forms - DEBUG - clean_mission_name: cleaning name r20090726_074343_scott_05_long_transect_auv2
+2013-01-18 15:49:38,366 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-01-18 15:49:38,367 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-01-18 15:49:38,368 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-01-18 15:49:38,714 - staging.views - DEBUG - auvimport: failed to import auv mission: (Exception): File could not be downloaded.
+2013-01-18 15:49:51,986 - staging.forms - DEBUG - clean_mission_name: cleaning name r20090726_074343_scott_05_long_transect_auv2
+2013-01-18 15:49:51,988 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-01-18 15:49:51,988 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-01-18 15:49:51,988 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-01-18 15:49:55,339 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-01-18 15:49:56,663 - staging.views - DEBUG - auvimport: processing remote files to create json string.
+2013-01-18 15:49:58,078 - staging.views - DEBUG - auvimport: importing json string into database.
+2013-01-18 15:51:36,265 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-01-22 14:49:41,031 - staging.forms - DEBUG - clean_mission_name: cleaning name r20110612_033752_st_helens_01_elephant_rock_deep_repeat
+2013-01-22 14:49:41,035 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-01-22 14:49:41,036 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-01-22 14:49:41,039 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-01-22 14:49:42,614 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-01-22 14:49:44,306 - staging.views - DEBUG - auvimport: processing remote files to create json string.
+2013-01-22 14:49:44,535 - staging.views - DEBUG - auvimport: importing json string into database.
+2013-01-22 14:50:15,904 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-01-23 11:19:26,619 - staging.forms - DEBUG - clean_mission_name: cleaning name r20110612_045149_st_helens_03_elephant_rock_shallow_repeat
+2013-01-23 11:19:26,621 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-01-23 11:19:26,621 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-01-23 11:19:26,625 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-01-23 11:19:28,556 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-01-23 11:19:29,964 - staging.views - DEBUG - auvimport: processing remote files to create json string.
+2013-01-23 11:19:30,382 - staging.views - DEBUG - auvimport: failed to import auv mission: (IndexError): index out of bounds
+2013-01-23 11:20:19,146 - staging.forms - DEBUG - clean_mission_name: cleaning name r20110612_042915_st_helens_02_elephant_rock_transit
+2013-01-23 11:20:19,148 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-01-23 11:20:19,149 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-01-23 11:20:19,149 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-01-23 11:20:19,943 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-01-23 11:20:20,854 - staging.views - DEBUG - auvimport: processing remote files to create json string.
+2013-01-23 11:20:20,907 - staging.views - DEBUG - auvimport: importing json string into database.
+2013-01-23 11:20:26,036 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.

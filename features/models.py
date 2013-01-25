@@ -8,7 +8,7 @@ class ImageFeature(models.Model):
     """Extends Force.Image to include feature arrays for clustering and classification"""
 
     feature = ArrayField(dbtype='double precision')
-    image = models.OneToOneField(Image)
+    #image = models.OneToOneField(Image)
+    image = models.ForeignKey(Image)
     objects = Manager()
-
 
