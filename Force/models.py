@@ -150,12 +150,6 @@ class Image(models.Model):
     left_image_reference = models.URLField()
     date_time = models.DateTimeField()
     image_position = models.PointField()
-    temperature = models.FloatField()
-    salinity = models.FloatField()
-    pitch = models.FloatField()
-    roll = models.FloatField()
-    yaw = models.FloatField()
-    altitude = models.FloatField()
     depth = models.FloatField()
 
     def natural_key(self):
@@ -166,6 +160,68 @@ class Image(models.Model):
     class Meta:
         """@brief defines the natural key pair"""
         unique_together = (('deployment', 'date_time'), )
+
+
+class ScientificMeasurementTypeManager(models.Manager):
+    """Management class for ScientificMeasurementType."""
+
+    def get_by_natural_key(self, normalised_name):
+        """Accessor to query for type based on normalised name."""
+        return self.get(normalised_name=normalised_name)
+
+
+class ScientificMeasurementType(models.Model):
+    normalised_name = models.CharField(max_length=50)
+    display_name = models.CharField(max_length=50)
+
+    max_value = models.FloatField()
+    min_value = models.FloatField()
+
+    description = models.TextField()
+
+    UNITS_CHOICES = (
+        ('ppm', 'ppm'),
+        ('ms', 'm s<sup>-1</sup>'),
+        ('m', 'm'),
+        ('cel', '&ordm;C'),
+        ('rad', 'radians'),
+        ('deg', '&ordm;'),
+        ('psu', 'PSU'),
+        ('dbar', 'dbar'),
+        ('umoll', 'umol/l'),
+        ('umolk', 'umol/kg'),
+        ('mgm3', 'mg/m<sup>3</sup>'),
+    )
+
+    units = models.CharField(max_length=5, choices=UNITS_CHOICES)
+
+    def natural_key(self):
+        return (self.normalised_name, )
+
+
+class ScientificMeasurementManager(models.Manager):
+    """Manager class for ScientificMeasurements."""
+
+    def get_by_natural_key(self, measurement_type_key, image_key):
+        """Accessor to query for value based on measurement type and image."""
+        mt = ScientificMeasurementType.objects.get_by_natural_key(*measurement_type_key)
+        im = Image.objects.get_by_natural_key(*image_key)
+
+        return self.get(measurement_type=mt, image=im)
+
+
+class ScientificMeasurement(models.Model):
+    measurement_type = models.ForeignKey(ScientificMeasurementType)
+    image = models.ForeignKey(Image)
+    value = models.FloatField()
+
+    def natural_key(self):
+        return self.measurement_type.natural_key() + self.image.natural_key()
+
+    natural_key.dependencies = ['Force.image', 'Force.scientificmeasurementtype']
+
+    class Meta:
+        unique_together = (('measurement_type', 'image'), )
 
 
 class User(models.Model):
