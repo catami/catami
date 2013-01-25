@@ -13,20 +13,20 @@
           <h2>My Collections</h2>
           <p>My most recent public collections. </p>
           <div id="mycollections_recent"></div>
-          <p><a class="btn" href="/webinterface/mycollections">View more &raquo;</a>
+          <p><a class="btn" href="{% url webinterface.views.my_collections %}">View more &raquo;</a>
 <!--           <a href="/webinterface/explore" class="btn btn-primary pull-right"><i class="icon-plus-sign icon-white"></i> New Collection</a></p> -->
         </div><!--/span-->
         <div class="span6">
           <h2>Public Collections</h2>
           <p>Most recent public collections. </p>
           <div id="publiccollections_recent"></div>
-          <p><a class="btn" href="/webinterface/publiccollections">View more &raquo;</a></p>
+          <p><a class="btn" href="{% url webinterface.views.public_collections %}">View more &raquo;</a></p>
         </div><!--/span-->
        
 {% endblock %}
 {% block add_script %}
 	<script>
-	  $('#mycollections_recent').load('/webinterface/mycollections_recent #mycollections_recent', function(response, status, xhr) {
+	  $('#mycollections_recent').load('{% url webinterface.views.my_collections_recent %} #mycollections_recent', function(response, status, xhr) {
 		if (status == "error") {
 		  var msg = "Sorry, I've run into a problem trying to get this. The reported error is: ";
 		  $("#mycollections_recent").html("<p class='alert alert-error'>"+ msg + "<strong>" + xhr.status + " " + xhr.statusText+"</strong></p>");
@@ -34,7 +34,7 @@
 	});
 	</script>
 	<script>
-	  $('#publiccollections_recent').load('/webinterface/publiccollections_recent #publiccollections_recent', function(response, status, xhr) {
+	  $('#publiccollections_recent').load('{% url webinterface.views.public_collections_recent %} #publiccollections_recent', function(response, status, xhr) {
 		if (status == "error") {
 		  var msg = "Sorry, I've run into a problem trying to get this. The reported error is: ";
 		  $("#publiccollections_recent").html("<p class='alert alert-error'>"+ msg + "<strong>" + xhr.status + " " + xhr.statusText+"</strong></p>");

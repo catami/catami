@@ -1,0 +1,63 @@
+{% extends "base-topmenu.html" %}
+
+
+<!--{% block breadcrumbs %}
+  <li class="active">AUV Deployment List</li>
+{% endblock %}-->
+
+{% block content %}
+  <ul class="breadcrumb">
+  	<li><a href="{% url webinterface.views.data %}">Data</a>
+    <li class="active"><span class="divider">></span> Deployment List</li>
+  </ul>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Min Depth</th>
+          <th>Max Depth</th>
+          <th>Related Campaign</th>
+        </tr>
+      </thead>
+      <tbody>
+	    {% for auv_deployment in auv_deployment_list %}
+          <tr>
+          	<td><a href="{% url webinterface.views.auvdeployments %}">AUV</a></td>
+          	<td><a href="{% url webinterface.views.auvdeployment_display auv_deployment.id %}">{{auv_deployment.short_name}}<a></td>
+            <td>{{auv_deployment.start_time_stamp}}</td>
+            <td>{{auv_deployment.end_time_stamp}}</td>
+            <td>{{auv_deployment.min_depth}}</td>
+            <td>{{auv_deployment.max_depth}}</td>
+            <td><a href="{% url webinterface.views.campaign_detail auv_deployment.campaign.id %}" >{{auv_deployment.campaign.short_name}}</a></td>
+          <tr>
+        {% endfor %}
+        {% for bruv_deployment in bruv_deployment_list %}
+          <tr>
+          	<td>BRUV</td>
+          	<td>{{bruv_deployment.short_name}}</td>
+            <td>{{bruv_deployment.start_time_stamp}}</td>
+            <td>{{bruv_deployment.end_time_stamp}}</td>
+            <td>{{bruv_deployment.min_depth}}</td>
+            <td>{{bruv_deployment.max_depth}}</td>
+            <td><a href="{% url webinterface.views.campaign_detail bruv_deployment.campaign.id %}" class="btn btn-normal btn-primary">Campaign</a></td>
+          <tr>
+        {% endfor %}
+        {% for dov_deployment in dov_deployment_list %}
+          <tr>
+          	<td>DOV</td>
+          	<td>{{dov_deployment.short_name}}</td>
+            <td>{{dov_deployment.start_time_stamp}}</td>
+            <td>{{dov_deployment.end_time_stamp}}</td>
+            <td>{{dov_deployment.min_depth}}</td>
+            <td>{{dov_deployment.max_depth}}</td>
+            <td><a href="{% url webinterface.views.campaign_detail dov_deployment.campaign.id %}" class="btn btn-normal btn-primary">Campaign</a> </td>
+          <tr>
+        {% endfor %}
+        
+      </tbody>
+    </table>
+
+{% endblock %}

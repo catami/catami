@@ -1,0 +1,15 @@
+{% extends "base-topmenu.html" %}
+
+	
+{% block content %}
+
+<table class="table">
+
+  <tr><td><a href="{% url webinterface.views.campaigns %}" class="btn btn-large" style="width: 100px"> Campaigns </a></td><td><p class="lead">Campaigns are a place where you can group data together from various instruments/datasets</p>
+  </td></tr>
+  <tr><td><a href="{% url webinterface.views.deployments %}" class="btn btn-large" style="width: 100px"> Deployments </a></td><td><p class="lead">Deployments are datasets collected from an instrument</p></td></tr>
+
+</table>
+
+{% endblock %}
+
