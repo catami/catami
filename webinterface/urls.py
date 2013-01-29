@@ -18,6 +18,9 @@ urlpatterns = patterns('webinterface.views',
     url(r'^explore$', 'explore'),
     #url(r'^viewcollection$', 'viewcollection'),
 
+    #Staging
+    url(r'^staging/', include('staging.urls')),
+
     #Collection List Views
     url(r'^collections$', 'collections'),
     url(r'^collections/(?P<collection_id>\d+)/$', 'view_collection'),
