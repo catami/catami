@@ -8,6 +8,13 @@ from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns('webinterface.views',
     url(r'^$', 'index', name='index'),
+
+    #Info Pages
+    url(r'^faq', 'faq'),
+    url(r'^contact', 'contact'),
+    url(r'^howto','howto'),
+    url(r'^about','about'),
+
     url(r'^explore$', 'explore'),
     #url(r'^viewcollection$', 'viewcollection'),
 

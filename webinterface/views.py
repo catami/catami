@@ -8,9 +8,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from collection.api import CollectionResource
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 import logging
+
 #not API compliant - to be removed after the views are compliant
-from Force.models import Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment
+from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
@@ -20,15 +22,104 @@ import simplejson
 logger = logging.getLogger(__name__)
 
 #@login_required
+
+#front page and zones
 def index(request):
-    return render_to_response('webinterface/index.html', {}, RequestContext(request))
+    """@brief returns root catami html
+
+    """
+
+    #NOT API COMPLIANT
+    recent_deployments = Deployment.objects.all().order_by('-id')[:3]
+    random_images = Image.objects.all().order_by('?')[:9]
+
+    styled_deployment_list = []
+    image_link_list = []
+
+    for image in random_images:
+        try:
+            AUVDeployment.objects.get(id=image.deployment.id)
+        except:
+            pass
+        else:
+            image_link = {"deployment_url":reverse(auvdeployments)+str(image.deployment.id),"image":image}
+
+        try:
+            TIDeployment.objects.get(id=image.deployment.id)
+        except:
+            pass
+        else:
+            image_link = {"deployment_url":reverse(tideployments)+str(image.deployment.id),"image":image}
+
+        image_link_list.append(image_link)
+
+    for deployment in recent_deployments:
+        try:
+            AUVDeployment.objects.get(id=deployment.id)
+        except:
+            pass
+        else:
+            deployment_type= "AUV Deployment"
+            deployment_url = reverse(auvdeployments)+str(deployment.id)
+
+        try:
+            BRUVDeployment.objects.get(id=deployment.id)
+        except:
+            pass
+        else:
+            deployment_type= "BRUV Deployment"
+            deployment_url = reverse(bruvdeployments)+str(deployment.id)
+
+        try:
+            BRUVDeployment.objects.get(id=deployment.id)
+        except:
+            pass
+        else:
+            deployment_type= "DOV Deployment"
+            deployment_url =reverse(dovdeployments)+str(deployment.id)
+
+        try:
+            TIDeployment.objects.get(id=deployment.id)
+        except:
+            pass
+        else:
+            deployment_type= "TI Deployment"
+            deployment_url = reverse(tideployments)+str(deployment.id)
+
+        try:
+            BRUVDeployment.objects.get(id=deployment.id)
+        except:
+            pass
+        else:
+            deployment_type= "TV Deployment"
+            deployment_url = reverse(tvdeployments)+str(deployment.id)
+
+        styled_deployment = {"deployment_type":deployment_type,"deployment_url":deployment_url,"deployment":deployment}
+        styled_deployment_list.append(styled_deployment)
+
+    return render_to_response('catamiPortal/index.html',
+        {'styled_deployment_list':styled_deployment_list,
+         'image_link_list': image_link_list},
+        RequestContext(request))
+
+# Info pages
+def faq(request):
+    return render_to_response('webinterface/faq.html', {}, RequestContext(request))
+
+def contact(request):
+    return render_to_response('webinterface/contact.html', {}, RequestContext(request))
+
+def about(request):
+    return render_to_response('webinterface/about.html', {}, RequestContext(request))
+
+def howto(request):
+    return render_to_response('webinterface/howto.html', {}, RequestContext(request))
 
 # Explore pages
 def explore(request):
     return render_to_response('webinterface/explore.html', {}, RequestContext(request))
 
 # Collection pages
-
 def collections(request):
     return render_to_response('webinterface/collections.html', {}, RequestContext(request))
 
