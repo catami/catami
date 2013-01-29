@@ -116,7 +116,7 @@ class StagingTests(TestCase):
             # check you can get them all
             self.assertEqual(response.status_code, 200)
             self.assertTemplateUsed(response, template)
-            self.assertTemplateUsed(response, 'staging/base.html')
+            self.assertTemplateUsed(response, 'base-topmenu.html')
 
         # logout, don't check carefully, the other test does that
         response = self.client.get('/accounts/logout/')

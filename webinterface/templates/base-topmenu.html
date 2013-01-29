@@ -35,7 +35,7 @@
     {% block tail_head %}{% endblock %}
     </head>
 
-    <body>
+    <body onload="init()">
     
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
@@ -48,15 +48,23 @@
                 <a class="brand" href="#"><img src="{{ STATIC_URL }}assets/img/catamiheader-blue-small.png" alt="catami_icon_small" width="140"></a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
-                        <li class="{% ifequal request.path "/webinterface/" %}active{% endifequal %}"><a href="{% url webinterface.views.index %}"><i class="icon-home icon-white"></i> Home</a></li>
-                        <li class="{% ifequal request.path "/webinterface/explore" %}active{% endifequal %}"><a href="/webinterface/explore"><i class="icon-search icon-white"></i> Explore</a></li>
-                        <li class="dropdown {% ifequal request.path "/webinterface/collections" %}active{% endifequal %}"><a href="/webinterface/collections" class="dropdown-toggle"><i class="icon-list-alt icon-white"></i> Collections <b class="caret"></b></a>
+                        <li class="{% ifequal request.path "/webinterface/" %}active{% endifequal %}"><a href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home icon-white"></i> Home</a></li>
+                        <li class="dropdown {% ifequal request.path "/webinterface/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-search icon-white"></i> Explore</a>
                             <ul class="dropdown-menu">
-                                <li class="{% ifequal request.path "/webinterface/mycollections" %}active{% endifequal %}"><a href="/webinterface/mycollections"><i class="icon-heart"></i> My Collections</a></li>
-                                <li class="{% ifequal request.path "/webinterface/publiccollections" %}active{% endifequal %}"><a href="/webinterface/publiccollections"><i class="icon-star"></i> Public Collections</a></li>
-                                <li class="{% ifequal request.path "/webinterface/explore" %}active{% endifequal %}"><a href="/webinterface/explore"><i class="icon-plus-sign"></i> Create new Collection</a></li>
+                                <li class="{% ifequal request.path "/webinterface/data" %}active{% endifequal %}"><a href="{% url webinterface.views.data %}"><i class="icon-heart"></i> Data</a></li>
+                                <li class="{% ifequal request.path "/webinterface/data/campaigns" %}active{% endifequal %}"><a href="{% url webinterface.views.campaigns %}"><i class="icon-heart"></i> Data: Campaigns</a></li>
+                                <li class="{% ifequal request.path "/webinterface/data/deployments" %}active{% endifequal %}"><a href="{% url webinterface.views.deployments %}"><i class="icon-heart"></i> Data: Deployments</a></li>
+
                             </ul>
                         </li>
+                        <li class="dropdown {% ifequal request.path "/webinterface/collections" %}active{% endifequal %}"><a href="{% url webinterface.views.collections %}" class="dropdown-toggle"><i class="icon-list-alt icon-white"></i> Collections <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li class="{% ifequal request.path "/webinterface/mycollections" %}active{% endifequal %}"><a href="{% url webinterface.views.my_collections %}"><i class="icon-heart"></i> My Collections</a></li>
+                                <li class="{% ifequal request.path "/webinterface/publiccollections" %}active{% endifequal %}"><a href="{% url webinterface.views.public_collections %}"><i class="icon-star"></i> Public Collections</a></li>
+                                <li class="{% ifequal request.path "/webinterface/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-plus-sign"></i> Create new Collection</a></li>
+                            </ul>
+                        </li>
+<!--
                         <li class="dropdown"><a href="#" class="dropdown-toggle"><i class="icon-tasks icon-white"></i> Data Tasks <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-eye-open"></i> View Collection</a></li>
@@ -68,25 +76,23 @@
                                 <li><a href="/staging/"><i class="icon-cloud-upload"></i> Upload data</a></li>
                             </ul>
                         </li>
-                        <!--<li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <b class="caret"></b>
-                                Manage
-                            </a>
+-->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage<b class="caret"></b> </a>
                             <ul class="dropdown-menu">
-                                <li><a  href="#"><i class="icon-upload"></i> Import Data</a></li>
-                                <li><a  href="#"><i class="icon-download"></i> Download Data</a></li>
+                                <li><a  href="{% url staging.views.index %}"><i class="icon-upload"></i> Import Data</a></li>
+<!--                                 <li><a  href="#"><i class="icon-download"></i> Download Data</a></li> -->
                             </ul>
-                        </li>-->
+                        </li>
                         
                         <!--<li class="divider-vertical"></li>-->
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign icon-white"></i> <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#"><i class="icon-info-sign"></i> About</a></li>
-                                <li><a href="#"><i class="icon-envelope"></i> Contact us</a></li>
-                                <li><a href="#"><i class="icon-question-sign"></i> FAQ</a></li>
-                                <li><a href="#"><i class="icon-question-sign"></i> How To</a></li>
+                                <li><a href="{% url webinterface.views.about %}"><i class="icon-info-sign"></i> About</a></li>
+                                <li><a href="{% url webinterface.views.contact %}"><i class="icon-envelope"></i> Contact us</a></li>
+                                <li><a href="{% url webinterface.views.faq %}"><i class="icon-question-sign"></i> FAQ</a></li>
+                                <li><a href="{% url webinterface.views.howto %}"><i class="icon-question-sign"></i> How To</a></li>
                             </ul>
                         </li>
                         

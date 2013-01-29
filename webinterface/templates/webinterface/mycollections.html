@@ -13,6 +13,11 @@
 
 {% block add_script %}
 	<script>
-	  $('#collectiontable').load('/webinterface/mycollections_all #mycollections_all');
+	$('#collectiontable').load('{% url webinterface.views.my_collections_all %} #mycollections_all', function(response, status, xhr) {
+		if (status == "error") {
+		  var msg = "Sorry, I've run into a problem trying to get this. The reported error is: ";
+		  $("#collectiontable").html("<p class='alert alert-error'>"+ msg + "<strong>" + xhr.status + " " + xhr.statusText+"</strong></p>");
+		}
+	});
 	</script>
 {% endblock %}   
