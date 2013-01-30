@@ -1,14 +1,5 @@
-{% extends "base-topmenu.html" %}
-{% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
-{% block content %}
-<div class="row-fluid">
-    <div class="hero-unit">
-        <h1>Public Collections</h1>
-        <p>This page shows a list of publicly shared collections. A Collection is a set of data (images and associated metadata) that has been prepared by a user for further processing, downloading or sharing. The data may come from one or more deployments, surveys or campaigns.</p>
-    </div>
-</div>
-<div id="publiccollections_recent">
-{% if public_collections %}
+<div id="collectiontable">
+{% if collections %}
 	<table class="table table-hover" style="width:100%;" align="center">
 		<thead>
 		<tr>
@@ -16,13 +7,13 @@
 		</tr>
 		</thead>
 		<tbody>
-		  {% for collection_item in public_collections %}
+		  {% for collection_item in collections %}
 		      <tr>
-		          <td><a href="/webinterface/collections/{{collection_item.id}}" rel='popover-roll' data-content="<p>{{collection_item.description}}<p>" data-original-title="{{collection_item.name}}" data-html='true' data-placement='right' >{{collection_item.name}}</a></td>
+		          <td><a href="{% url webinterface.views.view_collection collection_item.id %}" rel='popover-roll' data-content="<p>{{collection_item.description}}<p>" data-original-title="{{collection_item.name}}" data-html='true' data-placement='right' >{{collection_item.name}}</a></td>
 		          <td>{{collection_item.creation_date}}</td>
 		          <td>{{collection_item.owner}}</td>
 		          <td style="text-align: right;">
-		              <a href="/webinterface/collections/{{collection_item.id}}#map" rel="tooltip" title="View Collection"><i class="icon-eye-open"></i></a>
+		              <a href="{% url webinterface.views.view_collection collection_item.id %}#map" rel="tooltip" title="View Collection"><i class="icon-eye-open"></i></a>
 		<!--
 		              <a href="/webinterface/viewcollection#cst" rel="tooltip" title="Cluster Collection"><i class="icon-cog"></i></a>
 		              <a href="/webinterface/viewcollection#wks" rel="tooltip" title="Create/view Workset"><i class="icon-th-list"></i></a>
@@ -36,7 +27,6 @@
 		</tbody>
 	</table>
 {% else %}
-	<p class='alert alert-error'>I can't find any collections in Catami. This is probably an error, contact support</p>
+	<p class='alert alert-error'>We can't find any relevant collections. Perhaps you have created any? Click here (TODO) if you would like to create a new collection. If you think this is an error contact support.</p>
 {% endif %}
 </div>
-{% endblock %}

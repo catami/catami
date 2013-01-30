@@ -5,6 +5,7 @@
 <div class="row-fluid">
     <div class="hero-unit">
         <h1>Collections</h1>
+        <p>This page shows a summary of some recent collections. A Collection is a set of data (images and associated metadata) that has been prepared by a user for further processing, downloading or sharing. The data may come from one or more deployments, surveys or campaigns.</p>
     </div>
 </div>
       
@@ -26,7 +27,7 @@
 {% endblock %}
 {% block add_script %}
 	<script>
-	  $('#mycollections_recent').load('{% url webinterface.views.my_collections_recent %} #mycollections_recent', function(response, status, xhr) {
+	  $('#mycollections_recent').load('{% url webinterface.views.my_collections_recent %} #collectiontable', function(response, status, xhr) {
 		if (status == "error") {
 		  var msg = "Sorry, I've run into a problem trying to get this. The reported error is: ";
 		  $("#mycollections_recent").html("<p class='alert alert-error'>"+ msg + "<strong>" + xhr.status + " " + xhr.statusText+"</strong></p>");
@@ -34,7 +35,7 @@
 	});
 	</script>
 	<script>
-	  $('#publiccollections_recent').load('{% url webinterface.views.public_collections_recent %} #publiccollections_recent', function(response, status, xhr) {
+	  $('#publiccollections_recent').load('{% url webinterface.views.public_collections_recent %} #collectiontable', function(response, status, xhr) {
 		if (status == "error") {
 		  var msg = "Sorry, I've run into a problem trying to get this. The reported error is: ";
 		  $("#publiccollections_recent").html("<p class='alert alert-error'>"+ msg + "<strong>" + xhr.status + " " + xhr.statusText+"</strong></p>");

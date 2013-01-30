@@ -135,23 +135,23 @@ def public_collections(request):
 # view collection table views
 def public_collections_all(request):
     collection_list = CollectionResource()
-    cl_all = collection_list.obj_get_list()
-    return render_to_response('webinterface/publiccollections_all.html', {"public_collections": cl_all}, RequestContext(request))
+    cl = collection_list.obj_get_list()
+    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl}, RequestContext(request))
 
 def public_collections_recent(request):
     collection_list = CollectionResource()
-    cl_all = collection_list.obj_get_list()
-    return render_to_response('webinterface/publiccollections_recent.html', {"public_collections": cl_all}, RequestContext(request))
+    cl = collection_list.obj_get_list()
+    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl}, RequestContext(request))
 
 def my_collections_all(request):
     collection_list = CollectionResource()
     cl = collection_list.obj_get_list(request,owner=request.user.id)
-    return render_to_response('webinterface/mycollections_all.html', {"my_collections": cl}, RequestContext(request))
+    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl}, RequestContext(request))
 
 def my_collections_recent(request):
     collection_list = CollectionResource()
     cl = collection_list.obj_get_list(request,owner=request.user.id)
-    return render_to_response('webinterface/mycollections_recent.html', {"my_collections": cl}, RequestContext(request))
+    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl}, RequestContext(request))
 
 # collection object tasks
 def delete_collection(request):
