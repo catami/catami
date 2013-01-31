@@ -134,37 +134,50 @@ def explore(request):
 
 # Collection pages
 def collections(request):
-    return render_to_response('webinterface/collections.html', {}, RequestContext(request))
+    collection_list = CollectionResource()
+    cl_my_rec = collection_list.obj_get_list(request,owner=request.user.id)
+    cl_pub_rec = collection_list.obj_get_list()
+    return render_to_response('webinterface/collections.html', {"my_rec_cols":cl_my_rec,"pub_rec_cols":cl_pub_rec}, RequestContext(request))
+
+def my_collections(request):
+    collection_list = CollectionResource()
+    cl = collection_list.obj_get_list(request,owner=request.user.id)
+    return render_to_response('webinterface/mycollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
+
+def public_collections(request):
+    collection_list = CollectionResource()
+    cl = collection_list.obj_get_list()
+    return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
+
+## view collection table views
+#def public_collections_all(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list()
+#   return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
 def view_collection(request,collection_id):
     return render_to_response('webinterface/viewcollection.html', {}, RequestContext(request))
 
-def my_collections(request):
-    return render_to_response('webinterface/mycollections.html', {}, RequestContext(request))
-
-def public_collections(request):
-    return render_to_response('webinterface/publiccollections.html', {}, RequestContext(request))
-
 # view collection table views
-def public_collections_all(request):
-    collection_list = CollectionResource()
-    cl = collection_list.obj_get_list()
-    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl}, RequestContext(request))
+#def public_collections_all(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list()
+#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"pub_all"}, RequestContext(request))
 
-def public_collections_recent(request):
-    collection_list = CollectionResource()
-    cl = collection_list.obj_get_list()
-    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl}, RequestContext(request))
+#def public_collections_recent(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list()
+#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"pub_rec"}, RequestContext(request))
 
-def my_collections_all(request):
-    collection_list = CollectionResource()
-    cl = collection_list.obj_get_list(request,owner=request.user.pk)
-    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl}, RequestContext(request))
+#def my_collections_all(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list(request,owner=request.user.id)
+#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_all"}, RequestContext(request))
 
-def my_collections_recent(request):
-    collection_list = CollectionResource()
-    cl = collection_list.obj_get_list(request,owner=request.user.pk)
-    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl}, RequestContext(request))
+#def my_collections_recent(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list(request,owner=request.user.id)
+#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_rec"}, RequestContext(request))
 
 # collection object tasks
 def delete_collection(request):

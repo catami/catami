@@ -1,0 +1,123 @@
+<ul class="nav nav-pills">
+    <li class="active"> 
+        <a href="#pubwks" data-toggle="tab">All Worksets</a>
+    </li>
+    <li>
+        <a href="#mywks" data-toggle="tab">My Worksets</a>
+    </li>
+    <li> 
+        <a href="#newwks" data-toggle="tab">New Workset</a>
+    </li>
+</ul>
+	
+	<div class="tab-content">
+ 		<div class="tab-pane active" id="pubwks">
+			<h3>All Worksets</h3>
+			<p>Select a previously saved workset:</p>
+			<select multiple="multiple" class="workpane" >
+			    <option>Public Workset 1 | 15/02/2013 | Random (incomplete)</option>
+			    <option>Public Workset 2 | 15/02/2013 | Stratified</option>
+			    <option>Public Workset 3 | 15/02/2013 | Random</option>
+			    <option>Public Workset 4 | 13/02/2013 | Active Learning</option>
+			    <option>Public Workset 5 | 12/02/2013 | Random</option>
+			</select>
+			<br><br>
+			<div class="pull-right">
+			    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="4"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
+			    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
+			</div>
+		</div>
+       <div class="tab-pane" id="mywks">
+			<h3>My Worksets</h3>
+			<p>Select a previously saved workset: </p>
+			<select multiple="multiple" class="workpane" >
+			    <option>Test Workset 1 | 17/02/2013 | Random (incomplete)</option>
+			    <option>Test Workset 2 | 17/02/2013 | Stratified</option>
+			    <option>Test Workset 3 | 16/02/2013 | Random</option>
+			    <option>Test Workset 4 | 16/02/2013 | Active Learning</option>
+			    <option>Test Workset 5 | 15/02/2013 | Random</option>
+			</select> 
+			<br><br>
+			<div class="pull-right">
+			    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="3"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
+			    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
+			</div>
+		</div>
+		<div class="tab-pane" id="newwks">
+			<h3>Create a new Workset</h3>
+			<p>Select a sampling strategy:</p>
+			<div class="tabbable tabs-left">
+			    <ul class="nav nav-tabs">
+			        <li class="active">
+			            <a href="#rndq" data-toggle="tab">Random (sequential)</a>
+			        </li>
+			        <li> 
+			            <a href="#rndp" data-toggle="tab">Random (spatial)</a>
+			        </li>
+			        <li> 
+			            <a href="#strq" data-toggle="tab">Stratified (sequential)</a>
+			        </li>
+			        <li> 
+			            <a href="#strp" data-toggle="tab">Stratified (spatial)</a>
+			        </li>
+			        <li> 
+			            <a href="#alrn" data-toggle="tab">Active learning (auto)</a>
+			        </li>
+			    </ul>
+			    <div class="tab-content">
+			        <div class="tab-pane active well" id="rndq">
+			            <p>Random sampling sequentially from transect. May not lead to even spatial distribution.</p>
+			            <form class="form" style="margin:0; padding:0;">
+			                <label>
+			                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br><label>
+			                    Number of images in the workset:
+			                    <input class="flat" type="number" min="1" step="1" value="50">
+			                </label>
+			                <button class="btn">Save Workset</button>
+			            </form>
+			        </div>
+			        <div class="tab-pane well" id="rndp">
+			            <p>Random spatially distributed sampling.</p>
+			            <form class="form" style="margin:0; padding:0;">
+			                <label>
+			                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br><label>
+			                    Number of images in the workset:
+			                    <input class="flat" type="number" min="1" step="1" value="50">
+			                </label>
+			            </form>
+			            <button class="btn">Save Workset</button>
+			        </div>
+			        <div class="tab-pane well" id="strq">
+			            <p>Stratified sampling sequentially from transect.</p>
+			            <form class="form" style="margin:0; padding:0;">
+			                <label>
+			                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br><label>
+			                    Spacing:
+			                    <input class="flat" type="number" min="1"
+			                    step="1" value="2"> m (2m spacing will give 500 images in the workset)
+			                </label>
+			            </form>
+			            <button class="btn">Save Workset</button>
+			        </div>
+			        <div class="tab-pane well" id="strp">
+			            <p>Stratified spatial sampling from transect.</p>
+			            <form class="form" style="margin:0; padding:0;">
+			                <label>
+			                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br>
+			                <label>
+			                    Spacing: <input class="flat" type="number" min="1"
+			                    step="1" value="2"> m (2m spacing will give 500 images in the workset)
+			                </label>
+			                
+			            </form>
+			            <button class="btn">Save Workset</button>
+			        </div>
+			        <div class="tab-pane well" id="alrn">
+			            <p>Active learning: automagically figure out what to sample for training an automated classifier.</p>
+			            <label>
+			                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br>
+			            <button class="btn">Save Workset</button>
+			        </div>
+			    </div>
+			</div>
+		</div>

@@ -1,24 +1,13 @@
 {% extends "base-topmenu.html" %}
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
 {% block content %}
-<div class="row-fluid">
-    <div class="hero-unit">
-        <h1>Public Collections</h1>
-        <p>This page shows a list of publicly shared collections. A Collection is a set of data (images and associated metadata) that has been prepared by a user for further processing, downloading or sharing. The data may come from one or more deployments, surveys or campaigns.</p>
-    </div>
-</div>
-	<div id="collectiontable"></div>
+	<div class="row-fluid">
+	    <div class="hero-unit">
+	        <h1>Public Collections</h1>
+	        <p>This page shows a list of publicly shared collections. A Collection is a set of data (images and associated metadata) that has been prepared by a user for further processing, downloading or sharing. The data may come from one or more deployments, surveys or campaigns.</p>
+	    </div>
+	</div>
+	<!--<div id="collectiontable"></div>-->
+  	{% include "webinterface/dataviews/collectiontable.html"%}
 
 {% endblock %}
-
-{% block add_script %}
-	<script>
-	  $('#collectiontable').load('{% url webinterface.views.public_collections_all %} #collectiontable', function(response, status, xhr) {
-		if (status == "error") {
-		  var msg = "Sorry, I've run into a problem trying to get this. The reported error is: ";
-		  $("#collectiontable").html("<p class='alert alert-error'>"+ msg + "<strong>" + xhr.status + " " + xhr.statusText+"</strong></p>");
-		}
-	});
-
-	</script>
-{% endblock %}   

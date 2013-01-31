@@ -31,11 +31,11 @@ urlpatterns = patterns('webinterface.views',
     url(r'^collections$', 'collections'),
     url(r'^collections/(?P<collection_id>\d+)/$', 'view_collection'),
     url(r'^my_collections$', 'my_collections'),
-    url(r'^my_collections_all$', 'my_collections_all'),
-    url(r'^my_collections_recent$', 'my_collections_recent'),
+#    url(r'^my_collections_all$', 'my_collections_all'),
+#    url(r'^my_collections_recent$', 'my_collections_recent'),
     url(r'^public_collections$', 'public_collections'),
-    url(r'^public_collections_all$', 'public_collections_all'),
-    url(r'^public_collections_recent$', 'public_collections_recent'),
+#    url(r'^public_collections_all$', 'public_collections_all'),
+#    url(r'^public_collections_recent$', 'public_collections_recent'),
 
     #Collection Object Views
 
@@ -43,9 +43,9 @@ urlpatterns = patterns('webinterface.views',
     url(r'^all_subsets$', 'all_subsets'),
     url(r'^my_subsets$', 'my_subsets'),
     url(r'^public_subsets$', 'public_subsets'),
-    url(r'^image_view$', 'image_view'),
-    url(r'^image_annotate$', 'image_annotate'),
-    url(r'^image_edit$', 'image_edit'),
+    url(r'^imageview$', 'image_view'),
+    url(r'^imageannotate$', 'image_annotate'),
+    url(r'^imageedit$', 'image_edit'),
     
     #force views
     url(r'^data/$', 'data'),
