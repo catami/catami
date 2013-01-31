@@ -136,6 +136,12 @@ def public_collections(request):
     cl = collection_list.obj_get_list()
     return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
+## view collection table views
+#def public_collections_all(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list()
+#   return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
+
 def view_collection(request,collection_id):
     return render_to_response('webinterface/viewcollection.html', {}, RequestContext(request))
 
