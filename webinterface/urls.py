@@ -4,10 +4,16 @@ __author__ = 'Ariell Friedman'
 
 from django.conf.urls import patterns, url, include
 #from django.contrib.auth.models import User
-
+from django.contrib import admin
+admin.autodiscover()
 
 urlpatterns = patterns('webinterface.views',
     url(r'^$', 'index', name='index'),
+
+    #front page data views
+    #url(r'^front_login_panel$', 'front_login_panel'),
+    #url(r'^front_newdata_panel$', 'front_newdata_panel'),
+    #url(r'^front_imageview_panel$', 'front_imageview_panel'),
 
     #Info Pages
     url(r'^faq', 'faq'),
@@ -42,9 +48,7 @@ urlpatterns = patterns('webinterface.views',
     url(r'^image_edit$', 'image_edit'),
     
     #force views
-    #(r'^data/', include('Force.urls')),
-
-    url(r'^data$', 'data'),
+    url(r'^data/$', 'data'),
     url(r'^data/auvdeployments/$', 'auvdeployments'),
     url(r'^data/auvdeployments/map/$', 'auvdeployments_map'),
     url(r'^data/auvdeployments/(?P<auvdeployment_id>\d+)/$', 'auvdeployment_display'),
@@ -70,4 +74,27 @@ urlpatterns = patterns('webinterface.views',
 
     url(r'^data/campaigns/$', 'campaigns'),
     url(r'^data/campaigns/(?P<campaign_id>\d+)/$', 'campaign_detail'),
+
+    #API docs
+    url(r'^api/', include('jsonapi.urls')),
+
+    #dbadmin tool
+    url(r'^report/', include('dbadmintool.urls')),
+
+    # userena
+    (r'^accounts/', include('accounts.urls')),
+    url(r'^logout/$', 'logout_view'),
+
+    # Uncomment the admin/doc line below to enable admin documentation:
+    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
+    #admin interface
+    url(r'^admin/', include(admin.site.urls)),
+
+)
+
+urlpatterns += patterns('',
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login',
+         {'template_name': 'registration/login.html'}),
+#     url(r'^logout/$', 'catamiPortal.views.logout_view'),
 )

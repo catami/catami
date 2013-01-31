@@ -120,7 +120,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'catamiPortal.urls'
+ROOT_URLCONF = 'webinterface.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'catamiPortal.wsgi.application'

@@ -2,7 +2,7 @@
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
@@ -18,6 +18,10 @@ from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
 from django.db.models import Max, Min
 import simplejson
+
+#account management
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 logger = logging.getLogger(__name__)
 
@@ -101,6 +105,15 @@ def index(request):
         {'styled_deployment_list':styled_deployment_list,
          'image_link_list': image_link_list},
         RequestContext(request))
+
+
+# Account stuff
+def logout_view(request):
+    """@brief returns user to html calling the logout action
+
+    """
+    logout(request)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 # Info pages
 def faq(request):
