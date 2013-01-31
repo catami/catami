@@ -59,8 +59,8 @@
                         </li>
                         <li class="dropdown {% ifequal request.path "/webinterface/collections" %}active{% endifequal %}"><a href="{% url webinterface.views.collections %}" class="dropdown-toggle"><i class="icon-list-alt icon-white"></i> Collections <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li class="{% ifequal request.path "/webinterface/mycollections" %}active{% endifequal %}"><a href="{% url webinterface.views.my_collections %}"><i class="icon-heart"></i> My Collections</a></li>
-                                <li class="{% ifequal request.path "/webinterface/publiccollections" %}active{% endifequal %}"><a href="{% url webinterface.views.public_collections %}"><i class="icon-star"></i> Public Collections</a></li>
+                                <li class="{% ifequal request.path "/webinterface/my_collections" %}active{% endifequal %}"><a href="{% url webinterface.views.my_collections %}"><i class="icon-heart"></i> My Collections</a></li>
+                                <li class="{% ifequal request.path "/webinterface/public_collections" %}active{% endifequal %}"><a href="{% url webinterface.views.public_collections %}"><i class="icon-star"></i> Public Collections</a></li>
                                 <li class="{% ifequal request.path "/webinterface/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-plus-sign"></i> Create new Collection</a></li>
                             </ul>
                         </li>

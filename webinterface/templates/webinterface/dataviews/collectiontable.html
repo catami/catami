@@ -1,6 +1,6 @@
 <div id="collectiontable">
 {% if collections %}
-	<table class="table table-hover" style="width:100%;" align="center">
+	<table class="table table-hover" style="width:90%;" align="center">
 		<thead>
 		<tr>
 		  <th>Collection</th><th>Date</th><th>User</th><th style="text-align: right;">Data Tasks</th>
@@ -9,18 +9,16 @@
 		<tbody>
 		  {% for collection_item in collections %}
 		      <tr>
-		          <td><a href="{% url webinterface.views.view_collection collection_item.id %}" rel='popover-roll' data-content="<p>{{collection_item.description}}<p>" data-original-title="{{collection_item.name}}" data-html='true' data-placement='right' >{{collection_item.name}}</a></td>
+		          <td><a href="{% url webinterface.views.view_collection collection_item.id %}" rel="popover-roll" data-content="<p>{{collection_item.description}}<p>" data-original-title="{{collection_item.name}}" data-html="true" data-placement="right" >{{collection_item.name}}</a></td>
 		          <td>{{collection_item.creation_date}}</td>
 		          <td>{{collection_item.owner}}</td>
 		          <td style="text-align: right;">
 		              <a href="{% url webinterface.views.view_collection collection_item.id %}#map" rel="tooltip" title="View Collection"><i class="icon-eye-open"></i></a>
-		<!--
-		              <a href="/webinterface/viewcollection#cst" rel="tooltip" title="Cluster Collection"><i class="icon-cog"></i></a>
-		              <a href="/webinterface/viewcollection#wks" rel="tooltip" title="Create/view Workset"><i class="icon-th-list"></i></a>
-		              <a href="/webinterface/allsubsets" class="imageframe" data-fancybox-group="1" data-fancybox-type="iframe" rel="tooltip" title="Annotate Workset1"><i class="icon-tag"></i></a>
+		              <a href="{% url webinterface.views.view_collection collection_item.id %}#cst" rel="tooltip" title="Cluster Collection"><i class="icon-cog"></i></a>
+		              <a href="{% url webinterface.views.view_collection collection_item.id %}#wks" rel="tooltip" title="Create/view Workset"><i class="icon-th-list"></i></a>
+		              <a href="/webinterface/all_subsets" class="imageframe" data-fancybox-group="{{listname}}{{forloop.counter}}" data-fancybox-type="iframe" rel="tooltip" title="Annotate Workset1"><i class="icon-tag"></i></a>
 		              <a href="/webinterface/viewcollection" rel="tooltip" title="Auto-classify Collection"><i class="icon-sitemap"></i></a>
 		              <a href="/webinterface/viewcollection" rel="tooltip" title="Download Data"><i class="icon-download-alt"></i></a>
-		-->
 		          </td>
 		      </tr>
 		  {% endfor %}
