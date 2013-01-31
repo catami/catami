@@ -145,12 +145,12 @@ def public_collections_recent(request):
 
 def my_collections_all(request):
     collection_list = CollectionResource()
-    cl = collection_list.obj_get_list(request,owner=request.user.id)
+    cl = collection_list.obj_get_list(request,owner=request.user.pk)
     return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl}, RequestContext(request))
 
 def my_collections_recent(request):
     collection_list = CollectionResource()
-    cl = collection_list.obj_get_list(request,owner=request.user.id)
+    cl = collection_list.obj_get_list(request,owner=request.user.pk)
     return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl}, RequestContext(request))
 
 # collection object tasks
