@@ -1,51 +1,80 @@
 <ul class="nav nav-pills">
     <li class="active"> 
-        <a href="#pubwks" data-toggle="tab">All Worksets</a>
-    </li>
-    <li>
-        <a href="#mywks" data-toggle="tab">My Worksets</a>
+        <a href="#exswks" data-toggle="tab"><i class="icon-th-list"></i> Existing Worksets</a>
     </li>
     <li> 
-        <a href="#newwks" data-toggle="tab">New Workset</a>
+        <a href="#newwks" data-toggle="tab"><i class="icon-plus-sign icon-white"></i> New Workset</a>
     </li>
 </ul>
 	
 	<div class="tab-content">
- 		<div class="tab-pane active" id="pubwks">
-			<h3>All Worksets</h3>
-			<p>Select a previously saved workset:</p>
-			<select multiple="multiple" class="workpane" >
-			    <option>Public Workset 1 | 15/02/2013 | Random (incomplete)</option>
-			    <option>Public Workset 2 | 15/02/2013 | Stratified</option>
-			    <option>Public Workset 3 | 15/02/2013 | Random</option>
-			    <option>Public Workset 4 | 13/02/2013 | Active Learning</option>
-			    <option>Public Workset 5 | 12/02/2013 | Random</option>
-			</select>
-			<br><br>
-			<div class="pull-right">
-			    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="4"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
-			    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
+ 		<div class="tab-pane active" id="exswks">
+ 			<div class="tabbable tabs-left">
+			    <ul class="nav nav-tabs">
+			        <li class="active">
+			            <a href="#allwks" data-toggle="tab">All Worksets</a>
+			        </li>
+			        <li>
+			            <a href="#pubwks" data-toggle="tab">Public Worksets</a>
+			        </li>
+			        <li> 
+			            <a href="#mywks" data-toggle="tab">My Worksets</a>
+			        </li>
+			    </ul>
+			    <div class="tab-content">
+			        <div class="tab-pane active well" id="allwks">
+			            <p>This list shows all available Worksets for this Collection. It includes Public Worksets and My Worksets. Select a Workset to continue.</p>
+						<select multiple="multiple" style="width: 99%;margin: 0;" >
+						    <option>Public Workset 1 | 15/02/2013 | Random (incomplete)</option>
+						    <option>Public Workset 2 | 15/02/2013 | Stratified</option>
+						    <option>Public Workset 3 | 15/02/2013 | Random</option>
+						    <option>Public Workset 4 | 13/02/2013 | Active Learning</option>
+						    <option>Public Workset 5 | 12/02/2013 | Random</option>
+						</select>
+						<br><br>
+						<p>
+						    <a href="{% url webinterface.views.view_collection collection_id %}#map" class="btn btn-primary"><i class="icon-globe"></i> View on Map</a>&nbsp;
+						    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="4"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
+						    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
+						</p>
+			        </div>
+			        <div class="tab-pane well" id="pubwks">
+			            <p>This list shows the Public Worksets for this Collection. Select a Workset to continue.</p>
+						<select multiple="multiple" style="width: 99%;margin: 0;" >
+						    <option>Public Workset 1 | 15/02/2013 | Random (incomplete)</option>
+						    <option>Public Workset 2 | 15/02/2013 | Stratified</option>
+						    <option>Public Workset 3 | 15/02/2013 | Random</option>
+						    <option>Public Workset 4 | 13/02/2013 | Active Learning</option>
+						    <option>Public Workset 5 | 12/02/2013 | Random</option>
+						</select>
+						<br><br>
+						<p>
+						    <a href="{% url webinterface.views.view_collection collection_id %}#map" class="btn btn-primary"><i class="icon-globe"></i> View on Map</a>&nbsp;
+						    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="4"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
+						    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
+						</p>
+			        </div>
+			        <div class="tab-pane well" id="mywks">
+			            <p>This list shows all Worksets for this Collection that have been created by you. Select a Workset to continue.</p>
+						<select multiple="multiple"  style="width: 99%;margin: 0;" >
+						    <option>Test Workset 1 | 17/02/2013 | Random (incomplete)</option>
+						    <option>Test Workset 2 | 17/02/2013 | Stratified</option>
+						    <option>Test Workset 3 | 16/02/2013 | Random</option>
+						    <option>Test Workset 4 | 16/02/2013 | Active Learning</option>
+						    <option>Test Workset 5 | 15/02/2013 | Random</option>
+						</select> 
+						<br><br>
+						<div class="pull-right">
+						    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="3"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
+						    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
+						</div>
+			        </div>
+			    </div>
 			</div>
 		</div>
-       <div class="tab-pane" id="mywks">
-			<h3>My Worksets</h3>
-			<p>Select a previously saved workset: </p>
-			<select multiple="multiple" class="workpane" >
-			    <option>Test Workset 1 | 17/02/2013 | Random (incomplete)</option>
-			    <option>Test Workset 2 | 17/02/2013 | Stratified</option>
-			    <option>Test Workset 3 | 16/02/2013 | Random</option>
-			    <option>Test Workset 4 | 16/02/2013 | Active Learning</option>
-			    <option>Test Workset 5 | 15/02/2013 | Random</option>
-			</select> 
-			<br><br>
-			<div class="pull-right">
-			    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="3"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
-			    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
-			</div>
-		</div>
+
 		<div class="tab-pane" id="newwks">
-			<h3>Create a new Workset</h3>
-			<p>Select a sampling strategy:</p>
+			<p>Use this section to create a new Workset. Select a sampling strategy:</p>
 			<div class="tabbable tabs-left">
 			    <ul class="nav nav-tabs">
 			        <li class="active">
@@ -121,3 +150,4 @@
 			    </div>
 			</div>
 		</div>
+	</div>

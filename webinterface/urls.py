@@ -32,9 +32,8 @@ urlpatterns = patterns('webinterface.views',
 #    url(r'^public_collections_recent$', 'public_collections_recent'),
 
     #Collection Object Views
-
     url(r'^view_subset$', 'view_subset'),
-    url(r'^all_subsets$', 'all_subsets'),
+    url(r'^all_subsets/(?P<collection_id>\d+)/$', 'all_subsets'),
     url(r'^my_subsets$', 'my_subsets'),
     url(r'^public_subsets$', 'public_subsets'),
     url(r'^imageview$', 'image_view'),

@@ -122,18 +122,18 @@ def explore(request):
 # Collection pages
 def collections(request):
     collection_list = CollectionResource()
-    cl_my_rec = collection_list.obj_get_list(request,owner=request.user.id)
-    cl_pub_rec = collection_list.obj_get_list()
-    return render_to_response('webinterface/collections.html', {"my_rec_cols":cl_my_rec,"pub_rec_cols":cl_pub_rec}, RequestContext(request))
+    cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id)
+    cl_pub_rec = collection_list.obj_get_list(request, is_public=True)
+    return render_to_response('webinterface/collections_recent.html', {"my_rec_cols":cl_my_rec,"pub_rec_cols":cl_pub_rec}, RequestContext(request))
 
 def my_collections(request):
     collection_list = CollectionResource()
-    cl = collection_list.obj_get_list(request,owner=request.user.id)
+    cl = collection_list.obj_get_list(request, owner=request.user.id)
     return render_to_response('webinterface/mycollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
 def public_collections(request):
     collection_list = CollectionResource()
-    cl = collection_list.obj_get_list()
+    cl = collection_list.obj_get_list(request, is_public=True)
     return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
 ## view collection table views
@@ -142,8 +142,8 @@ def public_collections(request):
 #    cl = collection_list.obj_get_list()
 #   return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
-def view_collection(request,collection_id):
-    return render_to_response('webinterface/viewcollection.html', {}, RequestContext(request))
+def view_collection(request, collection_id):
+    return render_to_response('webinterface/viewcollection.html', {"collection_id": collection_id}, RequestContext(request))
 
 # view collection table views
 #def public_collections_all(request):
@@ -177,8 +177,8 @@ def flip_public_collection(request):
 def view_subset(request):
     return render_to_response('webinterface/viewsubset.html', {}, RequestContext(request))
 
-def all_subsets(request):
-    return render_to_response('webinterface/allsubsets.html', {}, RequestContext(request))
+def all_subsets(request, collection_id):
+    return render_to_response('webinterface/allsubsets.html', {"collection_id": collection_id}, RequestContext(request))
 
 def my_subsets(request):
     return render_to_response('webinterface/mysubsets.html', {}, RequestContext(request))

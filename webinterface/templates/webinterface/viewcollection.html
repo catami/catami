@@ -20,7 +20,7 @@
     /*select, button {
         vertical-align: top;
     }*/
-    td {
+    .clustertable td {
         vertical-align: middle;
     }
     .viewpane {
@@ -118,9 +118,20 @@
         </div>
 
         <div class="tab-pane" id="dwn">
+        	This will contain options for downloading a variety of different combinations the data.
         </div>
 
     </div>
 </div>
 </div>
 {% endblock %}
+
+{% block add_script %}
+<script type="text/javascript">
+if (window.location.hash.length > 0) {
+    $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');
+} else {
+    $('ul.nav-tabs > li > a:first').tab('show');
+}
+</script>
+{% endblock %}  
