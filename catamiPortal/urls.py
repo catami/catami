@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^faq', 'catamiPortal.views.faq'),
     url(r'^contact', 'catamiPortal.views.contact'),
     url(r'^attribution','catamiPortal.views.attribution'),
+    url(r'^proxy/(?P<url>.*)$', 'catamiPortal.views.proxy'),
 
     url(r'^staging/', include('staging.urls')),
 

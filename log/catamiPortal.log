@@ -90,3 +90,11 @@
 2013-01-29 13:03:37,325 - staging.views - DEBUG - auvimport: processing remote files to create json string.
 2013-01-29 13:03:37,609 - staging.views - DEBUG - auvimport: importing json string into database.
 2013-01-29 13:03:57,336 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-02-01 13:07:53,232 - staging.forms - DEBUG - clean_mission_name: cleaning name r20110612_033752_st_helens_01_elephant_rock_deep_repeat
+2013-02-01 13:07:53,271 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-02-01 13:07:53,272 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-02-01 13:07:53,275 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-02-01 13:07:53,678 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-02-01 13:07:53,774 - staging.views - DEBUG - auvimport: processing remote files to create json string.
+2013-02-01 13:07:54,245 - staging.views - DEBUG - auvimport: importing json string into database.
+2013-02-01 13:08:22,300 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
