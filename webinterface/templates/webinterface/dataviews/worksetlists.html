@@ -23,6 +23,7 @@
 			    </ul>
 			    <div class="tab-content">
 			        <div class="tab-pane active well" id="allwks">
+			            <h4>All Worksets</h4>
 			            <p>This list shows all available Worksets for this Collection. It includes Public Worksets and My Worksets. Select a Workset to continue.</p>
 						<select multiple="multiple" style="width: 99%;margin: 0;" >
 						    <option>Public Workset 1 | 15/02/2013 | Random (incomplete)</option>
@@ -33,12 +34,12 @@
 						</select>
 						<br><br>
 						<p>
-						    <a href="{% url webinterface.views.view_collection collection_id %}#map" class="btn btn-primary"><i class="icon-globe"></i> View on Map</a>&nbsp;
-						    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="4"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
+						    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="wks1"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
 						    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
 						</p>
 			        </div>
 			        <div class="tab-pane well" id="pubwks">
+			        	<h4>Public Worksets</h4>
 			            <p>This list shows the Public Worksets for this Collection. Select a Workset to continue.</p>
 						<select multiple="multiple" style="width: 99%;margin: 0;" >
 						    <option>Public Workset 1 | 15/02/2013 | Random (incomplete)</option>
@@ -49,12 +50,12 @@
 						</select>
 						<br><br>
 						<p>
-						    <a href="{% url webinterface.views.view_collection collection_id %}#map" class="btn btn-primary"><i class="icon-globe"></i> View on Map</a>&nbsp;
-						    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="4"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
+						    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="wks2"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
 						    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
 						</p>
 			        </div>
 			        <div class="tab-pane well" id="mywks">
+			        	<h4>My Worksets</h4>
 			            <p>This list shows all Worksets for this Collection that have been created by you. Select a Workset to continue.</p>
 						<select multiple="multiple"  style="width: 99%;margin: 0;" >
 						    <option>Test Workset 1 | 17/02/2013 | Random (incomplete)</option>
@@ -64,10 +65,10 @@
 						    <option>Test Workset 5 | 15/02/2013 | Random</option>
 						</select> 
 						<br><br>
-						<div class="pull-right">
-						    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="3"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
+						<p>
+						    <a href="/webinterface/imageannotate" class="btn btn-primary imageframe" data-fancybox-group="wks3"  data-fancybox-type="iframe"><i class="icon-tag"></i> Annotate</a>&nbsp;
 						    <a class="btn btn-primary" href="#"><i class="icon-sitemap"></i> Auto-classify</a>
-						</div>
+						</p>
 			        </div>
 			    </div>
 			</div>
@@ -95,6 +96,7 @@
 			    </ul>
 			    <div class="tab-content">
 			        <div class="tab-pane active well" id="rndq">
+			            <h4>Random (sequential)</h4>
 			            <p>Random sampling sequentially from transect. May not lead to even spatial distribution.</p>
 			            <form class="form" style="margin:0; padding:0;">
 			                <label>
@@ -106,6 +108,7 @@
 			            </form>
 			        </div>
 			        <div class="tab-pane well" id="rndp">
+			            <h4>Random (spatial)</h4>
 			            <p>Random spatially distributed sampling.</p>
 			            <form class="form" style="margin:0; padding:0;">
 			                <label>
@@ -117,6 +120,7 @@
 			            <button class="btn">Save Workset</button>
 			        </div>
 			        <div class="tab-pane well" id="strq">
+			        	<h4>Stratified (sequential)</h4>
 			            <p>Stratified sampling sequentially from transect.</p>
 			            <form class="form" style="margin:0; padding:0;">
 			                <label>
@@ -129,6 +133,7 @@
 			            <button class="btn">Save Workset</button>
 			        </div>
 			        <div class="tab-pane well" id="strp">
+			        	<h4>Stratified (spatial)</h4>
 			            <p>Stratified spatial sampling from transect.</p>
 			            <form class="form" style="margin:0; padding:0;">
 			                <label>
@@ -142,6 +147,7 @@
 			            <button class="btn">Save Workset</button>
 			        </div>
 			        <div class="tab-pane well" id="alrn">
+			        	<h4>Active learning (auto)</h4>
 			            <p>Active learning: automagically figure out what to sample for training an automated classifier.</p>
 			            <label>
 			                    Name: <input type="text" class="flat"  placeholder="Descriptive name for workset"></label><br>
