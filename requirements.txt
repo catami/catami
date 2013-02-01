@@ -19,3 +19,4 @@ python-memcached
 django-memcached
 django-tastypie
 django-orm-extensions
+httplib2

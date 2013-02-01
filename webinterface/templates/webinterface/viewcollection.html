@@ -2,27 +2,6 @@
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
 {% block tail_head %}
 <style type="text/css">
-    body {
-        padding: 10px;
-    }
-/*    img {
-        width: 99%;
-        height: auto;
-  }*/
-    a img {
-        background-color:none;
-        padding:0;
-        margin:0;
-        color:none;
-        border:none;
-        border-width:0;
-    }
-    /*select, button {
-        vertical-align: top;
-    }*/
-    td {
-        vertical-align: middle;
-    }
     .viewpane {
         padding-left: 10px;
         border-left-style: solid;
@@ -86,9 +65,9 @@
     
     <ul class="nav nav-tabs">
         <li class="active"><a href="#map" data-toggle="tab">Map</a></li>
+        <li><a href="#thm" data-toggle="tab">Thumbnails</a></li>
         <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
         <li><a href="#cst" data-toggle="tab">Visual Clusters</a></li>
-        <li><a href="#thm" data-toggle="tab">Thumbnails</a></li>
         <li><a href="#wks" data-toggle="tab">Worksets</a></li>
         <li class="pull-right"><a href="#dwn" data-toggle="tab">Download</a></li>
     </ul>
@@ -118,9 +97,20 @@
         </div>
 
         <div class="tab-pane" id="dwn">
+        	This will contain options for downloading a variety of different combinations the data.
         </div>
 
     </div>
 </div>
 </div>
 {% endblock %}
+
+{% block add_script %}
+<script type="text/javascript">
+if (window.location.hash.length > 0) {
+    $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');
+} else {
+    $('ul.nav-tabs > li > a:first').tab('show');
+}
+</script>
+{% endblock %}  

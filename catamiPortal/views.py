@@ -10,10 +10,11 @@ Edits :: Name : Date : description
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from Force.models import AUVDeployment, BRUVDeployment, DOVDeployment, TIDeployment, TVDeployment, Deployment, Image
-
+import httplib2
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 #@login_required
 def index(request):
@@ -130,3 +131,19 @@ def logout_view(request):
     """
     logout(request)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+@csrf_exempt
+def proxy(request, url):
+    conn = httplib2.Http()
+    if request.method == "GET":
+        #url_ending = "%s?%s" % (url, urlencode(request.GET))
+        #url = url_ending
+        #url = (url, urlencode(request.GET))
+        resp, content = conn.request(url, request.method)
+        return HttpResponse(content)
+    elif request.method == "POST":
+        url = url
+        #data = urlencode(request.POST)
+        data = request.body
+        resp, content = conn.request(url, request.method, data)
+        return HttpResponse(content)

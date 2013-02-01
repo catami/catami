@@ -18,6 +18,8 @@ from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
 from django.db.models import Max, Min
 import simplejson
+from django.conf import settings
+
 
 #account management
 from django.contrib.auth.decorators import login_required
@@ -135,18 +137,18 @@ def explore(request):
 # Collection pages
 def collections(request):
     collection_list = CollectionResource()
-    cl_my_rec = collection_list.obj_get_list(request,owner=request.user.id)
-    cl_pub_rec = collection_list.obj_get_list()
-    return render_to_response('webinterface/collections.html', {"my_rec_cols":cl_my_rec,"pub_rec_cols":cl_pub_rec}, RequestContext(request))
+    cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id)
+    cl_pub_rec = collection_list.obj_get_list(request, is_public=True)
+    return render_to_response('webinterface/collections_recent.html', {"my_rec_cols":cl_my_rec,"pub_rec_cols":cl_pub_rec}, RequestContext(request))
 
 def my_collections(request):
     collection_list = CollectionResource()
-    cl = collection_list.obj_get_list(request,owner=request.user.id)
+    cl = collection_list.obj_get_list(request, owner=request.user.id)
     return render_to_response('webinterface/mycollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
 def public_collections(request):
     collection_list = CollectionResource()
-    cl = collection_list.obj_get_list()
+    cl = collection_list.obj_get_list(request, is_public=True)
     return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
 ## view collection table views
@@ -155,8 +157,8 @@ def public_collections(request):
 #    cl = collection_list.obj_get_list()
 #   return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
-def view_collection(request,collection_id):
-    return render_to_response('webinterface/viewcollection.html', {}, RequestContext(request))
+def view_collection(request, collection_id):
+    return render_to_response('webinterface/viewcollection.html', {"collection_id": collection_id}, RequestContext(request))
 
 # view collection table views
 #def public_collections_all(request):
@@ -190,8 +192,8 @@ def flip_public_collection(request):
 def view_subset(request):
     return render_to_response('webinterface/viewsubset.html', {}, RequestContext(request))
 
-def all_subsets(request):
-    return render_to_response('webinterface/allsubsets.html', {}, RequestContext(request))
+def all_subsets(request, collection_id):
+    return render_to_response('webinterface/allsubsets.html', {"collection_id": collection_id}, RequestContext(request))
 
 def my_subsets(request):
     return render_to_response('webinterface/mysubsets.html', {}, RequestContext(request))
@@ -301,11 +303,6 @@ def auvdeployment_detail(request, auvdeployment_id):
     """@brief AUV Deployment map and data plot for specifed AUV deployment
 
     """
-    # the hard way. All columns in the geojson
-    #djf=Django.Django(geodjango="transect_shape", properties=[])
-
-    #geoj = GeoJSON.GeoJSON()
-    #deployment_as_geojson = geoj.encode(djf.decode([AUVDeployment.objects.get(id=auvdeployment_id)]))
 
     try:
         auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
@@ -317,14 +314,6 @@ def auvdeployment_detail(request, auvdeployment_id):
 
     image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
 
-    #get annotation list. Not all images have annotation
-    annotated_imagelist = list()
-    # for image in image_list:
-    #     if(Annotation.objects.filter(image_reference=image).count() > 0):
-    #         annotated_imagelist.append(image)
-
-    #valmax = image_list.aggregate(Max('depth'))
-    #valmax = image_list.aggregate(Max('depth'))
     depth_range = {'max':image_list.aggregate(Max('depth'))['depth__max'],'min':image_list.aggregate(Min('depth'))['depth__min']}
     salinity_range = {'max':image_list.aggregate(Max('salinity'))['salinity__max'],'min':image_list.aggregate(Min('salinity'))['salinity__min']}
     temperature_range = {'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
@@ -334,35 +323,20 @@ def auvdeployment_detail(request, auvdeployment_id):
     salinity_data_sampled = subsample_list(image_list.values_list('salinity',flat=True).order_by('id'))
     temperature_data_sampled = subsample_list(image_list.values_list('temperature',flat=True).order_by('id'))
 
-    #create a data structure for our data so it can be converted to json
-    #i'm not using django's model to json serialization because it is too slow
-    new_image_list = list()
-    for image_model in image_list:
-        new_image_list.append({"depth": image_model.depth,
-                               "x": image_model.image_position.x,
-                               "y": image_model.image_position.y,
-                               "roll": image_model.roll,
-                               "pitch": image_model.pitch,
-                               "yaw": image_model.yaw,
-                               "altitude": image_model.altitude,
-                               "temperature": image_model.temperature,
-                               "left_image_reference": image_model.left_image_reference})
-
-    new_image_list = simplejson.dumps(new_image_list, ensure_ascii=True)
-
     return render_to_response(
         'webinterface/Force_views/auvdeploymentDetail.html',
         {'auvdeployment_object': auvdeployment_object,
-         'deployment_as_geojson': auvdeployment_object.transect_shape.geojson,
-         'image_list': new_image_list,
-         'annotated_imagelist': annotated_imagelist,
+         'deployment_extent': auvdeployment_object.transect_shape.extent,
          'depth_data': depth_data_sampled,
          'salinity_data': salinity_data_sampled,
          'temperature_data': temperature_data_sampled,
          'depth_range': depth_range,
          'salinity_range': salinity_range,
-         'temperature_range': temperature_range},
-        context_instance=RequestContext(request))
+         'temperature_range': temperature_range,
+         'WMS_URL': settings.WMS_URL, #imported from settings
+         'WMS_layer_name': settings.WMS_LAYER_NAME, #imported from settings
+         'deployment_id': auvdeployment_object.id},
+          context_instance=RequestContext(request))
 
 
 def auvimage_list(request, auvdeployment_id):

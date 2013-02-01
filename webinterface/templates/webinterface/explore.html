@@ -117,23 +117,23 @@
     
     <ul class="nav nav-tabs">
         <li class="active"><a href="#map" data-toggle="tab">Map</a></li>
-        <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
         <li><a href="#thm" data-toggle="tab">Thumbnails</a></li>
+        <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
     </ul>
 
 
     <div class="tab-content">
 
         <div class="tab-pane active" id="map">
-            <iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps/ms?msid=213974848010458145648.0004cae0e054a0c5a9094&amp;msa=0&amp;ie=UTF8&amp;t=p&amp;ll=-43.087194,148.002319&amp;spn=0.120352,0.219727&amp;z=12&amp;output=embed"></iframe><br />
+            {% include "webinterface/dataviews/mapview.html"%}
         </div>
 
         <div class="tab-pane" id="tax">
-            <img src="{{ STATIC_URL }}images/tax_tree.png" name="taxtree" />
+            {% include "webinterface/dataviews/taxonomytree.html"%}
         </div>
         
         <div class="tab-pane" id="thm">
-            <a href="/webinterface/imageview" class="btn btn-primary imageframe" data-fancybox-group="1"  data-fancybox-type="iframe"><img class="viewobj" src="{{ STATIC_URL }}images/ThumbnailPane.png" name="thumbs"/></a>
+            {% include "webinterface/dataviews/thumbnails.html"%}
         </div>
 
        

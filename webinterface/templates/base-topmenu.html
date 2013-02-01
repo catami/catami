@@ -142,6 +142,7 @@
     <script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tooltip.js"></script>
     <script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tab.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/fancybox/source/jquery.fancybox.pack.js?v=2.1.3"></script>
+    <script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
 
     <!-- popover js -->
     <script type="text/javascript">
@@ -156,19 +157,16 @@
         })();
         $(document).ready(function() {
             $(".imageframe").fancybox({
-        		maxWidth	: 965,
-        		maxHeight	: 555,
+        		maxWidth	: 2000,
+        		maxHeight	: 1400,
         		fitToView	: false,
-        		width		: '90%',
-        		height		: '90%',
+        		width		: '95%',
+        		height		: '95%',
         		autoSize	: false,
         		closeClick	: false,
         		openEffect	: 'fade',
         		closeEffect	: 'none',
         	});
-        	$("#tab-menu").bind('tabsselect', function(event, ui) {
-                window.location.href=ui.tab;
-            });
         });
         
     </script>
