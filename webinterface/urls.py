@@ -22,6 +22,7 @@ urlpatterns = patterns('webinterface.views',
     url(r'^about','about'),
 
     url(r'^explore$', 'explore'),
+    url(r'^explore_campaign/(?P<campaign_id>\d+)$', 'explore_campaign'),
     #url(r'^viewcollection$', 'viewcollection'),
 
     #Staging
