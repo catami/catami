@@ -10,6 +10,7 @@ from jsonapi.api import UserResource
 
 class CollectionResource(ModelResource):
     owner = fields.ForeignKey(UserResource, 'owner')
+    images = fields.ToManyField('Force.api.ImageResource', 'images', related_name="collections")
     class Meta:
         queryset = Collection.objects.all()
         resource_name = "collection"

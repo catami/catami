@@ -13,4 +13,4 @@ class Collection(models.Model):
     is_public = models.BooleanField()
     is_locked = models.BooleanField()
     parent = models.ForeignKey('Collection', null=True, blank=True, default = None)
-    images = models.ManyToManyField(Image)
+    images = models.ManyToManyField(Image, related_name='collections')
