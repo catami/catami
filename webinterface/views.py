@@ -158,30 +158,7 @@ def explore(request):
 
 # Explore pages
 def explore_campaign(request, campaign_id):
-    """@brief Campaign list html for selected campaign
-
-    """
-    latest_campaign_list = Campaign.objects.all()
-    campaign = Campaign.objects.get(id=campaign_id)
-    latest_deployment_list = Deployment.objects.filter(campaign=campaign_id)
-    campaign_rects = list()
-
-    #for campaign in selected_campaign_list:
-    auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign)
-    bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign)
-    dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign)
-    if(len(auv_deployment_list) > 0):
-        sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign).extent())
-        campaign_rects.append(sm.envelope.geojson)
-    if(len(bruv_deployment_list) > 0):
-        sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign).extent())
-        campaign_rects.append(sm.envelope.geojson)
-
-    return render_to_response('webinterface/explore.html', 
-                              {'latest_campaign_list': latest_campaign_list,
-                               'latest_deployment_list' : latest_deployment_list,
-                               'campaign_rects' : campaign_rects}, 
-                              context_instance=RequestContext(request))
+    return render_to_response('webinterface/explore.html', {}, context_instance=RequestContext(request))
 
 # Collection pages
 def collections(request):
