@@ -35,6 +35,8 @@
         margin: 0px;
         width: 40px;
     }
+    #map_container2 { height: 600px; width: 100%; border:2px;}
+    img.olTileImage { max-width: 256px !important; }
 </style>
 {% endblock %}
 {% block content %}
@@ -57,14 +59,24 @@
                 <option>Towed Video
             </select>
             Campaign:
-            <select multiple="multiple" class="workpane" >
-                <option selected>Tasmania 2008</option>
-                <option>Tasmania 2009</option>
-                <option>Tasmania 2010</option>
-                <option>Scott Reef 2009</option>
-                <option>Scott Reef 2011</option>
-                <option>Bateman's Bay 2010</option>
-            </select>
+            <form name="Campaigns">
+	            <select name="campaignSelect" multiple="multiple" class="workpane" onchange="filterByCampaign()" id="campaignSelect">
+	  			    {% if latest_campaign_list %}
+	                  {% for campaign in latest_campaign_list %}	                  
+					  <option value="{% url webinterface.views.explore_campaign campaign.id %}">{{campaign.short_name}}</option>
+					  {% endfor %}
+					{% endif %}
+	            </select>
+            Deployments:
+	            <select name="deploymentSelect" multiple="multiple" class="workpane" id="deploymentSelect">
+	                  {% for deployment in latest_deployment_list %} 
+	                  	{% ifchanged %}<option disabled><h1>{{ deployment.campaign.short_name }}</h1></option> {% endifchanged %}
+						<option>{{ deployment.short_name }}</option>
+					  {% empty %} 
+					  	<option disabled>No deployments available in selected campaigns</option>
+					  {% endfor %}
+	            </select>
+            </form>
             Depth (min): <br>
             <form class="form-inline">
                 0 <input style="width: 50%" type="range" min="0" max="1000"
@@ -77,7 +89,10 @@
             </form>
         </form>
     </form>
-
+	<div>
+		<input type="button" value="Click Here" onClick="showAlert()">
+	</div>
+	<div id="success"></div>
     <div> 
         <button class="btn btn-primary">Save Collection</button>
     </div>
@@ -125,7 +140,8 @@
     <div class="tab-content">
 
         <div class="tab-pane active" id="map">
-            {% include "webinterface/dataviews/mapview.html"%}
+            <!--{% include "webinterface/dataviews/mapview.html"%}-->
+			<div id='map_container2'></div>
         </div>
 
         <div class="tab-pane" id="tax">
@@ -142,4 +158,54 @@
 </div>
 </div>
 
+{% endblock %}
+
+{% block add_script %}		
+	<script src='{{ STATIC_URL }}assets/openlayers/OpenLayers.js'></script>
+    <script src='{{ STATIC_URL }}assets/esriOceanBasemap/map.js'></script>
+    
+    <script type="text/javascript">
+    var lon = 138;
+    var lat = -35;
+    var zoom = 4;
+    var map, layer;
+    var bounds;
+
+ 	var style ={
+   		strokeColor: "#00FF00",
+   		strokeOpacity: 1,
+   		strokeWidth: 3,
+   		fillColor: "#00FF00",
+   		fillOpacity: 0.8 };
+       
+	function init(){
+
+var geojson_payload = '{ "type": "FeatureCollection", "features": [ {"geometry": { "type": "GeometryCollection", "geometries": [\
+{% for campaign_rect in campaign_rects %}{% if not forloop.last %}{{campaign_rect|safe}},{% else %}{{campaign_rect|safe}}{% endif %}{% endfor %}] }, "type": "Feature", "properties": {}} ] }';
+
+           var geojson_format = new OpenLayers.Format.GeoJSON();
+           var feature_collection = geojson_format.read(geojson_payload);
+           
+            map = new OpenLayers.Map('map_container2');
+            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic'} );
+            
+            map.addLayer(layer);
+            
+            var vector_layer = new OpenLayers.Layer.Vector(); 
+            map.addLayer(vector_layer);
+	        vector_layer.addFeatures(geojson_format.read(geojson_payload));
+	           
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            
+		}
+    function filterByCampaign() {
+		var campaignlist = document.getElementById('campaignSelect');
+		var campaign_id = campaignlist.options[campaignlist.selectedIndex].value;
+        var deploymentslist = document.getElementById('deploymentSelect');
+
+		alert('Filtering by campaign ' + campaign_id);			
+	}
+	</script>	
 {% endblock %}
