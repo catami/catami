@@ -98,3 +98,11 @@
 2013-02-01 13:07:53,774 - staging.views - DEBUG - auvimport: processing remote files to create json string.
 2013-02-01 13:07:54,245 - staging.views - DEBUG - auvimport: importing json string into database.
 2013-02-01 13:08:22,300 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-02-02 15:07:15,562 - staging.forms - DEBUG - clean_mission_name: cleaning name r20110619_012805_butlers_point_east_west_long_25
+2013-02-02 15:07:15,577 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-02-02 15:07:15,588 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-02-02 15:07:15,589 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-02-02 15:07:20,989 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-02-02 15:07:29,859 - staging.views - DEBUG - auvimport: processing remote files to create json string.
+2013-02-02 15:07:32,010 - staging.views - DEBUG - auvimport: importing json string into database.
+2013-02-02 15:09:19,796 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
