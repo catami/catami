@@ -1,5 +1,5 @@
 <style type="text/css">
-	#thmlist {
+	#thmcontainer {
 		width:950px;
 	}
 	#thmlist img {
@@ -10,26 +10,31 @@
 	}
 </style>
 
-
-<div id="thmlist">
-	<!-- Content inserted using getImageList() javascript function -->
+<div id="thmcontainer">
+    <div id="thmlist" style="width:100%;">
+    	<!-- Content inserted using getImageList() javascript function -->
+    </div>
+    <div style="width:100%; text-align: center;">
+        <a href="#_" class="btn btn-primary" id="btnnext"><i class="icon-plus-sign"></i> View more images</a><br>
+        <span id="thminfo">
+            <!-- Content inserted using getImageList() javascript function -->
+        </span>
+    </div>
 </div>
 
-
 <script type="text/javascript">
-	function getImageList (filter) {
-		var apiurl = "/api/dev/image/?format=json&limit=40";
-		if (filter!="") {
-			apiurl +="&"+filter;
+function getImageList (apiurl,clearimgs) {
+    if (clearimgs) $("#thmlist").html('');
+    $.getJSON(apiurl , function(img){
+	    var images = '';
+	    for (var i = 0; i < img.objects.length; i++) {
+		    images += '<img src="' + img.objects[i].left_image_reference + '"/>';
 		}
-		$.getJSON(apiurl , function(img){
-			//alert ('L: ' + j.objects.length);
-			var images = '';
-			for (var i = 0; i < img.objects.length; i++) {
-				images += '<img src="' + img.objects[i].left_image_reference + '"/>';
-			}
-			$("#thmlist").html(images);
-			//$('#deploymentSelect option:first').attr('selected', 'selected');
-		})
-	}
+		$("#thmlist").append(images);
+		//$('#deploymentSelect option:first').attr('selected', 'selected');
+	    $("#btnprev").attr("onClick","getImageList('"+img.meta.previous+"',0);");
+	    $("#btnnext").attr("onClick","getImageList('"+img.meta.next+"',0);");
+	    $("#thminfo").html('Viewing 1 to '+(img.meta.offset+img.meta.limit)+' of '+img.meta.total_count);
+    })
+}
 </script>

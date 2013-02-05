@@ -66,7 +66,7 @@
         	<!-- Content inserted from jqery -->
         </select>
     	Depth (min): <br>
-        0 <input style="width: 50%" type="range" min="0" max="1000" value="100" id="drange"> 1000m
+        0 <input style="width: 50%" type="range" min="0" max="1000" value="100" id="drange"> 1000m <br>
     	Depth (max): <br>
         0 <input style="width: 50%" type="range" min="0" max="1000" value="600" id="drange"/> 1000m
     </form>
@@ -118,12 +118,12 @@
 
 	function selectCampaign(id) {
 		getDeploymentList(id);
-		getImageList("campaign="+id);
+		getImageList("/api/dev/image/?format=json&limit=30&campaign="+id,1);
 		//alert('Selected campaign id: '+id);
 	}
 	
 	function selectDeployment(id) {
-		getImageList("deployment="+id);
+		getImageList("/api/dev/image/?format=json&limit=30&deployment="+id,1);
 		//alert('Selected deployment id: '+id);
 	}
 	

@@ -106,3 +106,44 @@
 2013-02-02 15:07:29,859 - staging.views - DEBUG - auvimport: processing remote files to create json string.
 2013-02-02 15:07:32,010 - staging.views - DEBUG - auvimport: importing json string into database.
 2013-02-02 15:09:19,796 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-02-05 13:42:51,649 - staging.forms - DEBUG - clean_mission_name: cleaning name r20090804_084719_scott_25_dense_repeat_auv5_deep
+2013-02-05 13:42:51,682 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-02-05 13:42:51,683 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-02-05 13:42:51,686 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-02-05 13:42:55,940 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-02-05 13:43:00,668 - staging.views - DEBUG - auvimport: processing remote files to create json string.
+2013-02-05 13:43:02,099 - staging.views - DEBUG - auvimport: importing json string into database.
+2013-02-05 13:43:02,381 - staging.views - DEBUG - auvimport: failed to import auv mission: (DeserializationError): Image has no field named 'temperature'
+2013-02-05 14:46:46,733 - staging.forms - DEBUG - clean_mission_name: cleaning name r20090804_084719_scott_25_dense_repeat_auv5_deep
+2013-02-05 14:46:46,735 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-02-05 14:46:46,735 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-02-05 14:46:46,739 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-02-05 14:46:50,312 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-02-05 14:46:51,913 - staging.views - DEBUG - auvimport: processing remote files and importing to database.
+2013-02-05 14:47:02,815 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-02-05 14:48:17,968 - staging.forms - DEBUG - clean_mission_name: cleaning name r20090730_084520_scott_14_dense_survey_auv6_shallow
+2013-02-05 14:48:17,970 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-02-05 14:48:17,970 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-02-05 14:48:17,971 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-02-05 14:48:20,890 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-02-05 14:48:22,137 - staging.views - DEBUG - auvimport: processing remote files and importing to database.
+2013-02-05 14:48:30,620 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-02-05 14:49:50,664 - staging.forms - DEBUG - clean_mission_name: cleaning name r20120902_220852_si_06_patch_dense2
+2013-02-05 14:49:50,666 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-02-05 14:49:50,667 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-02-05 14:49:50,667 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-02-05 14:49:54,259 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-02-05 14:49:56,837 - staging.views - DEBUG - auvimport: processing remote files and importing to database.
+2013-02-05 14:50:06,202 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-02-05 14:50:20,289 - staging.forms - DEBUG - clean_mission_name: cleaning name r20120903_213744_si_09_fortyAcresDense
+2013-02-05 14:50:20,291 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-02-05 14:50:20,291 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-02-05 14:50:20,292 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-02-05 14:50:20,634 - staging.views - DEBUG - auvimport: failed to import auv mission: (Exception): File could not be downloaded.
+2013-02-05 14:50:30,007 - staging.forms - DEBUG - clean_mission_name: cleaning name r20120903_213744_si_09_fortyAcresDense
+2013-02-05 14:50:30,009 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-02-05 14:50:30,009 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-02-05 14:50:30,010 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-02-05 14:50:36,351 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-02-05 14:50:38,777 - staging.views - DEBUG - auvimport: processing remote files and importing to database.
+2013-02-05 14:50:59,298 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
