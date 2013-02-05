@@ -64,7 +64,7 @@
 	            	<!-- Content inserted from jqery -->
 	            </select>
             	Deployments:
-	            <select name="deploymentSelect" multiple="multiple" class="workpane" id="deploymentSelect">
+	            <select name="deploymentSelect" multiple="multiple" class="workpane" id="deploymentSelect"  onchange="selectDeployment($(this).val());">
 	            	<!-- Content inserted from jqery -->
 	            </select>
             	Depth (min): <br>
@@ -122,10 +122,12 @@
 	
 	function selectCampaign(id) {
 		getDeploymentList(id);
+		getImageList("campaign="+id);
 	}
 	
 	function selectDeployment(id) {
-		
+		getImageList("deployment="+id);
+		//alert('Selected deployment id: '+id);
 	}
 	
     function getDeploymentList(cmpid) {
@@ -155,6 +157,21 @@
 				options += '<option value="' + cmp.objects[i].id + '">' + cmp.objects[i].short_name + '</option>';
 			}
 			$("#campaignSelect").html(options);
+			//$('#deploymentSelect option:first').attr('selected', 'selected');
+		})
+	}
+	function getImageList (filter) {
+		var apiurl = "/api/dev/image/?format=json";
+		if (filter!="") {
+			apiurl +="&"+filter;
+		}
+		$.getJSON(apiurl , function(img){
+			//alert ('L: ' + j.objects.length);
+			var images = '';
+			for (var i = 0; i < img.objects.length; i++) {
+				images += '<img src="' + img.objects[i].left_image_reference + '"/>';
+			}
+			$("#thmlist").html(images);
 			//$('#deploymentSelect option:first').attr('selected', 'selected');
 		})
 	}
