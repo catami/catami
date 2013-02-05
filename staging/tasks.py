@@ -138,6 +138,7 @@ def auvfetch(base_url, campaign_date, campaign_name, mission_name):
     return (trackfile_name, netcdfseabird_name, datetime_object)
 
 
+@transaction.commit_on_success
 def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_name, mission_name, limit=None):
     """Process the track and netcdf files into the importable json string."""
     # recreate the mission parameters etc.
@@ -155,20 +156,44 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
     netcdf_seabird = NetCDFParser(netcdf_file)
     trackparser = TrackParser(track_file)
 
-    datetime_object = datetime.datetime.strptime(mission_datetime, "%Y%m%d_%H%M%S")
-    datetime_object = datetime_object.replace(tzinfo=tzutc())
-    start_datestring = str(datetime_object)
-
-    deployment_nk = [start_datestring, mission_text]
-
-    # the running max and min survey depths
-    depth_lim = LimitTracker('depth')
-
-    # latitude and longitude limits
     lat_lim = LimitTracker('latitude')
     lon_lim = LimitTracker('longitude')
 
-    poselist = []
+    # create the deployment instance
+    auvdeployment = Force.models.AUVDeployment()
+
+    # fill in the basic details
+    auvdeployment.short_name = mission_text
+    auvdeployment.campaign = Force.models.Campaign.objects.get(short_name=campaign_name)
+    auvdeployment.mission_aim = "The aim of the mission."
+    auvdeployment.license = "CC-BY"
+    auvdeployment.descriptive_keywords = "keywords"
+    auvdeployment.contact_person = "Catami <catami@ivec.org>"
+
+    # now start going through and creating the data that will be tweaked
+    # later (this is all placeholder)
+    auvdeployment.min_depth = 12000
+    auvdeployment.max_depth = 0
+    auvdeployment.start_position = "POINT(0.0 0.0)"
+    auvdeployment.end_position = "POINT(0.0 0.0)"
+    auvdeployment.start_time_stamp = datetime.datetime.now()
+    auvdeployment.end_time_stamp = datetime.datetime.now()
+
+    auvdeployment.distance_covered = -100.0
+    auvdeployment.transect_shape = "POLYGON((0.0 0.0, 0.0 0.0, 0.0 0.0, 0.0 0.0, 0.0 0.0))"
+
+    auvdeployment.save()
+
+    # get the sm types that we are going to use
+    temperature = Force.models.ScientificMeasurementType.objects.get(normalised_name='temperature')
+    salinity = Force.models.ScientificMeasurementType.objects.get(normalised_name='salinity')
+    pitch = Force.models.ScientificMeasurementType.objects.get(normalised_name='pitch')
+    roll = Force.models.ScientificMeasurementType.objects.get(normalised_name='roll')
+    yaw = Force.models.ScientificMeasurementType.objects.get(normalised_name='yaw')
+    altitude = Force.models.ScientificMeasurementType.objects.get(normalised_name='altitude')
+
+    first_image = None
+    last_image = None
 
     earlier_seabird = netcdf_seabird.next()
     later_seabird = netcdf_seabird.next()
@@ -177,93 +202,95 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         if limit and len(poselist) / 2 >= limit:
             break
 
+        image = Force.models.Image()
         limage = row['leftimage']
-        rimage = row['rightimage']
+        #rimage = row['rightimage']
+        image.deployment = auvdeployment
 
-        pose = dict()
-        pose['deployment'] = deployment_nk  # the foreign key, whatever the natural key is
         seconds, centiseconds = row['second'].split('.')
         image_datetime = datetime.datetime.strptime(os.path.splitext(limage)[0], "PR_%Y%m%d_%H%M%S_%f_LC16")
-        image_datetime = image_datetime.replace(tzinfo=tzutc())
-        pose['date_time'] = image_datetime
+        image.date_time = image_datetime.replace(tzinfo=tzutc())
+        image.image_position = "POINT ({0} {1})".format(row['longitude'], row['latitude'])
 
-        # GEO JSON is long-lat not lat-long
-        pose['image_position'] = "POINT ({0} {1})".format(row['longitude'], row['latitude'])
+        image.depth = row['depth']
 
-        pose['left_image_reference'] = image_base + "{0}.tif".format(os.path.splitext(limage)[0])
+        if image.depth > auvdeployment.max_depth:
+            auvdeployment.max_depth = image.depth
 
-        pose['pitch'] = row['pitch']
-        pose['roll'] = row['roll']
-        pose['yaw'] = row['heading']
+        if image.depth < auvdeployment.min_depth:
+            auvdeployment.min_depth = image.depth
 
-        pose['altitude'] = row['altitude']
-        pose['depth'] = row['depth']
+        #########################
+        image.left_image_reference = image_base + "{0}.tif".format(os.path.splitext(limage)[0])
+        image.left_thumbnail_reference = image.left_image_reference
 
-        # get the two measurements either side of the stereo pose
-        while pose['date_time'] > later_seabird['date_time']:
+
+        #image_path = os.path.join(path, image_subfolder, image_name)
+
+        #archive_path, webimage_path = image_import(campaign_name, mission_text, image_name, image_path)
+
+        #image.archive_location = archive_path
+        #image.webimage_location = webimage_path
+        ############################
+        lat_lim.check(row)
+        lon_lim.check(row)
+
+        image.save()
+
+        # get the extra measurements from the seabird data
+        while image.date_time > later_seabird['date_time']:
             later_seabird, earlier_seabird = earlier_seabird, netcdf_seabird.next()
 
         # find which is closer - could use interpolation instead
-        if (later_seabird['date_time'] - pose['date_time']) > (pose['date_time'] - earlier_seabird['date_time']):
+        if (later_seabird['date_time'] - image.date_time) > (image.date_time - earlier_seabird['date_time']):
             closer_seabird = earlier_seabird
         else:
             closer_seabird = later_seabird
 
-        # add in salinity and temperature
-        pose['temperature'] = closer_seabird['temperature']
-        pose['salinity'] = closer_seabird['salinity']
+        # add those extra scientific measurements
+        temp_m = Force.models.ScientificMeasurement()
+        temp_m.measurement_type = temperature
+        temp_m.value = closer_seabird['temperature']
 
-        pose['date_time'] = str(pose['date_time'])
+        sal_m = Force.models.ScientificMeasurement()
+        sal_m.measurement_type = salinity
+        sal_m.value = closer_seabird['salinity']
 
-        depth_lim.check(pose)
-        # lat and long are embedded in pose, but direct in row
-        lat_lim.check(row)
-        lon_lim.check(row)
+        roll_m = Force.models.ScientificMeasurement()
+        roll_m.measurement_type = roll
+        roll_m.value = row['roll']
 
-        # get the actual image (probably png/tiff)
-        #pose['left_thumbnail_reference'] = thumbnailer(os.path.join(img_dir_name, pose['left_image_reference']))
-        #pose['right_thumbnail_reference'] = thumbnailer(os.path.join(img_dir_name, pose['right_image_reference']))
+        pitch_m = Force.models.ScientificMeasurement()
+        pitch_m.measurement_type = pitch
+        pitch_m.value = row['pitch']
 
-        # quick hax to use instead of embedding the thumbnail
-        pose['left_thumbnail_reference'] = pose['left_image_reference']
+        yaw_m = Force.models.ScientificMeasurement()
+        yaw_m.measurement_type = yaw
+        yaw_m.value = row['heading']
 
-        # add the stereo here
-        stereopose = {}
-        stereopose['image_ptr'] = [deployment_nk, pose['date_time']]  # list(deployment_nk).append(pose['date_time'])
-        stereopose['right_image_reference'] = image_base + "{0}.tif".format(os.path.splitext(rimage)[0])
-        stereopose['right_thumbnail_reference'] = stereopose['right_image_reference']
+        alt_m = Force.models.ScientificMeasurement()
+        alt_m.measurement_type = altitude
+        alt_m.value = row['altitude']
 
-        poselist.append({'pk': None, 'model': 'Force.Image', 'fields': pose})
-        poselist.append({'pk': None, 'model': 'Force.StereoImage', 'fields': stereopose})
+        # we need first and last to get start/end points and times
+        last_image = image
+        if not first_image:
+            first_image = image
 
-    deployment = {}
-    # take the position of the first image
-    deployment['campaign'] = [campaign_datestring, campaign_name]  # the foreign key
-    deployment['short_name'] = mission_text
-    deployment['start_position'] = poselist[0]['fields']['image_position']
-    # the start from the mission time - potentially should shift to first image?
-    deployment['start_time_stamp'] = start_datestring
-    # from the last image taken (last image, not stereoImages)
-    deployment['end_time_stamp'] = poselist[-2]['fields']['date_time']
-    deployment['mission_aim'] = "The aim of the mission."
-    deployment['min_depth'] = depth_lim.minimum
-    deployment['max_depth'] = depth_lim.maximum
-    deployment['license'] = "CC-BY"
-    deployment['descriptive_keywords'] = "keywords"
-    deployment['contact_person'] = "Catami <catami@ivec.org>"
+    auvdeployment.start_time_stamp = first_image.date_time
+    auvdeployment.end_time_stamp = last_image.date_time
 
-    auvdeployment = {}
-    auvdeployment['deployment_ptr'] = deployment_nk  # the foreign key, whatever the natural key is
-    auvdeployment['transect_shape'] = "POLYGON(({0} {2}, {0} {3}, {1} {3}, {1} {2}, {0} {2} ))".format(lon_lim.minimum, lon_lim.maximum, lat_lim.minimum, lat_lim.maximum)
-    auvdeployment['distance_covered'] = -100.0  # just make it up... will work out later
+    auvdeployment.start_position = first_image.image_position
+    auvdeployment.end_position = last_image.image_position
 
-    deploy = {'pk': None, 'model': 'Force.Deployment', 'fields': deployment}
-    auvdeploy = {'pk': None, 'model': 'Force.AUVDeployment', 'fields': auvdeployment}
+    auvdeployment.transect_shape = "POLYGON(({0} {2}, {0} {3}, {1} {3}, {1} {2}, {0} {2} ))".format(lon_lim.minimum, lon_lim.maximum, lat_lim.minimum, lat_lim.maximum)
+    auvdeployment.distance_covered = -100.0  # just make it up... will work out later
 
-    structure = [deploy, auvdeploy]
-    structure.extend(poselist)
+    # now save the actual min/max depth as well as start/end times and
+    # start position and end position
+    auvdeployment.save()
 
-    return json.dumps(structure)
+
 
 
 def json_sload(json_string):
