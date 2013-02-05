@@ -65,10 +65,11 @@
         <select name="deploymentSelect" multiple="multiple" class="workpane" id="deploymentSelect"  onchange="selectDeployment($(this).val());">
         	<!-- Content inserted from jqery -->
         </select>
-    	Depth (min): <br>
-        0 <input style="width: 50%" type="range" min="0" max="1000" value="100" id="drange"> 1000m <br>
-    	Depth (max): <br>
-        0 <input style="width: 50%" type="range" min="0" max="1000" value="600" id="drange"/> 1000m
+        Depth Range:<br>
+        <span id="depthMin"></span><span id="depthMax" style="float:right"></span><br>
+		<div id="depthSlider" style="width:90%; height:5px"></div><br>
+    	Depth (min): <span id="selectedDepthMin"></span><br>
+    	Depth (max): <span id="selectedDepthMax"></span><br><br>
     </form>
     <div> 
         <button class="btn btn-primary">Save Collection</button>
@@ -122,8 +123,25 @@
     $(document).ready(function() {
   		getDeploymentList();
   		getCampaignList();
+  		setDepthRange(0, 500)
 	});
-
+    function setDepthRange(minDepth, maxDepth)
+    {
+  		$("#depthSlider").slider({
+          range: true,
+          min: minDepth,
+          max: maxDepth,
+          values: [ minDepth, maxDepth ],
+          slide: function( event, ui ) {
+            $( "#selectedDepthMin" ).html( ui.values[ 0 ] );
+            $( "#selectedDepthMax" ).html( ui.values[ 1 ] );
+         }
+       });    	
+	   $( "#depthMin" ).html(minDepth);
+	   $( "#depthMax" ).html(maxDepth);
+	   $( "#selectedDepthMin" ).html(minDepth);
+	   $( "#selectedDepthMax" ).html(maxDepth);
+    }
 	function selectCampaign(id) {
 		getDeploymentList(id);
 		getImageList("/api/dev/image/?format=json&limit=30&campaign="+id,1);
