@@ -137,11 +137,8 @@ def auvimport(request):
                 logger.debug("auvimport: fetching remote netcdf file.")
                 netcdf_file = tasks.get_netcdf_file(netcdf_key, netcdf_urlpattern, start_time)
 
-                logger.debug("auvimport: processing remote files to create json string.")
-                json_string = tasks.auvprocess(track_file, netcdf_file, *input_params)
-
-                logger.debug("auvimport: importing json string into database.")
-                tasks.json_sload(json_string)
+                logger.debug("auvimport: processing remote files and importing to database.")
+                tasks.auvprocess(track_file, netcdf_file, *input_params)
 
             except Exception as exc:
                 errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
@@ -193,11 +190,8 @@ def auvmanualimport(request):
                 logger.debug("auvmanualimport: fetching remote netcdf file.")
                 netcdf_file = tasks.get_known_file(netcdf_key, netcdf_url)
 
-                logger.debug("auvmanualimport: processing remote files to create json string.")
-                json_string = tasks.auvprocess(track_file, netcdf_file, *input_params)
-
-                logger.debug("auvmanualimport: importing json string into database.")
-                tasks.json_sload(json_string)
+                logger.debug("auvmanualimport: processing remote files into database.")
+                tasks.auvprocess(track_file, netcdf_file, *input_params)
 
             except Exception as exc:
                 errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
@@ -320,11 +314,8 @@ def auvlocalimport(request):
                 #logger.debug("auvlocalimport: opening netcdf file.")
                 #netcdf_file = open(netcdf_url)
 
-                logger.debug("auvlocalimport: processing files to create json string.")
-                json_string = tasks.auvprocess(track_file, netcdf_file, *input_params)
-
-                logger.debug("auvmanualimport: importing json string into database.")
-                tasks.json_sload(json_string)
+                logger.debug("auvlocalimport: processing files and importing to database.")
+                tasks.auvprocess(track_file, netcdf_file, *input_params)
 
             except Exception as exc:
                 errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
@@ -351,7 +342,6 @@ def auvimported(request):
     rcon = RequestContext(request)
 
     return render_to_response('staging/auvimported.html', context, rcon)
-
 
 # to enable the handler to exist...
 @login_required

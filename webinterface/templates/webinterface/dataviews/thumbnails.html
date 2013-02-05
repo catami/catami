@@ -1,1 +1,35 @@
-<a href="/webinterface/imageview" class="btn btn-primary imageframe" data-fancybox-group="thm1"  data-fancybox-type="iframe"><img class="viewobj" src="{{ STATIC_URL }}images/ThumbnailPane.png" name="thumbs"/></a>
+<style type="text/css">
+	#thmlist {
+		width:950px;
+	}
+	#thmlist img {
+		width:150px;
+		margin-right:5px;
+		margin-bottom:5px;
+		background-color:#CCC;
+	}
+</style>
+
+
+<div id="thmlist">
+	<!-- Content inserted using getImageList() javascript function -->
+</div>
+
+
+<script type="text/javascript">
+	function getImageList (filter) {
+		var apiurl = "/api/dev/image/?format=json&limit=40";
+		if (filter!="") {
+			apiurl +="&"+filter;
+		}
+		$.getJSON(apiurl , function(img){
+			//alert ('L: ' + j.objects.length);
+			var images = '';
+			for (var i = 0; i < img.objects.length; i++) {
+				images += '<img src="' + img.objects[i].left_image_reference + '"/>';
+			}
+			$("#thmlist").html(images);
+			//$('#deploymentSelect option:first').attr('selected', 'selected');
+		})
+	}
+</script>
