@@ -8,7 +8,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Create the required AUV measurement types and move into new tables."
-        temperature = orm.Force.ScientificMeasurementType()
+        temperature = orm['Force.ScientificMeasurementType']()
         temperature.normalised_name = "temperature"
         temperature.display_name = "Temperature"
         temperature.max_value = 40.0
@@ -17,7 +17,7 @@ class Migration(DataMigration):
         temperature.units = "cel"
         temperature.save()
 
-        salinity = orm.Force.ScientificMeasurementType()
+        salinity = orm['Force.ScientificMeasurementType']()
         salinity.normalised_name = "salinity"
         salinity.display_name = "Salinity"
         salinity.max_value = 41.0
@@ -26,7 +26,7 @@ class Migration(DataMigration):
         salinity.units = "psu"
         salinity.save()
 
-        pitch = orm.Force.ScientificMeasurementType()
+        pitch = orm['Force.ScientificMeasurementType']()
         pitch.normalised_name = "pitch"
         pitch.display_name = "Pitch"
         pitch.max_value = 1.58
@@ -35,7 +35,7 @@ class Migration(DataMigration):
         pitch.units = "rad"
         pitch.save()
 
-        roll = orm.Force.ScientificMeasurementType()
+        roll = orm['Force.ScientificMeasurementType']()
         roll.normalised_name = "roll"
         roll.display_name = "Roll"
         roll.max_value = 3.15
@@ -44,7 +44,7 @@ class Migration(DataMigration):
         roll.units = "rad"
         roll.save()
 
-        yaw = orm.Force.ScientificMeasurementType()
+        yaw = orm['Force.ScientificMeasurementType']()
         yaw.normalised_name = "yaw"
         yaw.display_name = "Yaw"
         yaw.max_value = 3.15
@@ -53,7 +53,7 @@ class Migration(DataMigration):
         yaw.units = "rad"
         yaw.save()
 
-        altitude = orm.Force.ScientificMeasurementType()
+        altitude = orm['Force.ScientificMeasurementType']()
         altitude.normalised_name = "altitude"
         altitude.display_name = "Altitude"
         altitude.max_value = 12000.0
@@ -63,38 +63,38 @@ class Migration(DataMigration):
         altitude.save()
 
 
-        for image in orm.Force.Image.objects.all():
-            a = orm.Force.ScientificMeasurement()
+        for image in orm['Force.Image'].objects.all():
+            a = orm['Force.ScientificMeasurement']()
             a.image = image
             a.measurement_type = altitude
             a.value = image.altitude
             a.save()
 
-            y = orm.Force.ScientificMeasurement()
+            y = orm['Force.ScientificMeasurement']()
             y.image = image
             y.measurement_type = yaw
             y.value = image.yaw
             y.save()
 
-            p = orm.Force.ScientificMeasurement()
+            p = orm['Force.ScientificMeasurement']()
             p.image = image
             p.measurement_type = pitch
             p.value = image.pitch
             p.save()
 
-            r = orm.Force.ScientificMeasurement()
+            r = orm['Force.ScientificMeasurement']()
             r.image = image
             r.measurement_type = roll
             r.value = image.roll
             r.save()
 
-            s = orm.Force.ScientificMeasurement()
+            s = orm['Force.ScientificMeasurement']()
             s.image = image
             s.measurement_type = salinity
             s.value = image.salinity
             s.save()
 
-            t = orm.Force.ScientificMeasurement()
+            t = orm['Force.ScientificMeasurement']()
             t.image = image
             t.measurement_type = temperature
             t.value = image.temperature
