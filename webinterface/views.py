@@ -11,6 +11,10 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 import logging
 
+#for the geoserver proxy
+from django.views.decorators.csrf import csrf_exempt
+import httplib2
+
 #not API compliant - to be removed after the views are compliant
 from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment
 from vectorformats.Formats import Django, GeoJSON
@@ -153,6 +157,8 @@ def explore(request):
     return render_to_response('webinterface/explore.html', 
                               {'latest_campaign_list': latest_campaign_list,
                                'latest_deployment_list' : latest_deployment_list,
+                               'WMS_URL': settings.WMS_URL, #imported from settings
+                               'WMS_layer_name': settings.WMS_LAYER_NAME, #imported from settings
                                'campaign_rects' : campaign_rects}, 
                               context_instance=RequestContext(request))
 
@@ -656,3 +662,20 @@ def campaign_detail(request, campaign_id):
 
         'campaign_as_geojson': sm_envelope},
         context_instance=RequestContext(request))
+
+
+@csrf_exempt
+def proxy(request, url):
+    conn = httplib2.Http()
+    if request.method == "GET":
+        #url_ending = "%s?%s" % (url, urlencode(request.GET))
+        #url = url_ending
+        #url = (url, urlencode(request.GET))
+        resp, content = conn.request(url, request.method)
+        return HttpResponse(content)
+    elif request.method == "POST":
+        url = url
+        #data = urlencode(request.POST)
+        data = request.body
+        resp, content = conn.request(url, request.method, data)
+        return HttpResponse(content)
