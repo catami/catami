@@ -89,7 +89,7 @@
     <div class="tab-content">
 
         <div class="tab-pane active" id="map">
-            <div id='deployment-map' style="width:100%;height:600px;"></div>
+            {% include "webinterface/dataviews/mapview.html"%}
         </div>
 
         <div class="tab-pane" id="tax">
@@ -130,8 +130,56 @@
 		//alert('Selected campaign id: '+id);
 	}
 	
-	function selectDeployment(deployment_ids) {
-		    filter_array.length=0;
+	function selectDeployment(id) {
+		getImageList("deployment="+id);
+		updateMapForSelectedDeployments(id);		
+	}
+	
+    function getDeploymentList(campaign_id) {
+    
+	    filter_array.length=0;
+	    var deployment_ids = [];
+	    
+		var apiurl = "/api/dev/deployment/?format=json";
+		
+		// apply filter if campaign id is valid
+		if (!isNaN(campaign_id) && campaign_id!="") {
+			apiurl += "&campaign="+campaign_id;
+		}
+		
+		$.getJSON(apiurl , function(deployment_list){
+			//alert ('L: ' + j.objects.length);
+			var options = '';
+			for (var i = 0; i < deployment_list.objects.length; i++) {
+				options += '<option value="' + deployment_list.objects[i].id + '">' + deployment_list.objects[i].short_name + '</option>';
+				deployment_ids.push(deployment_list.objects[i].id);
+			}
+
+			$("#deploymentSelect").html(options);
+			
+	        updateMapForSelectedDeployments(deployment_ids);		
+
+
+ 			//$('#deploymentSelect option:first').attr('selected', 'selected');
+		})
+		
+	}
+	
+	function getCampaignList() {
+		var apiurl = "/api/dev/campaign/?format=json";
+		$.getJSON(apiurl , function(campaigns){
+			//alert ('L: ' + j.objects.length);
+			var options = '<option value="">--ALL--</option>';
+			for (var i = 0; i < campaigns.objects.length; i++) {
+				options += '<option value="' + campaigns.objects[i].id + '">' + campaigns.objects[i].short_name + '</option>';
+			}
+			$("#campaignSelect").html(options);
+			//$('#deploymentSelect option:first').attr('selected', 'selected');
+		})
+	}
+
+	function updateMapForSelectedDeployments(deployment_ids){
+			filter_array.length=0;
 		    for (var i = 0; i < deployment_ids.length;i ++) {
 				filter_array.push(new OpenLayers.Filter.Comparison({
 		                type: OpenLayers.Filter.Comparison.EQUAL_TO,
@@ -155,66 +203,8 @@
 	        layer.params['FILTER']  = new_filter;
 
 	        layer.redraw();
-	}
-	
-    function getDeploymentList(campaign_id) {
-	    filter_array.length=0;
-	    
-		var apiurl = "/api/dev/deployment/?format=json";
 		
-		// apply filter if campaign id is valid
-		if (!isNaN(campaign_id) && campaign_id!="") {
-			apiurl += "&campaign="+campaign_id;
-		}
-		
-		$.getJSON(apiurl , function(deployment_list){
-			//alert ('L: ' + j.objects.length);
-			var options = '';
-			for (var i = 0; i < deployment_list.objects.length; i++) {
-				options += '<option value="' + deployment_list.objects[i].id + '">' + deployment_list.objects[i].short_name + '</option>';
-				
-				//This filter defines which deployments ate viewable in the map view
-				filter_array.push(new OpenLayers.Filter.Comparison({
-	                type: OpenLayers.Filter.Comparison.EQUAL_TO,
-	                property: "deployment_id",
-	                value: deployment_list.objects[i].id
-                }));
-			}
-
-			$("#deploymentSelect").html(options);
-			
-			//reload map data for new deployment list
-			var filter_1_1 = new OpenLayers.Format.Filter({version: "1.1.0"});
-	        var filter_logic = new OpenLayers.Filter.Logical({
-	            type: OpenLayers.Filter.Logical.OR,
-	            filters: filter_array
-	        });
-            var xml = new OpenLayers.Format.XML(); 
-            var new_filter = xml.write(filter_1_1.write(filter_logic))
-            
-	        var layer = deploymentMap.getLayersByName("Images")[0];
-	        
-	        layer.params['FILTER']  = new_filter;
-
-	        layer.redraw();
-	        
-
- 			//$('#deploymentSelect option:first').attr('selected', 'selected');
-		})
 	}
-	function getCampaignList() {
-		var apiurl = "/api/dev/campaign/?format=json";
-		$.getJSON(apiurl , function(campaigns){
-			//alert ('L: ' + j.objects.length);
-			var options = '<option value="">--ALL--</option>';
-			for (var i = 0; i < campaigns.objects.length; i++) {
-				options += '<option value="' + campaigns.objects[i].id + '">' + campaigns.objects[i].short_name + '</option>';
-			}
-			$("#campaignSelect").html(options);
-			//$('#deploymentSelect option:first').attr('selected', 'selected');
-		})
-	}
-
 
     //need so the ajax queries can make it outside the projects domain and contact geoserver
     OpenLayers.ProxyHost = "/proxy/";
