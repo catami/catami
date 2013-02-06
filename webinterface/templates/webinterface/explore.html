@@ -46,33 +46,28 @@
     <h3>Search:</h3>
 
     <form>
-        <label>
-            Year: 
-            <input type="number" min="2006" step="1"
-            value="2007">
-        </label>
+        Year: 
+        <input type="number" min="2006" step="1" value="2007"><br><br>
         Source:
         <select style="width: 100%">
             <option selected>AUV
             <option>BRUVs
             <option>Towed Video
-        </select>
+        </select><br><br>
     	Campaign:
         <select name="campaignSelect" multiple="multiple" class="workpane" id="campaignSelect" onchange="selectCampaign($(this).val());">
         	<!-- Content inserted from jqery -->
-        </select>
+        </select><br><br>
     	Deployments:
         <select name="deploymentSelect" multiple="multiple" class="workpane" id="deploymentSelect"  onchange="selectDeployment($(this).val());">
         	<!-- Content inserted from jqery -->
-        </select>
-        Depth Range:<br>
+        </select><br><br>
+        Depth Range: <strong id="selectedDepthMin"></strong> to <strong id="selectedDepthMax"></strong> m<br>
         <span id="depthMin"></span><span id="depthMax" style="float:right"></span><br>
-		<div id="depthSlider" style="width:90%; height:5px"></div><br>
-    	Depth (min): <span id="selectedDepthMin"></span><br>
-    	Depth (max): <span id="selectedDepthMax"></span><br><br>
+		<div id="depthSlider" style="width:100%; height:5px"></div><br><br>
     </form>
-    <div> 
-        <button class="btn btn-primary">Save Collection</button>
+    <div id="savecolection"> 
+        <button class="btn btn-primary pull-right">Save Collection</button>
     </div>
 
 </div>
@@ -123,7 +118,8 @@
     $(document).ready(function() {
   		getDeploymentList();
   		getCampaignList();
-  		setDepthRange(0, 500)
+  		setDepthRange(0, 500);
+  		$("#savecolection").hide();
 	});
     function setDepthRange(minDepth, maxDepth)
     {
@@ -151,6 +147,7 @@
 	function selectDeployment(id) {
 		getNewImageList("limit=30&deployment="+id);
 		updateMapForSelectedDeployments(id);
+		$("#savecolection").show(); // enable save collection button
 	}
 	
     function getDeploymentList(campaign_id) {

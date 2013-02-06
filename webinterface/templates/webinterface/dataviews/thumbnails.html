@@ -40,6 +40,7 @@ function appendImageListAPI (apiurl) {
 	    $("#btnnext").attr("onClick","appendImageListAPI('"+img.meta.next+"');");
 	    $("#thminfo").html('Viewing 1 to '+(img.meta.offset+img.meta.limit)+' of '+img.meta.total_count);
 	    //alert(img.meta.next);
+	    //JSON.parse('{"' + decodeURI("abc=foo&def=%5Basf%5D&xyz=5".replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
     })
 }
 </script>
