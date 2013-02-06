@@ -66,9 +66,15 @@
         <span id="depthMin"></span><span id="depthMax" style="float:right"></span><br>
 		<div id="depthSlider" style="width:100%; height:5px"></div><br><br>
     </form>
-    <div id="savecolection"> 
-        <button class="btn btn-primary pull-right">Save Collection</button>
-    </div>
+    <div id="savecollection" class="well"> 
+    	<p id="collection_info">Getting points...</p>
+    	<a href="#" class="btn btn-primary btn-create-collection newCollection" 
+    	   rel="popover" 
+    	   data-html="true"
+    	   id="newCollectionPopover" 
+    	   data-content="Collection Name <input type='text' id='collection_name' name='collection_name' value='my new collection'><br><button class='btn btn-warning btn-create-collection pull-left' onclick='dismissPopover();'>Forget it</button><button class='btn btn-primary btn-create-collection pull-right' onclick='createCollection();'> Make it</button><br><p> </p>" 
+    	   data-original-title="New Collection Options"> <i class="icon-plus-sign icon-2x pull-left"></i> Save As Collection</a>    
+	</div>
 
 </div>
 
@@ -95,9 +101,6 @@
         <div class="tab-pane" id="thm">
             {% include "webinterface/dataviews/thumbnails.html"%}
         </div>
-
-       
-
     </div>
 </div>
 </div>
@@ -114,13 +117,15 @@
 	var deployment_set_extent = [];
     var filter_array = [];
     var deploymentMap;
-             
-    $(document).ready(function() {
-  		getDeploymentList();
-  		getCampaignList();
-  		setDepthRange(0, 500);
-  		$("#savecolection").hide();
-	});
+    var currentSelectedDeployments = [];
+    
+    
+    $('.newCollection').popover({ html : true});
+
+    function dismissPopover() {
+	    $("#newCollectionPopover").popover('hide');
+    }
+    
     function setDepthRange(minDepth, maxDepth)
     {
   		$("#depthSlider").slider({
@@ -147,7 +152,7 @@
 	function selectDeployment(id) {
 		getNewImageList("limit=30&deployment="+id);
 		updateMapForSelectedDeployments(id);
-		$("#savecolection").show(); // enable save collection button
+		updateUIForDeploymentList(id);
 	}
 	
     function getDeploymentList(campaign_id) {
@@ -174,7 +179,7 @@
 			
 	        updateMapForSelectedDeployments(deployment_ids);		
 
-
+	        updateUIForDeploymentList(deployment_ids);
  			//$('#deploymentSelect option:first').attr('selected', 'selected');
 		})
 		
@@ -211,7 +216,7 @@
 	            filters: filter_array
 	        });
             var xml = new OpenLayers.Format.XML(); 
-            var new_filter = xml.write(filter_1_1.write(filter_logic))
+            var new_filter = xml.write(filter_1_1.write(filter_logic));
             
 	        var layer = deploymentMap.getLayersByName("Images")[0];
 	        
@@ -220,11 +225,59 @@
 	        layer.redraw();
 		
 	}
+	
+	function updateUIForDeploymentList(deployment_ids){
+		$('.btn-create-collection').removeAttr('disabled');
+		currentSelectedDeployments.length = 0;
 
+		if(deployment_ids.length > 0) {
+			$("#collection_info").text(deployment_ids.length+' deployments in the view');
+			for  (var i = 0; i < deployment_ids.length;i ++) {
+				currentSelectedDeployments.push(deployment_ids[i]);
+			}
+		} else {
+		    $('.btn-create-collection').attr('disabled', 'disabled');
+			$("#collection_info").text('Nothing being viewed');
+		}
+		//$('#savecollection').p("wee");
+	}
+	
+	function createCollection() {
+	 console.log($('#collectionName').val());
+		var form = document.createElement('form');
+		form.setAttribute('method', 'post');
+		form.setAttribute('action', '{% url webinterface.views.create_collection_from_deployments %}');
+		form.style.display = 'hidden';
+		
+		var hiddenField = document.createElement("input");
+		hiddenField.setAttribute("type", "hidden");
+		hiddenField.setAttribute("name", "deployment_ids");
+		hiddenField.setAttribute("value", currentSelectedDeployments);
+		form.appendChild(hiddenField);
+		
+		var hiddenField2 = document.createElement("input");
+		hiddenField2.setAttribute("type", "hidden");
+		hiddenField2.setAttribute("name", "collection_name");
+		hiddenField2.setAttribute("value", $('#collection_name').val());
+		form.appendChild(hiddenField2);
+		
+		document.body.appendChild(form)
+		form.submit();
+		
+	}
+	
+	
     //need so the ajax queries can make it outside the projects domain and contact geoserver
+    
     OpenLayers.ProxyHost = "/proxy/";
 
     $(document).ready(function(){
+    
+      	getDeploymentList();
+  		getCampaignList();
+  		setDepthRange(0, 500);     
+  		
+  		//Map view code to get moved out later.
         //prep some data we need to use to display the points
         var WMS_URL = "{{ WMS_URL }}";
         var WMSLayerName = "{{ WMS_layer_name }}";
@@ -342,6 +395,9 @@
         });
         deploymentMap.addControl(info);
         info.activate();
+        
+        $('.btn-create-collection').attr('disabled', 'disabled');
+        currentSelectedDeployments = [];
     });
 </script>
 {% endblock %}

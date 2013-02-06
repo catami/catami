@@ -49,6 +49,9 @@ urlpatterns = patterns('webinterface.views',
     url(r'^imageannotate$', 'image_annotate'),
     url(r'^imageedit$', 'image_edit'),
     
+    #Collection Management
+    url(r'^collections/create/$','create_collection_from_deployments'),
+
     #force views
     url(r'^data/$', 'data'),
     url(r'^data/auvdeployments/$', 'auvdeployments'),

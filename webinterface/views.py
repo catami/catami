@@ -24,6 +24,8 @@ from django.db.models import Max, Min
 import simplejson
 from django.conf import settings
 
+from collection.tasks import collection_from_deployment_with_name
+
 
 #account management
 from django.contrib.auth.decorators import login_required
@@ -32,6 +34,12 @@ from django.contrib.auth import logout
 logger = logging.getLogger(__name__)
 
 #@login_required
+
+from django import forms
+
+class CreateCollectionForm(forms.Form):
+    deployment_ids = forms.CharField()
+    collection_name = forms.CharField()
 
 #front page and zones
 def index(request):
@@ -662,6 +670,18 @@ def campaign_detail(request, campaign_id):
 
         'campaign_as_geojson': sm_envelope},
         context_instance=RequestContext(request))
+
+
+@csrf_exempt
+def create_collection_from_deployments(request):
+    if request.method == 'POST': # If the form has been submitted...
+        form = CreateCollectionForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # make a new collection here from the deployment list
+            collection_from_deployment_with_name(request.user,request.POST.get('collection_name'),request.POST.get('deployment_ids'))
+            return HttpResponseRedirect('/collections') # Redirect after POST
+
+    return render(request, 'noworky.html', {'form': form,})
 
 
 @csrf_exempt
