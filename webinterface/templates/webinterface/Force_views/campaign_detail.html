@@ -68,7 +68,7 @@
         {% endfor %}
         {% for bruv_deployment in bruv_deployment_list %}
           <tr>
-          	<td><a href="{% url webinterface.views.bruvdeployment_display bruv_deployment.id %}">{{bruv_deployment.short_name}}</a></td>
+          	<td><a href="{% url webinterface.views.bruvdeployment_detail bruv_deployment.id %}">{{bruv_deployment.short_name}}</a></td>
           	<td>BRUV</td>
             <td>{{bruv_deployment.start_time_stamp}}</td>
             <td>{{bruv_deployment.end_time_stamp}}</td>
@@ -78,7 +78,7 @@
         {% endfor %}
         {% for dov_deployment in dov_deployment_list %}
           <tr>
-          	<td><a href="{% url webinterface.views.dovdeployment_display dov_deployment.id %}">{{dov_deployment.short_name}}</a></td>
+          	<td><a href="{% url webinterface.views.dovdeployment_detail dov_deployment.id %}">{{dov_deployment.short_name}}</a></td>
           	<td>DOV</td>
             <td>{{dov_deployment.start_time_stamp}}</td>
             <td>{{dov_deployment.end_time_stamp}}</td>

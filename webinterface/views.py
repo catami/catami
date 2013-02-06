@@ -2,7 +2,7 @@
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
@@ -11,6 +11,10 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 import logging
 
+#for the geoserver proxy
+from django.views.decorators.csrf import csrf_exempt
+import httplib2
+
 #not API compliant - to be removed after the views are compliant
 from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment
 from vectorformats.Formats import Django, GeoJSON
@@ -18,6 +22,12 @@ from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
 from django.db.models import Max, Min
 import simplejson
+from django.conf import settings
+
+
+#account management
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +112,15 @@ def index(request):
          'image_link_list': image_link_list},
         RequestContext(request))
 
+
+# Account stuff
+def logout_view(request):
+    """@brief returns user to html calling the logout action
+
+    """
+    logout(request)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
 # Info pages
 def faq(request):
     return render_to_response('webinterface/faq.html', {}, RequestContext(request))
@@ -117,41 +136,82 @@ def howto(request):
 
 # Explore pages
 def explore(request):
-    return render_to_response('webinterface/explore.html', {}, RequestContext(request))
+    """@brief Campaign list html for entire database
+
+    """
+    latest_campaign_list = Campaign.objects.all()
+    latest_deployment_list = Deployment.objects.all()
+    campaign_rects = list()
+
+    for campaign in latest_campaign_list:
+        auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign)
+        bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign)
+        dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign)
+        if(len(auv_deployment_list) > 0):
+            sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign).extent())
+            campaign_rects.append(sm.envelope.geojson)
+        if(len(bruv_deployment_list) > 0):
+            sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign).extent())
+            campaign_rects.append(sm.envelope.geojson)
+
+    return render_to_response('webinterface/explore.html', 
+                              {'latest_campaign_list': latest_campaign_list,
+                               'latest_deployment_list' : latest_deployment_list,
+                               'WMS_URL': settings.WMS_URL, #imported from settings
+                               'WMS_layer_name': settings.WMS_LAYER_NAME, #imported from settings
+                               'campaign_rects' : campaign_rects}, 
+                              context_instance=RequestContext(request))
+
+# Explore pages
+def explore_campaign(request, campaign_id):
+    return render_to_response('webinterface/explore.html', {}, context_instance=RequestContext(request))
 
 # Collection pages
 def collections(request):
-    return render_to_response('webinterface/collections.html', {}, RequestContext(request))
-
-def view_collection(request,collection_id):
-    return render_to_response('webinterface/viewcollection.html', {}, RequestContext(request))
+    collection_list = CollectionResource()
+    cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id)
+    cl_pub_rec = collection_list.obj_get_list(request, is_public=True)
+    return render_to_response('webinterface/collections_recent.html', {"my_rec_cols":cl_my_rec,"pub_rec_cols":cl_pub_rec}, RequestContext(request))
 
 def my_collections(request):
-    return render_to_response('webinterface/mycollections.html', {}, RequestContext(request))
+    collection_list = CollectionResource()
+    cl = collection_list.obj_get_list(request, owner=request.user.id)
+    return render_to_response('webinterface/mycollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
 def public_collections(request):
-    return render_to_response('webinterface/publiccollections.html', {}, RequestContext(request))
+    collection_list = CollectionResource()
+    cl = collection_list.obj_get_list(request, is_public=True)
+    return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
+
+## view collection table views
+#def public_collections_all(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list()
+#   return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
+
+def view_collection(request, collection_id):
+    return render_to_response('webinterface/viewcollection.html', {"collection_id": collection_id}, RequestContext(request))
 
 # view collection table views
-def public_collections_all(request):
-    collection_list = CollectionResource()
-    cl_all = collection_list.obj_get_list()
-    return render_to_response('webinterface/publiccollections_all.html', {"public_collections": cl_all}, RequestContext(request))
+#def public_collections_all(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list()
+#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"pub_all"}, RequestContext(request))
 
-def public_collections_recent(request):
-    collection_list = CollectionResource()
-    cl_all = collection_list.obj_get_list()
-    return render_to_response('webinterface/publiccollections_recent.html', {"public_collections": cl_all}, RequestContext(request))
+#def public_collections_recent(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list()
+#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"pub_rec"}, RequestContext(request))
 
-def my_collections_all(request):
-    collection_list = CollectionResource()
-    cl = collection_list.obj_get_list(request,owner=request.user.id)
-    return render_to_response('webinterface/mycollections_all.html', {"my_collections": cl}, RequestContext(request))
+#def my_collections_all(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list(request,owner=request.user.id)
+#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_all"}, RequestContext(request))
 
-def my_collections_recent(request):
-    collection_list = CollectionResource()
-    cl = collection_list.obj_get_list(request,owner=request.user.id)
-    return render_to_response('webinterface/mycollections_recent.html', {"my_collections": cl}, RequestContext(request))
+#def my_collections_recent(request):
+#    collection_list = CollectionResource()
+#    cl = collection_list.obj_get_list(request,owner=request.user.id)
+#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_rec"}, RequestContext(request))
 
 # collection object tasks
 def delete_collection(request):
@@ -164,8 +224,8 @@ def flip_public_collection(request):
 def view_subset(request):
     return render_to_response('webinterface/viewsubset.html', {}, RequestContext(request))
 
-def all_subsets(request):
-    return render_to_response('webinterface/allsubsets.html', {}, RequestContext(request))
+def all_subsets(request, collection_id):
+    return render_to_response('webinterface/allsubsets.html', {"collection_id": collection_id}, RequestContext(request))
 
 def my_subsets(request):
     return render_to_response('webinterface/mysubsets.html', {}, RequestContext(request))
@@ -275,11 +335,6 @@ def auvdeployment_detail(request, auvdeployment_id):
     """@brief AUV Deployment map and data plot for specifed AUV deployment
 
     """
-    # the hard way. All columns in the geojson
-    #djf=Django.Django(geodjango="transect_shape", properties=[])
-
-    #geoj = GeoJSON.GeoJSON()
-    #deployment_as_geojson = geoj.encode(djf.decode([AUVDeployment.objects.get(id=auvdeployment_id)]))
 
     try:
         auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
@@ -291,14 +346,6 @@ def auvdeployment_detail(request, auvdeployment_id):
 
     image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
 
-    #get annotation list. Not all images have annotation
-    annotated_imagelist = list()
-    # for image in image_list:
-    #     if(Annotation.objects.filter(image_reference=image).count() > 0):
-    #         annotated_imagelist.append(image)
-
-    #valmax = image_list.aggregate(Max('depth'))
-    #valmax = image_list.aggregate(Max('depth'))
     depth_range = {'max':image_list.aggregate(Max('depth'))['depth__max'],'min':image_list.aggregate(Min('depth'))['depth__min']}
     salinity_range = {'max':image_list.aggregate(Max('salinity'))['salinity__max'],'min':image_list.aggregate(Min('salinity'))['salinity__min']}
     temperature_range = {'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
@@ -308,35 +355,20 @@ def auvdeployment_detail(request, auvdeployment_id):
     salinity_data_sampled = subsample_list(image_list.values_list('salinity',flat=True).order_by('id'))
     temperature_data_sampled = subsample_list(image_list.values_list('temperature',flat=True).order_by('id'))
 
-    #create a data structure for our data so it can be converted to json
-    #i'm not using django's model to json serialization because it is too slow
-    new_image_list = list()
-    for image_model in image_list:
-        new_image_list.append({"depth": image_model.depth,
-                               "x": image_model.image_position.x,
-                               "y": image_model.image_position.y,
-                               "roll": image_model.roll,
-                               "pitch": image_model.pitch,
-                               "yaw": image_model.yaw,
-                               "altitude": image_model.altitude,
-                               "temperature": image_model.temperature,
-                               "left_image_reference": image_model.left_image_reference})
-
-    new_image_list = simplejson.dumps(new_image_list, ensure_ascii=True)
-
     return render_to_response(
         'webinterface/Force_views/auvdeploymentDetail.html',
         {'auvdeployment_object': auvdeployment_object,
-         'deployment_as_geojson': auvdeployment_object.transect_shape.geojson,
-         'image_list': new_image_list,
-         'annotated_imagelist': annotated_imagelist,
+         'deployment_extent': auvdeployment_object.transect_shape.extent,
          'depth_data': depth_data_sampled,
          'salinity_data': salinity_data_sampled,
          'temperature_data': temperature_data_sampled,
          'depth_range': depth_range,
          'salinity_range': salinity_range,
-         'temperature_range': temperature_range},
-        context_instance=RequestContext(request))
+         'temperature_range': temperature_range,
+         'WMS_URL': settings.WMS_URL, #imported from settings
+         'WMS_layer_name': settings.WMS_LAYER_NAME, #imported from settings
+         'deployment_id': auvdeployment_object.id},
+          context_instance=RequestContext(request))
 
 
 def auvimage_list(request, auvdeployment_id):
@@ -630,3 +662,20 @@ def campaign_detail(request, campaign_id):
 
         'campaign_as_geojson': sm_envelope},
         context_instance=RequestContext(request))
+
+
+@csrf_exempt
+def proxy(request, url):
+    conn = httplib2.Http()
+    if request.method == "GET":
+        #url_ending = "%s?%s" % (url, urlencode(request.GET))
+        #url = url_ending
+        #url = (url, urlencode(request.GET))
+        resp, content = conn.request(url, request.method)
+        return HttpResponse(content)
+    elif request.method == "POST":
+        url = url
+        #data = urlencode(request.POST)
+        data = request.body
+        resp, content = conn.request(url, request.method, data)
+        return HttpResponse(content)

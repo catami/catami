@@ -3,8 +3,9 @@
 {% load force_extras %}
 
 {% block add_styles %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/leaflet.css" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/Control.MiniMap.css" />
+    <!--<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/leaflet.css" />--
+    <!--<link rel="stylesheet" href="{{ STATIC_URL }}assets/css/Control.MiniMap.css" />-->
+
 {% endblock %}
 {% block insert_style %}
 		.leaflet-control-zoom-fullscreen { background-image: url({{ STATIC_URL }}assets/css/images/icon-fullscreen.png); }
@@ -87,6 +88,8 @@ top: 0px;
 {% block add_script %}
 
 	<script>
+        function init() {}
+
 		$('#loading')
 		    .hide()  // hide it initially
 		    .ajaxStart(function() {

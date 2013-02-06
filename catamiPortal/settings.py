@@ -19,6 +19,9 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 STAGING_ROOT_DIR = '/media/water/'
 #REUSE_DB = 1
 
+WMS_URL = "http://localhost:8080/geoserver/wms"
+WMS_LAYER_NAME = "catami:Force_image"
+
 ADMINS = (
      ('Dan Marrable', 'd.marrable@ivec.org'),
 )
@@ -120,7 +123,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'catamiPortal.urls'
+ROOT_URLCONF = 'webinterface.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'catamiPortal.wsgi.application'
