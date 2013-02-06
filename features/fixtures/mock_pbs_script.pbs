@@ -6,4 +6,4 @@
 #PBS -l select=1:ncpus=12:mem=23gb
 cd /scratch/partner464/catami
 
-echo "Running libFeature"
+echo "Running libCluster"

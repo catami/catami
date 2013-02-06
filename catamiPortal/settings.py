@@ -162,6 +162,7 @@ INSTALLED_APPS = (
     'webinterface',
     'django_jenkins',
     'dbadmintool',
+    'features',
     'south',
     'django_coverage',
     'accounts',
@@ -169,7 +170,6 @@ INSTALLED_APPS = (
     'guardian',
     'easy_thumbnails',
     'django_nose',
-    'features',
     'clustering',
     'tastypie',
     'userena',
@@ -288,6 +288,10 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'Force': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
+        'features': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
         },
