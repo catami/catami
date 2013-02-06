@@ -126,13 +126,13 @@
 
 	function selectCampaign(id) {
 		getDeploymentList(id);
-		getImageList("/api/dev/image/?format=json&limit=30&campaign="+id,1);
+		getNewImageList("limit=30&campaign="+id);
 		//alert('Selected campaign id: '+id);
 	}
 	
 	function selectDeployment(id) {
-		getImageList("/api/dev/image/?format=json&limit=30&deployment="+id,1);
-		updateMapForSelectedDeployments(id);		
+		getNewImageList("limit=30&deployment="+id);
+		updateMapForSelectedDeployments(id);
 	}
 	
     function getDeploymentList(campaign_id) {

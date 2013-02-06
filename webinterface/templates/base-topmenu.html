@@ -48,19 +48,19 @@
                 <a class="brand" href="#"><img src="{{ STATIC_URL }}assets/img/catamiheader-blue-small.png" alt="catami_icon_small" width="140"></a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
-                        <li class="{% ifequal request.path "/webinterface/" %}active{% endifequal %}"><a href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home icon-white"></i> Home</a></li>
-                        <li class="dropdown {% ifequal request.path "/webinterface/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-search icon-white"></i> Explore</a>
+                        <li class="{% ifequal request.path url.webinterface.views.index %}active{% endifequal %}"><a href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home icon-white"></i> Home</a></li>
+                        <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-search icon-white"></i> Explore</a>
                             <ul class="dropdown-menu">
-                                <li class="{% ifequal request.path "/webinterface/data/campaigns" %}active{% endifequal %}"><a href="{% url webinterface.views.campaigns %}"><i class="icon-heart"></i> Data: Campaigns</a></li>
-                                <li class="{% ifequal request.path "/webinterface/data/deployments" %}active{% endifequal %}"><a href="{% url webinterface.views.deployments %}"><i class="icon-heart"></i> Data: Deployments</a></li>
+                                <li class="{% ifequal request.path "/data/campaigns" %}active{% endifequal %}"><a href="{% url webinterface.views.campaigns %}"><i class="icon-heart"></i> Data: Campaigns</a></li>
+                                <li class="{% ifequal request.path "/data/deployments" %}active{% endifequal %}"><a href="{% url webinterface.views.deployments %}"><i class="icon-heart"></i> Data: Deployments</a></li>
 
                             </ul>
                         </li>
-                        <li class="dropdown {% ifequal request.path "/webinterface/collections" %}active{% endifequal %}"><a href="{% url webinterface.views.collections %}" class="dropdown-toggle"><i class="icon-list-alt icon-white"></i> Collections <b class="caret"></b></a>
+                        <li class="dropdown {% ifequal request.path "/collections" %}active{% endifequal %}"><a href="{% url webinterface.views.collections %}" class="dropdown-toggle"><i class="icon-list-alt icon-white"></i> Collections <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li class="{% ifequal request.path "/webinterface/my_collections" %}active{% endifequal %}"><a href="{% url webinterface.views.my_collections %}"><i class="icon-heart"></i> My Collections</a></li>
-                                <li class="{% ifequal request.path "/webinterface/public_collections" %}active{% endifequal %}"><a href="{% url webinterface.views.public_collections %}"><i class="icon-star"></i> Public Collections</a></li>
-                                <li class="{% ifequal request.path "/webinterface/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-plus-sign"></i> Create new Collection</a></li>
+                                <li class="{% ifequal request.path "/my_collections" %}active{% endifequal %}"><a href="{% url webinterface.views.my_collections %}"><i class="icon-heart"></i> My Collections</a></li>
+                                <li class="{% ifequal request.path "/public_collections" %}active{% endifequal %}"><a href="{% url webinterface.views.public_collections %}"><i class="icon-star"></i> Public Collections</a></li>
+                                <li class="{% ifequal request.path "/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-plus-sign"></i> Create new Collection</a></li>
                             </ul>
                         </li>
 

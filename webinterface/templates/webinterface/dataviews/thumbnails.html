@@ -23,8 +23,12 @@
 </div>
 
 <script type="text/javascript">
-function getImageList (apiurl,clearimgs) {
-    if (clearimgs) $("#thmlist").html('');
+function getNewImageList(filter) {
+    var apiurl = '/api/dev/image/?'+filter;    //create api url with filter
+    $("#thmlist").html('');                    //clear thumbnail list
+    appendImageListAPI (apiurl);               //add thumbnails to image list
+}
+function appendImageListAPI (apiurl) {
     $.getJSON(apiurl , function(img){
 	    var images = '';
 	    for (var i = 0; i < img.objects.length; i++) {
@@ -32,9 +36,10 @@ function getImageList (apiurl,clearimgs) {
 		}
 		$("#thmlist").append(images);
 		//$('#deploymentSelect option:first').attr('selected', 'selected');
-	    $("#btnprev").attr("onClick","getImageList('"+img.meta.previous+"',0);");
-	    $("#btnnext").attr("onClick","getImageList('"+img.meta.next+"',0);");
+	    //$("#btnprev").attr("onClick","getImageList('"+img.meta.previous+"',0);");
+	    $("#btnnext").attr("onClick","appendImageListAPI('"+img.meta.next+"');");
 	    $("#thminfo").html('Viewing 1 to '+(img.meta.offset+img.meta.limit)+' of '+img.meta.total_count);
+	    //alert(img.meta.next);
     })
 }
 </script>
