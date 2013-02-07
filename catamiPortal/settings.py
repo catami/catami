@@ -19,7 +19,8 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 STAGING_ROOT_DIR = '/media/water/'
 #REUSE_DB = 1
 
-WMS_URL = "http://localhost:8080/geoserver/wms"
+WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
+#WMS_URL = "http://flounder-virtualbox.local:8080/geoserver/wms" # custom if running test server in virtual machine
 WMS_LAYER_NAME = "catami:Force_image"
 
 ADMINS = (

@@ -20,7 +20,7 @@
 	  	{% endwith %}
 	  	<!--<div id="mycollections_recent"></div>-->
 	  	<p><a class="btn" href="{% url webinterface.views.my_collections %}">View more &raquo;</a>
-	  	<a href="/webinterface/explore" class="btn btn-primary pull-right"><i class="icon-plus-sign icon-white"></i> New Collection</a></p> 
+	  	<a href="{% url webinterface.views.explore %}" class="btn btn-primary pull-right"><i class="icon-plus-sign icon-white"></i> New Collection</a></p>
 	</div><!--/span-->
 	<div class="span6">
 	  	<h2>Public Collections</h2>
