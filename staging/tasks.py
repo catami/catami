@@ -251,26 +251,38 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         temp_m = Force.models.ScientificMeasurement()
         temp_m.measurement_type = temperature
         temp_m.value = closer_seabird['temperature']
+        temp_m.image = image
+        temp_m.save()
 
         sal_m = Force.models.ScientificMeasurement()
         sal_m.measurement_type = salinity
         sal_m.value = closer_seabird['salinity']
+        sal_m.image = image
+        sal_m.save()
 
         roll_m = Force.models.ScientificMeasurement()
         roll_m.measurement_type = roll
         roll_m.value = row['roll']
+        roll_m.image = image
+        roll_m.save()
 
         pitch_m = Force.models.ScientificMeasurement()
         pitch_m.measurement_type = pitch
         pitch_m.value = row['pitch']
+        pitch_m.image = image
+        pitch_m.save()
 
         yaw_m = Force.models.ScientificMeasurement()
         yaw_m.measurement_type = yaw
         yaw_m.value = row['heading']
+        yaw_m.image = image
+        yaw_m.save()
 
         alt_m = Force.models.ScientificMeasurement()
         alt_m.measurement_type = altitude
         alt_m.value = row['altitude']
+        alt_m.image = image
+        alt_m.save()
 
         # we need first and last to get start/end points and times
         last_image = image
