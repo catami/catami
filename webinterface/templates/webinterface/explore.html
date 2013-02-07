@@ -66,16 +66,15 @@
         <span id="depthMin"></span><span id="depthMax" style="float:right"></span><br>
 		<div id="depthSlider" style="width:100%; height:5px"></div><br><br>
     </form>
-    <div id="savecollection" class="well"> 
-    	<p id="collection_info">Getting points...</p>
-    	<a href="#" class="btn btn-primary btn-create-collection newCollection" 
-    	   rel="popover" 
-    	   data-html="true"
-    	   id="newCollectionPopover" 
-    	   data-content="Collection Name <input type='text' id='collection_name' name='collection_name' value='my new collection'><br><button class='btn btn-warning btn-create-collection pull-left' onclick='dismissPopover();'>Forget it</button><button class='btn btn-primary btn-create-collection pull-right' onclick='createCollection();'> Make it</button><br><p> </p>" 
-    	   data-original-title="New Collection Options"> <i class="icon-plus-sign icon-2x pull-left"></i> Save As Collection</a>    
-	</div>
-
+        <div id="savecollection" class="well"> 
+        <p id="collection_info">Getting points...</p>
+        <a href="#" class="btn btn-primary btn-create-collection newCollection" 
+           rel="popover" 
+           data-html="true"
+           id="newCollectionPopover" 
+           data-content="<div id='collection_options'>Collection Name <input type='text' id='collection_name' value='my new collection'><br><button class='btn btn-warning btn-create-collection pull-left' onclick='dismissPopover();'>Forget it</button><button class='btn btn-primary btn-create-collection pull-right' onclick='createCollection();'> Make it</button><br><p> </p></div>" 
+           data-original-title="New Collection Options"> <i class="icon-plus-sign icon-2x pull-left"></i> Save As Collection</a>    
+    </div>
 </div>
 
 <div class="span10 viewpane" >
@@ -211,7 +210,9 @@
 	}
 	
 	function createCollection() {
-	 console.log($('#collectionName').val());
+		var colname = $('#collection_name').val();
+		$("#collection_options").html("<div id='create_collection_spinner'><i class='icon-refresh icon-spin icon-3x pull-left'></i> <p>I'm making your new collection. This will take a little while.</p></div>");
+		
 		var form = document.createElement('form');
 		form.setAttribute('method', 'post');
 		form.setAttribute('action', '{% url webinterface.views.create_collection_from_deployments %}');
@@ -226,11 +227,13 @@
 		var hiddenField2 = document.createElement("input");
 		hiddenField2.setAttribute("type", "hidden");
 		hiddenField2.setAttribute("name", "collection_name");
-		hiddenField2.setAttribute("value", $('#collection_name').val());
+		hiddenField2.setAttribute("value", colname);
 		form.appendChild(hiddenField2);
 		
+		        
 		document.body.appendChild(form)
 		form.submit();
+		
 		
 	}
 	
@@ -242,6 +245,7 @@
   		getCampaignList();
   		setDepthRange(0, 500);
         initDeploymentMap ();
+        
     });
 </script>
 {% endblock %}
