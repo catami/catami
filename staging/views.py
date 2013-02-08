@@ -25,6 +25,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+from .api import StagingFilesResource
+@login_required
+def newbrowse(request):
+    context = {}
+    rcon = RequestContext(request)
+
+    sf = StagingFilesResource()
+
+    context['current_files'] = sf.obj_get_list(request)
+
+    return render_to_response('staging/newbrowse.html', context, rcon)
+
 @login_required
 def index(request):
     """The home/index view for staging."""

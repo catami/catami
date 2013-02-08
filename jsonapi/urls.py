@@ -3,6 +3,7 @@ from tastypie.api import Api
 import collection.api
 import Force.api
 import jsonapi.api
+import staging.api
 
 dev_api = Api(api_name='dev')
 v1_api = Api(api_name='v1')
@@ -17,6 +18,8 @@ dev_api.register(Force.api.BRUVDeploymentResource())
 dev_api.register(Force.api.DOVDeploymentResource())
 
 dev_api.register(jsonapi.api.UserResource())
+
+dev_api.register(staging.api.StagingFilesResource())
 
 urlpatterns = patterns('',
     (r'^$', 'jsonapi.views.help'),

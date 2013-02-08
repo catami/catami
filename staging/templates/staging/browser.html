@@ -1,0 +1,43 @@
+<div id="filecontainer">
+    <a id="parentlink" href="#">Parent</a>
+    <table class="table table-condensed">
+    <thead><tr><th>Name</th></tr></thead>
+    <tbody id="filecontainerbody">
+    </tbody>
+    <tfoot><tr><td id="filecontainerinfo"></td></tr></tfoot>
+    </table>
+</div>
+
+
+<script type="text/javascript">
+function getFolderContents(folder_id) {
+    var apiurl = '/api/dev/stagingfiles/?folder='+folder_id;
+    $("#filecontainerbody").html('');
+    //location.hash = folder_id;
+    appendFolderContents(apiurl);
+    $.getJSON('/api/dev/stagingfiles/'+folder_id, function(file){
+        $("#parentlink").attr("onclick", "getFolderContents('"+file.parent+"');");
+    });
+}
+function appendFolderContents(apiurl) {
+    $.getJSON(apiurl , function(files){
+        var body_text = '';
+        // add a row in the table for every file/folder in current directory
+        for (var i = 0; i < files.objects.length; i++) {
+            if (files.objects[i].is_dir)
+            {
+                // can view the contents of this folder
+                body_text += '<tr><td><a onclick="getFolderContents(\'' + files.objects[i].pk + '\');" >' + files.objects[i].name + '</a></td></tr>';
+            }
+            else
+            {
+                // it is a file... so no contents browsing
+                body_text += '<tr><td>' + files.objects[i].name + '</td></tr>';
+            }
+        }
+        $("#filecontainerbody").append(body_text);
+        $("#btnnext").attr("onclick","appendFolderContents('"+files.meta.next+"');");
+        $("#filecontainerinfo").html('Viewing 1 to '+ Math.min(files.meta.offset+files.meta.limit, files.meta.total_count)+' of '+files.meta.total_count);
+    })
+}
+</script>

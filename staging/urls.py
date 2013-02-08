@@ -41,4 +41,6 @@ urlpatterns = patterns('staging.views',
     url(r'^annotations/cpc/imported$', 'annotationcpcimported', name='staging_annotation_cpc_imported'),
 
     url(r'^listing/(?P<path>.*)$', 'listdirectory'),
+
+    url(r'^browse$', 'newbrowse'),
 )
