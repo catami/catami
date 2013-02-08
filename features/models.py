@@ -10,7 +10,7 @@ class ImageFeature(models.Model):
 
     for clustering and classification"""
 
-    feature = ArrayField(dbtype='double precision')
+    #feature = ArrayField(dbtype='double precision')
     #image = models.OneToOneField(Image)
     image = models.ForeignKey(Image)
     objects = Manager()
