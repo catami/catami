@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 import httplib2
 
 #not API compliant - to be removed after the views are compliant
-from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment
+from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment,ScientificMeasurement
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
@@ -353,15 +353,17 @@ def auvdeployment_detail(request, auvdeployment_id):
         #raise Http404
 
     image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
+    salinity_data = ScientificMeasurement.objects.filter(measurement_type__normalised_name='salinity', image__deployment=auvdeployment_id)
+    temperature_data = ScientificMeasurement.objects.filter(measurement_type__normalised_name='temperature', image__deployment=auvdeployment_id)
 
     depth_range = {'max':image_list.aggregate(Max('depth'))['depth__max'],'min':image_list.aggregate(Min('depth'))['depth__min']}
-    salinity_range = {'max':image_list.aggregate(Max('salinity'))['salinity__max'],'min':image_list.aggregate(Min('salinity'))['salinity__min']}
-    temperature_range = {'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
+    salinity_range = {'max':100,'min':0} #{'max':image_list.aggregate(Max('scientificmeasurement__salinity'))['scientificmeasurement__salinity__max'],'min':image_list.aggregate(Min('scientificmeasurement__salinity'))['scientificmeasurement__salinity__min']}
+    temperature_range = {'max':100,'min':0} #{'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
 
     #subsample these values to display in flot
     depth_data_sampled = subsample_list(image_list.values_list('depth',flat=True).order_by('id'))
-    salinity_data_sampled = subsample_list(image_list.values_list('salinity',flat=True).order_by('id'))
-    temperature_data_sampled = subsample_list(image_list.values_list('temperature',flat=True).order_by('id'))
+    salinity_data_sampled = subsample_list(salinity_data.values_list('value',flat=True).order_by('id'))
+    temperature_data_sampled = subsample_list(temperature_data.values_list('value',flat=True).order_by('id'))
 
     return render_to_response(
         'webinterface/Force_views/auvdeploymentDetail.html',
