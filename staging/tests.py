@@ -578,6 +578,5 @@ class AUVImport(TestCase):
 
         track_file = open('staging/fixtures/freycinet_mpa_03_reef_south_latlong.csv', 'r')
         netcdf_file = open('staging/fixtures/IMOS_AUV_ST_20090611T063544Z_SIRIUS_FV00.nc', 'r')
-        json_string = tasks.auvprocess(track_file, netcdf_file, *self.input_params)
+        tasks.auvprocess(track_file, netcdf_file, *self.input_params)
 
-        tasks.json_sload(json_string)
