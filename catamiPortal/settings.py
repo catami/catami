@@ -138,6 +138,8 @@ TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, '../catamiPortal/templates'),
 )
 
+FIXTURE_DIRS = (os.path.join(SITE_ROOT, '../Force/fixtures'))
+
 AUTHENTICATION_BACKENDS = (
     'userena.backends.UserenaAuthenticationBackend',
     'guardian.backends.ObjectPermissionBackend',
