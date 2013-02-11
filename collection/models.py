@@ -12,5 +12,8 @@ class Collection(models.Model):
     modified_date = models.DateTimeField()
     is_public = models.BooleanField()
     is_locked = models.BooleanField()
-    parent = models.ForeignKey('Collection', null=True, blank=True, default = None)
+    parent = models.ForeignKey('Collection', null=True, blank=True, default=None)
     images = models.ManyToManyField(Image, related_name='collections')
+
+    class Meta:
+        unique_together = (('owner', 'name'), )
