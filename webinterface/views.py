@@ -1,7 +1,7 @@
 # Create your views here.
 
 from django.template import RequestContext
-from django.shortcuts import render_to_response, redirect, get_object_or_404
+from django.shortcuts import render_to_response, redirect, get_object_or_404, render
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect
 from django import forms
 from django.contrib.auth.decorators import login_required
@@ -23,8 +23,7 @@ from django.contrib.gis.measure import D
 from django.db.models import Max, Min
 import simplejson
 from django.conf import settings
-
-from collection.tasks import collection_from_deployment_with_name
+from collection.models import Collection, CollectionManager
 
 
 #account management
@@ -680,7 +679,7 @@ def create_collection_from_deployments(request):
         form = CreateCollectionForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             # make a new collection here from the deployment list
-            collection_from_deployment_with_name(request.user,request.POST.get('collection_name'),request.POST.get('deployment_ids'))
+            CollectionManager().collection_from_deployments_with_name(request.user,request.POST.get('collection_name'),request.POST.get('deployment_ids'))
             return HttpResponseRedirect('/collections') # Redirect after POST
 
     return render(request, 'noworky.html', {'form': form,})
