@@ -198,11 +198,14 @@
 		currentSelectedDeployments.length = 0;
 
 		if(deployment_ids.length > 0) {
+			$("#newCollectionPopover").popover('enable');
+
 			$("#collection_info").text(deployment_ids.length+' deployments in the view');
 			for  (var i = 0; i < deployment_ids.length;i ++) {
 				currentSelectedDeployments.push(deployment_ids[i]);
 			}
 		} else {
+			$("#newCollectionPopover").popover('disable');
 		    $('.btn-create-collection').attr('disabled', 'disabled');
 			$("#collection_info").text('Nothing being viewed');
 		}
