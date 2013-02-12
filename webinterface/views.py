@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerE
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
+from waffle.decorators import waffle_switch
 from collection.api import CollectionResource
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -16,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 import httplib2
 
 #not API compliant - to be removed after the views are compliant
-from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment
+from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, Annotation, TIDeployment, TVDeployment,ScientificMeasurement
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
@@ -35,7 +36,7 @@ logger = logging.getLogger(__name__)
 #@login_required
 
 from django import forms
-
+@waffle_switch('Collections')
 class CreateCollectionForm(forms.Form):
     deployment_ids = forms.CharField()
     collection_name = forms.CharField()
@@ -181,17 +182,20 @@ def explore_campaign(request, campaign_id):
     return render_to_response('webinterface/explore.html', {}, context_instance=RequestContext(request))
 
 # Collection pages
+@waffle_switch('Collections')
 def collections(request):
     collection_list = CollectionResource()
     cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id, parent=None)
     cl_pub_rec = collection_list.obj_get_list(request, is_public=True, parent=None)
     return render_to_response('webinterface/collections_recent.html', {"my_rec_cols":cl_my_rec,"pub_rec_cols":cl_pub_rec}, RequestContext(request))
 
+@waffle_switch('Collections')
 def my_collections(request):
     collection_list = CollectionResource()
     cl = collection_list.obj_get_list(request, owner=request.user.id)
     return render_to_response('webinterface/mycollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
+@waffle_switch('Collections')
 def public_collections(request):
     collection_list = CollectionResource()
     cl = collection_list.obj_get_list(request, is_public=True)
@@ -203,6 +207,7 @@ def public_collections(request):
 #    cl = collection_list.obj_get_list()
 #   return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
+@waffle_switch('Collections')
 def view_collection(request, collection_id):
     return render_to_response('webinterface/viewcollection.html', {"collection_id": collection_id}, RequestContext(request))
 
@@ -228,22 +233,28 @@ def view_collection(request, collection_id):
 #    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_rec"}, RequestContext(request))
 
 # collection object tasks
+@waffle_switch('Collections')
 def delete_collection(request):
     return nil
 
+@waffle_switch('Collections')
 def flip_public_collection(request):
     return nil
 
 # Subset pages
+@waffle_switch('Collections')
 def view_subset(request):
     return render_to_response('webinterface/viewsubset.html', {}, RequestContext(request))
 
+@waffle_switch('Collections')
 def all_subsets(request, collection_id):
     return render_to_response('webinterface/allsubsets.html', {"collection_id": collection_id}, RequestContext(request))
 
+@waffle_switch('Collections')
 def my_subsets(request):
     return render_to_response('webinterface/mysubsets.html', {}, RequestContext(request))
 
+@waffle_switch('Collections')
 def public_subsets(request):
     return render_to_response('webinterface/publicsubsets.html', {}, RequestContext(request))
     
@@ -359,15 +370,17 @@ def auvdeployment_detail(request, auvdeployment_id):
         #raise Http404
 
     image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
+    salinity_data = ScientificMeasurement.objects.filter(measurement_type__normalised_name='salinity', image__deployment=auvdeployment_id)
+    temperature_data = ScientificMeasurement.objects.filter(measurement_type__normalised_name='temperature', image__deployment=auvdeployment_id)
 
     depth_range = {'max':image_list.aggregate(Max('depth'))['depth__max'],'min':image_list.aggregate(Min('depth'))['depth__min']}
-    salinity_range = {'max':image_list.aggregate(Max('salinity'))['salinity__max'],'min':image_list.aggregate(Min('salinity'))['salinity__min']}
-    temperature_range = {'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
+    salinity_range = {'max':100,'min':0} #{'max':image_list.aggregate(Max('scientificmeasurement__salinity'))['scientificmeasurement__salinity__max'],'min':image_list.aggregate(Min('scientificmeasurement__salinity'))['scientificmeasurement__salinity__min']}
+    temperature_range = {'max':100,'min':0} #{'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
 
     #subsample these values to display in flot
     depth_data_sampled = subsample_list(image_list.values_list('depth',flat=True).order_by('id'))
-    salinity_data_sampled = subsample_list(image_list.values_list('salinity',flat=True).order_by('id'))
-    temperature_data_sampled = subsample_list(image_list.values_list('temperature',flat=True).order_by('id'))
+    salinity_data_sampled = subsample_list(salinity_data.values_list('value',flat=True).order_by('id'))
+    temperature_data_sampled = subsample_list(temperature_data.values_list('value',flat=True).order_by('id'))
 
     return render_to_response(
         'webinterface/Force_views/auvdeploymentDetail.html',

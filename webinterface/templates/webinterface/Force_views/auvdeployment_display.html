@@ -86,8 +86,11 @@ top: 0px;
 {% endblock %}
 
 {% block add_script %}
+    <!-- TODO: make this find openlayers from assets -->
+    <script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
 
 	<script>
+	
         function init() {}
 
 		$('#loading')

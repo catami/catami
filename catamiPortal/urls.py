@@ -12,6 +12,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'catamiPortal.views.home', name='home'),
@@ -23,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^contact', 'catamiPortal.views.contact'),
     url(r'^attribution','catamiPortal.views.attribution'),
     url(r'^proxy/(?P<url>.*)$', 'catamiPortal.views.proxy'),
+
 
     url(r'^staging/', include('staging.urls')),
 
