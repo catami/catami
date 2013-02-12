@@ -51,6 +51,7 @@ urlpatterns = patterns('webinterface.views',
     
     #Collection Management
     url(r'^collections/create/$','create_collection_from_deployments'),
+    url(r'^collections/createworkset/$','create_workset_from_collection_random'),
 
     #force views
     url(r'^data/$', 'data'),

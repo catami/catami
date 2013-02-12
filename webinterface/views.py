@@ -40,6 +40,13 @@ class CreateCollectionForm(forms.Form):
     deployment_ids = forms.CharField()
     collection_name = forms.CharField()
 
+class CreateWorksetForm(forms.Form):
+    name = forms.CharField()
+    description = forms.CharField()
+    ispublic = forms.CheckboxInput()
+    c_id = forms.IntegerField()
+    n = forms.IntegerField()
+
 #front page and zones
 def index(request):
     """@brief returns root catami html
@@ -176,8 +183,8 @@ def explore_campaign(request, campaign_id):
 # Collection pages
 def collections(request):
     collection_list = CollectionResource()
-    cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id)
-    cl_pub_rec = collection_list.obj_get_list(request, is_public=True)
+    cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id, parent=None)
+    cl_pub_rec = collection_list.obj_get_list(request, is_public=True, parent=None)
     return render_to_response('webinterface/collections_recent.html', {"my_rec_cols":cl_my_rec,"pub_rec_cols":cl_pub_rec}, RequestContext(request))
 
 def my_collections(request):
@@ -685,12 +692,12 @@ def create_collection_from_deployments(request):
 @csrf_exempt
 def create_workset_from_collection_random(request):
     if request.method == 'POST': # If the form has been submitted...
-        form = CreateCollectionForm(request.POST) # A form bound to the POST data
+        form = CreateWorksetForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
-            CollectionManager().workset_from_collection_random(request.user,request.POST.get('name'), request.POST.get('description'), request.POST.get('ispublic').lower()=='true' , request.POST.get('c_id'), request.POST.get('n'))
-            return HttpResponseRedirect('/collections/'+request.POST.get('c_id')+'/#wks') # Redirect after POST
+            CollectionManager().workset_from_collection_random(request.user,request.POST.get('name'), request.POST.get('description'), request.POST.get('ispublic') =="true" , int(request.POST.get('c_id')), int(request.POST.get('n')))
+            return HttpResponseRedirect('/collections/'+request.POST.get('c_id')+'/#SelectWorksetModal') # Redirect after POST
 
-    return render(request, 'noworky.html', {'form': form,})
+    return HttpResponse(form)
 
 @csrf_exempt
 def proxy(request, url):

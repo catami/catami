@@ -22,57 +22,67 @@
         margin: 0px;
         width: 40px;
     }
+    /*
+    .nav-tabs li a {
+        background-color: #ddd;
+        color: #3a3a3a;
+    }
+    */
 </style>
 {% endblock %}
 {% block content %}
 <div class="row-fluid">
 
-<div class="span2"> 
-    <h3>Collection:</h3>
-    <div class="well" style="padding:5px;">{% include "webinterface/dataviews/collection-properties.html"%}</div>
-    <div class="well" style="padding:5px;">{% include "webinterface/dataviews/worksetlists.html"%}</div>
+<div class="span2">
+    <div class="well" style="padding:5px;">
+        {% with "Collection" as clname %}
+        {% include "webinterface/dataviews/collection-properties.html"%}
+        {% endwith %}
+    </div>
+    <div class="well" style="padding:5px;">
+        {% with "Workset" as clname %}
+            {% include "webinterface/dataviews/collection-properties.html"%}
+            {% include "webinterface/dataviews/worksetlists.html"%}
+        {% endwith %}
+    </div>
 </div>
 
 <div class="span10 viewpane" >
 
     
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#map" data-toggle="tab">Map</a></li>
-        <li><a href="#thm" data-toggle="tab">Thumbnails</a></li>
+        <li class="active"><a href="#map" data-toggle="tab"><i class="icon-globe"></i> Map</a></li>
+        <li><a href="#thm" data-toggle="tab"><i class="icon-eye-open"></i> Thumbnails</a></li>
         <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
-        <li><a href="#cst" data-toggle="tab">Visual Clusters</a></li>
-        <li><a href="#wks" data-toggle="tab">Worksets</a></li>
-        <li class="pull-right"><a href="#dwn" data-toggle="tab">Download</a></li>
+        <li><a href="#cst" data-toggle="tab"><i class="icon-cog"></i> Visual Clusters</a></li>
+        <li class="pull-right"><a href="#dwn" data-toggle="tab"><i class="icon-download-alt"></i> Download</a></li>
+        <li class="pull-right"><a href="#ant" data-toggle="tab"><i class="icon-tag"></i> Annotate</a></li>
+        <li class="pull-right"><a href="#cls" data-toggle="tab"><i class="icon-sitemap"></i> Classify</a></li>
     </ul>
 
 
     <div class="tab-content">
-
         <div class="tab-pane active" id="map">
             {% include "webinterface/dataviews/mapview.html"%} 
         </div>
-
         <div class="tab-pane" id="tax">
             {% include "webinterface/dataviews/taxonomytree.html"%} 
         </div>
-        
         <div class="tab-pane" id="cst">
 			{% include "webinterface/dataviews/clusterview.html"%} 
 		</div>
-
-
         <div class="tab-pane" id="thm">
             {% include "webinterface/dataviews/thumbnails.html"%}
         </div>
-
-        <div class="tab-pane" id="wks">
-            {% include "webinterface/dataviews/worksetlists.html"%}
+        <div class="tab-pane" id="ant">
+            Annotate
         </div>
-
+        <div class="tab-pane" id="cls">
+            Classify
+        </div>
         <div class="tab-pane" id="dwn">
         	This will contain options for downloading a variety of different combinations the data.
         </div>
-
     </div>
 </div>
 </div>
@@ -91,9 +101,12 @@
     // fix tabbing navigation from page url
     if (window.location.hash.length > 0) {
         $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');
+        $(window.location.hash).modal('show');
+        //alert(window.location.hash);
     } else {
         $('ul.nav-tabs > li > a:first').tab('show');
     }
+
 
 </script>
 {% endblock %}  

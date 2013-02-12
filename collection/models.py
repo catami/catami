@@ -2,6 +2,7 @@ from datetime import datetime
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 from Force.models import Image, Deployment
+from random import sample
 
 class CollectionManager(models.Manager):
 
@@ -56,7 +57,7 @@ class CollectionManager(models.Manager):
 
     # NOTE: it may make sense to create one function for all the
     # different sampling methods instead of a separate one for each.
-    def workset_from_collection_random(user, name, description, ispublic, c_id, n):
+    def workset_from_collection_random(self, user, name, description, ispublic, c_id, n):
         """Create a workset (or child collection) from a parent collection
 
         Returns the created workset."""
