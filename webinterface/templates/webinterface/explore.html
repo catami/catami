@@ -61,37 +61,36 @@
         <div class="span2">
             <h3>Search:</h3>
 
-    <form>
-        Year: 
-        <input type="number" min="2006" step="1" value="2007"><br><br>
-        Source:
-        <select style="width: 100%">
-            <option selected>AUV
-            <option>BRUVs
-            <option>Towed Video
-        </select><br><br>
-    	Campaign:
-        <select name="campaignSelect" multiple="multiple" class="workpane" id="campaignSelect" onchange="selectCampaign($(this).val());">
-        	<!-- Content inserted from jqery -->
-        </select><br><br>
-    	Deployments:
-        <select name="deploymentSelect" multiple="multiple" class="workpane" id="deploymentSelect"  onchange="selectDeployment($(this).val());">
-        	<!-- Content inserted from jqery -->
-        </select><br><br>
-        Depth Range: <strong id="selectedDepthMin"></strong> to <strong id="selectedDepthMax"></strong> m<br>
-        <span id="depthMin"></span><span id="depthMax" style="float:right"></span><br>
-		<div id="depthSlider" style="width:100%; height:5px"></div><br><br>
-    </form>
-        <div id="savecollection" class="well"> 
-        <p id="collection_info">Getting points...</p>
-        <a href="#" class="btn btn-primary btn-create-collection newCollection" 
-           rel="popover" 
-           data-html="true"
-           id="newCollectionPopover" 
-           data-content="<div id='collection_options'>Collection Name <input type='text' id='collection_name' value='my new collection'><br><button class='btn btn-warning btn-create-collection pull-left' onclick='dismissPopover();'>Forget it</button><button class='btn btn-primary btn-create-collection pull-right' onclick='createCollection();'> Make it</button><br><p> </p></div>" 
-           data-original-title="New Collection Options"> <i class="icon-plus-sign icon-2x pull-left"></i> Save As Collection</a>    
-    </div>
-</div>
+            <form>
+                {% switch Experimental %}
+                Year:
+                <input type="number" min="2006" step="1" value="2007"><br><br>
+                Source:
+                <select style="width: 100%">
+                    <option selected>AUV
+                    <option>BRUVs
+                    <option>Towed Video
+                </select>
+                {%  endswitch %}
+                <br><br>
+                Campaign:
+                <select name="campaignSelect" multiple="multiple" class="workpane" id="campaignSelect"
+                        onchange="selectCampaign($(this).val());">
+                    <!-- Content inserted from jqery -->
+                </select><br><br>
+                Deployments:
+                <select name="deploymentSelect" multiple="multiple" class="workpane" id="deploymentSelect"
+                        onchange="selectDeployment($(this).val());">
+                    <!-- Content inserted from jqery -->
+                </select>
+                <br><br>
+                {% switch Experimental %}
+                Depth Range: <strong id="selectedDepthMin"></strong> to <strong id="selectedDepthMax"></strong> m<br>
+                <span id="depthMin"></span><span id="depthMax" style="float:right"></span><br>
+                <div id="depthSlider" style="width:100%; height:5px"></div>
+                <br><br>
+                {% endswitch %}
+            </form>
 
             {% switch Collections %}
             <div id="savecollection" class="well">
@@ -145,58 +144,7 @@
 
 
 
-    function dismissPopover() {
-	    $("#newCollectionPopover").popover('hide');
-    }
-    
-    function setDepthRange(minDepth, maxDepth)
-    {
-  		$("#depthSlider").slider({
-          range: true,
-          min: minDepth,
-          max: maxDepth,
-          values: [ minDepth, maxDepth ],
-          slide: function( event, ui ) {
-            $( "#selectedDepthMin" ).html( ui.values[ 0 ] );
-            $( "#selectedDepthMax" ).html( ui.values[ 1 ] );
-         }
-       });    	
-	   $( "#depthMin" ).html(minDepth);
-	   $( "#depthMax" ).html(maxDepth);
-	   $( "#selectedDepthMin" ).html(minDepth);
-	   $( "#selectedDepthMax" ).html(maxDepth);
-    }
-	function selectCampaign(id) {
-		getDeploymentList(id);
-		getNewImageList("limit=30&campaign="+id);
-		//alert('Selected campaign id: '+id);
-	}
-	
-	function selectDeployment(id) {
-		getNewImageList("limit=30&deployment="+id);
-		updateMapForSelectedDeployments(id);
-		updateUIForDeploymentList(id);
-	}
-	
-    function getDeploymentList(campaign_id) {
-    
-	    filter_array.length=0;
-	    var deployment_ids = [];
-	    
-		var apiurl = "/api/dev/deployment/?format=json";
-		
-		// apply filter if campaign id is valid
-		if (!isNaN(campaign_id) && campaign_id!="") {
-			apiurl += "&campaign="+campaign_id;
-		}
-		
-		$.getJSON(apiurl , function(deployment_list){
-			//alert ('L: ' + j.objects.length);
-			var options = '';
-			for (var i = 0; i < deployment_list.objects.length; i++) {
-				options += '<option value="' + deployment_list.objects[i].id + '">' + deployment_list.objects[i].short_name + '</option>';
-				deployment_ids.push(deployment_list.objects[i].id);
-			}
+    <script type="text/javascript">
 
         var currentSelectedDeployments = [];
 
