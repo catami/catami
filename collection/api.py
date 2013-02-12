@@ -18,5 +18,7 @@ class CollectionResource(ModelResource):
         authorization = CollectionAuthorization()
         filtering = {
             'is_public': 'exact',
-            'owner': 'exact'
+            'owner': 'exact',
+            'id': 'exact',
+            'parent': 'exact'
         }

@@ -682,6 +682,15 @@ def create_collection_from_deployments(request):
 
     return render(request, 'noworky.html', {'form': form,})
 
+@csrf_exempt
+def create_workset_from_collection_random(request):
+    if request.method == 'POST': # If the form has been submitted...
+        form = CreateCollectionForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            CollectionManager().workset_from_collection_random(request.user,request.POST.get('name'), request.POST.get('description'), request.POST.get('ispublic').lower()=='true' , request.POST.get('c_id'), request.POST.get('n'))
+            return HttpResponseRedirect('/collections/'+request.POST.get('c_id')+'/#wks') # Redirect after POST
+
+    return render(request, 'noworky.html', {'form': form,})
 
 @csrf_exempt
 def proxy(request, url):

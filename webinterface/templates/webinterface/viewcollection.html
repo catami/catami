@@ -28,36 +28,9 @@
 <div class="row-fluid">
 
 <div class="span2"> 
-    <h3>Properties:</h3>
-
-    <table class="table table-striped">
-        <tr>
-            <td>Year</td>
-            <td>2008</td>
-        </tr>
-        <tr>
-            <td>Source</td>
-            <td>AUV</td>
-        </tr>
-        <tr>
-            <td>Depth</td>
-            <td>30-100m</td>
-        </tr>
-        <tr>
-            <td>Surveys</td>
-            <td>
-                <a href="#" rel="popover-roll" data-title="Surveys" 
-                    data-content="
-                        <ol>
-                            <li>r20081008_032854_patchreefnorth_08_tightpatch</li>
-                            <li>r20081008_224114_hippoN_09_transect</li>
-                        </ol>"
-                    data-html='true'
-                    data-placement='right'>List</a>
-            </td>
-        </tr>
-    </table>
-
+    <h3>Collection:</h3>
+    <div class="well" style="padding:5px;">{% include "webinterface/dataviews/collection-properties.html"%}</div>
+    <div class="well" style="padding:5px;">{% include "webinterface/dataviews/worksetlists.html"%}</div>
 </div>
 
 <div class="span10 viewpane" >
@@ -107,14 +80,20 @@
 
 {% block add_script %}
 <script type="text/javascript">
+    //
     $(document).ready(function(){
-        getNewImageList("limit=30&collection="+{{ collection_id }});
+        getNewImageList('collection={{ collection_id }}');
+        //initDeploymentMap ();
+        setCollectionProperties({{ collection_id }});
+        setWorksetLists({{ collection_id }});
     });
 
-if (window.location.hash.length > 0) {
-    $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');
-} else {
-    $('ul.nav-tabs > li > a:first').tab('show');
-}
+    // fix tabbing navigation from page url
+    if (window.location.hash.length > 0) {
+        $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');
+    } else {
+        $('ul.nav-tabs > li > a:first').tab('show');
+    }
+
 </script>
 {% endblock %}  

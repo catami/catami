@@ -1,3 +1,62 @@
+<!------------------------------------------
+Template-specific HTML
+------------------------------------------->
+<div id="worksets-list">
+    <!-- Content from jquery -->
+    <p>Select a Workset:</p>
+    <div class="tab-pane" id="newwks">
+        <div class="tabbable">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#all" data-toggle="tab">All</a>
+                </li>
+                <li>
+                    <a href="#pub" data-toggle="tab">Public</a>
+                </li>
+                <li>
+                    <a href="#mine" data-toggle="tab">Mine</a>
+                </li>
+            </ul>
+            <div class="tab-content" style="margin: 0;">
+                <div class="tab-pane active" id="all">
+                    <select name="allWorksets" multiple="multiple" id="allWorksets" style="width: 100%" onchange="selectWorkset($(this).val());">
+                        <!-- Content inserted from jqery -->
+                    </select>
+                </div>
+                <div class="tab-pane" id="pub">
+                    <select name="pubWorksets" multiple="multiple" id="pubWorksets" style="width: 100%" onchange="selectWorkset($(this).val());">
+                        <!-- Content inserted from jqery -->
+                    </select>
+                </div>
+                <div class="tab-pane" id="mine">
+                    <select name="myWorksets" multiple="multiple" id="myWorksets" style="width: 100%" onchange="selectWorkset($(this).val());">
+                        <!-- Content inserted from jqery -->
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-primary" href="#_"><i class="icon-plus-sign icon-white"></i> Create new Workset</a>
+</div>
+
+
+<!-- Data Task Modal -->
+<div id="TaskModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Select Context-relevant Options</h3>
+    </div>
+    <div class="modal-body">
+        <p>The idea of these Data Tasks are to provide a user-centric, task oriented interface.</p>
+        <p>Each of the Data Tasks will link to/pop up a modal window to select a relevant Collection/Workset to perform the selected Data Task.</p>
+        <p>For the mean time, you can demo these Tasks from the Collection section.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+
+<!--
 <ul class="nav nav-pills">
     <li class="active"> 
         <a href="#exswks" data-toggle="tab"><i class="icon-th-list"></i> Existing Worksets</a>
@@ -157,3 +216,35 @@
 			</div>
 		</div>
 	</div>
+-->
+<!------------------------------------------
+Template-specific javascript functions
+------------------------------------------->
+<script type="">
+    function setWorksetLists(id) {
+
+        //filter_array.length=0;
+        var deployment_ids = [];
+
+        var apiurl = "/api/dev/collection/?parent="+id;
+
+        $.getJSON(apiurl , function(ws){
+            //alert ('L: ' + j.objects.length);
+            var options = '';
+            for (var i = 0; i < ws.objects.length; i++) {
+                $('#allWorksets').append('<option value="' + ws.objects[i].id + '">' + ws.objects[i].name + '</option>');
+                if (ws.objects[i].is_public) {
+                    $('#pubWorksets').append('<option value="' + ws.objects[i].id + '">' + ws.objects[i].name + '</option>');
+                }
+                else {
+                    $('#myWorksets').append('<option value="' + ws.objects[i].id + '">' + ws.objects[i].name + '</option>');
+                }
+            }
+        })
+
+    }
+
+    function selectWorkset(id) {
+        alert('Wokset has been selected. ID: '+id);
+    }
+</script>

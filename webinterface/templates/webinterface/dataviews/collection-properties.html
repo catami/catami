@@ -1,0 +1,30 @@
+<!------------------------------------------
+Template-specific HTML
+------------------------------------------->
+<div id="collection-properties">
+    <!-- Content from jquery -->
+    <h4><span id="name"></span></h4>
+    <small>
+    <em><span id="description"></span></em><br>
+    <strong>Owner:</strong> <span id="owner"></span><br>
+    <strong>Date:</strong> <span id="creation_date"></span><br>
+    <strong>Access:</strong> <span id="access"></span>
+    </small>
+</div>
+
+<!------------------------------------------
+Template-specific javascript functions
+------------------------------------------->
+<script type="text/javascript">
+    function setCollectionProperties(id) {
+        var apiurl = '/api/dev/collection/?id='+id;    //create api url with filter
+
+        $.getJSON(apiurl , function(cl){
+            $("#collection-properties #name").html(cl.objects[0].name);
+            $("#collection-properties #description").html(cl.objects[0].description);
+            $("#collection-properties #creation_date").html(cl.objects[0].creation_date);
+            $("#collection-properties #owner").html(cl.objects[0].owner);
+            $("#collection-properties #access").html(cl.objects[0].is_public ? 'Public' : 'Private');
+        })
+    }
+</script>

@@ -1,3 +1,6 @@
+<!------------------------------------------
+Template-specific styles
+------------------------------------------->
 <style type="text/css">
 	#thmcontainer {
 		width:950px;
@@ -10,37 +13,45 @@
 	}
 </style>
 
+<!------------------------------------------
+Template-specific HTML
+------------------------------------------->
 <div id="thmcontainer">
     <div id="thmlist" style="width:100%;">
-    	<!-- Content inserted using getImageList() javascript function -->
+    	<!-- Content inserted using javascript function -->
     </div>
     <div style="width:100%; text-align: center;">
         <a href="#_" class="btn btn-primary" id="btnnext"><i class="icon-plus-sign"></i> View more images</a><br>
         <span id="thminfo">
-            <!-- Content inserted using getImageList() javascript function -->
+            <!-- Content inserted using javascript function -->
         </span>
     </div>
 </div>
 
+<!------------------------------------------
+Template-specific javascript functions
+------------------------------------------->
 <script type="text/javascript">
-function getNewImageList(filter) {
-    var apiurl = '/api/dev/image/?'+filter;    //create api url with filter
-    $("#thmlist").html('');                    //clear thumbnail list
-    appendImageListAPI (apiurl);               //add thumbnails to image list
-}
-function appendImageListAPI (apiurl) {
-    $.getJSON(apiurl , function(img){
-	    var images = '';
-	    for (var i = 0; i < img.objects.length; i++) {
-		    images += '<img src="' + img.objects[i].left_image_reference + '"/>';
-		}
-		$("#thmlist").append(images);
-		//$('#deploymentSelect option:first').attr('selected', 'selected');
-	    //$("#btnprev").attr("onClick","getImageList('"+img.meta.previous+"',0);");
-	    $("#btnnext").attr("onClick","appendImageListAPI('"+img.meta.next+"');");
-	    $("#thminfo").html('Viewing 1 to '+(img.meta.offset+img.meta.limit)+' of '+img.meta.total_count);
-	    //alert(img.meta.next);
-	    //JSON.parse('{"' + decodeURI("abc=foo&def=%5Basf%5D&xyz=5".replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
-    })
-}
+
+    function getNewImageList(filter, numimgs) {
+        numimgs = numimgs || 12;            // set default number of images
+        var apiurl = '/api/dev/image/?limit='+numimgs+'&'+filter;    //create api url with filter
+        $("#thmlist").html('');                    //clear thumbnail list
+        appendImageListAPI (apiurl);               //add thumbnails to image list
+    }
+    function appendImageListAPI (apiurl) {
+        $.getJSON(apiurl , function(img){
+            var images = '';
+            for (var i = 0; i < img.objects.length; i++) {
+                images += '<img src="' + img.objects[i].left_image_reference + '"/>';
+            }
+            $("#thmlist").append(images);
+            //$('#deploymentSelect option:first').attr('selected', 'selected');
+            //$("#btnprev").attr("onClick","getImageList('"+img.meta.previous+"',0);");
+            $("#btnnext").attr("onClick","appendImageListAPI('"+img.meta.next+"');");
+            $("#thminfo").html('Viewing 1 to '+(img.meta.offset+img.meta.limit)+' of '+img.meta.total_count);
+            //alert(img.meta.next);
+            //JSON.parse('{"' + decodeURI("abc=foo&def=%5Basf%5D&xyz=5".replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
+        })
+    }
 </script>

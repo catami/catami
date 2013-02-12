@@ -69,7 +69,7 @@
         <div id="savecollection" class="well"> 
         <p id="collection_info">Getting points...</p>
         <a href="#" class="btn btn-primary btn-create-collection newCollection" 
-           rel="popover" 
+           rel="popover"
            data-html="true"
            id="newCollectionPopover" 
            data-content="<div id='collection_options'>Collection Name <input type='text' id='collection_name' value='my new collection'><br><button class='btn btn-warning btn-create-collection pull-left' onclick='dismissPopover();'>Forget it</button><button class='btn btn-primary btn-create-collection pull-right' onclick='createCollection();'> Make it</button><br><p> </p></div>" 
@@ -140,19 +140,19 @@
     }
 	function selectCampaign(id) {
 		getDeploymentList(id);
-		getNewImageList("limit=30&campaign="+id);
+		getNewImageList("campaign="+id);  // function in webinterface/dataviews/thumbnails.html
 		//alert('Selected campaign id: '+id);
 	}
 	
 	function selectDeployment(id) {
-		getNewImageList("limit=30&deployment="+id);
+		getNewImageList("deployment="+id); // function in webinterface/dataviews/thumbnails.html
 		updateMapForSelectedDeployments(id);
 		updateUIForDeploymentList(id);
 	}
 	
     function getDeploymentList(campaign_id) {
     
-	    filter_array.length=0;
+	    //filter_array.length=0;
 	    var deployment_ids = [];
 	    
 		var apiurl = "/api/dev/deployment/?format=json";
