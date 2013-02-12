@@ -84,8 +84,6 @@ class TestViews(TestCase):
         """@brief Test campaign browser interfaces
 
         """
-
-        
         response = self.client.get("/data/campaigns/")
         self.assertEqual(response.status_code, 200)
 
