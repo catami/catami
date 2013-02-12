@@ -120,19 +120,33 @@ class TestCollectionModel(TestCase):
 class TestCollectionAPI(TestCase):
 
     def set_up(self):
-        return
+        self.campaign_one = mommy.make_one("Force.Campaign")
+        self.campaign_two = mommy.make_one("Force.Campaign")
+        self.deployment_one = mommy.make_one('Force.Deployment', start_position=Point(12.4604, 43.9420), id=1)
+        self.deployment_two = mommy.make_one('Force.Deployment', start_position=Point(12.4604, 43.9420), id=2)
+        self.collection_one = mommy.make_one("collections.Collection")
+        self.user = User.objects.create_user("Joe")
+        self.collection_manager = CollectionManager()
+
+        #setup some images and assign to deployment_one
+        for i in xrange(0, 1):
+            mommy.make_one('Force.Image', deployment=self.deployment_one, image_position=Point(12.4604, 43.9420))
+
+        #setup some images and assign to deployment_two
+        for i in xrange(0, 1):
+            mommy.make_one('Force.Image', deployment=self.deployment_two, image_position=Point(12.4604, 43.9420))
 
     def test_get_all_camapaigns(self):
-        return
+        api_url = "/api/dev/campaign/?format=json&campaign="
 
     def test_get_deployements_for_given_campaign(self):
-        return
+        api_url = "/api/dev/deployment/?format=json"
 
     def test_get_paginated_images_for_campaign(self):
-        return
+        api_url = "/api/dev/image/?limit=30&campaign="
 
     def test_get_paginated_images_for_deployment(self):
-        return
+        api_url = "/api/dev/image/?limit=30&deployment="
 
     def test_get_paginated_images_for_collection(self):
-        return
+        api_url = "/api/dev/image/?limit=30&collection="

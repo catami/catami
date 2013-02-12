@@ -4,6 +4,7 @@ __author__ = 'Ariell Friedman'
 
 from django.conf.urls import patterns, url, include
 #from django.contrib.auth.models import User
+
 from django.contrib import admin
 admin.autodiscover()
 
