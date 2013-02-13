@@ -46,10 +46,15 @@ Template-specific javascript functions
                 images += '<img src="' + img.objects[i].left_image_reference + '"/>';
             }
             $("#thmlist").append(images);
-            //$('#deploymentSelect option:first').attr('selected', 'selected');
-            //$("#btnprev").attr("onClick","getImageList('"+img.meta.previous+"',0);");
-            $("#btnnext").attr("onClick","appendImageListAPI('"+img.meta.next+"');");
-            $("#thminfo").html('Viewing 1 to '+(img.meta.offset+img.meta.limit)+' of '+img.meta.total_count);
+
+            if (img.meta.total_count>0) {
+                //$('#deploymentSelect option:first').attr('selected', 'selected');
+                //$("#btnprev").attr("onClick","getImageList('"+img.meta.previous+"',0);");
+                $("#btnnext").attr("onClick","appendImageListAPI('"+img.meta.next+"');");
+                $("#thminfo").html('Viewing 1 to '+Math.min((img.meta.offset+img.meta.limit),img.meta.total_count)+' of '+img.meta.total_count);
+            } else {
+                $("#thminfo").html('No images available...');
+            }
             //alert(img.meta.next);
             //JSON.parse('{"' + decodeURI("abc=foo&def=%5Basf%5D&xyz=5".replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
         })
