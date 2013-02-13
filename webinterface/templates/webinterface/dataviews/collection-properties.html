@@ -5,7 +5,8 @@ Template-specific HTML
     {{ clname }} info:
     <div id="{{ clname }}-properties">
         <!-- Content from jquery -->
-        No {{ clname }} is currently selected
+        <h4>No {{ clname }} is currently selected.</h4>
+        Click below to select a {{ clname }}.
     </div>
 </small>
 <!------------------------------------------
@@ -17,6 +18,7 @@ Template-specific javascript functions
 
         $.getJSON(apiurl , function(cl){
             $("#{{ clname }}-properties").html('<h4>'+cl.objects[0].name+'</h4>');
+            $("#{{ clname }}-properties").append('<strong>'+cl.objects[0].creation_info+'</strong><br>');
             $("#{{ clname }}-properties").append('<em>'+cl.objects[0].description+'</em><br>');
             $("#{{ clname }}-properties").append('<strong>Date:</strong>'+cl.objects[0].creation_date+'<br>');
             $("#{{ clname }}-properties").append('<strong>Owner:</strong>'+cl.objects[0].owner+'<br>');

@@ -98,14 +98,6 @@
         setWorksetLists({{ collection_id }});
     });
 
-    // fix tabbing navigation from page url
-    if (window.location.hash.length > 0) {
-        $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');
-        $(window.location.hash).modal('show');
-        //alert(window.location.hash);
-    } else {
-        $('ul.nav-tabs > li > a:first').tab('show');
-    }
 
 
 </script>

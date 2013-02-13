@@ -44,7 +44,7 @@ Template-specific HTML
                 </div>
             </div>
         </div>
-        <a class="btn btn-primary" href="#NewWorksetModal" data-toggle="modal"  data-target="#NewWorksetModal"><i class="icon-plus-sign icon-white"></i> Create new Workset</a>
+        <a class="btn btn-primary" onclick="openNewModalWindow();"><i class="icon-plus-sign icon-white"></i> Create new Workset</a>
         <a class="btn btn-primary pull-right" href="#_" id="btnSelectWorkset"><i class="icon-th-list"></i> Select a Workset</a>
     </div>
 </div>
@@ -295,7 +295,9 @@ Template-specific HTML
 <!------------------------------------------
 Template-specific javascript functions
 ------------------------------------------->
-<script type="">
+<script type="text/javascript">
+
+
     function setWorksetLists(id) {
 
         var apiurl = "/api/dev/collection/?parent="+id;
@@ -325,7 +327,12 @@ Template-specific javascript functions
         getNewImageList('collection='+id);
         //alert('Wokset has been selected. ID: '+id);
         set{{ clname }}Properties(id);
-        $('#SelectWorksetModal').modal('hide')
+        $('#SelectWorksetModal').modal('hide');
         $('ul.nav-tabs > li > a[href="#thm"]').tab('show');
+    }
+
+    function openNewModalWindow() {
+        $('#SelectWorksetModal').modal('hide');
+        $('#NewWorksetModal').modal('show');
     }
 </script>

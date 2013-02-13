@@ -175,7 +175,16 @@
         		closeEffect	: 'none'
             });
         });
-        
+
+
+        // Allow tab and modal window navigation from anchor in page url
+        if (window.location.hash.length > 0) {
+            if($(window.location.hash).hasClass('tab-pane')) {
+                $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');
+            } else if ($(window.location.hash).hasClass('modal')) {
+                $(window.location.hash).modal('show');
+            }
+        }
     </script>
     {% block add_script %}{% endblock %}   
 

@@ -19,6 +19,7 @@ class CollectionManager(models.Manager):
         c.modified_date = datetime.now()
         c.is_public = True
         c.is_locked = True
+        c.creation_info = "Deployments: {0}".format(deployment)
 
         # save the collection so we can associate images with it
         c.save()
@@ -44,6 +45,7 @@ class CollectionManager(models.Manager):
         c.modified_date = datetime.now()
         c.is_public = False
         c.is_locked = True
+        c.creation_info = "Deployments: {0}".format(deployment_id_list_string)
 
         # save the collection so we can associate images with it
         c.save()
@@ -75,6 +77,7 @@ class CollectionManager(models.Manager):
         ws.is_public = ispublic
         ws.description = description
         ws.is_locked = True
+        ws.creation_info = "{0} random images".format(n)
 
         # save the workset so we can associate images with it
         ws.save()
@@ -102,6 +105,7 @@ class Collection(models.Model):
     is_locked = models.BooleanField()
     parent = models.ForeignKey('Collection', null=True, blank=True, default=None)
     images = models.ManyToManyField(Image, related_name='collections')
+    creation_info = models.CharField(max_length=200)
 
     class Meta:
         unique_together = (('owner', 'name'), )
