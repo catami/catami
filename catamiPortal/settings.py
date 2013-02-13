@@ -16,8 +16,8 @@ SKIP_SOUTH_TESTS = True # To disable South's own unit tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
                 '--with-coverage',
-                '--cover-package=Force,accounts,clustering,collection,dbadmintool,features,staging,webinterface'
-                '--coverage-exclude=../*migrations*'
+            #    '--cover-package=Force,accounts,clustering,collection,dbadmintool,features,staging,webinterface'
+            #    '--coverage-exclude=../*migrations*'
             ]
 
 # The root directory for staging/local storage.
