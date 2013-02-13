@@ -1,6 +1,0 @@
-Force/migrations
-clustering/migrations
-collection/migrations
-dbadmintool/migrations
-features/migrations
-staging/migrations
