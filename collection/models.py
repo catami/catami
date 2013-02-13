@@ -59,7 +59,7 @@ class CollectionManager(models.Manager):
 
     # NOTE: it may make sense to create one function for all the
     # different sampling methods instead of a separate one for each.
-    def workset_from_collection_random(self, user, name, description, ispublic, c_id, n):
+    def workset_from_collection(self, user, name, description, ispublic, c_id, n, method):
         """Create a workset (or child collection) from a parent collection
 
         Returns the created workset."""
@@ -77,22 +77,35 @@ class CollectionManager(models.Manager):
         ws.is_public = ispublic
         ws.description = description
         ws.is_locked = True
-        ws.creation_info = "{0} random images".format(n)
-
-        # save the workset so we can associate images with it
-        ws.save()
 
         # check that n < number of images in collection
         if cimages.count() < n:
-            print "Not enough images to subsample... setting n=images.count" # TODO: what is the best way to handle warnings?
+            print "WARNING: Not enough images to subsample... setting n=images.count" # TODO: what is the best way to handle warnings?
             n = cimages.count()
 
+        print "Debug 0"
         # subsample collection images and add to workset
-        wsimglist = sample(cimages,n)
+        if method == "random" :
+            ws.creation_info = "Random selection: {0} images".format(n)
+            wsimglist = sample(cimages,n)
+        elif method == "stratified" :
+            print "Debug 1"
+            ws.creation_info = "Stratified selection: every {0}th image".format(n) # TODO: add some logic "th" does not work for 1-3
+            print "Debug 2"
+            wsimglist = cimages[0:cimages.count():n]
+        else :
+            print "ERROR: Unrecognised method" # TODO: what is the best way to handle warnings?
+
+        # save the workset so we can associate images with it
+        ws.save()
+        print "Debug 3"
+        # Associate images with workset
         for image in wsimglist:
             ws.images.add(image)
 
         return ws
+
+
 
 
 class Collection(models.Model):

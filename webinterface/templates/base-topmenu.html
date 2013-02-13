@@ -177,7 +177,7 @@
         });
 
 
-        // Allow tab and modal window navigation from anchor in page url
+        // Activate tabs and modals from anchor in url links
         if (window.location.hash.length > 0) {
             if($(window.location.hash).hasClass('tab-pane')) {
                 $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');

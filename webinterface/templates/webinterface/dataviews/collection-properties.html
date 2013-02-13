@@ -13,16 +13,16 @@ Template-specific HTML
 Template-specific javascript functions
 ------------------------------------------->
 <script type="text/javascript">
-    function set{{ clname }}Properties(id) {
+    function setCollectionProperties(id, infoelement) {
         var apiurl = '/api/dev/collection/?id='+id;    //create api url with filter
 
         $.getJSON(apiurl , function(cl){
-            $("#{{ clname }}-properties").html('<h4>'+cl.objects[0].name+'</h4>');
-            $("#{{ clname }}-properties").append('<strong>'+cl.objects[0].creation_info+'</strong><br>');
-            $("#{{ clname }}-properties").append('<em>'+cl.objects[0].description+'</em><br>');
-            $("#{{ clname }}-properties").append('<strong>Date:</strong>'+cl.objects[0].creation_date+'<br>');
-            $("#{{ clname }}-properties").append('<strong>Owner:</strong>'+cl.objects[0].owner+'<br>');
-            $("#{{ clname }}-properties").append('<strong>Access:</strong>'+ (cl.objects[0].is_public ? 'Public' : 'Private') +'<br>');
+            $(infoelement).html('<h4>'+cl.objects[0].name+'</h4>');
+            $(infoelement).append('<strong>'+cl.objects[0].creation_info+'</strong><br>');
+            $(infoelement).append('<em>'+cl.objects[0].description+'</em><br>');
+            $(infoelement).append('<strong>Date:</strong>'+cl.objects[0].creation_date+'<br>');
+            $(infoelement).append('<strong>Owner:</strong>'+cl.objects[0].owner+'<br>');
+            $(infoelement).append('<strong>Access:</strong>'+ (cl.objects[0].is_public ? 'Public' : 'Private') +'<br>');
         })
     }
 </script>
