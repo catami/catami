@@ -16,8 +16,8 @@ Template-specific javascript functions
         $.getJSON(apiurl , function(cl){
             $(infoelement).html('<h4>'+cl.objects[0].name+'</h4>');
             $(infoelement).append('<strong>'+cl.objects[0].creation_info+'</strong><br>');
-            if (cl.objects[0].description) $(infoelement).append('<em>'+cl.objects[0].description+'</em><br>');
-            $(infoelement).append('<strong>Date:</strong> '+cl.objects[0].creation_date+'<br>');
+            if (cl.objects[0].description) $(infoelement).append('<em>'+cl.objects[0].description+'</em>');
+            $(infoelement).append('<hr><strong>Date:</strong> '+cl.objects[0].creation_date+'<br>');
             $(infoelement).append('<strong>Owner:</strong> '+cl.objects[0].owner+'<br>');
             $(infoelement).append('<strong>Access:</strong> '+ (cl.objects[0].is_public ? 'Public' : 'Private') +'<br>');
         })
