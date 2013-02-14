@@ -1,1 +1,1 @@
-{"dimensionality": 20, "cluster_granularity": 1, "nthreads": 1, "algorithm": "BGMM", "verbose_output": true, "image_primary_keys": ["00000001", "00000002"]}
+{"image_location": [], "dimensionality": 20, "cluster_granularity": 1, "nthreads": 1, "algorithm": "BGMM", "verbose_output": true, "image_primary_keys": [1, 2]}

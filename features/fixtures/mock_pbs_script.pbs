@@ -4,6 +4,8 @@
 #PBS -q routequeue
 #PBS -l walltime=12:00:00
 #PBS -l select=1:ncpus=12:mem=23gb
-cd /scratch/partner464/catami
+cd /scratch/partner464/catamihpc/
 
-echo "Running libCluster"
+module load python
+python /scratch/partner464/catamihpc//run_libfeature.py
+
