@@ -11,7 +11,7 @@
 		      <tr>
 		          <td><a href="{% url webinterface.views.view_collection collection_item.id %}" rel="popover-roll" data-content="<p>{{collection_item.description}}<p>" data-original-title="{{collection_item.name}}" data-html="true" data-placement="right" >{{collection_item.name}}</a></td>
 		          <td>{{collection_item.creation_date}}</td>
-		          <td>{{collection_item.owner}}</td>
+		          <td>{{collection_item.owner.first_name }} {{ collection_item.owner.last_name }}</td>
 		          <td style="text-align: right;">
 		          	  <a href="{% url webinterface.views.view_collection collection_item.id %}#map" rel="tooltip" title="View Collection map"><i class="icon-globe"></i></a>
 		              <a href="{% url webinterface.views.view_collection collection_item.id %}#thm" rel="tooltip" title="View Collection images"><i class="icon-eye-open"></i></a>
