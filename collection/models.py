@@ -25,8 +25,10 @@ class CollectionManager(models.Manager):
         c.save()
 
         # now add all the images
-        for image in deployment.image_set.all():
-            c.images.add(image)
+#        for image in deployment.image_set.all():
+#            c.images.add(image)
+        images = deployment.image_set.all()
+        c.images.add(*images)
 
         return c
 
@@ -52,8 +54,10 @@ class CollectionManager(models.Manager):
 
         # now add all the images
         for value in deployment_list:
-            for image in Image.objects.filter(deployment=Deployment.objects.filter(id=value)):
-                c.images.add(image)
+#            for image in Image.objects.filter(deployment=Deployment.objects.filter(id=value)):
+#                c.images.add(image)
+            images = Image.objects.filter(deployment=Deployment.objects.filter(id=value))
+            c.images.add(*images)
 
         return c
 
@@ -100,8 +104,9 @@ class CollectionManager(models.Manager):
         ws.save()
         print "Debug 3"
         # Associate images with workset
-        for image in wsimglist:
-            ws.images.add(image)
+#        for image in wsimglist:
+#            ws.images.add(image)
+        ws.images.add(*wsimglist)
 
         return ws
 
