@@ -36,9 +36,10 @@ class DeployJobTool():
     import features.RunScriptTool as DJT
     a = DJT.DeployJobTool()
     a.image_primary_keys = ['00000001','00000002'] #dummpy keys
-    a.write_json_file()
-    a.write_rand_numpy_array_to_disk()
-    a.compress_files()
+    a.make_image_list()
+    a.user_name = 'catamihpc'
+    a.user_password = '<pass>'
+    a.deploy_job('libfeature')
     """
 
     def __init__(self):
