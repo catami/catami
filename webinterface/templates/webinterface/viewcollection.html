@@ -35,15 +35,22 @@
 
 <div class="span2">
     <div class="well" style="padding:5px;">
-        {% with "Collection" as clname %}
-        {% include "webinterface/dataviews/collection-properties.html"%}
-        {% endwith %}
+        <small>
+            {% with "Collection" as clname %}
+                {{ clname }}:
+                {% include "webinterface/dataviews/collection-properties.html"%}
+            {% endwith %}
+        </small>
     </div>
     <div class="well" style="padding:5px;">
-        {% with "Workset" as clname %}
-            {% include "webinterface/dataviews/collection-properties.html"%}
-            {% include "webinterface/dataviews/worksetlists.html"%}
-        {% endwith %}
+        <small>
+            {% with "Workset" as clname %}
+                {{ clname }}:<br>
+                {% include "webinterface/dataviews/collection-properties.html"%}
+                <hr style="padding: 0; margin: 0;">
+                {% include "webinterface/dataviews/worksetlists.html"%}
+            {% endwith %}
+        </small>
     </div>
 </div>
 

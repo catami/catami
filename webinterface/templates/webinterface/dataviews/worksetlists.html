@@ -3,6 +3,7 @@ Template-specific HTML
 ------------------------------------------->
 <br>
 <div style="text-align: center;">
+<!--
     <a class="btn btn-primary" href="#SelectWorksetModal" data-toggle="modal"  data-target="#SelectWorksetModal"><i class="icon-th-list"></i> Select a Workset</a>
 </div>
 
@@ -12,6 +13,7 @@ Template-specific HTML
         <h3 id="SelectWorksetModalLabel">Select a Workset:</h3>
     </div>
     <div class="modal-body">
+    -->
         <div class="tab-pane" id="wks">
             <div class="tabbable">
                 <ul class="nav nav-tabs">
@@ -27,26 +29,28 @@ Template-specific HTML
                 </ul>
                 <div class="tab-content" style="margin: 0;">
                     <div class="tab-pane active" id="ws_all">
-                        <select name="allWorksets" size="10" multiple="multiple" id="allWorksets" style="width: 100%">
+                        <select name="allWorksets" size="7" multiple="multiple" id="allWorksets" style="width: 100%">
                             <!-- Content inserted from jqery -->
                         </select>
                     </div>
                     <div class="tab-pane" id="ws_pub">
-                        <select name="pubWorksets" size="10" multiple="multiple" id="pubWorksets" style="width: 100%" disabled="disabled">
+                        <select name="pubWorksets" size="7" multiple="multiple" id="pubWorksets" style="width: 100%" disabled="disabled">
                             <!-- Content inserted from jqery -->
                         </select>
                     </div>
                     <div class="tab-pane" id="ws_mine">
-                        <select name="myWorksets" size="10" multiple="multiple" id="myWorksets" style="width: 100%" disabled="disabled">
+                        <select name="myWorksets" size="7" multiple="multiple" id="myWorksets" style="width: 100%" disabled="disabled">
                             <!-- Content inserted from jqery -->
                         </select>
                     </div>
                 </div>
             </div>
         </div>
-        <a class="btn btn-primary" onclick="openNewModalWindow();"><i class="icon-plus-sign icon-white"></i> Create new Workset</a>
-        <a class="btn btn-primary pull-right" href="#_" id="btnSelectWorkset"><i class="icon-th-list"></i> Select a Workset</a>
+        <a class="btn btn-primary" style="width: 80%;" href="#_" id="btnSelectWorkset"><i class="icon-th-list"></i> Select Workset</a>
+        <a class="btn btn-primary" style="width: 80%;" onclick="openNewModalWindow();"><i class="icon-plus-sign icon-white"></i> Create new Workset</a>
+    <!--
     </div>
+    -->
 </div>
 
 

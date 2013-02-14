@@ -1,14 +1,11 @@
 <!------------------------------------------
 Template-specific HTML
 ------------------------------------------->
-<small>
-    {{ clname }} info:
-    <div id="{{ clname }}-properties">
-        <!-- Content from jquery -->
-        <h4>No {{ clname }} is currently selected.</h4>
-        Click below to select a {{ clname }}.
-    </div>
-</small>
+<div id="{{ clname }}-properties">
+    <!-- Content from jquery -->
+    <em>No {{ clname }} is currently selected. Please choose a {{ clname }}.</em>
+</div>
+
 <!------------------------------------------
 Template-specific javascript functions
 ------------------------------------------->
@@ -19,10 +16,10 @@ Template-specific javascript functions
         $.getJSON(apiurl , function(cl){
             $(infoelement).html('<h4>'+cl.objects[0].name+'</h4>');
             $(infoelement).append('<strong>'+cl.objects[0].creation_info+'</strong><br>');
-            $(infoelement).append('<em>'+cl.objects[0].description+'</em><br>');
-            $(infoelement).append('<strong>Date:</strong>'+cl.objects[0].creation_date+'<br>');
-            $(infoelement).append('<strong>Owner:</strong>'+cl.objects[0].owner+'<br>');
-            $(infoelement).append('<strong>Access:</strong>'+ (cl.objects[0].is_public ? 'Public' : 'Private') +'<br>');
+            if (cl.objects[0].description) $(infoelement).append('<em>'+cl.objects[0].description+'</em><br>');
+            $(infoelement).append('<strong>Date:</strong> '+cl.objects[0].creation_date+'<br>');
+            $(infoelement).append('<strong>Owner:</strong> '+cl.objects[0].owner+'<br>');
+            $(infoelement).append('<strong>Access:</strong> '+ (cl.objects[0].is_public ? 'Public' : 'Private') +'<br>');
         })
     }
 </script>
