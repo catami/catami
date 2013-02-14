@@ -122,7 +122,7 @@ def index(request):
         styled_deployment = {"deployment_type":deployment_type,"deployment_url":deployment_url,"deployment":deployment}
         styled_deployment_list.append(styled_deployment)
 
-    return render_to_response('catamiPortal/index.html',
+    return render_to_response('webinterface/index.html',
         {'styled_deployment_list':styled_deployment_list,
          'image_link_list': image_link_list},
         RequestContext(request))
@@ -209,7 +209,11 @@ def public_collections(request):
 
 @waffle_switch('Collections')
 def view_collection(request, collection_id):
-    return render_to_response('webinterface/viewcollection.html', {"collection_id": collection_id}, RequestContext(request))
+    return render_to_response('webinterface/viewcollection.html', 
+        {"collection_id": collection_id,
+        'WMS_URL': settings.WMS_URL, #imported from settings
+        'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME}, 
+        RequestContext(request))
 
 # view collection table views
 #def public_collections_all(request):
