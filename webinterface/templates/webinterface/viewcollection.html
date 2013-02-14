@@ -52,7 +52,7 @@
     <div class="well sidepanel" style="padding:5px;">
         <small>
             {% with "Workset" as clname %}
-                {{ clname }}:<hr>
+                {{ clname }}:<a href="#_" class="pull-right" id="clearWorksetLink"></a><hr>
                 {% include "webinterface/dataviews/collection-properties.html"%}
                 <hr>
                 {% include "webinterface/dataviews/worksetlists.html"%}
@@ -89,8 +89,8 @@
             {% include "webinterface/dataviews/thumbnails.html"%}
         </div>
         <div class="tab-pane" id="ant">
-            Annotate
-
+            This will give options to continue or create an annotation run on the selected Workset.<br>
+            <a href="{% url webinterface.views.image_annotate %}" class="btn btn-primary imageframe" data-fancybox-group="annotationlist" data-fancybox-type="iframe" rel="tooltip" title="Annotate Workset1"><i class="icon-tag"></i> Annotate!</a>
         </div>
         <div class="tab-pane" id="cls">
             Classify
