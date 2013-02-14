@@ -1193,3 +1193,594 @@ DoesNotExist: ScientificMeasurementType matching query does not exist.
 2013-02-11 12:21:13,504 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
 2013-02-11 12:21:13,504 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.DateField object at 0x117aedbd0>'
 2013-02-11 12:21:13,504 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.TimeField object at 0x1172d2210>'
+2013-02-12 08:38:42,707 - staging.forms - DEBUG - clean_mission_name: cleaning name r20110612_033752_st_helens_01_elephant_rock_deep_repeat
+2013-02-12 08:38:42,711 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-02-12 08:38:42,711 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-02-12 08:38:42,714 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-02-12 08:38:43,799 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-02-12 08:38:44,011 - staging.views - DEBUG - auvimport: processing remote files and importing to database.
+2013-02-12 08:38:57,465 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-02-12 13:31:11,462 - staging.forms - DEBUG - clean_mission_name: cleaning name r20110612_033752_st_helens_01_elephant_rock_deep_repeat
+2013-02-12 13:31:11,466 - staging.forms - DEBUG - AUVImportForm.clean_mission_name: valid name.
+2013-02-12 13:31:11,467 - staging.views - DEBUG - auvimport: determining remote files to fetch.
+2013-02-12 13:31:11,470 - staging.views - DEBUG - auvimport: fetching remote track file.
+2013-02-12 13:31:12,069 - staging.views - DEBUG - auvimport: fetching remote netcdf file.
+2013-02-12 13:31:12,443 - staging.views - DEBUG - auvimport: processing remote files and importing to database.
+2013-02-12 13:31:35,444 - staging.views - DEBUG - auvimport: import successful, redirecting to auvimported.
+2013-02-12 15:34:13,893 - dbadmintool.administratorbot - DEBUG - Connection open to database :: default
+2013-02-12 15:34:13,893 - dbadmintool.administratorbot - ERROR - Cannot connect to database :: nodatabase :: Query failed
+2013-02-12 15:34:47,720 - dbadmintool.administratorbot - DEBUG - {'Campaign': 1, 'Image': 2346, 'AUVDeployment': 1, 'BRUVDeployment': 0, 'TIDeployment': 0, 'User': 0, 'Deployment': 1, 'StereoImage': 0, 'TVDeployment': 0, 'Annotation': 0, 'DOVDeployment': 0}
+2013-02-12 15:34:47,720 - dbadmintool.administratorbot - DEBUG - Collecting stats
+2013-02-12 15:34:47,863 - dbadmintool.administratorbot - DEBUG - {'Campaign': 1, 'Image': 2346, 'AUVDeployment': 1, 'BRUVDeployment': 0, 'TIDeployment': 0, 'User': 0, 'Deployment': 1, 'StereoImage': 0, 'TVDeployment': 0, 'Annotation': 0, 'DOVDeployment': 0}
+2013-02-12 15:35:26,058 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-12 15:35:21.934244-Force.bak.tar.gz Checksum :: b31ac79c8be1b87f71879f30ee2ff17c0ef5670d
+2013-02-12 15:35:26,060 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-02-12 15:35:21.934244-Force.bak.tar.gz Checksum :: b31ac79c8be1b87f71879f30ee2ff17c0ef5670d
+2013-02-12 15:35:26,060 - dbadmintool.administratorbot - DEBUG - backup archive copied correctly
+2013-02-12 15:35:26,061 - dbadmintool.administratorbot - DEBUG - 2013-02-12 15:35:21.934244-Force.bak is3072955 bytes in size
+2013-02-12 15:35:26,108 - dbadmintool.administratorbot - DEBUG - File name in archive matches backup file
+2013-02-12 15:35:26,216 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-12 15:35:21.934244-Force.bak Checksum :: 3a96e736b3b99074de5e8c3d2df016ca5f25cacd
+2013-02-12 15:35:26,234 - dbadmintool.administratorbot - DEBUG - /tmp/2013-02-12 15:35:21.934244-Force.bak Checksum :: 3a96e736b3b99074de5e8c3d2df016ca5f25cacd
+2013-02-12 15:35:26,234 - dbadmintool.administratorbot - DEBUG - backup file copied correctly
+2013-02-12 15:35:26,234 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-02-12 15:35:30,089 - dbadmintool.administratorbot - DEBUG - File and copy checksums agree
+2013-02-12 15:35:34,313 - dbadmintool.administratorbot - ERROR - File and copy checksums dont agree
+2013-02-12 15:35:38,561 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-12 15:35:34.315491-Force.bak.tar.gz Checksum :: 952e14c66548535d36abf6f35b2ff56096fa9647
+2013-02-12 15:35:38,563 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-02-12 15:35:34.315491-Force.bak.tar.gz Checksum :: 952e14c66548535d36abf6f35b2ff56096fa9647
+2013-02-12 15:35:38,563 - dbadmintool.administratorbot - ERROR - backup archive check sum fail
+2013-02-12 15:35:38,564 - dbadmintool.administratorbot - DEBUG - 2013-02-12 15:35:34.315491-Force.bak is3072955 bytes in size
+2013-02-12 15:35:38,596 - dbadmintool.administratorbot - ERROR - File name in archive does not match backup file
+2013-02-12 15:35:38,693 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-12 15:35:34.315491-Force.bak Checksum :: 3a96e736b3b99074de5e8c3d2df016ca5f25cacd
+2013-02-12 15:35:38,711 - dbadmintool.administratorbot - DEBUG - /tmp/2013-02-12 15:35:34.315491-Force.bak Checksum :: 3a96e736b3b99074de5e8c3d2df016ca5f25cacd
+2013-02-12 15:35:38,711 - dbadmintool.administratorbot - ERROR - backup file check sum fail
+2013-02-12 15:35:38,711 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-02-12 15:35:38,714 - features.RunScriptTool - DEBUG - job_id is :: 3AAPV3VIOHNH
+2013-02-12 15:35:38,763 - features.RunScriptTool - DEBUG - Writing features.json to disk at location :: /tmp/CATAMI/features/Anon/3AAPV3VIOHNH
+2013-02-12 15:35:38,768 - features.RunScriptTool - DEBUG - job_id is :: IIGLXWLFVFX3
+2013-02-12 15:35:38,770 - features.RunScriptTool - DEBUG - Writing features.json to disk at location :: /tmp/CATAMI/features/Anon/IIGLXWLFVFX3
+2013-02-12 15:35:38,787 - features.RunScriptTool - DEBUG - job_id is :: UU4F8BXZCJPH
+2013-02-12 15:35:38,795 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-12 15:35:38,795 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-12 15:35:38,796 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-12 15:35:38,797 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-12 15:35:38,798 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-12 15:35:38,798 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-12 15:35:38,798 - features.RunScriptTool - ERROR - Failed to submit job :: catami.pbs
+2013-02-12 15:35:38,799 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-12 15:35:38,799 - features.RunScriptTool - ERROR - Failed to PUT :: catami.pbs to server :: epic.ivec.org
+2013-02-12 15:35:38,800 - features.RunScriptTool - DEBUG - Writing pbs script :: catami.pbs
+2013-02-12 15:36:23,596 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-02-12 15:36:23,596 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-12 15:36:23,596 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-12 15:36:26,443 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-02-12 15:36:26,443 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-12 15:36:26,443 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-12 15:36:54,836 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/invalid.extension
+2013-02-12 15:36:54,836 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-12 15:36:54,837 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-12 15:36:54,837 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-02-12 15:36:54,838 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-02-12 15:36:54,838 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-02-12 15:36:54,838 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-12 15:36:54,838 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-12 15:36:57,086 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-02-12 15:36:57,086 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-02-12 15:36:57,087 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-12 15:36:57,087 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-12 15:37:27,449 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-12 15:37:27,449 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-12 15:37:27,449 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-12 15:37:27,450 - staging.metadata - DEBUG - xls_transform: opening workbook.
+2013-02-12 15:37:29,894 - staging.metadata - DEBUG - xls_transform: found 23 headings.
+2013-02-12 15:37:29,895 - staging.metadata - DEBUG - xls_transform: using headings as fields.
+2013-02-12 15:37:29,895 - staging.metadata - DEBUG - xls_transform: mapping 23 columns.
+2013-02-12 15:37:29,932 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-12 15:37:29,932 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-12 15:37:29,932 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-12 15:37:29,932 - staging.metadata - DEBUG - xlsx_transform: opening workbook.
+2013-02-12 15:37:58,782 - staging.metadata - DEBUG - xlsx_transform: found 23 headings.
+2013-02-12 15:37:58,782 - staging.metadata - DEBUG - xlsx_transform: using headings as fields.
+2013-02-12 15:37:58,782 - staging.metadata - DEBUG - xlsx_transform: mapping 23 columns.
+2013-02-12 15:37:58,891 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-12 15:37:58,891 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-12 15:37:58,892 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-12 15:37:58,892 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-02-12 15:37:58,893 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-12 15:37:58,893 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-12 15:37:58,893 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-12 15:37:58,894 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-12 15:37:58,894 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-12 15:37:58,894 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-12 15:38:03,167 - staging.views - DEBUG - metadatastage: validated, now saving.
+2013-02-12 15:38:03,199 - staging.views - DEBUG - metadatastage: saved, now redirecting.
+2013-02-12 15:38:03,203 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 15:38:03,203 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-12 15:38:03,203 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x10c743210>
+2013-02-12 15:38:03,203 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x10ce85a50>
+2013-02-12 15:38:03,203 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 15:38:03,204 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-12 15:38:03,204 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 15:38:03,204 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-12 15:38:03,205 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x10ce85c10>
+2013-02-12 15:38:03,205 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-12 15:38:03,207 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 15:38:03,207 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-12 15:38:03,208 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x10f230fd0>
+2013-02-12 15:38:03,208 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x10f230310>
+2013-02-12 15:38:03,208 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x10f230890>
+2013-02-12 15:38:03,208 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-12 15:38:03,208 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x10f230650>'
+2013-02-12 15:38:03,209 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x10f230410>'
+2013-02-12 15:38:03,209 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointWidget object at 0x10ce85650>
+2013-02-12 15:38:03,211 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-02-12 15:38:03,212 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-02-12 15:38:03,212 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 15:38:03,212 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-12 15:38:03,213 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x10f230f50>, <staging.widgets.MultiColumnWidget object at 0x10f072dd0>, <django.forms.widgets.TextInput object at 0x10ce85190>)
+2013-02-12 15:38:03,213 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x10ce85fd0>
+2013-02-12 15:38:03,214 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-12 15:38:03,217 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-02-12 15:38:03,218 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-02-12 15:38:03,218 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 15:38:03,218 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-12 15:38:03,218 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x10f230a90>, <staging.widgets.MultiColumnWidget object at 0x10f230ed0>, <django.forms.widgets.TextInput object at 0x10ce85390>)
+2013-02-12 15:38:03,218 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x10ce856d0>
+2013-02-12 15:38:03,219 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-12 15:38:03,220 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-02-12 15:38:03,221 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x10f230e10> <django.forms.widgets.TextInput object at 0x10ce85390>
+2013-02-12 15:38:03,222 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-02-12 15:38:03,222 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x10f230e10> <django.forms.widgets.TextInput object at 0x10ce85390>
+2013-02-12 15:38:03,222 - staging.widgets - DEBUG - MultiSourceField creating for field type 'PointField', label 'None'
+2013-02-12 15:38:03,223 - staging.widgets - DEBUG - MultiSourceField base widget type 'PointWidget'
+2013-02-12 15:38:03,238 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 15:38:03,239 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-12 15:38:03,239 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x10f230210>
+2013-02-12 15:38:03,239 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x10f230d90>
+2013-02-12 15:38:03,239 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x10cf00350>, <staging.widgets.MultiColumnWidget object at 0x10cf00bd0>, <staging.widgets.PointWidget object at 0x10f230110>)
+2013-02-12 15:38:03,239 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x10f230510>
+2013-02-12 15:38:03,240 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-12 15:38:03,240 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x10f230dd0>'
+2013-02-12 15:38:03,273 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x10f230a50>'
+2013-02-12 15:38:03,277 - staging.widgets - DEBUG - MultiSourceField creating for field type 'SplitDateTimeField', label 'None'
+2013-02-12 15:38:03,278 - staging.widgets - DEBUG - MultiSourceField base widget type 'SplitDateTimeWidget'
+2013-02-12 15:38:03,278 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 15:38:03,279 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-12 15:38:03,279 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.DateInput object at 0x10d0bf410>
+2013-02-12 15:38:03,279 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TimeInput object at 0x10d0bf950>
+2013-02-12 15:38:03,280 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x10d0bf110>, <staging.widgets.MultiColumnWidget object at 0x10d0bf210>, <django.forms.widgets.SplitDateTimeWidget object at 0x10f230410>)
+2013-02-12 15:38:03,280 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.SplitDateTimeField object at 0x10ce85190>
+2013-02-12 15:38:03,280 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-12 15:38:03,281 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.DateField object at 0x10f230e90>'
+2013-02-12 15:38:03,281 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.TimeField object at 0x10f230450>'
+2013-02-12 16:20:51,889 - dbadmintool.administratorbot - DEBUG - Connection open to database :: default
+2013-02-12 16:20:51,890 - dbadmintool.administratorbot - ERROR - Cannot connect to database :: nodatabase :: Query failed
+2013-02-12 16:21:42,706 - dbadmintool.administratorbot - DEBUG - {'Campaign': 1, 'Image': 2346, 'AUVDeployment': 1, 'BRUVDeployment': 0, 'TIDeployment': 0, 'User': 0, 'Deployment': 1, 'StereoImage': 0, 'TVDeployment': 0, 'Annotation': 0, 'DOVDeployment': 0}
+2013-02-12 16:21:42,706 - dbadmintool.administratorbot - DEBUG - Collecting stats
+2013-02-12 16:21:42,910 - dbadmintool.administratorbot - DEBUG - {'Campaign': 1, 'Image': 2346, 'AUVDeployment': 1, 'BRUVDeployment': 0, 'TIDeployment': 0, 'User': 0, 'Deployment': 1, 'StereoImage': 0, 'TVDeployment': 0, 'Annotation': 0, 'DOVDeployment': 0}
+2013-02-12 16:23:05,987 - dbadmintool.administratorbot - DEBUG - Connection open to database :: default
+2013-02-12 16:23:05,988 - dbadmintool.administratorbot - ERROR - Cannot connect to database :: nodatabase :: Query failed
+2013-02-12 16:23:51,330 - dbadmintool.administratorbot - DEBUG - {'Campaign': 1, 'Image': 2346, 'AUVDeployment': 1, 'BRUVDeployment': 0, 'TIDeployment': 0, 'User': 0, 'Deployment': 1, 'StereoImage': 0, 'TVDeployment': 0, 'Annotation': 0, 'DOVDeployment': 0}
+2013-02-12 16:23:51,330 - dbadmintool.administratorbot - DEBUG - Collecting stats
+2013-02-12 16:23:51,536 - dbadmintool.administratorbot - DEBUG - {'Campaign': 1, 'Image': 2346, 'AUVDeployment': 1, 'BRUVDeployment': 0, 'TIDeployment': 0, 'User': 0, 'Deployment': 1, 'StereoImage': 0, 'TVDeployment': 0, 'Annotation': 0, 'DOVDeployment': 0}
+2013-02-12 16:24:53,898 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-12 16:24:44.531850-Force.bak.tar.gz Checksum :: eb0ff7dcf6110d844e985b528c6623ee8d1f4585
+2013-02-12 16:24:53,901 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-02-12 16:24:44.531850-Force.bak.tar.gz Checksum :: eb0ff7dcf6110d844e985b528c6623ee8d1f4585
+2013-02-12 16:24:53,907 - dbadmintool.administratorbot - DEBUG - backup archive copied correctly
+2013-02-12 16:24:53,908 - dbadmintool.administratorbot - DEBUG - 2013-02-12 16:24:44.531850-Force.bak is3072955 bytes in size
+2013-02-12 16:24:53,974 - dbadmintool.administratorbot - DEBUG - File name in archive matches backup file
+2013-02-12 16:24:54,111 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-12 16:24:44.531850-Force.bak Checksum :: e642a71899a870cea88976c84b1332f5ef3ff226
+2013-02-12 16:24:54,131 - dbadmintool.administratorbot - DEBUG - /tmp/2013-02-12 16:24:44.531850-Force.bak Checksum :: e642a71899a870cea88976c84b1332f5ef3ff226
+2013-02-12 16:24:54,131 - dbadmintool.administratorbot - DEBUG - backup file copied correctly
+2013-02-12 16:24:54,132 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-02-12 16:25:03,066 - dbadmintool.administratorbot - DEBUG - File and copy checksums agree
+2013-02-12 16:25:12,964 - dbadmintool.administratorbot - ERROR - File and copy checksums dont agree
+2013-02-12 16:25:23,251 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-12 16:25:12.966162-Force.bak.tar.gz Checksum :: 8ecea9471f54620c5ea32e22139b6fd39501dfd7
+2013-02-12 16:25:23,254 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-02-12 16:25:12.966162-Force.bak.tar.gz Checksum :: 8ecea9471f54620c5ea32e22139b6fd39501dfd7
+2013-02-12 16:25:23,254 - dbadmintool.administratorbot - ERROR - backup archive check sum fail
+2013-02-12 16:25:23,255 - dbadmintool.administratorbot - DEBUG - 2013-02-12 16:25:12.966162-Force.bak is3072955 bytes in size
+2013-02-12 16:25:23,321 - dbadmintool.administratorbot - ERROR - File name in archive does not match backup file
+2013-02-12 16:25:23,432 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-12 16:25:12.966162-Force.bak Checksum :: e642a71899a870cea88976c84b1332f5ef3ff226
+2013-02-12 16:25:23,457 - dbadmintool.administratorbot - DEBUG - /tmp/2013-02-12 16:25:12.966162-Force.bak Checksum :: e642a71899a870cea88976c84b1332f5ef3ff226
+2013-02-12 16:25:23,458 - dbadmintool.administratorbot - ERROR - backup file check sum fail
+2013-02-12 16:25:23,459 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-02-12 16:25:23,467 - features.RunScriptTool - DEBUG - job_id is :: 486BXV30CWEG
+2013-02-12 16:25:23,472 - features.RunScriptTool - DEBUG - Writing features.json to disk at location :: /tmp/CATAMI/features/Anon/486BXV30CWEG
+2013-02-12 16:25:23,487 - features.RunScriptTool - DEBUG - job_id is :: PUIRAPDK9TU6
+2013-02-12 16:25:23,488 - features.RunScriptTool - DEBUG - Writing features.json to disk at location :: /tmp/CATAMI/features/Anon/PUIRAPDK9TU6
+2013-02-12 16:25:23,489 - features.RunScriptTool - DEBUG - job_id is :: 1NFLH2S2JHKO
+2013-02-12 16:25:23,492 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-12 16:25:23,494 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-12 16:25:23,496 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-12 16:25:23,497 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-12 16:25:23,499 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-12 16:25:23,499 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-12 16:25:23,500 - features.RunScriptTool - ERROR - Failed to submit job :: catami.pbs
+2013-02-12 16:25:23,501 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-12 16:25:23,502 - features.RunScriptTool - ERROR - Failed to PUT :: catami.pbs to server :: epic.ivec.org
+2013-02-12 16:25:23,503 - features.RunScriptTool - DEBUG - Writing pbs script :: catami.pbs
+2013-02-12 16:26:31,684 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-02-12 16:26:31,684 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-12 16:26:31,685 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-12 16:26:35,569 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-02-12 16:26:35,569 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-12 16:26:35,570 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-12 16:27:11,698 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/invalid.extension
+2013-02-12 16:27:11,698 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-12 16:27:11,699 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-12 16:27:11,699 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-02-12 16:27:11,700 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-02-12 16:27:11,700 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-02-12 16:27:11,701 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-12 16:27:11,701 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-12 16:27:16,503 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-02-12 16:27:16,503 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-02-12 16:27:16,504 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-12 16:27:16,504 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-12 16:27:56,047 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-12 16:27:56,048 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-12 16:27:56,048 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-12 16:27:56,048 - staging.metadata - DEBUG - xls_transform: opening workbook.
+2013-02-12 16:28:00,398 - staging.metadata - DEBUG - xls_transform: found 23 headings.
+2013-02-12 16:28:00,399 - staging.metadata - DEBUG - xls_transform: using headings as fields.
+2013-02-12 16:28:00,399 - staging.metadata - DEBUG - xls_transform: mapping 23 columns.
+2013-02-12 16:28:00,447 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-12 16:28:00,448 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-12 16:28:00,448 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-12 16:28:00,449 - staging.metadata - DEBUG - xlsx_transform: opening workbook.
+2013-02-12 16:28:39,554 - staging.metadata - DEBUG - xlsx_transform: found 23 headings.
+2013-02-12 16:28:39,555 - staging.metadata - DEBUG - xlsx_transform: using headings as fields.
+2013-02-12 16:28:39,555 - staging.metadata - DEBUG - xlsx_transform: mapping 23 columns.
+2013-02-12 16:28:39,711 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-12 16:28:39,712 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-12 16:28:39,712 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-12 16:28:39,713 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-02-12 16:28:39,714 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-12 16:28:39,714 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-12 16:28:39,715 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-12 16:28:39,715 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-12 16:28:39,715 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-12 16:28:39,716 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-12 16:28:45,199 - staging.views - DEBUG - metadatastage: validated, now saving.
+2013-02-12 16:28:45,252 - staging.views - DEBUG - metadatastage: saved, now redirecting.
+2013-02-12 16:28:45,258 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 16:28:45,258 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-12 16:28:45,258 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x119767e10>
+2013-02-12 16:28:45,259 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x118ada8d0>
+2013-02-12 16:28:45,259 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 16:28:45,259 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-12 16:28:45,260 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 16:28:45,260 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-12 16:28:45,260 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x118ada910>
+2013-02-12 16:28:45,261 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-12 16:28:45,261 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 16:28:45,261 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-12 16:28:45,261 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x118adad50>
+2013-02-12 16:28:45,262 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x118adac10>
+2013-02-12 16:28:45,262 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x118adab50>
+2013-02-12 16:28:45,262 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-12 16:28:45,262 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x118adacd0>'
+2013-02-12 16:28:45,263 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x118adaf50>'
+2013-02-12 16:28:45,264 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointWidget object at 0x118ada8d0>
+2013-02-12 16:28:45,265 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-02-12 16:28:45,265 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-02-12 16:28:45,265 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 16:28:45,265 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-12 16:28:45,266 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x118adadd0>, <staging.widgets.MultiColumnWidget object at 0x118ada190>, <django.forms.widgets.TextInput object at 0x118adaa10>)
+2013-02-12 16:28:45,266 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x118ada410>
+2013-02-12 16:28:45,266 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-12 16:28:45,271 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-02-12 16:28:45,272 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-02-12 16:28:45,299 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 16:28:45,300 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-12 16:28:45,300 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x118adad90>, <staging.widgets.MultiColumnWidget object at 0x118ada910>, <django.forms.widgets.TextInput object at 0x118ada150>)
+2013-02-12 16:28:45,300 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x118adaed0>
+2013-02-12 16:28:45,301 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-12 16:28:45,302 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-02-12 16:28:45,302 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x118ada890> <django.forms.widgets.TextInput object at 0x118ada150>
+2013-02-12 16:28:45,303 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-02-12 16:28:45,303 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x118ada890> <django.forms.widgets.TextInput object at 0x118ada150>
+2013-02-12 16:28:45,304 - staging.widgets - DEBUG - MultiSourceField creating for field type 'PointField', label 'None'
+2013-02-12 16:28:45,304 - staging.widgets - DEBUG - MultiSourceField base widget type 'PointWidget'
+2013-02-12 16:28:45,305 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 16:28:45,305 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-12 16:28:45,305 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x119e80e10>
+2013-02-12 16:28:45,305 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x119e80250>
+2013-02-12 16:28:45,306 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x119e80790>, <staging.widgets.MultiColumnWidget object at 0x119e80a90>, <staging.widgets.PointWidget object at 0x119e80ad0>)
+2013-02-12 16:28:45,306 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x119e80a50>
+2013-02-12 16:28:45,307 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-12 16:28:45,308 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x119e809d0>'
+2013-02-12 16:28:45,308 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x119e80050>'
+2013-02-12 16:28:45,375 - staging.widgets - DEBUG - MultiSourceField creating for field type 'SplitDateTimeField', label 'None'
+2013-02-12 16:28:45,376 - staging.widgets - DEBUG - MultiSourceField base widget type 'SplitDateTimeWidget'
+2013-02-12 16:28:45,376 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-12 16:28:45,376 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-12 16:28:45,377 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.DateInput object at 0x119e80150>
+2013-02-12 16:28:45,377 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TimeInput object at 0x119e80d10>
+2013-02-12 16:28:45,378 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x117f0ed10>, <staging.widgets.MultiColumnWidget object at 0x117f0edd0>, <django.forms.widgets.SplitDateTimeWidget object at 0x118ada050>)
+2013-02-12 16:28:45,378 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.SplitDateTimeField object at 0x118adaf50>
+2013-02-12 16:28:45,378 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-12 16:28:45,379 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.DateField object at 0x118adadd0>'
+2013-02-12 16:28:45,379 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.TimeField object at 0x118ada190>'
+2013-02-13 09:14:01,375 - dbadmintool.administratorbot - DEBUG - Connection open to database :: default
+2013-02-13 09:14:01,376 - dbadmintool.administratorbot - ERROR - Cannot connect to database :: nodatabase :: Query failed
+2013-02-13 09:14:55,844 - dbadmintool.administratorbot - DEBUG - {'Campaign': 1, 'Image': 2346, 'AUVDeployment': 1, 'BRUVDeployment': 0, 'TIDeployment': 0, 'User': 0, 'Deployment': 1, 'StereoImage': 0, 'TVDeployment': 0, 'Annotation': 0, 'DOVDeployment': 0}
+2013-02-13 09:14:55,844 - dbadmintool.administratorbot - DEBUG - Collecting stats
+2013-02-13 09:14:56,051 - dbadmintool.administratorbot - DEBUG - {'Campaign': 1, 'Image': 2346, 'AUVDeployment': 1, 'BRUVDeployment': 0, 'TIDeployment': 0, 'User': 0, 'Deployment': 1, 'StereoImage': 0, 'TVDeployment': 0, 'Annotation': 0, 'DOVDeployment': 0}
+2013-02-13 09:15:50,037 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-13 09:15:42.342968-Force.bak.tar.gz Checksum :: 92048f0f7b5367e412fdc7f91afb29911dbe0b55
+2013-02-13 09:15:50,039 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-02-13 09:15:42.342968-Force.bak.tar.gz Checksum :: 92048f0f7b5367e412fdc7f91afb29911dbe0b55
+2013-02-13 09:15:50,039 - dbadmintool.administratorbot - DEBUG - backup archive copied correctly
+2013-02-13 09:15:50,040 - dbadmintool.administratorbot - DEBUG - 2013-02-13 09:15:42.342968-Force.bak is3072955 bytes in size
+2013-02-13 09:15:50,081 - dbadmintool.administratorbot - DEBUG - File name in archive matches backup file
+2013-02-13 09:15:50,270 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-13 09:15:42.342968-Force.bak Checksum :: c4cb077a1a0d838ae31e541bb4c93aa02f3eea95
+2013-02-13 09:15:50,288 - dbadmintool.administratorbot - DEBUG - /tmp/2013-02-13 09:15:42.342968-Force.bak Checksum :: c4cb077a1a0d838ae31e541bb4c93aa02f3eea95
+2013-02-13 09:15:50,288 - dbadmintool.administratorbot - DEBUG - backup file copied correctly
+2013-02-13 09:15:50,289 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-02-13 09:15:57,994 - dbadmintool.administratorbot - DEBUG - File and copy checksums agree
+2013-02-13 09:16:05,527 - dbadmintool.administratorbot - ERROR - File and copy checksums dont agree
+2013-02-13 09:16:13,092 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-13 09:16:05.529285-Force.bak.tar.gz Checksum :: 30bbe49d9381e359daad5433e950e158f0467538
+2013-02-13 09:16:13,094 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-02-13 09:16:05.529285-Force.bak.tar.gz Checksum :: 30bbe49d9381e359daad5433e950e158f0467538
+2013-02-13 09:16:13,094 - dbadmintool.administratorbot - ERROR - backup archive check sum fail
+2013-02-13 09:16:13,095 - dbadmintool.administratorbot - DEBUG - 2013-02-13 09:16:05.529285-Force.bak is3072955 bytes in size
+2013-02-13 09:16:13,157 - dbadmintool.administratorbot - ERROR - File name in archive does not match backup file
+2013-02-13 09:16:13,432 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-13 09:16:05.529285-Force.bak Checksum :: c4cb077a1a0d838ae31e541bb4c93aa02f3eea95
+2013-02-13 09:16:13,453 - dbadmintool.administratorbot - DEBUG - /tmp/2013-02-13 09:16:05.529285-Force.bak Checksum :: c4cb077a1a0d838ae31e541bb4c93aa02f3eea95
+2013-02-13 09:16:13,453 - dbadmintool.administratorbot - ERROR - backup file check sum fail
+2013-02-13 09:16:13,454 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-02-13 09:16:13,560 - features.RunScriptTool - DEBUG - job_id is :: JY9F6KXLR79L
+2013-02-13 09:16:13,567 - features.RunScriptTool - DEBUG - Writing features.json to disk at location :: /tmp/CATAMI/features/Anon/JY9F6KXLR79L
+2013-02-13 09:16:13,587 - features.RunScriptTool - DEBUG - job_id is :: JZLS2QBGOQCI
+2013-02-13 09:16:13,587 - features.RunScriptTool - DEBUG - Writing features.json to disk at location :: /tmp/CATAMI/features/Anon/JZLS2QBGOQCI
+2013-02-13 09:16:13,606 - features.RunScriptTool - DEBUG - job_id is :: 7ICF6GL8YSN1
+2013-02-13 09:16:13,609 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-13 09:16:13,610 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-13 09:16:13,613 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-13 09:16:13,614 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-13 09:16:13,626 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-13 09:16:13,629 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-13 09:16:13,630 - features.RunScriptTool - ERROR - Failed to submit job :: catami.pbs
+2013-02-13 09:16:13,638 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-13 09:16:13,642 - features.RunScriptTool - ERROR - Failed to PUT :: catami.pbs to server :: epic.ivec.org
+2013-02-13 09:16:13,645 - features.RunScriptTool - DEBUG - Writing pbs script :: catami.pbs
+2013-02-13 09:17:08,163 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-02-13 09:17:08,163 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-13 09:17:08,163 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-13 09:17:11,956 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-02-13 09:17:11,957 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-13 09:17:11,957 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-13 09:17:45,686 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/invalid.extension
+2013-02-13 09:17:45,687 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-13 09:17:45,687 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-13 09:17:45,687 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-02-13 09:17:45,688 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-02-13 09:17:45,688 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-02-13 09:17:45,689 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-13 09:17:45,689 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-13 09:17:49,407 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-02-13 09:17:49,407 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-02-13 09:17:49,408 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-13 09:17:49,408 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-13 09:18:24,454 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-13 09:18:24,454 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-13 09:18:24,454 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-13 09:18:24,454 - staging.metadata - DEBUG - xls_transform: opening workbook.
+2013-02-13 09:18:29,758 - staging.metadata - DEBUG - xls_transform: found 23 headings.
+2013-02-13 09:18:29,759 - staging.metadata - DEBUG - xls_transform: using headings as fields.
+2013-02-13 09:18:29,759 - staging.metadata - DEBUG - xls_transform: mapping 23 columns.
+2013-02-13 09:18:29,808 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-13 09:18:29,809 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-13 09:18:29,810 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-13 09:18:29,810 - staging.metadata - DEBUG - xlsx_transform: opening workbook.
+2013-02-13 09:19:03,197 - staging.metadata - DEBUG - xlsx_transform: found 23 headings.
+2013-02-13 09:19:03,197 - staging.metadata - DEBUG - xlsx_transform: using headings as fields.
+2013-02-13 09:19:03,197 - staging.metadata - DEBUG - xlsx_transform: mapping 23 columns.
+2013-02-13 09:19:03,345 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-13 09:19:03,345 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-13 09:19:03,345 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-13 09:19:03,346 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-02-13 09:19:03,347 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-13 09:19:03,347 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-13 09:19:03,347 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-13 09:19:03,347 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-13 09:19:03,347 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-13 09:19:03,348 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-13 09:19:08,848 - staging.views - DEBUG - metadatastage: validated, now saving.
+2013-02-13 09:19:08,893 - staging.views - DEBUG - metadatastage: saved, now redirecting.
+2013-02-13 09:19:08,898 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:19:08,898 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-13 09:19:08,898 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x10cac5310>
+2013-02-13 09:19:08,899 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x10cac59d0>
+2013-02-13 09:19:08,899 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:19:08,899 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-13 09:19:08,900 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:19:08,901 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-13 09:19:08,901 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x10cac59d0>
+2013-02-13 09:19:08,901 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-13 09:19:08,902 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:19:08,902 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-13 09:19:08,902 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x113589810>
+2013-02-13 09:19:08,902 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x113589850>
+2013-02-13 09:19:08,902 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x113589790>
+2013-02-13 09:19:08,903 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-13 09:19:08,903 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x113589a90>'
+2013-02-13 09:19:08,903 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x113589fd0>'
+2013-02-13 09:19:08,904 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointWidget object at 0x10d79fcd0>
+2013-02-13 09:19:08,905 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-02-13 09:19:08,905 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-02-13 09:19:08,905 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:19:08,905 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-13 09:19:08,905 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x113589950>, <staging.widgets.MultiColumnWidget object at 0x1135892d0>, <django.forms.widgets.TextInput object at 0x10d79f3d0>)
+2013-02-13 09:19:08,906 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x10d79f110>
+2013-02-13 09:19:08,906 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-13 09:19:08,915 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-02-13 09:19:08,915 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-02-13 09:19:08,916 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:19:08,916 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-13 09:19:08,916 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x113589950>, <staging.widgets.MultiColumnWidget object at 0x1135892d0>, <django.forms.widgets.TextInput object at 0x113589ad0>)
+2013-02-13 09:19:08,945 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x113589d50>
+2013-02-13 09:19:08,945 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-13 09:19:08,947 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-02-13 09:19:08,948 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x113589bd0> <django.forms.widgets.TextInput object at 0x113589ad0>
+2013-02-13 09:19:08,949 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-02-13 09:19:08,949 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x113589bd0> <django.forms.widgets.TextInput object at 0x113589ad0>
+2013-02-13 09:19:08,950 - staging.widgets - DEBUG - MultiSourceField creating for field type 'PointField', label 'None'
+2013-02-13 09:19:08,950 - staging.widgets - DEBUG - MultiSourceField base widget type 'PointWidget'
+2013-02-13 09:19:08,950 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:19:08,950 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-13 09:19:08,951 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x111eebad0>
+2013-02-13 09:19:08,951 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x111eebb90>
+2013-02-13 09:19:08,951 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x111eebd10>, <staging.widgets.MultiColumnWidget object at 0x111eebe90>, <staging.widgets.PointWidget object at 0x111eeb990>)
+2013-02-13 09:19:08,951 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x111eeb8d0>
+2013-02-13 09:19:08,952 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-13 09:19:08,952 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x111eeb850>'
+2013-02-13 09:19:08,952 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x111eebbd0>'
+2013-02-13 09:19:08,956 - staging.widgets - DEBUG - MultiSourceField creating for field type 'SplitDateTimeField', label 'None'
+2013-02-13 09:19:08,956 - staging.widgets - DEBUG - MultiSourceField base widget type 'SplitDateTimeWidget'
+2013-02-13 09:19:08,956 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:19:08,957 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-13 09:19:08,957 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.DateInput object at 0x10f9eda90>
+2013-02-13 09:19:08,957 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TimeInput object at 0x10f9ed150>
+2013-02-13 09:19:08,957 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x10f9edbd0>, <staging.widgets.MultiColumnWidget object at 0x10f9edd90>, <django.forms.widgets.SplitDateTimeWidget object at 0x113589a10>)
+2013-02-13 09:19:08,957 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.SplitDateTimeField object at 0x113589f10>
+2013-02-13 09:19:08,958 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-13 09:19:09,023 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.DateField object at 0x113589510>'
+2013-02-13 09:19:09,023 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.TimeField object at 0x113589b90>'
+2013-02-13 09:21:38,592 - dbadmintool.administratorbot - DEBUG - Connection open to database :: default
+2013-02-13 09:21:38,593 - dbadmintool.administratorbot - ERROR - Cannot connect to database :: nodatabase :: Query failed
+2013-02-13 09:22:30,763 - dbadmintool.administratorbot - DEBUG - {'Campaign': 1, 'Image': 2346, 'AUVDeployment': 1, 'BRUVDeployment': 0, 'TIDeployment': 0, 'User': 0, 'Deployment': 1, 'StereoImage': 0, 'TVDeployment': 0, 'Annotation': 0, 'DOVDeployment': 0}
+2013-02-13 09:22:30,763 - dbadmintool.administratorbot - DEBUG - Collecting stats
+2013-02-13 09:22:30,968 - dbadmintool.administratorbot - DEBUG - {'Campaign': 1, 'Image': 2346, 'AUVDeployment': 1, 'BRUVDeployment': 0, 'TIDeployment': 0, 'User': 0, 'Deployment': 1, 'StereoImage': 0, 'TVDeployment': 0, 'Annotation': 0, 'DOVDeployment': 0}
+2013-02-13 09:23:24,302 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-13 09:23:16.311087-Force.bak.tar.gz Checksum :: 1f8267e135ad6fcafceb6239fc0a89122e11b03e
+2013-02-13 09:23:24,304 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-02-13 09:23:16.311087-Force.bak.tar.gz Checksum :: 1f8267e135ad6fcafceb6239fc0a89122e11b03e
+2013-02-13 09:23:24,305 - dbadmintool.administratorbot - DEBUG - backup archive copied correctly
+2013-02-13 09:23:24,306 - dbadmintool.administratorbot - DEBUG - 2013-02-13 09:23:16.311087-Force.bak is3072955 bytes in size
+2013-02-13 09:23:24,348 - dbadmintool.administratorbot - DEBUG - File name in archive matches backup file
+2013-02-13 09:23:24,481 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-13 09:23:16.311087-Force.bak Checksum :: 821d638f7cdc4e37eab49ed9a86554f53ceacfa0
+2013-02-13 09:23:24,499 - dbadmintool.administratorbot - DEBUG - /tmp/2013-02-13 09:23:16.311087-Force.bak Checksum :: 821d638f7cdc4e37eab49ed9a86554f53ceacfa0
+2013-02-13 09:23:24,500 - dbadmintool.administratorbot - DEBUG - backup file copied correctly
+2013-02-13 09:23:24,500 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-02-13 09:23:31,936 - dbadmintool.administratorbot - DEBUG - File and copy checksums agree
+2013-02-13 09:23:39,741 - dbadmintool.administratorbot - ERROR - File and copy checksums dont agree
+2013-02-13 09:23:47,967 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-13 09:23:39.742794-Force.bak.tar.gz Checksum :: 01a7eae9a955052cf442ca5741f026eb97877e83
+2013-02-13 09:23:48,002 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-02-13 09:23:39.742794-Force.bak.tar.gz Checksum :: 01a7eae9a955052cf442ca5741f026eb97877e83
+2013-02-13 09:23:48,002 - dbadmintool.administratorbot - ERROR - backup archive check sum fail
+2013-02-13 09:23:48,003 - dbadmintool.administratorbot - DEBUG - 2013-02-13 09:23:39.742794-Force.bak is3072955 bytes in size
+2013-02-13 09:23:48,051 - dbadmintool.administratorbot - ERROR - File name in archive does not match backup file
+2013-02-13 09:23:48,274 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-02-13 09:23:39.742794-Force.bak Checksum :: 821d638f7cdc4e37eab49ed9a86554f53ceacfa0
+2013-02-13 09:23:48,291 - dbadmintool.administratorbot - DEBUG - /tmp/2013-02-13 09:23:39.742794-Force.bak Checksum :: 821d638f7cdc4e37eab49ed9a86554f53ceacfa0
+2013-02-13 09:23:48,291 - dbadmintool.administratorbot - ERROR - backup file check sum fail
+2013-02-13 09:23:48,292 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-02-13 09:23:48,295 - features.RunScriptTool - DEBUG - job_id is :: XO91CZ6OYJFX
+2013-02-13 09:23:48,296 - features.RunScriptTool - DEBUG - Writing features.json to disk at location :: /tmp/CATAMI/features/Anon/XO91CZ6OYJFX
+2013-02-13 09:23:48,419 - features.RunScriptTool - DEBUG - job_id is :: T5304GYS38XN
+2013-02-13 09:23:48,420 - features.RunScriptTool - DEBUG - Writing features.json to disk at location :: /tmp/CATAMI/features/Anon/T5304GYS38XN
+2013-02-13 09:23:48,472 - features.RunScriptTool - DEBUG - job_id is :: KDK095AC0TM6
+2013-02-13 09:23:48,478 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-13 09:23:48,479 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-13 09:23:48,481 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-13 09:23:48,481 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-13 09:23:48,485 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-13 09:23:48,486 - features.RunScriptTool - DEBUG - Sending job request
+2013-02-13 09:23:48,486 - features.RunScriptTool - ERROR - Failed to submit job :: catami.pbs
+2013-02-13 09:23:48,487 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-02-13 09:23:48,488 - features.RunScriptTool - ERROR - Failed to PUT :: catami.pbs to server :: epic.ivec.org
+2013-02-13 09:23:48,490 - features.RunScriptTool - DEBUG - Writing pbs script :: catami.pbs
+2013-02-13 09:24:47,574 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-02-13 09:24:47,574 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-13 09:24:47,574 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-13 09:24:51,317 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-02-13 09:24:51,317 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-13 09:24:51,317 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-13 09:25:25,680 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/invalid.extension
+2013-02-13 09:25:25,680 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-13 09:25:25,681 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-13 09:25:25,681 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-02-13 09:25:25,682 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-02-13 09:25:25,682 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-02-13 09:25:25,682 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-13 09:25:25,682 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-13 09:25:29,337 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-02-13 09:25:29,337 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-02-13 09:25:29,337 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-13 09:25:29,338 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-13 09:26:02,841 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-13 09:26:02,841 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-13 09:26:02,841 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-13 09:26:02,842 - staging.metadata - DEBUG - xls_transform: opening workbook.
+2013-02-13 09:26:07,679 - staging.metadata - DEBUG - xls_transform: found 23 headings.
+2013-02-13 09:26:07,680 - staging.metadata - DEBUG - xls_transform: using headings as fields.
+2013-02-13 09:26:07,680 - staging.metadata - DEBUG - xls_transform: mapping 23 columns.
+2013-02-13 09:26:07,726 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-13 09:26:07,726 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-13 09:26:07,727 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-13 09:26:07,727 - staging.metadata - DEBUG - xlsx_transform: opening workbook.
+2013-02-13 09:26:42,561 - staging.metadata - DEBUG - xlsx_transform: found 23 headings.
+2013-02-13 09:26:42,562 - staging.metadata - DEBUG - xlsx_transform: using headings as fields.
+2013-02-13 09:26:42,562 - staging.metadata - DEBUG - xlsx_transform: mapping 23 columns.
+2013-02-13 09:26:42,712 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-02-13 09:26:42,713 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-13 09:26:42,713 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-13 09:26:42,713 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-02-13 09:26:42,714 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-02-13 09:26:42,714 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-02-13 09:26:42,714 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-02-13 09:26:42,715 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-02-13 09:26:42,715 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-02-13 09:26:42,715 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-02-13 09:26:48,038 - staging.views - DEBUG - metadatastage: validated, now saving.
+2013-02-13 09:26:48,097 - staging.views - DEBUG - metadatastage: saved, now redirecting.
+2013-02-13 09:26:48,104 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:26:48,104 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-13 09:26:48,105 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x119b75dd0>
+2013-02-13 09:26:48,105 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x119b75c90>
+2013-02-13 09:26:48,105 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:26:48,106 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-13 09:26:48,107 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:26:48,108 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-13 09:26:48,108 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x119b75d10>
+2013-02-13 09:26:48,108 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-13 09:26:48,127 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:26:48,128 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-13 09:26:48,128 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x118ecd4d0>
+2013-02-13 09:26:48,129 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x118ecdc90>
+2013-02-13 09:26:48,129 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x118ecd590>
+2013-02-13 09:26:48,129 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-13 09:26:48,130 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x118ecd0d0>'
+2013-02-13 09:26:48,130 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x118ecd310>'
+2013-02-13 09:26:48,131 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointWidget object at 0x11988f590>
+2013-02-13 09:26:48,132 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-02-13 09:26:48,133 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-02-13 09:26:48,134 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:26:48,134 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-13 09:26:48,134 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x118ecd490>, <staging.widgets.MultiColumnWidget object at 0x118ecd110>, <django.forms.widgets.TextInput object at 0x11988f190>)
+2013-02-13 09:26:48,135 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x11988fa10>
+2013-02-13 09:26:48,135 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-13 09:26:48,158 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-02-13 09:26:48,159 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-02-13 09:26:48,159 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:26:48,159 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-02-13 09:26:48,159 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x118ecd590>, <staging.widgets.MultiColumnWidget object at 0x118ecd0d0>, <django.forms.widgets.TextInput object at 0x118ecd7d0>)
+2013-02-13 09:26:48,160 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x118ecd710>
+2013-02-13 09:26:48,160 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-02-13 09:26:48,162 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-02-13 09:26:48,162 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x118ecd450> <django.forms.widgets.TextInput object at 0x118ecd7d0>
+2013-02-13 09:26:48,205 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-02-13 09:26:48,205 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x118ecd450> <django.forms.widgets.TextInput object at 0x118ecd7d0>
+2013-02-13 09:26:48,207 - staging.widgets - DEBUG - MultiSourceField creating for field type 'PointField', label 'None'
+2013-02-13 09:26:48,207 - staging.widgets - DEBUG - MultiSourceField base widget type 'PointWidget'
+2013-02-13 09:26:48,208 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:26:48,208 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-13 09:26:48,208 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x118ab9e90>
+2013-02-13 09:26:48,208 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x118ab91d0>
+2013-02-13 09:26:48,208 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x118ab9f90>, <staging.widgets.MultiColumnWidget object at 0x119012910>, <staging.widgets.PointWidget object at 0x118ab9fd0>)
+2013-02-13 09:26:48,209 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x118ab9690>
+2013-02-13 09:26:48,209 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-13 09:26:48,210 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x118ab9650>'
+2013-02-13 09:26:48,210 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x118ab9b10>'
+2013-02-13 09:26:48,225 - staging.widgets - DEBUG - MultiSourceField creating for field type 'SplitDateTimeField', label 'None'
+2013-02-13 09:26:48,226 - staging.widgets - DEBUG - MultiSourceField base widget type 'SplitDateTimeWidget'
+2013-02-13 09:26:48,226 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-02-13 09:26:48,226 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-02-13 09:26:48,226 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.DateInput object at 0x119012a90>
+2013-02-13 09:26:48,227 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TimeInput object at 0x1190122d0>
+2013-02-13 09:26:48,227 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x117b03550>, <staging.widgets.MultiColumnWidget object at 0x117b03490>, <django.forms.widgets.SplitDateTimeWidget object at 0x118ecd990>)
+2013-02-13 09:26:48,227 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.SplitDateTimeField object at 0x118ecd3d0>
+2013-02-13 09:26:48,228 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-02-13 09:26:48,228 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.DateField object at 0x118ecd4d0>'
+2013-02-13 09:26:48,228 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.TimeField object at 0x118ecd490>'

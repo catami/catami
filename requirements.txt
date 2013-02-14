@@ -21,3 +21,5 @@ django-tastypie
 django-orm-extensions
 httplib2
 model_mommy
+django-waffle
+nose-exclude

@@ -4,6 +4,7 @@ __author__ = 'Ariell Friedman'
 
 from django.conf.urls import patterns, url, include
 #from django.contrib.auth.models import User
+
 from django.contrib import admin
 admin.autodiscover()
 
@@ -51,6 +52,7 @@ urlpatterns = patterns('webinterface.views',
     
     #Collection Management
     url(r'^collections/create/$','create_collection_from_deployments'),
+    url(r'^collections/createworkset/(?P<method>[\w\-]+)/$','create_workset_from_collection'),
 
     #force views
     url(r'^data/$', 'data'),

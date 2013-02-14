@@ -1,5 +1,6 @@
 {% extends "base-topmenu.html" %}
 
+{% load waffle_tags %}
 {% load force_extras %}
 
 {% block tail_head %}
@@ -55,8 +56,11 @@
                 <a href="./images" class="btn btn-primary">Data Table</a>
             </div>
         -->
+
+        {% switch Collections %}
         <br>
         <button type="button" class="btn btn-large btn-primary" onclick="convert();">Add to My Collections</button>
+        {% endswitch %}
 
     {% endif %}
 

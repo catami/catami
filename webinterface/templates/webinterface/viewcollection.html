@@ -22,84 +22,81 @@
         margin: 0px;
         width: 40px;
     }
+    /*
+    .nav-tabs li a {
+        background-color: #ddd;
+        color: #3a3a3a;
+    }
+    */
+    .sidepanel {
+        padding:5px;
+    }
+    .sidepanel hr {
+        padding:0;
+        margin: 0;
+    }
 </style>
 {% endblock %}
 {% block content %}
 <div class="row-fluid">
 
-<div class="span2"> 
-    <h3>Properties:</h3>
-
-    <table class="table table-striped">
-        <tr>
-            <td>Year</td>
-            <td>2008</td>
-        </tr>
-        <tr>
-            <td>Source</td>
-            <td>AUV</td>
-        </tr>
-        <tr>
-            <td>Depth</td>
-            <td>30-100m</td>
-        </tr>
-        <tr>
-            <td>Surveys</td>
-            <td>
-                <a href="#" rel="popover-roll" data-title="Surveys" 
-                    data-content="
-                        <ol>
-                            <li>r20081008_032854_patchreefnorth_08_tightpatch</li>
-                            <li>r20081008_224114_hippoN_09_transect</li>
-                        </ol>"
-                    data-html='true'
-                    data-placement='right'>List</a>
-            </td>
-        </tr>
-    </table>
-
+<div class="span2">
+    <div class="well sidepanel">
+        <small>
+            {% with "Collection" as clname %}
+                {{ clname }}:<hr>
+                {% include "webinterface/dataviews/collection-properties.html"%}
+            {% endwith %}
+        </small>
+    </div>
+    <div class="well sidepanel" style="padding:5px;">
+        <small>
+            {% with "Workset" as clname %}
+                {{ clname }}:<hr>
+                {% include "webinterface/dataviews/collection-properties.html"%}
+                <hr>
+                {% include "webinterface/dataviews/worksetlists.html"%}
+            {% endwith %}
+        </small>
+    </div>
 </div>
 
 <div class="span10 viewpane" >
 
     
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#map" data-toggle="tab">Map</a></li>
-        <li><a href="#thm" data-toggle="tab">Thumbnails</a></li>
+        <li class="active"><a href="#map" data-toggle="tab"><i class="icon-globe"></i> Map</a></li>
+        <li><a href="#thm" data-toggle="tab"><i class="icon-eye-open"></i> Thumbnails</a></li>
         <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
-        <li><a href="#cst" data-toggle="tab">Visual Clusters</a></li>
-        <li><a href="#wks" data-toggle="tab">Worksets</a></li>
-        <li class="pull-right"><a href="#dwn" data-toggle="tab">Download</a></li>
+        <li><a href="#cst" data-toggle="tab"><i class="icon-cog"></i> Visual Clusters</a></li>
+        <li class="pull-right"><a href="#dwn" data-toggle="tab"><i class="icon-download-alt"></i> Download</a></li>
+        <li class="pull-right"><a href="#ant" data-toggle="tab"><i class="icon-tag"></i> Annotate</a></li>
+        <li class="pull-right"><a href="#cls" data-toggle="tab"><i class="icon-sitemap"></i> Classify</a></li>
     </ul>
 
 
     <div class="tab-content">
-
         <div class="tab-pane active" id="map">
             {% include "webinterface/dataviews/mapview.html"%} 
         </div>
-
         <div class="tab-pane" id="tax">
             {% include "webinterface/dataviews/taxonomytree.html"%} 
         </div>
-        
         <div class="tab-pane" id="cst">
 			{% include "webinterface/dataviews/clusterview.html"%} 
 		</div>
-
-
         <div class="tab-pane" id="thm">
             {% include "webinterface/dataviews/thumbnails.html"%}
         </div>
-
-        <div class="tab-pane" id="wks">
-            {% include "webinterface/dataviews/worksetlists.html"%}
+        <div class="tab-pane" id="ant">
+            Annotate
         </div>
-
+        <div class="tab-pane" id="cls">
+            Classify
+        </div>
         <div class="tab-pane" id="dwn">
         	This will contain options for downloading a variety of different combinations the data.
         </div>
-
     </div>
 </div>
 </div>
@@ -107,14 +104,15 @@
 
 {% block add_script %}
 <script type="text/javascript">
+    //
     $(document).ready(function(){
-        getNewImageList("limit=30&collection="+{{ collection_id }});
+        getNewImageList('collection={{ collection_id }}');
+        //initDeploymentMap ();
+        setCollectionProperties({{ collection_id }},'#Collection-properties');
+        setWorksetLists({{ collection_id }});
     });
 
-if (window.location.hash.length > 0) {
-    $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');
-} else {
-    $('ul.nav-tabs > li > a:first').tab('show');
-}
+
+
 </script>
 {% endblock %}  

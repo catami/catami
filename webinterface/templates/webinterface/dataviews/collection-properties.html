@@ -1,0 +1,25 @@
+<!------------------------------------------
+Template-specific HTML
+------------------------------------------->
+<div id="{{ clname }}-properties">
+    <!-- Content from jquery -->
+    <em>No {{ clname }} is currently selected. Please choose a {{ clname }}.</em>
+</div>
+
+<!------------------------------------------
+Template-specific javascript functions
+------------------------------------------->
+<script type="text/javascript">
+    function setCollectionProperties(id, infoelement) {
+        var apiurl = '/api/dev/collection/?id='+id;    //create api url with filter
+
+        $.getJSON(apiurl , function(cl){
+            $(infoelement).html('<h4>'+cl.objects[0].name+'</h4>');
+            $(infoelement).append('<strong>'+cl.objects[0].creation_info+'</strong><br>');
+            if (cl.objects[0].description) $(infoelement).append('<em>'+cl.objects[0].description+'</em>');
+            $(infoelement).append('<hr><strong>Date:</strong> '+cl.objects[0].creation_date+'<br>');
+            $(infoelement).append('<strong>Owner:</strong> '+cl.objects[0].owner+'<br>');
+            $(infoelement).append('<strong>Access:</strong> '+ (cl.objects[0].is_public ? 'Public' : 'Private') +'<br>');
+        })
+    }
+</script>

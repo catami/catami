@@ -14,6 +14,11 @@ POSTGIS_VERSION = (1, 5, 2)
 SOUTH_TESTS_MIGRATE = False # To disable migrations and use syncdb instead
 SKIP_SOUTH_TESTS = True # To disable South's own unit tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = [
+                '--with-coverage',
+            #    '--cover-package=Force,accounts,clustering,collection,dbadmintool,features,staging,webinterface'
+            #    '--coverage-exclude=../*migrations*'
+            ]
 
 # The root directory for staging/local storage.
 STAGING_ROOT_DIR = '/media/water/'
@@ -119,6 +124,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 
     'django.middleware.csrf.CsrfViewMiddleware',
+    'waffle.middleware.WaffleMiddleware',
     #'django.middleware.csrf.CsrfResponseMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -176,6 +182,7 @@ INSTALLED_APPS = (
     'clustering',
     'tastypie',
     'userena',
+    'waffle',
 )
 #    'haystack', # disabled 16th Jan 2013
 
