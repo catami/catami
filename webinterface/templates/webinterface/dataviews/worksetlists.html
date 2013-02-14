@@ -204,8 +204,9 @@ Template-specific javascript functions
         getNewImageList('collection='+id);
         //alert('Wokset has been selected. ID: '+id);
         setCollectionProperties(id,'#Workset-properties');
-        $('#SelectWorksetModal').modal('hide');
-        $('ul.nav-tabs > li > a[href="#thm"]').tab('show');
+        //$('#SelectWorksetModal').modal('hide');
+        //$('ul.nav-tabs > li > a[href="#thm"]').tab('show');
+        updateMapForSelectedCollection(id);
     }
 
     function openNewWorksetModalWindow() {
