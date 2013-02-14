@@ -174,9 +174,9 @@ Template-specific javascript functions
 <script type="text/javascript">
 
 
-    function setWorksetLists(id) {
+    function setWorksetLists(cl_id) {
 
-        var apiurl = "/api/dev/collection/?parent="+id;
+        var apiurl = "/api/dev/collection/?parent="+cl_id;
 
         $.getJSON(apiurl , function(ws){
             //alert ('L: ' + j.objects.length);
@@ -194,10 +194,11 @@ Template-specific javascript functions
             }
         })
 
-        // Set value of id for form
-        $('#c_id_random').val(id);
-        $('#c_id_stratified').val(id);
+        // Set value of c_id for form
+        $('#c_id_random').val(cl_id);
+        $('#c_id_stratified').val(cl_id);
         $("#btnSelectWorkset").attr('onClick','selectWorkset($("#allWorksets").val());');
+        $('#clearWorksetLink').attr('onClick','clearWorkset('+cl_id+');');
     }
 
     function selectWorkset(id) {
@@ -207,6 +208,19 @@ Template-specific javascript functions
         //$('#SelectWorksetModal').modal('hide');
         //$('ul.nav-tabs > li > a[href="#thm"]').tab('show');
         updateMapForSelectedCollection(id);
+        $('#clearWorksetLink').html('clear');
+
+        // TODO: this is a hack - it should be a map layer
+        $('#showWorksetMapLink').attr('onClick','updateMapForSelectedCollection('+id+');');
+        $('#showWorksetMapLink').html('map');
+    }
+
+    function clearWorkset(reset_cl_id) {
+        getNewImageList('collection='+reset_cl_id);
+        updateMapForSelectedCollection(reset_cl_id);
+        $('#Workset-properties').html('<em>No Workset is currently selected. Please choose a Workset.</em>');
+        $('#clearWorksetLink').html('');
+        $('#showWorksetMapLink').html('');
     }
 
     function openNewWorksetModalWindow() {

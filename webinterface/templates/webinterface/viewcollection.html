@@ -43,16 +43,18 @@
 <div class="span2">
     <div class="well sidepanel">
         <small>
+            Collection: <span class="pull-right"><a href="#_" id="showCollectionMapLink" onclick="updateMapForSelectedCollection({{ collection_id }});">map</a></span>
+            <hr>
             {% with "Collection" as clname %}
-                {{ clname }}:<hr>
                 {% include "webinterface/dataviews/collection-properties.html"%}
             {% endwith %}
         </small>
     </div>
     <div class="well sidepanel" style="padding:5px;">
         <small>
+            Workset: <span class="pull-right"><a href="#_" id="clearWorksetLink"></a> &nbsp;&nbsp; <a href="#map" data-toggle="tab" id="showWorksetMapLink"></a></span>
+            <hr>
             {% with "Workset" as clname %}
-                {{ clname }}:<a href="#_" class="pull-right" id="clearWorksetLink"></a><hr>
                 {% include "webinterface/dataviews/collection-properties.html"%}
                 <hr>
                 {% include "webinterface/dataviews/worksetlists.html"%}
@@ -114,7 +116,6 @@
 
         initDeploymentMap();
         updateMapForSelectedCollection({{ collection_id }});
-
     });
 
 </script>
