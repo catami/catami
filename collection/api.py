@@ -9,7 +9,7 @@ from jsonapi.api import UserResource
 
 
 class CollectionResource(ModelResource):
-    owner = fields.ForeignKey(UserResource, 'owner')
+    owner = fields.ForeignKey(UserResource, 'owner', full=True)
     parent = fields.ForeignKey('collection.api.CollectionResource', 'parent', null=True)
     class Meta:
         queryset = Collection.objects.all()
