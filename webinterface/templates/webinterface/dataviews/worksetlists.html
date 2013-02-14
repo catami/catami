@@ -47,7 +47,7 @@ Template-specific HTML
             </div>
         </div>
         <a class="btn btn-primary" style="width: 80%;" href="#_" id="btnSelectWorkset"><i class="icon-th-list"></i> Select Workset</a>
-        <a class="btn btn-primary" style="width: 80%;" onclick="openNewModalWindow();"><i class="icon-plus-sign icon-white"></i> Create new Workset</a>
+        <a class="btn btn-primary" style="width: 80%;" onclick="openNewWorksetModalWindow();"><i class="icon-plus-sign icon-white"></i> Create new Workset</a>
     <!--
     </div>
     -->
@@ -85,7 +85,7 @@ Template-specific HTML
                                         Name
                                     </td>
                                     <td>
-                                        <input type="text" class="input"  placeholder="Name for Workset" id="name" name="name">
+                                        <input type="text" class="input"  placeholder="Name for Workset" name="name">
                                     </td>
                                 </tr>
                                 <tr>
@@ -93,8 +93,8 @@ Template-specific HTML
                                         Parameters
                                     </td>
                                     <td>
-                                        <label><input class="flat" type="number" min="1" step="1" value="50" id="n" name="n">: # random images to sample</label>
-                                        <label><input type="checkbox" name="ispublic" id="ispublic" value="true"> make public?</label>
+                                        <label><input class="flat" type="number" min="1" step="1" value="50" name="n">: # random images to sample</label>
+                                        <label><input type="checkbox" name="ispublic"  value="true"> make public?</label>
                                     </td>
                                 </tr>
                                 <tr>
@@ -102,7 +102,7 @@ Template-specific HTML
                                         Description
                                     </td>
                                     <td>
-                                        <textarea class="flat" rows="5" placeholder="Description for Workset"  id="description" name="description"></textarea>
+                                        <textarea class="flat" rows="5" placeholder="Description for Workset"   name="description"></textarea>
                                     </td>
                                 </tr>
                                 <tr>
@@ -124,7 +124,7 @@ Template-specific HTML
                                         Name
                                     </td>
                                     <td>
-                                        <input type="text" class="input"  placeholder="Name for Workset" id="name" name="name">
+                                        <input type="text" class="input"  placeholder="Name for Workset" name="name">
                                     </td>
                                 </tr>
                                 <tr>
@@ -132,7 +132,7 @@ Template-specific HTML
                                         Parameters
                                     </td>
                                     <td>
-                                        <label><input class="flat" type="number" min="1" step="1" value="50" id="n" name="n">: # images between samples</label>
+                                        <label><input class="flat" type="number" min="1" step="1" value="50" name="n">: # images between samples</label>
                                         <label><input type="checkbox" name="ispublic" id="ispublic" value="true"> make public?</label>
                                     </td>
                                 </tr>
@@ -141,7 +141,7 @@ Template-specific HTML
                                         Description
                                     </td>
                                     <td>
-                                        <textarea class="flat" rows="5" placeholder="Description for Workset"  id="description" name="description"></textarea>
+                                        <textarea class="flat" rows="5" placeholder="Description for Workset"  name="description"></textarea>
                                     </td>
                                 </tr>
                                 <tr>
@@ -208,7 +208,7 @@ Template-specific javascript functions
         $('ul.nav-tabs > li > a[href="#thm"]').tab('show');
     }
 
-    function openNewModalWindow() {
+    function openNewWorksetModalWindow() {
         $('#SelectWorksetModal').modal('hide');
         $('#NewWorksetModal').modal('show');
     }
