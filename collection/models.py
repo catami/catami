@@ -87,22 +87,18 @@ class CollectionManager(models.Manager):
             print "WARNING: Not enough images to subsample... setting n=images.count" # TODO: what is the best way to handle warnings?
             n = cimages.count()
 
-        print "Debug 0"
         # subsample collection images and add to workset
         if method == "random" :
-            ws.creation_info = "Random selection: {0} images".format(n)
             wsimglist = sample(cimages,n)
+            ws.creation_info = "Random: {0} images".format(n)
         elif method == "stratified" :
-            print "Debug 1"
-            ws.creation_info = "Stratified selection: every {0}th image".format(n) # TODO: add some logic "th" does not work for 1-3
-            print "Debug 2"
             wsimglist = cimages[0:cimages.count():n]
+            ws.creation_info = "Stratified: every {0}th image".format(n) # TODO: add some logic "th" does not work for 1-3
         else :
             print "ERROR: Unrecognised method" # TODO: what is the best way to handle warnings?
 
         # save the workset so we can associate images with it
         ws.save()
-        print "Debug 3"
         # Associate images with workset
 #        for image in wsimglist:
 #            ws.images.add(image)
