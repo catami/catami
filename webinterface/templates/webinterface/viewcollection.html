@@ -90,6 +90,7 @@
         </div>
         <div class="tab-pane" id="ant">
             Annotate
+
         </div>
         <div class="tab-pane" id="cls">
             Classify
@@ -110,9 +111,11 @@
         //initDeploymentMap ();
         setCollectionProperties({{ collection_id }},'#Collection-properties');
         setWorksetLists({{ collection_id }});
+
+        initDeploymentMap();
+        updateMapForSelectedCollection({{ collection_id }});
+
     });
-
-
 
 </script>
 {% endblock %}  
