@@ -184,22 +184,85 @@ def explore_campaign(request, campaign_id):
 # Collection pages
 @waffle_switch('Collections')
 def collections(request):
+    my_collections_error = ''
+    public_collections_error =''
+
     collection_list = CollectionResource()
-    cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id, parent=None)
-    cl_pub_rec = collection_list.obj_get_list(request, is_public=True, parent=None)
-    return render_to_response('webinterface/collections_recent.html', {"my_rec_cols":cl_my_rec,"pub_rec_cols":cl_pub_rec}, RequestContext(request))
+    try:
+        cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id, parent=None)
+        if (len(cl_my_rec) == 0):
+            my_collections_error = 'Sorry, you don\'t seem to have any collections in your account.'
+
+    except:
+        cl_my_rec = ''
+        if (request.user.is_anonymous):
+            my_collections_error = 'Sorry, you dont appear to be logged in. Please login and try again.'
+        else:
+            my_collections_error = 'An undetermined error has occured. Please contact support'
+
+    try:
+        cl_pub_rec = collection_list.obj_get_list(request, is_public=True, parent=None)
+        if (len(cl_pub_rec) == 0):
+            public_collections_error = 'Sorry, there don\'t seem to be any public collections right now.'
+
+    except:
+        cl_pub_rec = ''
+        if (request.user.is_anonymous):
+            public_collections_error = 'Sorry, public collections arent working for anonymous users right now. Please login and try again.'
+        else:
+            public_collections_error = 'An undetermined error has occured. Please contact support'
+
+    return render_to_response('webinterface/collections_recent.html', 
+        {"my_rec_cols": cl_my_rec,
+        "my_collections_error": my_collections_error,
+         "pub_rec_cols": cl_pub_rec,
+         "public_collections_error":public_collections_error},
+         RequestContext(request))
 
 @waffle_switch('Collections')
 def my_collections(request):
+    error_description = ''
+
     collection_list = CollectionResource()
-    cl = collection_list.obj_get_list(request, owner=request.user.id)
-    return render_to_response('webinterface/mycollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
+
+    try:
+        cl = collection_list.obj_get_list(request, owner=request.user.id)
+        if (len(cl) == 0):
+            error_description = 'Sorry, you don\'t seem to have any collections in your account.'
+    except:
+        cl = ''
+        if (request.user.is_anonymous):
+            error_description = 'Sorry, you dont appear to be logged in. Please login and try again.'
+        else:
+            error_description = 'An undetermined error has occured. Please contact support'
+
+    return render_to_response('webinterface/mycollections.html', 
+        {"collections": cl, 
+        "listname":"cl_pub_all",
+        "error_description":error_description},
+        RequestContext(request))
 
 @waffle_switch('Collections')
 def public_collections(request):
+    error_description = ''
+
     collection_list = CollectionResource()
-    cl = collection_list.obj_get_list(request, is_public=True)
-    return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
+    try:
+        cl = collection_list.obj_get_list(request, is_public=True)
+        if (len(cl) == 0):
+            error_description = 'Sorry, there don\'t seem to be any public collections right now.'
+    except:
+        cl = ''
+        if (request.user.is_anonymous):
+            error_description = 'Sorry, public collections arent working for anonymous users right now. Please login and try again.'
+        else:
+            error_description = 'An undetermined error has occured. Please contact support'
+
+    return render_to_response('webinterface/publiccollections.html', 
+        {"collections": cl, 
+         "listname":"cl_pub_all",
+        "error_description":error_description}, 
+         RequestContext(request))
 
 ## view collection table views
 #def public_collections_all(request):

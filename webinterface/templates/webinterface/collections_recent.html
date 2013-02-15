@@ -15,7 +15,9 @@
 	  	<p>My most recent public collections. </p>
 	  	{% with "cl_my_rec" as listname%}
 	  	{% with my_rec_cols as collections %}
+	  	{% with my_collections_error as error_description %}
 	  	{% include "webinterface/dataviews/collectiontable.html"%}
+	  	{% endwith %}
 	  	{% endwith %}
 	  	{% endwith %}
 	  	<!--<div id="mycollections_recent"></div>-->
@@ -27,7 +29,9 @@
 	  	<p>Most recent public collections. </p>
 	  	{% with "cl_pub_rec" as listname%}
 	  	{% with pub_rec_cols as collections %}
+	  	{% with public_collections_error as error_description %}
 	  	{% include "webinterface/dataviews/collectiontable.html"%}
+	  	{% endwith %}
 	  	{% endwith %}
 	  	{% endwith %}
 	  	<!--<div id="publiccollections_recent"></div>-->
