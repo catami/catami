@@ -24,6 +24,7 @@ urlpatterns = patterns('webinterface.views',
     url(r'^proxy/(?P<url>.*)$', 'proxy'),
 
     url(r'^explore$', 'explore'),
+    url(r'^explore/getmapextent$','get_multiple_deployment_extent'),
     url(r'^explore_campaign/(?P<campaign_id>\d+)/$', 'explore_campaign'),
 
     #url(r'^viewcollection$', 'viewcollection'),

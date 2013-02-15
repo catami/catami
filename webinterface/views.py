@@ -1,5 +1,4 @@
 # Create your views here.
-
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect, get_object_or_404, render
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect
@@ -694,6 +693,17 @@ def campaign_detail(request, campaign_id):
         'campaign_as_geojson': sm_envelope},
         context_instance=RequestContext(request))
 
+@csrf_exempt
+def get_multiple_deployment_extent(request):
+
+    if request.method == 'POST': # If the form has been submitted...
+        deployment_ids = request.POST.get('deployment_ids')
+        deployment_ids = deployment_ids.__str__().split(",")
+        extent = AUVDeployment.objects.filter(id__in=deployment_ids).extent().__str__()
+        response_data = {"extent": extent}
+        return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
+
+    return HttpResponse(simplejson.dumps({"message": "GET operation invalid, must use POST."}), mimetype="application/json")
 
 @csrf_exempt
 def create_collection_from_deployments(request):
@@ -715,6 +725,7 @@ def create_workset_from_collection(request,method):
             return HttpResponseRedirect('/collections/'+request.POST.get('c_id')+'/#SelectWorksetModal') # Redirect after POST
 
     return HttpResponse(form)
+
 
 
 @csrf_exempt
