@@ -29,6 +29,7 @@ class DeployJobTest(TestCase):
     def setUp(self):
 
         self.djt = DeployJobTool()
+        self.server = Mock()
         #self.djt.image_primary_keys = ['00000001','00000002']
 
         # for bender.check_sum_file method
@@ -115,6 +116,32 @@ class DeployJobTest(TestCase):
         for image in self.image_list:
             self.assertTrue(self.djt.image_location[i])
             i += 1
+
+    def test_deploy_job(self):
+        """
+        :return:
+        """
+
+        self.assertIsNone(self.djt.deploy_job(self.server))
+        self.assertIsNone(self.djt.deploy_job(self.server, job_type='libcluster'))#this hasn't been written yet
+
+    def test_noconnect_deploy_job(self):
+
+        self.server.put.side_effect = AuthenticationException("Testing")
+
+        #!!!!!!!!!!!!!!!!!!!!
+        # THE FOLLOWING LINE DOES NOT WORK
+        # self.assertRaises(features.FeaturesErrors.ConnectionError,
+        # self.rst.push_pbs_script_to_server(self.server))
+        #--------------------
+        # THE FOLLOWING IS A WORKAROUND
+        #!!!!!!!!!!!!!!!!!!!!
+        try:
+            self.djt.deploy_job(self.server)
+        except features.FeaturesErrors.ConnectionError as e:
+            connection_error_occured = True
+
+        self.assertTrue(connection_error_occured)
 
 
 class RunScriptTest(TestCase):

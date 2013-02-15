@@ -236,6 +236,9 @@
                 for (var i = 0; i < deployment_ids.length; i++) {
                     currentSelectedDeployments.push(deployment_ids[i]);
                 }
+
+                updateMapExtent();
+
             } else {
                 $("#newCollectionPopover").popover('disable');
                 $('.btn-create-collection').attr('disabled', 'disabled');
@@ -268,10 +271,27 @@
 
             document.body.appendChild(form)
             form.submit();
-
-
         }
 
+        function updateMapExtent() {
+            $.ajax({
+                type: "POST",
+                url: '{% url webinterface.views.get_multiple_deployment_extent %}',
+                data: "deployment_ids=" + currentSelectedDeployments,
+                success: function(response, textStatus, jqXHR) {
+                    var boundsArr = response.extent.replace("(","").replace(")","").split(",");
+                    var bounds = new OpenLayers.Bounds();
+                    bounds.extend(new OpenLayers.LonLat(boundsArr[0], boundsArr[1]));
+                    bounds.extend(new OpenLayers.LonLat(boundsArr[2], boundsArr[3]));
+                    var geographic = new OpenLayers.Projection("EPSG:4326");
+                    var mercator = new OpenLayers.Projection("EPSG:900913");
+                    deploymentMap.zoomToExtent(bounds.transform(geographic, mercator));
+
+                    if(deploymentMap.getZoom() > 2)
+                        deploymentMap.zoomTo(deploymentMap.getZoom()-2);
+                }
+            });
+        }
 
         $(document).ready(function () {
 

@@ -37,8 +37,7 @@ class DeployJobTool():
     a = DJT.DeployJobTool()
     a.image_primary_keys = ['00000001','00000002'] #dummpy keys
     a.make_image_list()
-    a.user_name = 'catamihpc'
-    a.user_password = '<pass>'
+    server = pysftp.Connection(rst.server_ip, username=user_name, password=user_password)
     a.deploy_job('libfeature')
     """
 
@@ -139,7 +138,7 @@ class DeployJobTool():
         for image in self.image_primary_keys:
             self.image_location.append(Image.objects.get(pk=image).left_image_reference)
 
-    def deploy_job(self, job_type='libfeature'):
+    def deploy_job(self, server=object, job_type='libfeature'):
         """writes the reuqired scripts for the job, pushes them to the jobserver
 
         and launches the job
@@ -148,42 +147,50 @@ class DeployJobTool():
         rst = RunScriptTool()
         rst.feature_image_dir = rst.scratch_directory + '/' + self.job_id + '/img/'
         rst.feature_output_dir = rst.scratch_directory + '/' + self.job_id + '/output/'
-        self.server = pysftp.Connection(rst.server_ip, username=self.user_name, password=self.user_password)
+        #self.server = pysftp.Connection(rst.server_ip, username=self.user_name, password=self.user_password)
 
         if job_type == 'libfeature':
+            # make the directory on scratch
+            self.server = server #pysftp.Connection(rst.server_ip, username=self.user_name, password=self.user_password, log=True)
+
             rst.library = 'libfeature'
-            self.write_json_file(self.job_dir + '/meta.json')
+            self.write_json_file('meta.json')
             rst.write_libfeature_script(self.job_dir + '/run_libfeature.py')
             rst.write_pbs_script(self.job_dir + '/queue_libfeature.pbs', jobid=self.job_id)
 
             file_list = [rst.libfeature_run_file, rst.run_file, self.job_dir + '/meta.json']
             print file_list
             ServerTool.compress_files(file_list, self.job_dir + '/job')
-            ServerTool.push_file_to_server(self.job_dir + '/job.tar.gz', rst.server_ip, self.server)
 
-            # make the directory on scratch
-            self.server = pysftp.Connection(rst.server_ip, username=self.user_name, password=self.user_password, log=True)
+            try:
+                ServerTool.push_file_to_server(self.job_dir + '/job.tar.gz', rst.server_ip, self.server)
+                self.server.execute('mkdir ' + rst.scratch_directory + '/' + self.job_id)
+                self.server.execute('mkdir ' + rst.feature_output_dir)
+                self.server.execute('mkdir ' + rst.feature_image_dir)
+                self.server.execute('cp job.tar.gz ' + rst.scratch_directory + '/' + self.job_id)
+                self.server.chdir(rst.scratch_directory + '/' + self.job_id)
+                self.server.execute(rst.scratch_directory + '/' + self.job_id)
+                self.server.execute('tar -xzvf ' + rst.scratch_directory +
+                                    '/' +
+                                    self.job_id +
+                                    '/job.tar.gz --directory=' +
+                                    rst.scratch_directory +
+                                    '/' +
+                                    self.job_id)
+            except:
+                logger.error('Failed to PUT :: ' +
+                             self.job_dir + 'job.tar.gz'  +
+                               ' to server')
 
-            self.server.execute('mkdir ' + rst.scratch_directory + '/' + self.job_id)
-
-            self.server.execute('mkdir ' + rst.feature_output_dir)
-            self.server.execute('mkdir ' + rst.feature_image_dir)
-
-            # unzip the directory
-            self.server.execute('cp job.tar.gz ' + rst.scratch_directory + '/' + self.job_id)
-            self.server.chdir(rst.scratch_directory + '/' + self.job_id)
-            self.server.execute(rst.scratch_directory + '/' + self.job_id)
-            self.server.execute('tar -xzvf ' + rst.scratch_directory +
-                                '/' +
-                                self.job_id +
-                                '/job.tar.gz --directory=' +
-                                rst.scratch_directory +
-                                '/' +
-                                self.job_id)
+                raise FeaturesErrors.ConnectionError('Failed to put ',
+                                                     'Failed to PUT :: ' +
+                                                     self.job_dir + 'job.tar.gz' +
+                                                     'to server :: ')
 
         elif job_type == 'libcluster':
-            rst.write_libcluster_script()
-
+            #rst.write_libcluster_script()
+            pass
+            #TODO : Write this!!
         #rst.write_pbs_script()
 
         # push to server
