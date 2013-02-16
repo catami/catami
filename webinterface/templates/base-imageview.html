@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/bootstrap-responsive.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/font-awesome/css/font-awesome.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/singleimage.css" type="text/css">
+	<link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/imageannotate.css" type="text/css" >
+
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -111,4 +113,5 @@
           });
         });
     </script>
+    {% block add_script %} {% endblock %}
 </body></html>
