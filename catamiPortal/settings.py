@@ -24,8 +24,8 @@ NOSE_ARGS = [
 STAGING_ROOT_DIR = '/media/water/'
 #REUSE_DB = 1
 
-#WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
-WMS_URL = "http://flounder-virtualbox.local:8080/geoserver/wms" # custom if running test server in virtual machine
+WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
+#WMS_URL = "http://flounder-virtualbox.local:8080/geoserver/wms" # custom if running test server in virtual machine
 WMS_LAYER_NAME = "catami:Force_image"
 WMS_COLLECTION_LAYER_NAME = "catami:collection_images"
 
