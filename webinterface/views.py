@@ -499,7 +499,8 @@ def annotationview(request, auvdeployment_id, image_index):
     #get annotation list. Not all images have annotation
 
 
-    if(initial_image_index == 0):
+    # HACK: comment out until new annotations are in place
+    if False: #(initial_image_index == 0):
         #find first annotated image
         for image in image_list:
             local_image_index = local_image_index + 1
@@ -517,7 +518,8 @@ def annotationview(request, auvdeployment_id, image_index):
 
     for image in image_list:
         local_image_index = local_image_index + 1
-        if(Annotation.objects.filter(image_reference=image).count() > 0):
+        # HACK: comment out until new annotations are in place
+        if False: #(Annotation.objects.filter(image_reference=image).count() > 0):
             if(local_image_index > initial_image_index):
 
                 for annotation in Annotation.objects.filter(image_reference=image):
