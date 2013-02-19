@@ -240,7 +240,6 @@ class AUVDeployment(Deployment):
     #==================================================#
     objects = models.GeoManager()
     transect_shape = models.PolygonField()
-    distance_covered = models.FloatField()
 
     def __unicode__(self):
         return "AUV: {0} - {1}".format(self.start_time_stamp, self.short_name)

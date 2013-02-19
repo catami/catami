@@ -10,7 +10,6 @@ auvdeployment= Recipe(AUVDeployment,
     end_time_stamp = datetime.now(),
     min_depth = 10.0,
     max_depth = 50.0,
-    distance_covered=100.0,
     transect_shape = Polygon( ((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0)) )
 )
 
