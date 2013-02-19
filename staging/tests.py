@@ -70,8 +70,8 @@ class StagingTests(TestCase):
         test_urls.append(reverse('staging_metadata_sheet', args=['0', 'name']))
         test_urls.append(reverse('staging_metadata_import', args=['0', 'name', 'model']))
         test_urls.append(reverse('staging_metadata_imported'))
-        test_urls.append(reverse('staging_annotation_cpc_import'))
-        test_urls.append(reverse('staging_annotation_cpc_imported'))
+        #test_urls.append(reverse('staging_annotation_cpc_import'))
+        #test_urls.append(reverse('staging_annotation_cpc_imported'))
 
         # actually test each url
         for test_url in test_urls:
@@ -107,8 +107,8 @@ class StagingTests(TestCase):
         test_urls.append((reverse('staging_metadata_stage'), 'staging/metadatastage.html'))
         test_urls.append((reverse('staging_metadata_list'), 'staging/metadatalist.html'))
         test_urls.append((reverse('staging_metadata_imported'), 'staging/metadataimported.html'))
-        test_urls.append((reverse('staging_annotation_cpc_import'), 'staging/annotationcpcimport.html'))
-        test_urls.append((reverse('staging_annotation_cpc_imported'), 'staging/annotationcpcimported.html'))
+        #test_urls.append((reverse('staging_annotation_cpc_import'), 'staging/annotationcpcimport.html'))
+        #test_urls.append((reverse('staging_annotation_cpc_imported'), 'staging/annotationcpcimported.html'))
 
         for test_url, template in test_urls:
             response = self.client.get(test_url)
