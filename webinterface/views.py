@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 import httplib2
 
 #not API compliant - to be removed after the views are compliant
-from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, TIDeployment, TVDeployment,ScientificMeasurement
+from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment,ScientificMeasurement
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
@@ -435,7 +435,7 @@ def auvdeployment_detail(request, auvdeployment_id):
             'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
         #raise Http404
 
-    image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
+    image_list = Image.objects.filter(deployment=auvdeployment_id)
     salinity_data = ScientificMeasurement.objects.filter(measurement_type__normalised_name='salinity', image__deployment=auvdeployment_id)
     temperature_data = ScientificMeasurement.objects.filter(measurement_type__normalised_name='temperature', image__deployment=auvdeployment_id)
 
@@ -476,7 +476,7 @@ def auvimage_list(request, auvdeployment_id):
            'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
         #raise Http404
 
-    image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
+    image_list = Image.objects.filter(deployment=auvdeployment_id)
     return render_to_response(
         'Force/auv_image_list.html',
         {'auvdeployment_object': auvdeployment_object,
@@ -489,7 +489,7 @@ def annotationview(request, auvdeployment_id, image_index):
     """
     auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
 
-    image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
+    image_list = Image.objects.filter(deployment=auvdeployment_id)
     get_index = 1
     initial_image_index = int(image_index)
     local_image_index = 0
@@ -577,7 +577,7 @@ def bruvdeployment_detail(request, bruvdeployment_id):
         return render_to_response(
            'Force/data_missing.html', context_instance=RequestContext(request))
 
-    image_list = StereoImage.objects.filter(deployment=bruvdeployment_id)
+    image_list = Image.objects.filter(deployment=bruvdeployment_id)
 
     return render_to_response(
         'Force/bruvdeploymentInstance.html',
@@ -610,7 +610,7 @@ def dovdeployment_detail(request, dovdeployment_id):
         return render_to_response(
            'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
 
-    image_list = StereoImage.objects.filter(deployment=dovdeployment_id)
+    image_list = Image.objects.filter(deployment=dovdeployment_id)
 
     return render_to_response(
         'webinterface/Force_views/tvdeploymentInstance.html',
@@ -643,7 +643,7 @@ def tvdeployment_detail(request, tvdeployment_id):
         return render_to_response(
            'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
 
-    image_list = StereoImage.objects.filter(deployment=tvdeployment_id)
+    image_list = Image.objects.filter(deployment=tvdeployment_id)
 
     return render_to_response(
         'webinterface/Force_views/tvdeploymentInstance.html',
@@ -676,7 +676,7 @@ def tideployment_detail(request, tideployment_id):
         return render_to_response(
            'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
 
-    image_list = StereoImage.objects.filter(deployment=tideployment_id)
+    image_list = Image.objects.filter(deployment=tideployment_id)
 
     return render_to_response(
         'Force/tideploymentInstance.html',
