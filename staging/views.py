@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from .forms import AUVImportForm, AUVManualImportForm, AUVLocalImportForm, FileImportForm, MetadataStagingForm, ModelImportForm, AnnotationCPCImportForm, CampaignCreateForm
+from .forms import AUVImportForm, AUVManualImportForm, AUVLocalImportForm, FileImportForm, MetadataStagingForm, ModelImportForm, CampaignCreateForm
 from .extras import UploadProgressCachedHandler
 from . import tasks
 from . import metadata

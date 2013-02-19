@@ -5,7 +5,7 @@ This includes AUVImportForm and FileImportForm.
 from django import forms
 from django.contrib.gis.forms import fields as gisfields
 from django.db import models
-from Force.models import Campaign, Deployment, User
+from Force.models import Campaign, Deployment
 
 from .models import MetadataFile
 
@@ -172,8 +172,3 @@ class ModelImportForm(forms.Form):
             raise TypeError("Expected subclass of django.db.models.Model")
 
 
-class AnnotationCPCImportForm(forms.Form):
-    """Form to enable importing of multiple CPC files for a deployment."""
-    cpc_files = MultiFileField()
-    deployment = forms.ModelChoiceField(queryset=Deployment.objects.all())
-    user = forms.ModelChoiceField(queryset=User.objects.all())

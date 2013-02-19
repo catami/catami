@@ -224,23 +224,6 @@ class ScientificMeasurement(models.Model):
         unique_together = (('measurement_type', 'image'), )
 
 
-class User(models.Model):
-    '''
-    @brief contains all of the information for the database users
-    '''
-    #==================================================#
-    # name <Char> : The name of the usr
-    # title <Char> : Mr, Mrs etc
-    # organisation <Char> : Name of the organisation the user works for
-    # email <email> : The users email
-    #==================================================#
-
-    name = models.CharField(max_length=200)
-    title = models.CharField(max_length=200)
-    organisation = models.CharField(max_length=200)
-    email = models.EmailField()
-
-
 class AUVDeployment(Deployment):
     """@brief Deployment model for AUV data"""
     #==================================================#
@@ -284,27 +267,6 @@ class StereoImage(Image):
 
     right_thumbnail_reference = models.URLField()
     right_image_reference = models.URLField()
-
-
-class Annotation(models.Model):
-    """@brief Model that hold the annotation data refering to the images"""
-    # ??? Do we want differnt annotation types?  ie an abstract class ???
-
-    #==================================================#
-    # Type/Method (5point, percent cover) : Text
-    # ImageReference : image Id
-    # Code (Substrate, Species) : text
-    # Point, Region - find better way : point in image x,y
-    # UserWhoAnnotated : user reference
-    # Comments / notes : Text
-    #==================================================#
-
-    method = models.TextField()
-    image_reference = models.ForeignKey(Image)
-    code = models.CharField(max_length=200)
-    point = models.PointField()
-    user_who_annotated = models.ForeignKey(User)
-    comments = models.TextField()
 
 
 class BRUVDeployment(Deployment):
