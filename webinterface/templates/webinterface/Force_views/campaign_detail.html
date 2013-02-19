@@ -109,7 +109,7 @@
    fillColor: "#00FF00",
    fillOpacity: 0.8 };
        
-	 function init(){
+   $(document).ready(function () {
 	
             map = new OpenLayers.Map('map_container2');
             layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
@@ -151,6 +151,6 @@ var campaign_geojson = '{ "type": "FeatureCollection", "features": [ {"geometry"
 			var pf = new OpenLayers.Feature.Vector(bounds, null, style);
 			
 			vector.addFeatures([pf]);
-		}
+		});
     </script>
 {% endblock %}

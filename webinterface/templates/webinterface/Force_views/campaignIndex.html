@@ -60,6 +60,8 @@
     <script src='{{ STATIC_URL }}assets/esriOceanBasemap/map.js'></script>
     
     <script type="text/javascript">
+       $(document).ready(function () {
+
     var lon = 138;
     var lat = -35;
     var zoom = 4;
@@ -73,7 +75,6 @@
    fillColor: "#00FF00",
    fillOpacity: 0.8 };
        
-	 function init(){
 
 var geojson_payload = '{ "type": "FeatureCollection", "features": [ {"geometry": { "type": "GeometryCollection", "geometries": [\
 {% for campaign_rect in campaign_rects %}{% if not forloop.last %}{{campaign_rect|safe}},{% else %}{{campaign_rect|safe}}{% endif %}{% endfor %}] }, "type": "Feature", "properties": {}} ] }';
@@ -94,6 +95,6 @@ var geojson_payload = '{ "type": "FeatureCollection", "features": [ {"geometry":
 	           
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
             
-		}
+		});
     </script>
 {% endblock %}

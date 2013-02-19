@@ -34,11 +34,7 @@ class TestViews(TestCase):
     # test environment before all the tests have run.
     def setUp(self):
 
-        #'''Verify environment is setup properly'''  # Printed if test fails
-        #import catami_web_portal
-        #os.environ['DJANGO_SETTINGS_MODULE'] = 'catamiPortal.settings'
-        #setup_test_environment()
-
+        # some dummy data from mommy
         self.factory = RequestFactory()
 
         self.first_campaign_id = 1
@@ -70,136 +66,7 @@ class TestViews(TestCase):
     #==================================================#
     # Add unittests here
     #==================================================#
-    def test_views(self):
-        """@brief Test top level interfaces
-
-        """
-        response = self.client.get("/data/")
-        self.assertEqual(response.status_code, 200)
-
-        # response = self.client.get("/data/spatialsearch/")
-        # self.assertEqual(response.status_code, 200)
-
-    def test_campaigns(self):
-        """@brief Test campaign browser interfaces
-
-        """
-        response = self.client.get("/data/campaigns/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/campaigns/" + str(self.first_campaign_id) + "/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/campaigns/" + str(self.second_campaign_id) + "/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/campaigns/99999/")
-        self.assertEqual(response.status_code, 200)
-
-    #test all deployments
-    def test_deployments(self):
-        pass
     
-        """@brief Test deployment browser interfaces
-
-        """
-        response = self.client.get("/data/deployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/deployments/map/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_auvdeployments(self):
-        """@brief Test AUV deployment browser interfaces
-
-        """
-        response = self.client.get("/data/auvdeployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/auvdeployments/1/")
-        self.assertEqual(response.status_code, 200)
-
-        # response = self.client.get("/data/auvdeployments/1/annotationview/0/")
-        # self.assertEqual(response.status_code, 200)
-
-        # response = self.client.get("/data/auvdeployments/1/annotationview/1/")
-        # self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/auvdeployments/99999/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_bruvdeployments(self):
-        """@brief Test BRUV deployment browser interfaces
-
-        """
-        response = self.client.get("/data/bruvdeployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/bruvdeployments/1/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/bruvdeployments/99999/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_dovdeployments(self):
-        """@brief Test DOV deployment browser interfaces
-
-        """
-        response = self.client.get("/data/dovdeployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/dovdeployments/1/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/dovdeployments/99999/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_tveployments(self):
-        """@brief Test TV deployment browser interfaces
-
-        """
-        response = self.client.get("/data/tvdeployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/tvdeployments/1/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/tvdeployments/99999/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_tideployments(self):
-        """@brief Test TI deployment browser interfaces
-
-        """
-        response = self.client.get("/data/tideployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/tideployments/1/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/tideployments/99999/")
-        self.assertEqual(response.status_code, 200)
-
-    # def test_spatialsearch(self):
-    #     #test the actual URL
-    #     response = self.client.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': '100.0'})
-    #     self.assertEqual(response.status_code, 200)
-
-    #     #deliberate form error (missing)
-    #     response = self.client.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15'})
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.context['form']['searchradius'].errors, [u'This field is required.'])
-
-    #     #deliberate form error (non-numeric)
-    #     response = self.client.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': 'asd'})
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.context['form']['searchradius'].errors, [u'Enter a number.'])
-
-    #     #test the spatial search function
-    #     request = self.factory.post("/data/spatialsearch/", {'latitude': '113.12', 'longitude': '-23.15', 'searchradius': '100.0'})
-    #     response = spatialsearch(request)
-    #     self.assertEqual(response.status_code, 200)
-
         
     def test_checkdb(self):
         """Check that the checkdb command checks the database
