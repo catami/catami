@@ -8,3 +8,4 @@
 staging/metadata
 imports
 dbadmintool/backup/*.bak.tar.gz
+catamiPortal/local_settings.py
