@@ -179,7 +179,6 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
     auvdeployment.start_time_stamp = datetime.datetime.now()
     auvdeployment.end_time_stamp = datetime.datetime.now()
 
-    auvdeployment.distance_covered = -100.0
     auvdeployment.transect_shape = "POLYGON((0.0 0.0, 0.0 0.0, 0.0 0.0, 0.0 0.0, 0.0 0.0))"
 
     auvdeployment.save()
@@ -296,7 +295,6 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
     auvdeployment.end_position = last_image.image_position
 
     auvdeployment.transect_shape = "POLYGON(({0} {2}, {0} {3}, {1} {3}, {1} {2}, {0} {2} ))".format(lon_lim.minimum, lon_lim.maximum, lat_lim.minimum, lat_lim.maximum)
-    auvdeployment.distance_covered = -100.0  # just make it up... will work out later
 
     # now save the actual min/max depth as well as start/end times and
     # start position and end position

@@ -240,33 +240,9 @@ class AUVDeployment(Deployment):
     #==================================================#
     objects = models.GeoManager()
     transect_shape = models.PolygonField()
-    distance_covered = models.FloatField()
 
     def __unicode__(self):
         return "AUV: {0} - {1}".format(self.start_time_stamp, self.short_name)
-
-
-class StereoImage(Image):
-    """@brief Extends the image class to include right images"""
-    #==================================================#
-    # deployment : <deployment ID>
-    # left_thumbnail_reference : <Text blob>
-    # left_image_reference : <url>
-    # right_thumbnail_reference : <Text blob>
-    # right_image_reference : <url>
-    # date_time : <DateTime>
-    # image_position : <point>
-    # temperature : <real>
-    # salinity : <real>
-    # pitch : <real>
-    # roll : <real>
-    # yaw : <real>
-    # altitude : <real>
-    # depth : <real>
-    #==================================================#
-
-    right_thumbnail_reference = models.URLField()
-    right_image_reference = models.URLField()
 
 
 class BRUVDeployment(Deployment):

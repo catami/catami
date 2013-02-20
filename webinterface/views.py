@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 import httplib2
 
 #not API compliant - to be removed after the views are compliant
-from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, StereoImage, TIDeployment, TVDeployment,ScientificMeasurement
+from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment, ScientificMeasurement
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
@@ -279,6 +279,7 @@ def view_collection(request, collection_id):
         'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME}, 
         RequestContext(request))
 
+@waffle_switch('Collections')
 def view_workset(request, collection_id, workset_id):
     return render_to_response('webinterface/viewcollection.html',
         {"collection_id": collection_id,

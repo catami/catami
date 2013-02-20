@@ -1,5 +1,7 @@
 """A bot to check database integrity and manage backups
 """
+import traceback
+import sys
 
 __author__ = "Dan Marrable"
 
@@ -244,7 +246,6 @@ class ReportTools():
                             'Deployment',
                             'Image',
                             'AUVDeployment',
-                            'StereoImage',
                             'BRUVDeployment',
                             'DOVDeployment',
                             'TVDeployment',
@@ -258,7 +259,6 @@ class ReportTools():
                             Deployment,
                             Image,
                             AUVDeployment,
-                            StereoImage,
                             BRUVDeployment,
                             DOVDeployment,
                             TVDeployment,
@@ -322,20 +322,33 @@ class ReportTools():
     def save(self):
         """Saves the stat fields to the database """
 
-        data = Data_logger.objects.create(
-            collection_time=datetime.now(),
-            num_campaigns=self.stat_fields['Campaign'],
+        try:
+            collection_time=datetime.now()
+            num_campaigns=self.stat_fields['Campaign']
             num_deployments=self.stat_fields['Deployment'],
             num_images=self.stat_fields['Image'],
             num_auv_deployments=self.stat_fields['AUVDeployment'],
-            num_stereo_images=self.stat_fields['StereoImage'],
             num_bruv_deployments=self.stat_fields['BRUVDeployment'],
             num_dov_deployments=self.stat_fields['DOVDeployment'],
             num_tv_deployments=self.stat_fields['TVDeployment'],
             num_ti_deployments=self.stat_fields['TIDeployment'],
             db_size_on_disk=self.query_database_size()
-            )
 
+            data = Data_logger.objects.create(
+                collection_time=datetime.now(),
+                num_campaigns=self.stat_fields['Campaign'],
+                num_deployments=self.stat_fields['Deployment'],
+                num_images=self.stat_fields['Image'],
+                num_auv_deployments=self.stat_fields['AUVDeployment'],
+                num_bruv_deployments=self.stat_fields['BRUVDeployment'],
+                num_dov_deployments=self.stat_fields['DOVDeployment'],
+                num_tv_deployments=self.stat_fields['TVDeployment'],
+                num_ti_deployments=self.stat_fields['TIDeployment'],
+                db_size_on_disk=self.query_database_size()
+                 )
+        except:
+            traceback.print_exc(file=sys.stdout)
+            raise
         data.save()
 
     def collect_stats(self):
@@ -349,6 +362,7 @@ class ReportTools():
             return True
         except:
             logger.error('Could not collect stats')
+            traceback.print_exc(file=sys.stdout)
             return False
 
     def get_stats(self):
