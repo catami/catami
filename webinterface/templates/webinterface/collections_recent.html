@@ -1,5 +1,8 @@
 {% extends "base-topmenu.html" %}
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
+{% block tail_head %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/catami-api/css/collections.css" type="text/css">
+{% endblock %}
 {% block content %}
 
 <div class="row-fluid">
@@ -8,35 +11,98 @@
         <p>This page shows a summary of some recent collections. A Collection is a set of data (images and associated metadata) that has been prepared by a user for further processing, downloading or sharing. The data may come from one or more deployments, surveys or campaigns.</p>
     </div>
 </div>
-      
+
 <div class="row-fluid">
-	<div class="span6">
-	  	<h2>My Collections</h2>
-	  	<p>My most recent public collections. </p>
-	  	{% with "cl_my_rec" as listname%}
-	  	{% with my_rec_cols as collections %}
-	  	{% with my_collections_error as error_description %}
-	  	{% include "webinterface/dataviews/collectiontable.html"%}
-	  	{% endwith %}
-	  	{% endwith %}
-	  	{% endwith %}
-	  	<!--<div id="mycollections_recent"></div>-->
-	  	<p><a class="btn" href="{% url webinterface.views.my_collections %}">View more &raquo;</a>
-	  	<a href="{% url webinterface.views.explore %}" class="btn btn-primary pull-right"><i class="icon-plus-sign icon-white"></i> New Collection</a></p>
-	</div><!--/span-->
-	<div class="span6">
-	  	<h2>Public Collections</h2>
-	  	<p>Most recent public collections. </p>
-	  	{% with "cl_pub_rec" as listname%}
-	  	{% with pub_rec_cols as collections %}
-	  	{% with public_collections_error as error_description %}
-	  	{% include "webinterface/dataviews/collectiontable.html"%}
-	  	{% endwith %}
-	  	{% endwith %}
-	  	{% endwith %}
-	  	<!--<div id="publiccollections_recent"></div>-->
-	  <p><a class="btn" href="{% url webinterface.views.public_collections %}">View more &raquo;</a></p>
-	</div><!--/span-->
+    <div class="tabbable span6">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#my-collections" data-toggle="tab" id="tab-my-collections">My Collections</a></li>
+            <li> <a href="#public-collections" data-toggle="tab" id="tab-public-collections">Public Collections</a></li>
+            <li> <a href="#all-collections" data-toggle="tab" id="tab-all-collections">All Collections</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active collection-list treeView" id="my-collections">
+
+            </div>
+            <div class="tab-pane collection-list treeView" id="public-collections">
+
+            </div>
+            <div class="tab-pane collection-list treeView" id="all-collections">
+
+            </div>
+        </div>
+    </div>
+    <div class="span6">
+        {% include "webinterface/dataviews/mapview.html"%}
+    </div>
 </div>
+
+{#<div class="row-fluid">#}
+{#	<div class="span6">#}
+{#	  	<h2>My Collections</h2>#}
+{#	  	<p>My most recent public collections. </p>#}
+{#	  	{% with "cl_my_rec" as listname%}#}
+{#	  	{% with my_rec_cols as collections %}#}
+{#	  	{% with my_collections_error as error_description %}#}
+{#	  	{% include "webinterface/dataviews/collectiontable.html"%}#}
+{#	  	{% endwith %}#}
+{#	  	{% endwith %}#}
+{#	  	{% endwith %}#}
+{#	  	<!--<div id="mycollections_recent"></div>-->#}
+{#	  	<p><a class="btn" href="{% url webinterface.views.my_collections %}">View more &raquo;</a>#}
+{#	  	<a href="{% url webinterface.views.explore %}" class="btn btn-primary pull-right"><i class="icon-plus-sign icon-white"></i> New Collection</a></p>#}
+{#	</div><!--/span-->#}
+{#	<div class="span6">#}
+{#	  	<h2>Public Collections</h2>#}
+{#	  	<p>Most recent public collections. </p>#}
+{#	  	{% with "cl_pub_rec" as listname%}#}
+{#	  	{% with pub_rec_cols as collections %}#}
+{#	  	{% with public_collections_error as error_description %}#}
+{#	  	{% include "webinterface/dataviews/collectiontable.html"%}#}
+{#	  	{% endwith %}#}
+{#	  	{% endwith %}#}
+{#	  	{% endwith %}#}
+{#	  	<!--<div id="publiccollections_recent"></div>-->#}
+{#	  <p><a class="btn" href="{% url webinterface.views.public_collections %}">View more &raquo;</a></p>#}
+{#	</div><!--/span-->#}
+{#</div>#}
+
+
 {% endblock %}
 
+{% block add_script %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/collections.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/collapsible-lists/CollapsibleLists.js"></script>
+
+    <script type="text/javascript">
+
+        // Instatiate collection list
+        cl = new CollectionList('updateMapForSelectedCollection');
+        $(document).ready(function(){
+            // Initialise my collections list
+            cl.getFullCollectionList('parent=none&is_public=false&owner=1','#my-collections');
+
+            // Attach onClick collection list functions to improve page load performance
+            //$('#tab-all-collections').attr('onClick','getListAndDetachJS("parent=none","#all-collections","#tab-all-collections");')
+            //$('#tab-public-collections').attr('onClick','getListAndDetachJS("parent=none&is_public=true","#public-collections","#tab-public-collections");')
+
+            cl.getFullCollectionList("parent=none","#all-collections");
+            cl.getFullCollectionList('parent=none&is_public=true','#public-collections');
+
+            CollapsibleLists.apply();
+
+            initDeploymentMap();
+
+
+        });
+
+        /*
+        function getListAndDetachJS (filter, outputelement, clickelement) {
+            cl.getFullCollectionList(filter, outputelement);
+            $(clickelement).attr('onClick','').unbind('click');
+        }
+        */
+
+    </script>
+{% endblock %}
