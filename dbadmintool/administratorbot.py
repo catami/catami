@@ -1,5 +1,7 @@
 """A bot to check database integrity and manage backups
 """
+import traceback
+import sys
 
 __author__ = "Dan Marrable"
 
@@ -320,9 +322,9 @@ class ReportTools():
     def save(self):
         """Saves the stat fields to the database """
 
-        data = Data_logger.objects.create(
-            collection_time=datetime.now(),
-            num_campaigns=self.stat_fields['Campaign'],
+        try:
+            collection_time=datetime.now()
+            num_campaigns=self.stat_fields['Campaign']
             num_deployments=self.stat_fields['Deployment'],
             num_images=self.stat_fields['Image'],
             num_auv_deployments=self.stat_fields['AUVDeployment'],
@@ -331,9 +333,36 @@ class ReportTools():
             num_tv_deployments=self.stat_fields['TVDeployment'],
             num_ti_deployments=self.stat_fields['TIDeployment'],
             db_size_on_disk=self.query_database_size()
-            )
 
-        data.save()
+            # !!!!!
+            logger.debug(collection_time)
+            logger.debug(num_campaigns)
+            logger.debug(num_deployments)
+            logger.debug(num_images)
+            logger.debug(num_auv_deployments)
+            logger.debug(num_bruv_deployments)
+            logger.debug(num_dov_deployments)
+            logger.debug(num_tv_deployments)
+            logger.debug(num_ti_deployments)
+            logger.debug(db_size_on_disk)
+
+            data = Data_logger.objects.create(
+                collection_time=datetime.now(),
+                num_campaigns=self.stat_fields['Campaign'],
+                num_deployments=self.stat_fields['Deployment'],
+                num_images=self.stat_fields['Image'],
+                num_auv_deployments=self.stat_fields['AUVDeployment'],
+                num_bruv_deployments=self.stat_fields['BRUVDeployment'],
+                num_dov_deployments=self.stat_fields['DOVDeployment'],
+                num_tv_deployments=self.stat_fields['TVDeployment'],
+                num_ti_deployments=self.stat_fields['TIDeployment'],
+                db_size_on_disk=self.query_database_size()
+                 )
+        except:
+            traceback.print_exc(file=sys.stdout)
+
+            raise
+        #data.save()
 
     def collect_stats(self):
         """Main method for collecting the stats"""
@@ -346,6 +375,7 @@ class ReportTools():
             return True
         except:
             logger.error('Could not collect stats')
+            traceback.print_exc(file=sys.stdout)
             return False
 
     def get_stats(self):

@@ -2,19 +2,39 @@
 """
 
 from django.test import TestCase
+from model_mommy import mommy
 import dbadmintool.administratorbot as administratorbot
+from django.contrib.gis.geos import Point
+
 from django.test.client import RequestFactory
 
 
 class DatabaseTest(TestCase):
     """Tests for checking the database administratorbot"""
 
-    fixtures = ['data.json', ]
+    #fixtures = ['data.json', ]
 
     def setUp(self):
         """Set up the defaults for the test"""
         self.bender = administratorbot.Robot()
         self.april = administratorbot.ReportTools()
+
+        #==========
+        # Mommy fixture
+        #==========
+        self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
+        self.campaign_01 = mommy.make_one('Force.Campaign', id=1)
+
+        self.deployment_one = mommy.make_one('Force.Deployment', start_position=Point(12.4604, 43.9420),campaign=self.campaign_01, id=1)
+        self.mock_image = mommy.make_one('Force.Image', deployment=self.deployment_one,
+                                        left_image_reference=self.image_list[0],
+                                        image_position=Point(12.4604, 43.9420), pk=1)
+
+        self.dummy_dep1 = mommy.make_recipe('Force.auvdeployment', id=3, campaign=self.campaign_01)
+        self.dummy_dep2 = mommy.make_recipe('Force.bruvdeployment', id=4, campaign=self.campaign_01)
+        self.dummy_dep3 = mommy.make_recipe('Force.dovdeployment', id=5, campaign=self.campaign_01)
+        self.dummy_dep4 = mommy.make_recipe('Force.tvdeployment', id=6, campaign=self.campaign_01)
+        self.dummy_dep5 = mommy.make_recipe('Force.tideployment', id=7, campaign=self.campaign_01)
 
     def test_check_database_connection(self):
         """Test that administratorbot returns True if open connection and
@@ -45,4 +65,4 @@ class DatabaseTest(TestCase):
 
     #def test_db_stats_view(self):
         #response = self.client.get("/report/")
-        #self.assertEqual(response.status_code, 200)
+
