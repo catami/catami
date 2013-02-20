@@ -183,39 +183,41 @@ def explore_campaign(request, campaign_id):
 # Collection pages
 @waffle_switch('Collections')
 def collections(request):
-    my_collections_error = ''
-    public_collections_error =''
-
-    collection_list = CollectionResource()
-    try:
-        cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id, parent=None)
-        if (len(cl_my_rec) == 0):
-            my_collections_error = 'Sorry, you don\'t seem to have any collections in your account.'
-
-    except:
-        cl_my_rec = ''
-        if (request.user.is_anonymous):
-            my_collections_error = 'Sorry, you dont appear to be logged in. Please login and try again.'
-        else:
-            my_collections_error = 'An undetermined error has occured. Please contact support'
-
-    try:
-        cl_pub_rec = collection_list.obj_get_list(request, is_public=True, parent=None)
-        if (len(cl_pub_rec) == 0):
-            public_collections_error = 'Sorry, there don\'t seem to be any public collections right now.'
-
-    except:
-        cl_pub_rec = ''
-        if (request.user.is_anonymous):
-            public_collections_error = 'Sorry, public collections arent working for anonymous users right now. Please login and try again.'
-        else:
-            public_collections_error = 'An undetermined error has occured. Please contact support'
+#    my_collections_error = ''
+#    public_collections_error =''
+#
+#    collection_list = CollectionResource()
+#    try:
+#        cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id, parent=None)
+#        if (len(cl_my_rec) == 0):
+#            my_collections_error = 'Sorry, you don\'t seem to have any collections in your account.'
+#
+#    except:
+#        cl_my_rec = ''
+#        if (request.user.is_anonymous):
+#            my_collections_error = 'Sorry, you dont appear to be logged in. Please login and try again.'
+#        else:
+#            my_collections_error = 'An undetermined error has occured. Please contact support'
+#
+#    try:
+#        cl_pub_rec = collection_list.obj_get_list(request, is_public=True, parent=None)
+#        if (len(cl_pub_rec) == 0):
+#            public_collections_error = 'Sorry, there don\'t seem to be any public collections right now.'
+#
+#    except:
+#        cl_pub_rec = ''
+#        if (request.user.is_anonymous):
+#            public_collections_error = 'Sorry, public collections arent working for anonymous users right now. Please login and try again.'
+#        else:
+#            public_collections_error = 'An undetermined error has occured. Please contact support'
 
     return render_to_response('webinterface/collections_recent.html', 
-        {"my_rec_cols": cl_my_rec,
-        "my_collections_error": my_collections_error,
-         "pub_rec_cols": cl_pub_rec,
-         "public_collections_error":public_collections_error},
+#        {"my_rec_cols": cl_my_rec,
+#         "my_collections_error": my_collections_error,
+#         "pub_rec_cols": cl_pub_rec,
+#         "public_collections_error":public_collections_error,
+         {'WMS_URL': settings.WMS_URL, #imported from settings
+         'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
          RequestContext(request))
 
 @waffle_switch('Collections')
@@ -277,6 +279,13 @@ def view_collection(request, collection_id):
         'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME}, 
         RequestContext(request))
 
+def view_workset(request, collection_id, workset_id):
+    return render_to_response('webinterface/viewcollection.html',
+        {"collection_id": collection_id,
+         "workset_id": workset_id,
+         'WMS_URL': settings.WMS_URL, #imported from settings
+         'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
+        RequestContext(request))
 # view collection table views
 #def public_collections_all(request):
 #    collection_list = CollectionResource()

@@ -35,6 +35,7 @@ urlpatterns = patterns('webinterface.views',
     #Collection List Views
     url(r'^collections$', 'collections'),
     url(r'^collections/(?P<collection_id>\d+)/$', 'view_collection'),
+    url(r'^collections/(?P<collection_id>\d+)/(?P<workset_id>\d+)/$', 'view_workset'),
     url(r'^my_collections$', 'my_collections'),
 #    url(r'^my_collections_all$', 'my_collections_all'),
 #    url(r'^my_collections_recent$', 'my_collections_recent'),
