@@ -53,77 +53,8 @@ def index(request):
 
     """
 
-    #NOT API COMPLIANT
-    recent_deployments = Deployment.objects.all().order_by('-id')[:3]
-    random_images = Image.objects.all().order_by('?')[:9]
-
-    styled_deployment_list = []
-    image_link_list = []
-
-    for image in random_images:
-        try:
-            AUVDeployment.objects.get(id=image.deployment.id)
-        except:
-            pass
-        else:
-            image_link = {"deployment_url":reverse(auvdeployments)+str(image.deployment.id),"image":image}
-
-        try:
-            TIDeployment.objects.get(id=image.deployment.id)
-        except:
-            pass
-        else:
-            image_link = {"deployment_url":reverse(tideployments)+str(image.deployment.id),"image":image}
-
-        image_link_list.append(image_link)
-
-    for deployment in recent_deployments:
-        try:
-            AUVDeployment.objects.get(id=deployment.id)
-        except:
-            pass
-        else:
-            deployment_type= "AUV Deployment"
-            deployment_url = reverse(auvdeployments)+str(deployment.id)
-
-        try:
-            BRUVDeployment.objects.get(id=deployment.id)
-        except:
-            pass
-        else:
-            deployment_type= "BRUV Deployment"
-            deployment_url = reverse(bruvdeployments)+str(deployment.id)
-
-        try:
-            BRUVDeployment.objects.get(id=deployment.id)
-        except:
-            pass
-        else:
-            deployment_type= "DOV Deployment"
-            deployment_url =reverse(dovdeployments)+str(deployment.id)
-
-        try:
-            TIDeployment.objects.get(id=deployment.id)
-        except:
-            pass
-        else:
-            deployment_type= "TI Deployment"
-            deployment_url = reverse(tideployments)+str(deployment.id)
-
-        try:
-            BRUVDeployment.objects.get(id=deployment.id)
-        except:
-            pass
-        else:
-            deployment_type= "TV Deployment"
-            deployment_url = reverse(tvdeployments)+str(deployment.id)
-
-        styled_deployment = {"deployment_type":deployment_type,"deployment_url":deployment_url,"deployment":deployment}
-        styled_deployment_list.append(styled_deployment)
-
     return render_to_response('webinterface/index.html',
-        {'styled_deployment_list':styled_deployment_list,
-         'image_link_list': image_link_list},
+        {},
         RequestContext(request))
 
 
