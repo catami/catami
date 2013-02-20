@@ -25,16 +25,23 @@ class DatabaseTest(TestCase):
         self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
         self.campaign_01 = mommy.make_one('Force.Campaign', id=1)
 
-        self.deployment_one = mommy.make_one('Force.Deployment', start_position=Point(12.4604, 43.9420),campaign=self.campaign_01, id=1)
-        self.mock_image = mommy.make_one('Force.Image', deployment=self.deployment_one,
-                                        left_image_reference=self.image_list[0],
-                                        image_position=Point(12.4604, 43.9420), pk=1)
+        self.deployment_one = mommy.make_one('Force.Deployment',
+            start_position=Point(12.4604, 43.9420),campaign=self.campaign_01,
+            id=1)
+        self.mock_image = mommy.make_one('Force.Image', deployment=self.
+            deployment_one, left_image_reference=self.image_list[0],
+            image_position=Point(12.4604, 43.9420), pk=1)
 
-        self.dummy_dep1 = mommy.make_recipe('Force.auvdeployment', id=3, campaign=self.campaign_01)
-        self.dummy_dep2 = mommy.make_recipe('Force.bruvdeployment', id=4, campaign=self.campaign_01)
-        self.dummy_dep3 = mommy.make_recipe('Force.dovdeployment', id=5, campaign=self.campaign_01)
-        self.dummy_dep4 = mommy.make_recipe('Force.tvdeployment', id=6, campaign=self.campaign_01)
-        self.dummy_dep5 = mommy.make_recipe('Force.tideployment', id=7, campaign=self.campaign_01)
+        self.dummy_dep1 = mommy.make_recipe('dbadmintool.auvdeployment', id=3,
+            campaign=self.campaign_01)
+        self.dummy_dep2 = mommy.make_recipe('dbadmintool.bruvdeployment', id=4,
+            campaign=self.campaign_01)
+        self.dummy_dep3 = mommy.make_recipe('dbadmintool.dovdeployment', id=5,
+            campaign=self.campaign_01)
+        self.dummy_dep4 = mommy.make_recipe('dbadmintool.tvdeployment', id=6,
+            campaign=self.campaign_01)
+        self.dummy_dep5 = mommy.make_recipe('dbadmintool.tideployment', id=7,
+            campaign=self.campaign_01)
 
     def test_check_database_connection(self):
         """Test that administratorbot returns True if open connection and
@@ -42,7 +49,8 @@ class DatabaseTest(TestCase):
         False if no connection is found
         """
 
-        # The unt test database is called default.see if we can get a connection
+        # The unt test database is called default.see if we can get a
+        # connection
         self.assertTrue(self.bender.check_database_connection(
             dbname='default'))
 
@@ -53,7 +61,8 @@ class DatabaseTest(TestCase):
     def test_make_local_backup(self):
         self.assertTrue(self.bender.make_local_backup())
         self.assertTrue(self.bender.make_local_backup(do_zip=False))
-        self.assertFalse(self.bender.make_local_backup(do_zip=False, unit_test='corrupt'))
+        self.assertFalse(self.bender.make_local_backup(do_zip=False,
+            unit_test='corrupt'))
         self.assertFalse(self.bender.make_local_backup(unit_test='corrupt'))
 
     def test_collect_db_stats(self):

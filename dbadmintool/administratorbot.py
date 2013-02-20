@@ -2,9 +2,6 @@
 """
 import traceback
 import sys
-
-__author__ = "Dan Marrable"
-
 import logging
 import tarfile
 import hashlib
@@ -13,12 +10,13 @@ from  shutil import copyfile
 from django.db import connections
 from django.db.utils import ConnectionDoesNotExist
 from django.core import management
-#from django.core import mail
 from datetime import datetime
 from StringIO import StringIO
 from Force.models import *
 from dbadmintool.models import Data_logger
 from django.db import connection, transaction
+
+__author__ = "Dan Marrable"
 
 logger = logging.getLogger(__name__)
 
@@ -212,7 +210,8 @@ class Robot():
                 test['checksum'] = False
         # Check to see if the file isthere.
 
-        if test['checksum'] == False or test['archive'] == False or test['copy'] == False:
+        if test['checksum'] == False or test['archive'] == False or test[
+            'copy'] == False:
 
             return False
         else:
@@ -273,7 +272,8 @@ class ReportTools():
         i = 0
         for i in range(0, len(self.force_models)):
 
-            self.stat_fields[self.str_force_models[i]] = len(self.force_models[i].objects.all())
+            self.stat_fields[self.str_force_models[i]] = len(self.force_models
+                [i].objects.all())
 
         logger.debug(str(self.stat_fields))
         return True

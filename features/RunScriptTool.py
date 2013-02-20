@@ -61,12 +61,12 @@ class DeployJobTool():
         self.job_id = self.id_generator()
 
         logger.debug('job_id is :: ' + self.job_id)
-        self.job_dir = '/tmp/CATAMI/features/' + self.user_name + '/' + self.job_id
+        self.job_dir = ('/tmp/CATAMI/features/' + self.user_name + '/' + self.
+            job_id)
         os.makedirs(self.job_dir)
-        #TODO : need to parse user id from the front end of the person that is logged in
-
-        # This will be a list of deployments after querying based on image list
-        # might leave this out for now 06/02/13 Dan M
+        # TODO : need to parse user id from the front end of the person that is
+        # logged in  This will be a list of deployments after querying based on
+        # image list might leave this out for now 06/02/13 Dan M
         # deployment_information = []
 
     def write_json_file(self, fname='meta.json'):
@@ -81,7 +81,8 @@ class DeployJobTool():
 
         f = open(self.job_dir + '/' + fname, 'wb')
 
-        logger.debug('Writing ' + fname + ' to disk at location :: ' + self.job_dir)
+        logger.debug('Writing ' + fname + ' to disk at location :: ' + self.
+            job_dir)
         f.write(json.dumps(parameter_dict))
 
     def write_rand_numpy_array_to_disk(self, dim=(1, 20)):
@@ -98,8 +99,10 @@ class DeployJobTool():
             else:
                 feature = scipy.rand(dim[0], dim[1])
 
-            logger.debug('Writing numpy array to :: ' + self.job_dir + '/' + str(im) + '.p')
-            pickle.dump(feature, open(self.job_dir + '/' + str(im) + '.p', 'wb'))
+            logger.debug('Writing numpy array to :: ' + self.job_dir + '/' +
+                str(im) + '.p')
+            pickle.dump(feature, open(self.job_dir + '/' + str(im) + '.p',
+                'wb'))
 
     def compress_files(self, fname='features', **kwargs):
         """
@@ -124,19 +127,22 @@ class DeployJobTool():
 
         tar.add(self.job_dir + '/meta.json', arcname='/meta.json')
         for im in self.image_primary_keys:
-            tar.add(self.job_dir + '/' + str(im) + '.p', arcname=str(im) + '.p')
+            tar.add(self.job_dir + '/' + str(im) + '.p', arcname=str(im) +
+                '.p')
 
         tar.close()
     #def push_files_to_server(self):
     #    pass
 
-    def id_generator(self, size=12, chars=string.ascii_uppercase + string.digits):
+    def id_generator(self, size=12, chars=string.ascii_uppercase + string.
+        digits):
         return ''.join(random.choice(chars) for x in range(size))
 
     def make_image_list(self):
         """ Queries the database for the image locaitons based on the pks"""
         for image in self.image_primary_keys:
-            self.image_location.append(Image.objects.get(pk=image).left_image_reference)
+            self.image_location.append(Image.objects.get(pk=image).
+                left_image_reference)
 
     def deploy_job(self, server=object, job_type='libfeature'):
         """writes the reuqired scripts for the job, pushes them to the jobserver
@@ -145,29 +151,39 @@ class DeployJobTool():
         """
 
         rst = RunScriptTool()
-        rst.feature_image_dir = rst.scratch_directory + '/' + self.job_id + '/img/'
-        rst.feature_output_dir = rst.scratch_directory + '/' + self.job_id + '/output/'
-        #self.server = pysftp.Connection(rst.server_ip, username=self.user_name, password=self.user_password)
+        rst.feature_image_dir = (rst.scratch_directory + '/' + self.job_id +
+            '/img/')
+        rst.feature_output_dir = (rst.scratch_directory + '/' + self.job_id +
+            '/output/')
+        # self.server = pysftp.Connection(rst.server_ip,
+        # username=self.user_name, password=self.user_password)
 
         if job_type == 'libfeature':
             # make the directory on scratch
-            self.server = server #pysftp.Connection(rst.server_ip, username=self.user_name, password=self.user_password, log=True)
+            self.server = server
+            # pysftp.Connection(rst.server_ip, username=self.user_name,
+            # password=self.user_password, log=True)
 
             rst.library = 'libfeature'
             self.write_json_file('meta.json')
             rst.write_libfeature_script(self.job_dir + '/run_libfeature.py')
-            rst.write_pbs_script(self.job_dir + '/queue_libfeature.pbs', jobid=self.job_id)
+            rst.write_pbs_script(self.job_dir + '/queue_libfeature.pbs',
+                jobid=self.job_id)
 
-            file_list = [rst.libfeature_run_file, rst.run_file, self.job_dir + '/meta.json']
+            file_list = [rst.libfeature_run_file, rst.run_file, self.job_dir +
+                '/meta.json']
             print file_list
             ServerTool.compress_files(file_list, self.job_dir + '/job')
 
             try:
-                ServerTool.push_file_to_server(self.job_dir + '/job.tar.gz', rst.server_ip, self.server)
-                self.server.execute('mkdir ' + rst.scratch_directory + '/' + self.job_id)
+                ServerTool.push_file_to_server(self.job_dir + '/job.tar.gz',
+                    rst.server_ip, self.server)
+                self.server.execute('mkdir ' + rst.scratch_directory + '/' +
+                    self.job_id)
                 self.server.execute('mkdir ' + rst.feature_output_dir)
                 self.server.execute('mkdir ' + rst.feature_image_dir)
-                self.server.execute('cp job.tar.gz ' + rst.scratch_directory + '/' + self.job_id)
+                self.server.execute('cp job.tar.gz ' + rst.scratch_directory +
+                    '/' + self.job_id)
                 self.server.chdir(rst.scratch_directory + '/' + self.job_id)
                 self.server.execute(rst.scratch_directory + '/' + self.job_id)
                 self.server.execute('tar -xzvf ' + rst.scratch_directory +
@@ -179,13 +195,12 @@ class DeployJobTool():
                                     self.job_id)
             except:
                 logger.error('Failed to PUT :: ' +
-                             self.job_dir + 'job.tar.gz'  +
+                             self.job_dir + 'job.tar.gz' +
                                ' to server')
 
                 raise FeaturesErrors.ConnectionError('Failed to put ',
-                                                     'Failed to PUT :: ' +
-                                                     self.job_dir + 'job.tar.gz' +
-                                                     'to server :: ')
+                    'Failed to PUT :: ' + self.job_dir + 'job.tar.gz' +
+                    'to server :: ')
 
         elif job_type == 'libcluster':
             #rst.write_libcluster_script()
@@ -195,7 +210,8 @@ class DeployJobTool():
 
         # push to server
         #rst.push_pbs_script_to_server(self.server,start_job=False)
-        self.server.execute('qsub ' + rst.scratch_directory + '/' + self.job_id + '/queue_libfeature.pbs')
+        self.server.execute('qsub ' + rst.scratch_directory + '/' + self.
+            job_id + '/queue_libfeature.pbs')
         self.server.execute('qstat')
 
         # clean up
@@ -226,7 +242,8 @@ class RunScriptTool():
         self.memory = 23  # required RAM in gigabytes
         self.num_nodes = 1
         self.num_cpus = 12
-        self.scratch_directory = '/scratch/' + self.pbs_workgroup + '/catamihpc'
+        self.scratch_directory = ('/scratch/' + self.pbs_workgroup +
+            '/catamihpc')
         self.run_file = 'catami.pbs'  # default script name
         self.library = 'libCluster'  # ie clustering, features etc
 
@@ -241,7 +258,8 @@ class RunScriptTool():
         # PARAMETERS FOR libfeatures
         #====================
         self.libfeature_run_file = 'run_feature.py'
-        self.feature_image_dir = self.scratch_directory  # need to set this from deploy tool
+        self.feature_image_dir = self.scratch_directory
+        # need to set this from deploy tool
         self.feature_output_dir = self.scratch_directory + '/output/'
 
     def write_libfeature_script(self, file_name='run_libfeature.py'):
@@ -250,7 +268,8 @@ class RunScriptTool():
         self.libfeature_run_file = file_name
         f = open(self.libfeature_run_file, 'w')
 
-        logger.debug('Writing libfeature run file :: ' + self.libfeature_run_file)
+        logger.debug('Writing libfeature run file :: ' + self.
+            libfeature_run_file)
 
         f.write('#! /usr/bin/env python' + '\n'
             'import glob' + '\n'
@@ -284,20 +303,15 @@ class RunScriptTool():
 
         logger.debug('Writing pbs script :: ' + self.run_file)
 
-        f.write(
-            '#!/bin/bash' + '\n'
-            '# pbs file generated by catamiPortal' + '\n'
-            '#PBS -W group_list=' + self.pbs_workgroup + '\n'
-            '#PBS -q ' + self.job_queue + '\n'
-            '#PBS -l walltime=' + str(self.wall_time) + '\n'
-            '#PBS -l select=' + str(self.num_nodes) + ':ncpus=' +
-            str(self.num_cpus) + ':mem=' + str(self.memory) + 'gb'
-            '\n'
-            'cd ' + self.scratch_directory + '/' + jobid + '\n'
-            '\n'
-            'module load python' + '\n'
-            'python ' + self.scratch_directory + '/' + jobid + '/run_libfeature.py' + '\n' + '\n' #TODO change this line to include libcluster
-        )
+        f.write('#!/bin/bash' + '\n' '# pbs file generated by catamiPortal' +
+            '\n' '#PBS -W group_list=' + self.pbs_workgroup + '\n' '#PBS -q '
+            + self.job_queue + '\n' '#PBS -l walltime=' + str(self.wall_time)
+            + '\n' '#PBS -l select=' + str(self.num_nodes) + ':ncpus=' + str(
+            self.num_cpus) + ':mem=' + str(self.memory) + 'gb' '\n' 'cd ' +
+            self.scratch_directory + '/' + jobid + '\n' '\n'
+            'module load python' + '\n' 'python ' + self.scratch_directory +
+            '/' + jobid + '/run_libfeature.py' + '\n' + '\n')
+            #TODO change this line to include libcluster
 
         f.close()
 
@@ -349,7 +363,8 @@ class ServerTool():
     """ Some helper methods for parsing files to runserver"""
 
     @staticmethod
-    def compress_files(file_list, fname, do_zip=True, compression_type='gz', **kwargs):
+    def compress_files(file_list, fname, do_zip=True, compression_type='gz',
+        **kwargs):
         """
 
 

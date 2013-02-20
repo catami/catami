@@ -22,9 +22,11 @@ def stats_views(request):
     stat_dictionary.append(['Date', 'num_campaigns', 'num_deployments'])
 
     for item in Data_logger.objects.all():
-        stat_dictionary.append([item.collection_time, item.num_campaigns, item.num_deployments])
+        stat_dictionary.append([item.collection_time, item.num_campaigns, item
+            .num_deployments])
 
-    stat_dictionary = simplejson.dumps(stat_dictionary, cls=DjangoJSONEncoder)#serializers.serialize("json", stat_dictionary)
+    stat_dictionary = simplejson.dumps(stat_dictionary, cls=DjangoJSONEncoder)
+    # serializers.serialize("json", stat_dictionary)
 
 
     return render_to_response(
