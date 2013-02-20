@@ -334,18 +334,6 @@ class ReportTools():
             num_ti_deployments=self.stat_fields['TIDeployment'],
             db_size_on_disk=self.query_database_size()
 
-            # !!!!!
-            logger.debug(collection_time)
-            logger.debug(num_campaigns)
-            logger.debug(num_deployments)
-            logger.debug(num_images)
-            logger.debug(num_auv_deployments)
-            logger.debug(num_bruv_deployments)
-            logger.debug(num_dov_deployments)
-            logger.debug(num_tv_deployments)
-            logger.debug(num_ti_deployments)
-            logger.debug(db_size_on_disk)
-
             data = Data_logger.objects.create(
                 collection_time=datetime.now(),
                 num_campaigns=self.stat_fields['Campaign'],
@@ -360,9 +348,8 @@ class ReportTools():
                  )
         except:
             traceback.print_exc(file=sys.stdout)
-
             raise
-        #data.save()
+        data.save()
 
     def collect_stats(self):
         """Main method for collecting the stats"""
