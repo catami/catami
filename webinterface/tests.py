@@ -43,11 +43,11 @@ class TestViews(TestCase):
 
         self.dummy_dep = mommy.make_one('Force.Deployment', start_position=Point(12.4604, 43.9420), id=1, campaign=self.campaign_02)
 
-        self.dummy_dep1 = mommy.make_recipe('Force.auvdeployment', id=3, campaign=self.campaign_02)
-        self.dummy_dep2 = mommy.make_recipe('Force.bruvdeployment', id=4, campaign=self.campaign_02)
-        self.dummy_dep3 = mommy.make_recipe('Force.dovdeployment', id=5, campaign=self.campaign_02)
-        self.dummy_dep4 = mommy.make_recipe('Force.tvdeployment', id=6, campaign=self.campaign_02)
-        self.dummy_dep5 = mommy.make_recipe('Force.tideployment', id=7, campaign=self.campaign_02)
+        self.dummy_dep1 = mommy.make_recipe('webinterface.auvdeployment', id=3, campaign=self.campaign_02)
+        self.dummy_dep2 = mommy.make_recipe('webinterface.bruvdeployment', id=4, campaign=self.campaign_02)
+        self.dummy_dep3 = mommy.make_recipe('webinterface.dovdeployment', id=5, campaign=self.campaign_02)
+        self.dummy_dep4 = mommy.make_recipe('webinterface.tvdeployment', id=6, campaign=self.campaign_02)
+        self.dummy_dep5 = mommy.make_recipe('webinterface.tideployment', id=7, campaign=self.campaign_02)
 
         #setup some images and assign to deployment_one
         self.image_list = list()
