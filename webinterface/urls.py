@@ -19,12 +19,12 @@ urlpatterns = patterns('webinterface.views',
     #Info Pages
     url(r'^faq', 'faq'),
     url(r'^contact', 'contact'),
-    url(r'^howto','howto'),
-    url(r'^about','about'),
+    url(r'^howto', 'howto'),
+    url(r'^about', 'about'),
     url(r'^proxy/(?P<url>.*)$', 'proxy'),
 
     url(r'^explore$', 'explore'),
-    url(r'^explore/getmapextent$','get_multiple_deployment_extent'),
+    url(r'^explore/getmapextent$', 'get_multiple_deployment_extent'),
     url(r'^explore_campaign/(?P<campaign_id>\d+)/$', 'explore_campaign'),
 
     #url(r'^viewcollection$', 'viewcollection'),
@@ -50,10 +50,10 @@ urlpatterns = patterns('webinterface.views',
     url(r'^imageview$', 'image_view'),
     url(r'^imageannotate$', 'image_annotate'),
     url(r'^imageedit$', 'image_edit'),
-    
+
     #Collection Management
-    url(r'^collections/create/$','create_collection_from_deployments'),
-    url(r'^collections/createworkset/(?P<method>[\w\-]+)/$','create_workset_from_collection'),
+    url(r'^collections/create/$', 'create_collection_from_deployments'),
+    url(r'^collections/createworkset/(?P<method>[\w\-]+)/$', 'create_workset_from_collection'),
 
     #force views
     url(r'^data/$', 'data'),
@@ -102,7 +102,6 @@ urlpatterns = patterns('webinterface.views',
 )
 
 urlpatterns += patterns('',
-    url(r'^accounts/login/$', 'django.contrib.auth.views.login',
-         {'template_name': 'registration/login.html'}),
-#     url(r'^logout/$', 'catamiPortal.views.logout_view'),
-)
+                        url(r'^accounts/login/$', 'django.contrib.auth.views.login',
+                        {'template_name': 'registration/login.html'}),
+                        )
