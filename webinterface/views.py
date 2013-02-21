@@ -211,12 +211,20 @@ def collections(request):
 #        else:
 #            public_collections_error = 'An undetermined error has occured. Please contact support'
 
+    # TODO: handle user login properly
+    #if (request.user.is_anonymous):
+    #    user_id = False
+    #else:
+    #    user_id = request.user.id
+    user_id = request.user.id
+
     return render_to_response('webinterface/collections_recent.html', 
 #        {"my_rec_cols": cl_my_rec,
 #         "my_collections_error": my_collections_error,
 #         "pub_rec_cols": cl_pub_rec,
 #         "public_collections_error":public_collections_error,
-         {'WMS_URL': settings.WMS_URL, #imported from settings
+         {'user_id' : user_id,
+         'WMS_URL': settings.WMS_URL, #imported from settings
          'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
          RequestContext(request))
 
