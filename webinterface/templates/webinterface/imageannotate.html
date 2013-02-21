@@ -124,12 +124,19 @@
 	    		// the point locations also need to be pushed into the database
 	    		var newPoint = {x:-1, y:-1, id:-1};
 	    		var minSepChecked = false;
+	    		var imWidth = $('#image').width();
+	    		var imHeight = $('#image').height();
+	    		if (imWidth <=0 || imHeight <= 0)
+	    		{
+	    			alert("Bad image size.  Generating annotation points will eventually be moved to the back end");
+	    			return;
+	    		}
 	    		while (minSepChecked == false)
 	    		{
 	    			var minDistViolated = false;
 	    			// radomly assign a point (accounting for size of icon)
-		    		newPoint.x = Math.round(Math.random()*$('#image').width()) - 5;
-		    		newPoint.y = Math.round(Math.random()*$('#image').height()) - 5;
+		    		newPoint.x = Math.round(Math.random()*imWidth) - 5;
+		    		newPoint.y = Math.round(Math.random()*imHeight) - 5;
 		    		newPoint.id = i;
 		    		// check spacing between points so we don't end up with points on top of each other
 		    		if (pointList.length > 0)
