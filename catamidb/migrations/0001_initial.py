@@ -97,17 +97,17 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('catamidb', ['ScientificMeasurementType'])
 
-        # Adding model 'ScientificiPoseMeasurement'
-        db.create_table('catamidb_scientificiposemeasurement', (
+        # Adding model 'ScientificPoseMeasurement'
+        db.create_table('catamidb_scientificposemeasurement', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('measurement_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catamidb.ScientificMeasurementType'])),
             ('pose', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catamidb.Pose'])),
             ('value', self.gf('django.db.models.fields.FloatField')()),
         ))
-        db.send_create_signal('catamidb', ['ScientificiPoseMeasurement'])
+        db.send_create_signal('catamidb', ['ScientificPoseMeasurement'])
 
-        # Adding unique constraint on 'ScientificiPoseMeasurement', fields ['measurement_type', 'pose']
-        db.create_unique('catamidb_scientificiposemeasurement', ['measurement_type_id', 'pose_id'])
+        # Adding unique constraint on 'ScientificPoseMeasurement', fields ['measurement_type', 'pose']
+        db.create_unique('catamidb_scientificposemeasurement', ['measurement_type_id', 'pose_id'])
 
         # Adding model 'ScientificImageMeasurement'
         db.create_table('catamidb_scientificimagemeasurement', (
@@ -157,8 +157,8 @@ class Migration(SchemaMigration):
         # Removing unique constraint on 'ScientificImageMeasurement', fields ['measurement_type', 'image']
         db.delete_unique('catamidb_scientificimagemeasurement', ['measurement_type_id', 'image_id'])
 
-        # Removing unique constraint on 'ScientificiPoseMeasurement', fields ['measurement_type', 'pose']
-        db.delete_unique('catamidb_scientificiposemeasurement', ['measurement_type_id', 'pose_id'])
+        # Removing unique constraint on 'ScientificPoseMeasurement', fields ['measurement_type', 'pose']
+        db.delete_unique('catamidb_scientificposemeasurement', ['measurement_type_id', 'pose_id'])
 
         # Removing unique constraint on 'Image', fields ['pose', 'camera']
         db.delete_unique('catamidb_image', ['pose_id', 'camera_id'])
@@ -193,8 +193,8 @@ class Migration(SchemaMigration):
         # Deleting model 'ScientificMeasurementType'
         db.delete_table('catamidb_scientificmeasurementtype')
 
-        # Deleting model 'ScientificiPoseMeasurement'
-        db.delete_table('catamidb_scientificiposemeasurement')
+        # Deleting model 'ScientificPoseMeasurement'
+        db.delete_table('catamidb_scientificposemeasurement')
 
         # Deleting model 'ScientificImageMeasurement'
         db.delete_table('catamidb_scientificimagemeasurement')
@@ -288,13 +288,6 @@ class Migration(SchemaMigration):
             'measurement_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.ScientificMeasurementType']"}),
             'value': ('django.db.models.fields.FloatField', [], {})
         },
-        'catamidb.scientificiposemeasurement': {
-            'Meta': {'unique_together': "(('measurement_type', 'pose'),)", 'object_name': 'ScientificiPoseMeasurement'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'measurement_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.ScientificMeasurementType']"}),
-            'pose': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.Pose']"}),
-            'value': ('django.db.models.fields.FloatField', [], {})
-        },
         'catamidb.scientificmeasurementtype': {
             'Meta': {'object_name': 'ScientificMeasurementType'},
             'description': ('django.db.models.fields.TextField', [], {}),
@@ -304,6 +297,13 @@ class Migration(SchemaMigration):
             'min_value': ('django.db.models.fields.FloatField', [], {}),
             'normalised_name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
             'units': ('django.db.models.fields.CharField', [], {'max_length': '5'})
+        },
+        'catamidb.scientificposemeasurement': {
+            'Meta': {'unique_together': "(('measurement_type', 'pose'),)", 'object_name': 'ScientificPoseMeasurement'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'measurement_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.ScientificMeasurementType']"}),
+            'pose': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.Pose']"}),
+            'value': ('django.db.models.fields.FloatField', [], {})
         },
         'catamidb.tideployment': {
             'Meta': {'object_name': 'TIDeployment', '_ormbases': ['catamidb.Deployment']},

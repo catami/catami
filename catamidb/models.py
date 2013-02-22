@@ -287,7 +287,7 @@ class ScientificMeasurementType(models.Model):
         return u"{0} - {1}".format(self.display_name, self.units)
 
 
-class ScientificiPoseMeasurement(models.Model):
+class ScientificPoseMeasurement(models.Model):
     """Scientific Measurement relating to a pose."""
     measurement_type = models.ForeignKey(ScientificMeasurementType)
     pose = models.ForeignKey(Pose)

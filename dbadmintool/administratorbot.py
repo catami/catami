@@ -14,7 +14,7 @@ from django.db.utils import ConnectionDoesNotExist
 from django.core import management
 from datetime import datetime
 from StringIO import StringIO
-from Force.models import *
+from catamidb.models import *
 from dbadmintool.models import DataLogger
 from django.db import connection, transaction
 

@@ -5,7 +5,7 @@ This includes AUVImportForm and FileImportForm.
 from django import forms
 from django.contrib.gis.forms import fields as gisfields
 from django.db import models
-from Force.models import Campaign, Deployment
+from catamidb.models import Campaign, Deployment
 
 from .models import MetadataFile
 

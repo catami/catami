@@ -15,7 +15,6 @@ from .extras import UploadProgressCachedHandler
 from . import tasks
 from . import metadata
 from .models import MetadataFile
-from Force.models import BRUVDeployment
 import os.path
 
 from django.views.decorators.csrf import csrf_exempt, csrf_protect

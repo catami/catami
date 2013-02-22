@@ -20,7 +20,7 @@ import metadata
 
 from dateutil.tz import tzutc
 
-import Force.models
+import catamidb.models
 
 import logging
 

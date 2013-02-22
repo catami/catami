@@ -8,7 +8,7 @@ from openpyxl.cell import column_index_from_string
 from xlrd import open_workbook, xldate_as_tuple
 import os.path
 
-from Force.models import BRUVDeployment, DOVDeployment, TIDeployment, TVDeployment
+from catamidb.models import BRUVDeployment, DOVDeployment, TIDeployment, TVDeployment
 
 import datetime
 
