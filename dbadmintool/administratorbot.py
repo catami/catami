@@ -1,10 +1,9 @@
 """A bot to check database integrity and manage backups
 """
-import traceback
-import sys
 
 __author__ = "Dan Marrable"
-
+import traceback
+import sys
 import logging
 import tarfile
 import hashlib
@@ -13,7 +12,6 @@ from  shutil import copyfile
 from django.db import connections
 from django.db.utils import ConnectionDoesNotExist
 from django.core import management
-#from django.core import mail
 from datetime import datetime
 from StringIO import StringIO
 from Force.models import *
@@ -212,7 +210,8 @@ class Robot():
                 test['checksum'] = False
         # Check to see if the file isthere.
 
-        if test['checksum'] == False or test['archive'] == False or test['copy'] == False:
+        if test['checksum'] == False or test['archive'] == False or test[
+            'copy'] == False:
 
             return False
         else:
@@ -273,7 +272,8 @@ class ReportTools():
         i = 0
         for i in range(0, len(self.force_models)):
 
-            self.stat_fields[self.str_force_models[i]] = len(self.force_models[i].objects.all())
+            self.stat_fields[self.str_force_models[i]] = len(self.force_models
+                [i].objects.all())
 
         logger.debug(str(self.stat_fields))
         return True
@@ -334,18 +334,6 @@ class ReportTools():
             num_ti_deployments=self.stat_fields['TIDeployment'],
             db_size_on_disk=self.query_database_size()
 
-            # !!!!!
-            logger.debug(collection_time)
-            logger.debug(num_campaigns)
-            logger.debug(num_deployments)
-            logger.debug(num_images)
-            logger.debug(num_auv_deployments)
-            logger.debug(num_bruv_deployments)
-            logger.debug(num_dov_deployments)
-            logger.debug(num_tv_deployments)
-            logger.debug(num_ti_deployments)
-            logger.debug(db_size_on_disk)
-
             data = DataLogger.objects.create(
                 collection_time=datetime.now(),
                 num_campaigns=self.stat_fields['Campaign'],
@@ -360,9 +348,8 @@ class ReportTools():
                  )
         except:
             traceback.print_exc(file=sys.stdout)
-
             raise
-        #data.save()
+        data.save()
 
     def collect_stats(self):
         """Main method for collecting the stats"""

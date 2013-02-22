@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 import httplib2
 
 #not API compliant - to be removed after the views are compliant
-from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment,ScientificMeasurement
+from Force.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment, ScientificMeasurement
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
@@ -53,8 +53,77 @@ def index(request):
 
     """
 
+    #NOT API COMPLIANT
+    recent_deployments = Deployment.objects.all().order_by('-id')[:3]
+    random_images = Image.objects.all().order_by('?')[:9]
+
+    styled_deployment_list = []
+    image_link_list = []
+
+    for image in random_images:
+        try:
+            AUVDeployment.objects.get(id=image.deployment.id)
+        except:
+            pass
+        else:
+            image_link = {"deployment_url":reverse(auvdeployments)+str(image.deployment.id),"image":image}
+
+        try:
+            TIDeployment.objects.get(id=image.deployment.id)
+        except:
+            pass
+        else:
+            image_link = {"deployment_url":reverse(tideployments)+str(image.deployment.id),"image":image}
+
+        image_link_list.append(image_link)
+
+    for deployment in recent_deployments:
+        try:
+            AUVDeployment.objects.get(id=deployment.id)
+        except:
+            pass
+        else:
+            deployment_type= "AUV Deployment"
+            deployment_url = reverse(auvdeployments)+str(deployment.id)
+
+        try:
+            BRUVDeployment.objects.get(id=deployment.id)
+        except:
+            pass
+        else:
+            deployment_type= "BRUV Deployment"
+            deployment_url = reverse(bruvdeployments)+str(deployment.id)
+
+        try:
+            BRUVDeployment.objects.get(id=deployment.id)
+        except:
+            pass
+        else:
+            deployment_type= "DOV Deployment"
+            deployment_url =reverse(dovdeployments)+str(deployment.id)
+
+        try:
+            TIDeployment.objects.get(id=deployment.id)
+        except:
+            pass
+        else:
+            deployment_type= "TI Deployment"
+            deployment_url = reverse(tideployments)+str(deployment.id)
+
+        try:
+            BRUVDeployment.objects.get(id=deployment.id)
+        except:
+            pass
+        else:
+            deployment_type= "TV Deployment"
+            deployment_url = reverse(tvdeployments)+str(deployment.id)
+
+        styled_deployment = {"deployment_type":deployment_type,"deployment_url":deployment_url,"deployment":deployment}
+        styled_deployment_list.append(styled_deployment)
+
     return render_to_response('webinterface/index.html',
-        {},
+        {'styled_deployment_list':styled_deployment_list,
+         'image_link_list': image_link_list},
         RequestContext(request))
 
 
@@ -114,85 +183,88 @@ def explore_campaign(request, campaign_id):
 # Collection pages
 @waffle_switch('Collections')
 def collections(request):
-    my_collections_error = ''
-    public_collections_error =''
+#    my_collections_error = ''
+#    public_collections_error =''
+#
+#    collection_list = CollectionResource()
+#    try:
+#        cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id, parent=None)
+#        if (len(cl_my_rec) == 0):
+#            my_collections_error = 'Sorry, you don\'t seem to have any collections in your account.'
+#
+#    except:
+#        cl_my_rec = ''
+#        if (request.user.is_anonymous):
+#            my_collections_error = 'Sorry, you dont appear to be logged in. Please login and try again.'
+#        else:
+#            my_collections_error = 'An undetermined error has occured. Please contact support'
+#
+#    try:
+#        cl_pub_rec = collection_list.obj_get_list(request, is_public=True, parent=None)
+#        if (len(cl_pub_rec) == 0):
+#            public_collections_error = 'Sorry, there don\'t seem to be any public collections right now.'
+#
+#    except:
+#        cl_pub_rec = ''
+#        if (request.user.is_anonymous):
+#            public_collections_error = 'Sorry, public collections arent working for anonymous users right now. Please login and try again.'
+#        else:
+#            public_collections_error = 'An undetermined error has occured. Please contact support'
 
-    collection_list = CollectionResource()
-    try:
-        cl_my_rec = collection_list.obj_get_list(request, owner=request.user.id, parent=None)
-        if (len(cl_my_rec) == 0):
-            my_collections_error = 'Sorry, you don\'t seem to have any collections in your account.'
-
-    except:
-        cl_my_rec = ''
-        if (request.user.is_anonymous):
-            my_collections_error = 'Sorry, you dont appear to be logged in. Please login and try again.'
-        else:
-            my_collections_error = 'An undetermined error has occured. Please contact support'
-
-    try:
-        cl_pub_rec = collection_list.obj_get_list(request, is_public=True, parent=None)
-        if (len(cl_pub_rec) == 0):
-            public_collections_error = 'Sorry, there don\'t seem to be any public collections right now.'
-
-    except:
-        cl_pub_rec = ''
-        if (request.user.is_anonymous):
-            public_collections_error = 'Sorry, public collections arent working for anonymous users right now. Please login and try again.'
-        else:
-            public_collections_error = 'An undetermined error has occured. Please contact support'
 
     return render_to_response('webinterface/collections_recent.html', 
-        {"my_rec_cols": cl_my_rec,
-        "my_collections_error": my_collections_error,
-         "pub_rec_cols": cl_pub_rec,
-         "public_collections_error":public_collections_error},
+#        {"my_rec_cols": cl_my_rec,
+#         "my_collections_error": my_collections_error,
+#         "pub_rec_cols": cl_pub_rec,
+#         "public_collections_error":public_collections_error,
+         {'WMS_URL': settings.WMS_URL, #imported from settings
+         'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
          RequestContext(request))
 
-@waffle_switch('Collections')
-def my_collections(request):
-    error_description = ''
-
-    collection_list = CollectionResource()
-
-    try:
-        cl = collection_list.obj_get_list(request, owner=request.user.id)
-        if (len(cl) == 0):
-            error_description = 'Sorry, you don\'t seem to have any collections in your account.'
-    except:
-        cl = ''
-        if (request.user.is_anonymous):
-            error_description = 'Sorry, you dont appear to be logged in. Please login and try again.'
-        else:
-            error_description = 'An undetermined error has occured. Please contact support'
-
-    return render_to_response('webinterface/mycollections.html', 
-        {"collections": cl, 
-        "listname":"cl_pub_all",
-        "error_description":error_description},
-        RequestContext(request))
-
-@waffle_switch('Collections')
-def public_collections(request):
-    error_description = ''
-
-    collection_list = CollectionResource()
-    try:
-        cl = collection_list.obj_get_list(request, is_public=True)
-        if (len(cl) == 0):
-            error_description = 'Sorry, there don\'t seem to be any public collections right now.'
-    except:
-        cl = ''
-        if (request.user.is_anonymous):
-            error_description = 'Sorry, public collections arent working for anonymous users right now. Please login and try again.'
-        else:
-            error_description = 'An undetermined error has occured. Please contact support'
-
-    return render_to_response('webinterface/publiccollections.html', 
-        {"collections": cl, 
-         "listname":"cl_pub_all",
-        "error_description":error_description}, 
-         RequestContext(request))
+#@waffle_switch('Collections')
+#def my_collections(request):
+#    error_description = ''
+#
+#    collection_list = CollectionResource()
+#
+#    try:
+#        cl = collection_list.obj_get_list(request, owner=request.user.id)
+#        if (len(cl) == 0):
+#            error_description = 'Sorry, you don\'t seem to have any collections in your account.'
+#    except:
+#        cl = ''
+#        if (request.user.is_anonymous):
+#            error_description = 'Sorry, you dont appear to be logged in. Please login and try again.'
+#        else:
+#            error_description = 'An undetermined error has occured. Please contact support'
+#
+#    return render_to_response('webinterface/mycollections.html',
+#        {"collections": cl,
+#        "listname":"cl_pub_all",
+#        "error_description":error_description},
+#        RequestContext(request))
+#
+#@waffle_switch('Collections')
+#def public_collections(request):
+#    error_description = ''
+#
+#    collection_list = CollectionResource()
+#    try:
+#        cl = collection_list.obj_get_list(request, is_public=True)
+#        if (len(cl) == 0):
+#            error_description = 'Sorry, there don\'t seem to be any public collections right now.'
+#    except:
+#        cl = ''
+#        if (request.user.is_anonymous):
+#            error_description = 'Sorry, public collections arent working for anonymous users right now. Please login and try again.'
+#        else:
+#            error_description = 'An undetermined error has occured. Please contact support'
+#
+#    return render_to_response('webinterface/publiccollections.html',
+#        {"collections": cl,
+#         "listname":"cl_pub_all",
+#        "error_description":error_description},
+#         RequestContext(request))
 
 ## view collection table views
 #def public_collections_all(request):
@@ -208,6 +280,14 @@ def view_collection(request, collection_id):
         'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME}, 
         RequestContext(request))
 
+@waffle_switch('Collections')
+def view_workset(request, collection_id, workset_id):
+    return render_to_response('webinterface/viewcollection.html',
+        {"collection_id": collection_id,
+         "workset_id": workset_id,
+         'WMS_URL': settings.WMS_URL, #imported from settings
+         'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
+        RequestContext(request))
 # view collection table views
 #def public_collections_all(request):
 #    collection_list = CollectionResource()
@@ -366,7 +446,7 @@ def auvdeployment_detail(request, auvdeployment_id):
             'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
         #raise Http404
 
-    image_list = Image.objects.filter(deployment=auvdeployment_id)
+    image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
     salinity_data = ScientificMeasurement.objects.filter(measurement_type__normalised_name='salinity', image__deployment=auvdeployment_id)
     temperature_data = ScientificMeasurement.objects.filter(measurement_type__normalised_name='temperature', image__deployment=auvdeployment_id)
 
@@ -407,7 +487,7 @@ def auvimage_list(request, auvdeployment_id):
            'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
         #raise Http404
 
-    image_list = Image.objects.filter(deployment=auvdeployment_id)
+    image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
     return render_to_response(
         'Force/auv_image_list.html',
         {'auvdeployment_object': auvdeployment_object,
@@ -420,7 +500,7 @@ def annotationview(request, auvdeployment_id, image_index):
     """
     auvdeployment_object = AUVDeployment.objects.get(id=auvdeployment_id)
 
-    image_list = Image.objects.filter(deployment=auvdeployment_id)
+    image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
     get_index = 1
     initial_image_index = int(image_index)
     local_image_index = 0
@@ -430,8 +510,7 @@ def annotationview(request, auvdeployment_id, image_index):
     #get annotation list. Not all images have annotation
 
 
-    # HACK: comment out until new annotations are in place
-    if False: #(initial_image_index == 0):
+    if(initial_image_index == 0):
         #find first annotated image
         for image in image_list:
             local_image_index = local_image_index + 1
@@ -449,8 +528,7 @@ def annotationview(request, auvdeployment_id, image_index):
 
     for image in image_list:
         local_image_index = local_image_index + 1
-        # HACK: comment out until new annotations are in place
-        if False: #(Annotation.objects.filter(image_reference=image).count() > 0):
+        if(Annotation.objects.filter(image_reference=image).count() > 0):
             if(local_image_index > initial_image_index):
 
                 for annotation in Annotation.objects.filter(image_reference=image):
@@ -508,7 +586,7 @@ def bruvdeployment_detail(request, bruvdeployment_id):
         return render_to_response(
            'Force/data_missing.html', context_instance=RequestContext(request))
 
-    image_list = Image.objects.filter(deployment=bruvdeployment_id)
+    image_list = StereoImage.objects.filter(deployment=bruvdeployment_id)
 
     return render_to_response(
         'Force/bruvdeploymentInstance.html',
@@ -541,7 +619,7 @@ def dovdeployment_detail(request, dovdeployment_id):
         return render_to_response(
            'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
 
-    image_list = Image.objects.filter(deployment=dovdeployment_id)
+    image_list = StereoImage.objects.filter(deployment=dovdeployment_id)
 
     return render_to_response(
         'webinterface/Force_views/tvdeploymentInstance.html',
@@ -574,7 +652,7 @@ def tvdeployment_detail(request, tvdeployment_id):
         return render_to_response(
            'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
 
-    image_list = Image.objects.filter(deployment=tvdeployment_id)
+    image_list = StereoImage.objects.filter(deployment=tvdeployment_id)
 
     return render_to_response(
         'webinterface/Force_views/tvdeploymentInstance.html',
@@ -607,7 +685,7 @@ def tideployment_detail(request, tideployment_id):
         return render_to_response(
            'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
 
-    image_list = Image.objects.filter(deployment=tideployment_id)
+    image_list = StereoImage.objects.filter(deployment=tideployment_id)
 
     return render_to_response(
         'Force/tideploymentInstance.html',

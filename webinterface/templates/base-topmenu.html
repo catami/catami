@@ -8,7 +8,6 @@
     <title>{% block title %}Catami{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <meta name="author" content="ariell" >
 
     <!-- Le styles -->
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/jquery-ui-1.8.23.custom.css" type="text/css">
@@ -49,8 +48,8 @@
                 <a class="brand" href="#"><img src="{{ STATIC_URL }}assets/img/catamiheader-blue-small.png" alt="catami_icon_small" width="140"></a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
-                        <li class="{% ifequal request.path url.webinterface.views.index %}active{% endifequal %}"><a href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home icon-white"></i> Home</a></li>
-                        <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-search icon-white"></i> Explore</a>
+                        <li class="{% ifequal request.path url.webinterface.views.index %}active{% endifequal %}"><a href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home "></i> Home</a></li>
+                        <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-search "></i> Explore</a>
                             <ul class="dropdown-menu">
                                 <li class="{% ifequal request.path "/data/campaigns" %}active{% endifequal %}"><a href="{% url webinterface.views.campaigns %}"><i class="icon-heart"></i> Data: Campaigns</a></li>
                                 <li class="{% ifequal request.path "/data/deployments" %}active{% endifequal %}"><a href="{% url webinterface.views.deployments %}"><i class="icon-heart"></i> Data: Deployments</a></li>
@@ -59,17 +58,11 @@
                         </li>
 
                         {% switch Collections %}
-                        <li class="dropdown {% ifequal request.path "/collections" %}active{% endifequal %}"><a href="{% url webinterface.views.collections %}" class="dropdown-toggle"><i class="icon-list-alt icon-white"></i> Collections <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li class="{% ifequal request.path "/my_collections" %}active{% endifequal %}"><a href="{% url webinterface.views.my_collections %}"><i class="icon-heart"></i> My Collections</a></li>
-                                <li class="{% ifequal request.path "/public_collections" %}active{% endifequal %}"><a href="{% url webinterface.views.public_collections %}"><i class="icon-star"></i> Public Collections</a></li>
-                                <li class="{% ifequal request.path "/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-plus-sign"></i> Create new Collection</a></li>
-                            </ul>
-                        </li>
+                            <li class="dropdown {% ifequal request.path "/collections" %}active{% endifequal %}"><a href="{% url webinterface.views.collections %}"><i class="icon-list-alt "></i> Collections</a>
                         {% endswitch %}
 
                         {% switch Experimental %}
-                        <li class="dropdown"><a href="#" class="dropdown-toggle"><i class="icon-tasks icon-white"></i> Data Tasks <b class="caret"></b></a>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle"><i class="icon-tasks "></i> Data Tasks <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-eye-open"></i> View Collection</a></li>
                                 <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-cog"></i> Cluster Collection</a></li>
@@ -93,7 +86,7 @@
                         
                         <!--<li class="divider-vertical"></li>-->
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign icon-white"></i> <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign "></i> <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="{% url webinterface.views.about %}"><i class="icon-info-sign"></i> About</a></li>
                                 <li><a href="{% url webinterface.views.contact %}"><i class="icon-envelope"></i> Contact us</a></li>
@@ -102,15 +95,15 @@
                             </ul>
                         </li>
                         
-                        <!--<li><a href="#" rel="popover" data-placement="bottom" data-content="This will be a snippet of information that is useful in the context of the current section." data-original-title="Information"><i class="icon-info-sign  icon-white"></i></a>
+                        <!--<li><a href="#" rel="popover" data-placement="bottom" data-content="This will be a snippet of information that is useful in the context of the current section." data-original-title="Information"><i class="icon-info-sign  "></i></a>
                         </li>-->
                     </ul>
                     {% if user.is_authenticated %}
                         <a href="/logout/" class="btn btn-small pull-right"> Logout</a>
-                        <p class="navbar-text pull-right"><i class="icon-user icon-white"></i> Logged in as <a href="#"> {{ user.username }} </a>&nbsp;</p>
+                        <p class="navbar-text pull-right"><i class="icon-user "></i> Logged in as <a href="#"> {{ user.username }} </a>&nbsp;</p>
                     {% else %}
                         <a href="/accounts/signin/" role="button" class="btn btn-small pull-right" data-toggle="modal" >Login</a>
-                        <p class="navbar-text pull-right"><i class="icon-user icon-white"></i> Welcome visitor! <a href="#"> {{ user.username }} </a>&nbsp;</p>
+                        <p class="navbar-text pull-right"><i class="icon-user "></i> Welcome visitor! <a href="#"> {{ user.username }} </a>&nbsp;</p>
                     {% endif %}			   
                 </div><!--/.nav-collapse -->
             </div><!-- container-fluid -->
@@ -119,7 +112,7 @@
     
     
 
-    <div class="container-fluid">
+    <div class="container-fluid" style="margin-top:60px;">
         {% block content %}{% endblock %}
     </div>
     
@@ -143,25 +136,17 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{ STATIC_URL }}assets/jquery/jquery.js"></script>
-    <script src="{{ STATIC_URL }}assets/jquery/jquery-ui.js"></script>
-    <script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.js"></script>
-    <script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tooltip.js"></script>
-    <script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tab.js"></script>
-    <script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tooltip.2.3.0.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tab.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/fancybox/source/jquery.fancybox.pack.js?v=2.1.3"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.shorten.1.0.js"></script>
 
     <!-- popover js -->
     <script type="text/javascript">
-        (function() {
-            $("[rel=popover]").popover();
-        })();
-        (function() {
-            $("[rel=popover-roll]").popover({ trigger: "hover" });
-        })();
-        (function() {
-            $("[rel=tooltip]").tooltip();
-        })();
         $(document).ready(function() {
             $(".imageframe").fancybox({
         		maxWidth	: 2000,
@@ -174,6 +159,9 @@
         		openEffect	: 'fade',
         		closeEffect	: 'none'
             });
+            $("[rel=tooltip]").tooltip();
+            $("[rel=popover-roll]").popover({ trigger: "hover" });
+            $("[rel=popover]").popover();
         });
 
 

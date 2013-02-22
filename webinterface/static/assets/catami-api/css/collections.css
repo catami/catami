@@ -1,0 +1,159 @@
+/**********************************************************************************************************************
+ * Style elements of collection lists
+ **********************************************************************************************************************/
+
+.clname {
+
+}
+.cldate{
+
+}
+.clowner{
+
+}
+.clactions{
+    /*width: 100px;*/
+    text-align: right;
+    float: right;
+    margin-top: 5px;
+}
+
+.cldescription {
+    width: 100%;
+    /*display: block;*/
+    /*float: left;*/
+    /*background-color: #e9e9e9;*/
+    font-style: italic;
+}
+
+
+/**********************************************************************************************************************
+ * Style collapsible Collection lists
+ **********************************************************************************************************************/
+
+ul.collapsibleList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+ul.collapsibleList .list-toggle {
+    cursor: pointer;
+    font-weight: bold;
+}
+ul.collapsibleSubList {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+ul.collapsibleList > li, ul.collapsibleSubList > li {
+    background-image: url('http://code.stephenmorley.org/javascript/collapsible-lists/button.png');
+    background-position: 0 5px;
+    background-repeat: no-repeat;
+    padding: 3px;
+    /*border-bottom: 1px #d9d9d9 solid;*/
+    padding-left: 20px;
+}
+
+ul.collapsibleList li.parent {
+    background-image: url('http://code.stephenmorley.org/javascript/collapsible-lists/button-closed.png');
+}
+
+a {
+    cursor: pointer;
+    /*color: #000000;*/
+    /*text-decoration: none;*/
+}
+
+
+/**********************************************************************************************************************
+ * Make DataTasks menu align to the right
+ **********************************************************************************************************************/
+.clactions ul.dropdown-menu {
+    left: auto;
+    right: 0;
+    /*left: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 9999;*/
+    text-align: left;
+}
+
+
+
+/*a:hover {*/
+    /*text-decoration: underline;*/
+/*}*/
+
+
+
+/*
+ul.collapsibleList li{
+    list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button.png');
+    cursor:auto;
+}
+
+li.collapsibleListOpen{
+    list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button-open.png');
+    cursor:pointer;
+}
+
+li.collapsibleListClosed{
+    list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button-closed.png');
+    cursor:pointer;
+}
+
+.treeView{
+    -moz-user-select:none;
+    position:relative;
+}
+
+.treeView {
+    margin:0 0 0 -1.5em;
+    padding:0 0 0 1.5em;
+}
+
+.treeView ul{
+    background:url('http://code.stephenmorley.org/javascript/collapsible-lists/list-item-contents.png') repeat-y left;
+}
+
+.treeView li.lastChild > ul{
+    background-image:none;
+}
+
+.treeView li{
+    margin:0;
+    padding:0;
+    background:url('http://code.stephenmorley.org/javascript/collapsible-lists/list-item-root.png') no-repeat top left;
+    list-style-position:inside;
+    list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button.png');
+    cursor:auto;
+}
+
+.treeView li.collapsibleListOpen{
+    list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button-open.png');
+    cursor:pointer;
+}
+
+.treeView li.collapsibleListClosed{
+    list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button-closed.png');
+    cursor:pointer;
+}
+
+.treeView li li{
+    background-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/list-item.png');
+    padding-left:1.5em;
+}
+
+.treeView li.lastChild{
+    background-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/list-item-last.png');
+}
+
+.treeView li.collapsibleListOpen{
+    background-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/list-item-open.png');
+}
+
+.treeView li.collapsibleListOpen.lastChild{
+    background-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/list-item-last-open.png');
+}
+*/

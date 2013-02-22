@@ -116,6 +116,10 @@
 
         initDeploymentMap();
         updateMapForSelectedCollection({{ collection_id }});
+
+        {% if workset_id %}
+            selectWorkset({{ workset_id }});
+        {% endif %}
     });
 
 </script>

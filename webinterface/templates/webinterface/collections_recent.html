@@ -1,5 +1,8 @@
 {% extends "base-topmenu.html" %}
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
+{% block tail_head %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/catami-api/css/collections.css" type="text/css">
+{% endblock %}
 {% block content %}
 
 <div class="row-fluid">
@@ -8,35 +11,135 @@
         <p>This page shows a summary of some recent collections. A Collection is a set of data (images and associated metadata) that has been prepared by a user for further processing, downloading or sharing. The data may come from one or more deployments, surveys or campaigns.</p>
     </div>
 </div>
-      
+
 <div class="row-fluid">
-	<div class="span6">
-	  	<h2>My Collections</h2>
-	  	<p>My most recent public collections. </p>
-	  	{% with "cl_my_rec" as listname%}
-	  	{% with my_rec_cols as collections %}
-	  	{% with my_collections_error as error_description %}
-	  	{% include "webinterface/dataviews/collectiontable.html"%}
-	  	{% endwith %}
-	  	{% endwith %}
-	  	{% endwith %}
-	  	<!--<div id="mycollections_recent"></div>-->
-	  	<p><a class="btn" href="{% url webinterface.views.my_collections %}">View more &raquo;</a>
-	  	<a href="{% url webinterface.views.explore %}" class="btn btn-primary pull-right"><i class="icon-plus-sign icon-white"></i> New Collection</a></p>
-	</div><!--/span-->
-	<div class="span6">
-	  	<h2>Public Collections</h2>
-	  	<p>Most recent public collections. </p>
-	  	{% with "cl_pub_rec" as listname%}
-	  	{% with pub_rec_cols as collections %}
-	  	{% with public_collections_error as error_description %}
-	  	{% include "webinterface/dataviews/collectiontable.html"%}
-	  	{% endwith %}
-	  	{% endwith %}
-	  	{% endwith %}
-	  	<!--<div id="publiccollections_recent"></div>-->
-	  <p><a class="btn" href="{% url webinterface.views.public_collections %}">View more &raquo;</a></p>
-	</div><!--/span-->
+
+    <div class="span6">
+        <form class="form-inline well">
+            <label>Apply filters:</label>
+            <div class="btn-group">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Owner: <span id="filt-owner"></span> <span class="caret"></span></a>
+                <ul class="dropdown-menu" style="padding: 10px;">
+                    <li>
+                        <input type="text" placeholder="Search owners" style="width: 150px;">
+                    </li>
+                    <li>
+                        <label class="radio"><input type="radio" name="owner" value="" checked>Any</label>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li>
+                        <label class="radio"><input type="radio" name="owner" value="owner={{ user.id }}">Me</label>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="btn-group">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Access: <span id="filt-access"></span> <span class="caret"></span></a>
+                <ul class="dropdown-menu" style="padding: 10px;">
+                    <li>
+                        <label class="radio"><input type="radio" name="access" value="" checked>Any</label>
+                    </li>
+                    <li>
+                        <label class="radio"><input type="radio" name="access" value="is_public=true">Public</label>
+                    </li>
+                    <li>
+                        <label class="radio"><input type="radio" name="access" value="is_public=false" >Private</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Type: <span id="filt-type"></span> <span class="caret"></span></a>
+                <ul class="dropdown-menu" style="padding: 10px;">
+                    <li>
+                        <label class="radio"><input type="radio" name="type" value="parent=none" checked>Both</label>
+                    </li>
+                    <li>
+                        <label class="radio"><input type="radio" name="type" value="parent=none">Collections</label>
+                    </li>
+                    <li>
+                        <label class="radio"><input type="radio" name="type" value="parent=none">Worksets</label>
+                    </li>
+                </ul>
+            </div>
+            <input type="text" placeholder="Keyword" style="width: 120px;">
+        </form>
+
+        <div class="collection-list" id="collections">
+
+        </div>
+    </div>
+    <div class="span6">
+        <div class="well"><p>Preview: <span id="preview-name"> none selected</span></p></div>
+        {% include "webinterface/dataviews/mapview.html"%}
+    </div>
 </div>
+
 {% endblock %}
 
+{% block add_script %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/collections.js"></script>
+
+    <script type="text/javascript">
+
+        // Instatiate collection list
+        cl = new CollectionList('collectioListAction');
+
+        // OnLoad function
+        $(document).ready(function(){
+            // Set change functions for filter dropdown radio buttons
+            $("input:radio[name=owner]").change(function(){
+                setCollectionFilters();
+            });
+            $("input:radio[name=access]").change(function(){
+                setCollectionFilters();
+            });
+            $("input:radio[name=type]").change(function(){
+                setCollectionFilters();
+                alert('Filter: "Type" is not properly implemented! Currently all options show: "Both"');
+            });
+
+            // Set filters
+            setCollectionFilters();
+
+            // Initialise map
+            initDeploymentMap();
+
+            $("[rel=btn-tooltip]").tooltip({container: 'body'});
+        });
+
+
+        function collectioListAction(id) {
+            updateMapForSelectedCollection(id);
+            $('#preview-name').html('Collection ID: '+id);
+        }
+
+
+        function setCollectionFilters() {
+            var filter = 'format=json';
+            if ($('input:radio[name=owner]:checked').val() != '') {
+                //TODO: figure out how to filter Not-Equal-To for owner "Other"
+                filter += '&'+$('input:radio[name=owner]:checked').val();
+            }
+            if ( $('input:radio[name=access]:checked').val() != '' ) {
+                filter += '&'+$('input:radio[name=access]:checked').val();
+            }
+            if ( $('input:radio[name=type]:checked').val() != '' ) {
+                //TODO: figure out how to filter Not-Equal-To for parent
+                filter += '&'+$('input:radio[name=type]:checked').val();
+            }
+
+            // Set filter information
+            $('#filt-owner').html($('input[name=owner]:checked').parent().text());
+            $('#filt-access').html($('input[name=access]:checked').parent().text());
+            $('#filt-type').html($('input[name=type]:checked').parent().text());
+
+            //alert(filter);
+            // Get cascaded collections and workset lists, collapse, and shorted descriptions for make pretty
+            cl.getFullCollectionList(filter, "#collections");
+            cl.collapseList();
+            $(".cldescription").shorten({showChars : 80});
+        }
+
+    </script>
+{% endblock %}

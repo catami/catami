@@ -19,12 +19,12 @@ urlpatterns = patterns('webinterface.views',
     #Info Pages
     url(r'^faq', 'faq'),
     url(r'^contact', 'contact'),
-    url(r'^howto','howto'),
-    url(r'^about','about'),
+    url(r'^howto', 'howto'),
+    url(r'^about', 'about'),
     url(r'^proxy/(?P<url>.*)$', 'proxy'),
 
     url(r'^explore$', 'explore'),
-    url(r'^explore/getmapextent$','get_multiple_deployment_extent'),
+    url(r'^explore/getmapextent$', 'get_multiple_deployment_extent'),
     url(r'^explore_campaign/(?P<campaign_id>\d+)/$', 'explore_campaign'),
 
     #url(r'^viewcollection$', 'viewcollection'),
@@ -35,10 +35,11 @@ urlpatterns = patterns('webinterface.views',
     #Collection List Views
     url(r'^collections$', 'collections'),
     url(r'^collections/(?P<collection_id>\d+)/$', 'view_collection'),
-    url(r'^my_collections$', 'my_collections'),
+    url(r'^collections/(?P<collection_id>\d+)/(?P<workset_id>\d+)/$', 'view_workset'),
+#    url(r'^my_collections$', 'my_collections'),
 #    url(r'^my_collections_all$', 'my_collections_all'),
 #    url(r'^my_collections_recent$', 'my_collections_recent'),
-    url(r'^public_collections$', 'public_collections'),
+#    url(r'^public_collections$', 'public_collections'),
 #    url(r'^public_collections_all$', 'public_collections_all'),
 #    url(r'^public_collections_recent$', 'public_collections_recent'),
 
@@ -50,10 +51,10 @@ urlpatterns = patterns('webinterface.views',
     url(r'^imageview$', 'image_view'),
     url(r'^imageannotate$', 'image_annotate'),
     url(r'^imageedit$', 'image_edit'),
-    
+
     #Collection Management
-    url(r'^collections/create/$','create_collection_from_deployments'),
-    url(r'^collections/createworkset/(?P<method>[\w\-]+)/$','create_workset_from_collection'),
+    url(r'^collections/create/$', 'create_collection_from_deployments'),
+    url(r'^collections/createworkset/(?P<method>[\w\-]+)/$', 'create_workset_from_collection'),
 
     #force views
     url(r'^data/$', 'data'),
@@ -102,7 +103,6 @@ urlpatterns = patterns('webinterface.views',
 )
 
 urlpatterns += patterns('',
-    url(r'^accounts/login/$', 'django.contrib.auth.views.login',
-         {'template_name': 'registration/login.html'}),
-#     url(r'^logout/$', 'catamiPortal.views.logout_view'),
-)
+                        url(r'^accounts/login/$', 'django.contrib.auth.views.login',
+                        {'template_name': 'registration/login.html'}),
+                        )
