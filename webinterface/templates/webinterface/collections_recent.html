@@ -51,13 +51,13 @@
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Type: <span id="filt-type"></span> <span class="caret"></span></a>
                 <ul class="dropdown-menu" style="padding: 10px;">
                     <li>
-                        <label class="radio"><input type="radio" name="type" value="all" checked>Both</label>
+                        <label class="radio"><input type="radio" name="type" value="parent=none" checked>Both</label>
                     </li>
                     <li>
-                        <label class="radio"><input type="radio" name="type" value="clo">Collections</label>
+                        <label class="radio"><input type="radio" name="type" value="parent=none">Collections</label>
                     </li>
                     <li>
-                        <label class="radio"><input type="radio" name="type" value="wso" >Worksets</label>
+                        <label class="radio"><input type="radio" name="type" value="parent=none">Worksets</label>
                     </li>
                 </ul>
             </div>
@@ -82,29 +82,30 @@
 
     <script type="text/javascript">
 
-        // Set onChange functions for filter dropdowns
-        $("input:radio[name=owner]").change(function(){
-            setCollectionFilters();
-        });
-        $("input:radio[name=access]").change(function(){
-            setCollectionFilters();
-        });
-        $("input:radio[name=type]").change(function(){
-            setCollectionFilters();
-            alert('Filter: "Type" is not properly implemented!');
-        });
-
         // Instatiate collection list
         cl = new CollectionList('collectioListAction');
 
-        /**
-         * OnLoad function
-         */
+        // OnLoad function
         $(document).ready(function(){
+            // Set change functions for filter dropdown radio buttons
+            $("input:radio[name=owner]").change(function(){
+                setCollectionFilters();
+            });
+            $("input:radio[name=access]").change(function(){
+                setCollectionFilters();
+            });
+            $("input:radio[name=type]").change(function(){
+                setCollectionFilters();
+                alert('Filter: "Type" is not properly implemented! Currently all options show: "Both"');
+            });
+
+            // Set filters
             setCollectionFilters();
+
+            // Initialise map
             initDeploymentMap();
+
             $("[rel=btn-tooltip]").tooltip({container: 'body'});
-            $(".cldescription").shorten({showChars : 80});
         });
 
 
@@ -115,27 +116,29 @@
 
 
         function setCollectionFilters() {
-            var filter = 'parent=none';
+            var filter = 'format=json';
             if ($('input:radio[name=owner]:checked').val() != '') {
+                //TODO: figure out how to filter Not-Equal-To for owner "Other"
                 filter += '&'+$('input:radio[name=owner]:checked').val();
-                //TODO: figure out how to filter Not-Equal-To for parent
             }
             if ( $('input:radio[name=access]:checked').val() != '' ) {
                 filter += '&'+$('input:radio[name=access]:checked').val();
             }
             if ( $('input:radio[name=type]:checked').val() != '' ) {
                 //TODO: figure out how to filter Not-Equal-To for parent
-                //filter += '&'+$('input:radio[name=access]:checked').val();
+                filter += '&'+$('input:radio[name=type]:checked').val();
             }
-            //alert(filter);
 
+            // Set filter information
             $('#filt-owner').html($('input[name=owner]:checked').parent().text());
             $('#filt-access').html($('input[name=access]:checked').parent().text());
             $('#filt-type').html($('input[name=type]:checked').parent().text());
 
-
+            //alert(filter);
+            // Get cascaded collections and workset lists, collapse, and shorted descriptions for make pretty
             cl.getFullCollectionList(filter, "#collections");
             cl.collapseList();
+            $(".cldescription").shorten({showChars : 80});
         }
 
     </script>
