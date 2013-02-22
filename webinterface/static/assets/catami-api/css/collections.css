@@ -12,7 +12,7 @@
 
 }
 .clactions{
-    width: 100px;
+    /*width: 100px;*/
     text-align: right;
     float: right;
 }
@@ -34,6 +34,10 @@ ul.collapsibleList {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+ul.collapsibleList .list-toggle {
+    cursor: pointer;
+    font-weight: bold;
 }
 ul.collapsibleSubList {
     list-style: none;
@@ -65,6 +69,10 @@ a {
 .clactions ul.dropdown-menu {
     left: auto;
     right: 0;
+    /*left: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 9999;*/
     text-align: left;
 }
 

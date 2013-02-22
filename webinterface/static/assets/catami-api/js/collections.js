@@ -1,24 +1,26 @@
-/**
+/***********************************************************************************************************************
+ * Class: CollectionList
+ * Creating lists of collections and worksets.
  *
- * @param actionfunction1
- * @param actionfunction2
+ * @param preview_fnc
+ * @param select_fnc
  * @constructor
- */
-function CollectionList(actionfunction1, actionfunction2) {
+ **********************************************************************************************************************/
+function CollectionList(preview_fnc, select_fnc) {
 
-    /******************************************************************************************************************\
-     * Class globals
-    \******************************************************************************************************************/
+    /* Class globals
+     ******************************************************************************************************************/
     var api_baseurl = '/api/dev/collection/?format=json';
     var linkurl = '/collections/';
-    var actionfunction1 = ((typeof actionfunction1 !== 'undefined') ? actionfunction1 : false);
-    var actionfunction2 = ((typeof actionfunction2 !== 'undefined') ? actionfunction2 : false);
+    var preview_fnc = ((typeof preview_fnc !== 'undefined') ? preview_fnc : false);
+    var select_fnc = ((typeof select_fnc !== 'undefined') ? select_fnc : false);
 
 
-    /******************************************************************************************************************\
-     * Public methods
-    \******************************************************************************************************************/
+    /* Public methods
+     ******************************************************************************************************************/
     /**
+     * Method: getFullCollectionList
+     * Get full nested list of Collections and Worksets
      *
      * @param filter
      * @param outputelement
@@ -37,6 +39,15 @@ function CollectionList(actionfunction1, actionfunction2) {
         return list;
     }
 
+    /**
+     * Method: getWorksetList
+     *
+     *
+     * @param filter
+     * @param parent_id
+     * @param outputelement
+     * @return {*}
+     */
     this.getWorksetList = function(filter, parent_id, outputelement) {
 
         outputelement = ((typeof outputelement !== 'undefined') ? outputelement : false);
@@ -50,39 +61,29 @@ function CollectionList(actionfunction1, actionfunction2) {
         return list;
     }
 
-
+    /**
+     * Method: collapseList
+     * Collapse nested list from getFullCollectionList()
+     */
     this.collapseList = function()  {
-        // Find list items representing folders and
-        // style them accordingly.  Also, turn them
-        // into links that can expand/collapse the
-        // tree leaf.
         $('li > ul.collapsibleSubList').each(function(i) {
-            // Find this list's parent list item.
-            var parent_li = $(this).parent('li');
+            var parent_li = $(this).parent('li');           // Find this list's parent list item.
+            parent_li.addClass('parent');                   // Style the list item as parent.
+            var sub_ul = $(this).remove();                  // Temporarily remove the child-list from the parent
 
-            // Style the list item as folder.
-            parent_li.addClass('parent');
-
-            // Temporarily remove the list from the
-            // parent list item, wrap the remaining
-            // text in an anchor, then reattach it.
-            var sub_ul = $(this).remove();
-            //parent_li.wrapInner('<a/>').find('a').click(function() {
-            parent_li.find('span.clname').click(function() {
-                // Make the anchor toggle the leaf display.
+            // Add toggle function to list-toggle class
+            parent_li.find('.list-toggle').click(function() {
                 sub_ul.toggle();
             });
-            parent_li.append(sub_ul);
+            parent_li.append(sub_ul);                       // Reattach child-list.
         });
 
-        // Hide all lists except the outermost.
-        $('ul.collapsibleList ul.collapsibleSubList').hide();
+        $('ul.collapsibleList ul.collapsibleSubList').hide(); // Hide child lists.
     }
 
 
-    /******************************************************************************************************************\
-     * Private methods
-    \******************************************************************************************************************/
+    /* Private methods
+     ******************************************************************************************************************/
     /**
      *
      * @param api_url
@@ -114,9 +115,9 @@ function CollectionList(actionfunction1, actionfunction2) {
                     }
                     list += '</ul>';
                 }
-                /*else {
-                 list = '<p class="alert alert-error">There are no collections</p>'
-                 }*/
+                else if (!parent_id) {
+                    list += '<p class="alert alert-error">There are no collections to display.</p>'
+                }
             }
         });
         return list;
@@ -130,36 +131,40 @@ function CollectionList(actionfunction1, actionfunction2) {
      * @return {String}
      */
     var createListItem = function(clobj, api_url, parent_id) {
-        var linkurl = '/collections/';
         var link = '';
         var actions = '';
         var sublist = '';
-        var actionclass = 'btn dropdown-toggle ';
+        var actionclass = 'btn '; // btn-small
 
         if ( !parent_id ) { // This item is a parent Collection
             link = linkurl+clobj.id+'/';
-            actions += '<li><a href="'+link+'#map" title="View Collection map"><i class="icon-globe"></i> View Collection on map</a></li>';
-            actions += '<li><a href="'+link+'#thm" title="View Collection images"><i class="icon-eye-open"></i> View Collection images</a></li>';
-            actions += '<li><a href="'+link+'#dwn" title="Download Data"><i class="icon-download-alt"></i> Download Collection</a></li>';
-
+            actions += '<li class="nav-header">Jump to:</li><li><a href="'+link+'#map" title="View Workset map"><i class="icon-globe"></i> Map view</a></li>';
+            actions += '<li><a href="'+link+'#thm" title="View Workset images"><i class="icon-picture"></i> Thumbnail view</a></li>';
+            actions += '<li class="nav-header">Data Tasks:</li><li><a href="'+link+'#NewWorksetModal" title="Create new Workset"><i class="icon-plus"></i> Create new Workset</a></li>';
+            actions += '<li><a href="'+link+'#dwn" title="Download Data"><i class="icon-download-alt"></i> Download</a></li>';
             actionclass += 'btn-primary';
 
             sublist += createCollectionList(api_url, clobj.id); // Recursive call to create nested workset list (if available)
 
         } else { // This item is a child Collection (i.e: a Workset)
             link = linkurl+parent_id+'/'+clobj.id + '/';
-            actions += '<li><a href="'+link+'#map" title="View Collection map"><i class="icon-globe"></i> View Workset on map</a></li>';
-            actions += '<li><a href="'+link+'#thm" title="View Collection images"><i class="icon-eye-open"></i> View Workset images</a></li>';
-            actions += '<li><a href="/imageview" class="imageframe" data-fancybox-group="group'+clobj.id+'" data-fancybox-type="iframe" title="Annotate Workset"><i class="icon-tag"></i> Annotate Workset</a></li>';
-            actions += '<li><a href="'+link+'#dwn" title="Download Data"><i class="icon-download-alt"></i> Download Workset</a></li>';
+            actions += '<li class="nav-header">Jump to:</li><li><a href="'+link+'#map" title="View Collection map"><i class="icon-globe"></i> Map view</a></li>';
+            actions += '<li><a href="'+link+'#thm" title="View Collection images"><i class="icon-picture"></i> Thumbnail view</a></li>';
+            actions += '<li class="nav-header">Data Tasks</li><li><a href="/imageview" class="imageframe" data-fancybox-group="group'+clobj.id+'" data-fancybox-type="iframe" title="Annotate Workset"><i class="icon-tag"></i> Annotate Workset</a></li>';
+            actions += '<li><a href="'+link+'#dwn" title="Download Data"><i class="icon-download-alt"></i> Download</a></li>';
 
             //actionclass += 'btn-mini';
         }
 
         var listitem = '<li>';
-        listitem += '<span class="clname"><a href="#_" onclick="'+actionfunction1+'('+clobj.id+');">' + clobj.name + '</a> ('+clobj.creation_info+')</span> ';
-        listitem += '<span class="clactions"><div class="btn-group"><a class="'+actionclass+'" href="'+link+'">View</a><button class="'+actionclass+'" data-toggle="dropdown"><b class="caret"></b></button><ul class="dropdown-menu"><li class="nav-header">Data Tasks</li>'+actions+'</ul></div></span> ';
-        listitem += '<span class="cldate"><br>'+clobj.creation_date+'</span> ';
+        listitem += '<span class="clname list-toggle">' + clobj.name + ' ('+clobj.creation_info+')</span> ';
+        listitem += '<span class="clactions btn-group">';
+        if (preview_fnc) listitem += '<button class="'+actionclass+' list-toggle" onclick="'+preview_fnc+'('+clobj.id+');" rel="btn-tooltip" title="Preview"><i class="icon-eye-open"></i></button>';
+        listitem += '<a class="'+actionclass+'" href="'+link+'" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></a>';
+        listitem += '<button class="'+actionclass+' dropdown-toggle" data-toggle="dropdown" rel="btn-tooltip" title="More..."><b class="caret"></b></button>';
+        listitem += '<ul class="dropdown-menu">'+actions+'</ul>';
+        listitem += '</span> ';
+        listitem += '<span class="cldate"><br>'+(clobj.creation_date)+'</span> ';
         listitem += '<span class="clowner">'+clobj.owner.username+'</span> ';
         listitem += '<span class="claccess">'+(clobj.is_public ? 'Public': 'Private') +'</span> ';
         if (clobj.description) listitem += '<span class="cldescription"><br>'+clobj.description+'</span>'

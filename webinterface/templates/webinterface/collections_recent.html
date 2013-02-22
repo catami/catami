@@ -24,14 +24,13 @@
                         <input type="text" placeholder="Search owners" style="width: 150px;">
                     </li>
                     <li>
-                        <label class="radio"><input type="radio" name="owner" value="All" checked>All</label>
+                        <label class="radio"><input type="radio" name="owner" value="" checked>Any</label>
                     </li>
+                    {% if user.is_authenticated %}
                     <li>
-                        <label class="radio"><input type="radio" name="owner" value="Mine">Mine</label>
+                        <label class="radio"><input type="radio" name="owner" value="owner={{ user.id }}">Me</label>
                     </li>
-                    <li>
-                        <label class="radio"><input type="radio" name="owner" value="Other's" >Other's</label>
-                    </li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="btn-group">
@@ -86,7 +85,6 @@
         // Set onChange functions for filter dropdowns
         $("input:radio[name=owner]").change(function(){
             setCollectionFilters();
-            alert('Filter: "Owner > Other\'s" is not properly implemented!');
         });
         $("input:radio[name=access]").change(function(){
             setCollectionFilters();
@@ -105,6 +103,8 @@
         $(document).ready(function(){
             setCollectionFilters();
             initDeploymentMap();
+            $("[rel=btn-tooltip]").tooltip({container: 'body'});
+            $(".cldescription").shorten({showChars : 80});
         });
 
 
@@ -127,6 +127,7 @@
                 //TODO: figure out how to filter Not-Equal-To for parent
                 //filter += '&'+$('input:radio[name=access]:checked').val();
             }
+            //alert(filter);
 
             $('#filt-owner').html($('input[name=owner]:checked').parent().text());
             $('#filt-access').html($('input[name=access]:checked').parent().text());
