@@ -1,7 +1,7 @@
 [
     {
         "pk":1,
-        "model":"Force.scientificmeasurementtype",
+        "model":"catamidb.scientificmeasurementtype",
         "fields":{
             "display_name":"Temperature",
             "description":"The water temperature at the location (and time) of the image.",
@@ -13,7 +13,7 @@
     },
     {
         "pk":2,
-        "model":"Force.scientificmeasurementtype",
+        "model":"catamidb.scientificmeasurementtype",
         "fields":{
             "display_name":"Salinity",
             "description":"Water salinity at the measurement point.",
@@ -25,7 +25,7 @@
     },
     {
         "pk":3,
-        "model":"Force.scientificmeasurementtype",
+        "model":"catamidb.scientificmeasurementtype",
         "fields":{
             "display_name":"Pitch",
             "description":"Pitch of camera at time of image.",
@@ -37,7 +37,7 @@
     },
     {
         "pk":4,
-        "model":"Force.scientificmeasurementtype",
+        "model":"catamidb.scientificmeasurementtype",
         "fields":{
             "display_name":"Roll",
             "description":"Roll of camera at time of image.",
@@ -49,7 +49,7 @@
     },
     {
         "pk":5,
-        "model":"Force.scientificmeasurementtype",
+        "model":"catamidb.scientificmeasurementtype",
         "fields":{
             "display_name":"Yaw",
             "description":"Yaw of camera at time of image.",
@@ -61,7 +61,7 @@
     },
     {
         "pk":6,
-        "model":"Force.scientificmeasurementtype",
+        "model":"catamidb.scientificmeasurementtype",
         "fields":{
             "display_name":"Altitude",
             "description":"Altitude of camera at time of image.",

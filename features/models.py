@@ -1,8 +1,6 @@
+"""Feature models."""
 from django.db import models
-from django_orm.postgresql.fields.arrays import ArrayField
-from django_orm.postgresql.manager import Manager
-
-from Force.models import Image
+from catamidb.models import Image
 
 
 class ImageFeature(models.Model):
@@ -10,7 +8,5 @@ class ImageFeature(models.Model):
 
     for clustering and classification"""
 
-    #feature = ArrayField(dbtype='double precision')
-    #image = models.OneToOneField(Image)
-    image = models.ForeignKey(Image)
-    objects = Manager()
+    image = models.OneToOneField(Image)
+    feature_file = models.CharField(max_length=200)

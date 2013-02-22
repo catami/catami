@@ -15,7 +15,7 @@ SKIP_SOUTH_TESTS = True # To disable South's own unit tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
                 '--with-coverage',
-            #    '--cover-package=Force,accounts,clustering,collection,dbadmintool,features,staging,webinterface'
+            #    '--cover-package=catamidb,accounts,clustering,collection,dbadmintool,features,staging,webinterface'
             #    '--coverage-exclude=../*migrations*'
             ]
 
@@ -23,7 +23,7 @@ NOSE_ARGS = [
 STAGING_ROOT_DIR = '/media/catami/'
 
 WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
-WMS_LAYER_NAME = "catami:Force_image"
+WMS_LAYER_NAME = "catami:catamidb_image"
 WMS_COLLECTION_LAYER_NAME = "catami:collection_images"
 
 ADMINS = (
@@ -35,7 +35,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis', #'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'Force', # Or path to database file if using sqlite3.
+        'NAME': 'catamidb', # Or path to database file if using sqlite3.
         'USER': 'pocock', # Not used with sqlite3.
         'PASSWORD': 'qwer789ASDF456zxcv123', # Not used with sqlite3.
         'HOST': '', # Set to empty string for localhost. Not used with sqlite3.
@@ -141,7 +141,7 @@ TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'catamiPortal/templates')
 )
 
-FIXTURE_DIRS = (os.path.join(SITE_ROOT, 'Force/fixtures'))
+FIXTURE_DIRS = (os.path.join(SITE_ROOT, 'catamidb/fixtures'))
 
 AUTHENTICATION_BACKENDS = (
     'userena.backends.UserenaAuthenticationBackend',
@@ -162,7 +162,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'django.contrib.gis',
-    'Force',
+    'catamidb',
     'staging',
     'jsonapi',
     'webinterface',
@@ -194,7 +194,7 @@ JENKINS_TASKS = {
 }
 
 PROJECT_APPS = (
-    'Force',
+    'catamidb',
     'staging', 
     'webinterface',
     'dbadmintool',
@@ -296,7 +296,7 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
         },
-        'Force': {
+        'catamidb': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
         },

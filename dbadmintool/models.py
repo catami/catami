@@ -3,7 +3,7 @@
 from django.db import models
 
 
-class Data_logger(models.Model):
+class DataLogger(models.Model):
     """Holds the data for keeping track of database usage"""
 
     # TODO: add number of users

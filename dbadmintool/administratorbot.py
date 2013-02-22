@@ -17,7 +17,7 @@ from django.core import management
 from datetime import datetime
 from StringIO import StringIO
 from Force.models import *
-from dbadmintool.models import Data_logger
+from dbadmintool.models import DataLogger
 from django.db import connection, transaction
 
 logger = logging.getLogger(__name__)
@@ -346,7 +346,7 @@ class ReportTools():
             logger.debug(num_ti_deployments)
             logger.debug(db_size_on_disk)
 
-            data = Data_logger.objects.create(
+            data = DataLogger.objects.create(
                 collection_time=datetime.now(),
                 num_campaigns=self.stat_fields['Campaign'],
                 num_deployments=self.stat_fields['Deployment'],

@@ -2,10 +2,6 @@
 """
 from django.db import models
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 
 class MetadataFile(models.Model):
     """Handles info about metadata files that have been uploaded.

@@ -1,7 +1,7 @@
 from tastypie import fields
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.resources import ModelResource
-from .models import Campaign, Deployment, Image
+from .models import Campaign, Deployment, Pose
 from .models import AUVDeployment, BRUVDeployment, DOVDeployment
 
 
@@ -21,6 +21,18 @@ class DeploymentResource(ModelResource):
         }
 
 
+
+class PoseResource(ModelResource):
+    deployment = fields.ForeignKey(DeploymentResource, 'deployment')
+    images = fields.ToManyField('catamidb.models.ImageResource', 'images', full=True)
+    posemeasurements = fields.ToManyField('catamidb.models.ScientificPoseMeasurement', 'posemeasurements')
+    class Meta:
+        queryset = Pose.objects.all()
+        resource_name = "pose"
+        filtering = {
+            'deployment': 'exact',
+        }
+
 class AUVDeploymentResource(ModelResource):
     class Meta:
         queryset = AUVDeployment.objects.all()
@@ -37,15 +49,3 @@ class DOVDeploymentResource(ModelResource):
     class Meta:
         queryset = DOVDeployment.objects.all()
         resource_name = "dovdeployment"
-
-
-class ImageResource(ModelResource):
-    deployment = fields.ForeignKey(DeploymentResource, 'deployment')
-    collection = fields.ToManyField('collection.api.CollectionResource', 'collections', related_name='images')
-    class Meta:
-        queryset = Image.objects.all()
-        resource_name = "image"
-        filtering = {
-            'deployment': 'exact',
-            'collection' : 'exact',
-        }

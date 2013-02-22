@@ -39,7 +39,7 @@ class Migration(SchemaMigration):
         # Adding model 'PointAnnotation'
         db.create_table('annotations_pointannotation', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('image', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['Force.Image'])),
+            ('image', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catamidb.Pose'])),
             ('label', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['annotations.AnnotationCode'])),
             ('labeller', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('annotation_set', self.gf('django.db.models.fields.related.ForeignKey')(related_name='images', to=orm['annotations.PointAnnotationSet'])),
@@ -48,6 +48,14 @@ class Migration(SchemaMigration):
             ('level', self.gf('django.db.models.fields.IntegerField')()),
         ))
         db.send_create_signal('annotations', ['PointAnnotation'])
+
+        # Adding M2M table for field qualifiers on 'PointAnnotation'
+        db.create_table('annotations_pointannotation_qualifiers', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('pointannotation', models.ForeignKey(orm['annotations.pointannotation'], null=False)),
+            ('qualifiercode', models.ForeignKey(orm['annotations.qualifiercode'], null=False))
+        ))
+        db.create_unique('annotations_pointannotation_qualifiers', ['pointannotation_id', 'qualifiercode_id'])
 
         # Adding model 'ImageAnnotationSet'
         db.create_table('annotations_imageannotationset', (
@@ -61,7 +69,7 @@ class Migration(SchemaMigration):
         # Adding model 'ImageAnnotation'
         db.create_table('annotations_imageannotation', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('image', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['Force.Image'])),
+            ('image', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catamidb.Pose'])),
             ('label', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['annotations.AnnotationCode'])),
             ('labeller', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('annotation_set', self.gf('django.db.models.fields.related.ForeignKey')(related_name='images', to=orm['annotations.ImageAnnotationSet'])),
@@ -69,21 +77,13 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('annotations', ['ImageAnnotation'])
 
-        # Adding model 'PointQualifier'
-        db.create_table('annotations_pointqualifier', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('qualifier_code', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['annotations.QualifierCode'])),
-            ('point_annotation', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['annotations.PointAnnotation'])),
+        # Adding M2M table for field qualifiers on 'ImageAnnotation'
+        db.create_table('annotations_imageannotation_qualifiers', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('imageannotation', models.ForeignKey(orm['annotations.imageannotation'], null=False)),
+            ('qualifiercode', models.ForeignKey(orm['annotations.qualifiercode'], null=False))
         ))
-        db.send_create_signal('annotations', ['PointQualifier'])
-
-        # Adding model 'ImageQualifier'
-        db.create_table('annotations_imagequalifier', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('qualifier_code', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['annotations.QualifierCode'])),
-            ('image_annotation', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['annotations.ImageAnnotation'])),
-        ))
-        db.send_create_signal('annotations', ['ImageQualifier'])
+        db.create_unique('annotations_imageannotation_qualifiers', ['imageannotation_id', 'qualifiercode_id'])
 
 
     def backwards(self, orm):
@@ -99,58 +99,20 @@ class Migration(SchemaMigration):
         # Deleting model 'PointAnnotation'
         db.delete_table('annotations_pointannotation')
 
+        # Removing M2M table for field qualifiers on 'PointAnnotation'
+        db.delete_table('annotations_pointannotation_qualifiers')
+
         # Deleting model 'ImageAnnotationSet'
         db.delete_table('annotations_imageannotationset')
 
         # Deleting model 'ImageAnnotation'
         db.delete_table('annotations_imageannotation')
 
-        # Deleting model 'PointQualifier'
-        db.delete_table('annotations_pointqualifier')
-
-        # Deleting model 'ImageQualifier'
-        db.delete_table('annotations_imagequalifier')
+        # Removing M2M table for field qualifiers on 'ImageAnnotation'
+        db.delete_table('annotations_imageannotation_qualifiers')
 
 
     models = {
-        'Force.campaign': {
-            'Meta': {'unique_together': "(('date_start', 'short_name'),)", 'object_name': 'Campaign'},
-            'associated_publications': ('django.db.models.fields.TextField', [], {}),
-            'associated_research_grant': ('django.db.models.fields.TextField', [], {}),
-            'associated_researchers': ('django.db.models.fields.TextField', [], {}),
-            'contact_person': ('django.db.models.fields.TextField', [], {}),
-            'date_end': ('django.db.models.fields.DateField', [], {}),
-            'date_start': ('django.db.models.fields.DateField', [], {}),
-            'description': ('django.db.models.fields.TextField', [], {}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'short_name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'Force.deployment': {
-            'Meta': {'unique_together': "(('start_time_stamp', 'short_name'),)", 'object_name': 'Deployment'},
-            'campaign': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['Force.Campaign']"}),
-            'contact_person': ('django.db.models.fields.TextField', [], {}),
-            'descriptive_keywords': ('django.db.models.fields.TextField', [], {}),
-            'end_position': ('django.contrib.gis.db.models.fields.PointField', [], {}),
-            'end_time_stamp': ('django.db.models.fields.DateTimeField', [], {}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'license': ('django.db.models.fields.TextField', [], {}),
-            'max_depth': ('django.db.models.fields.FloatField', [], {}),
-            'min_depth': ('django.db.models.fields.FloatField', [], {}),
-            'mission_aim': ('django.db.models.fields.TextField', [], {}),
-            'short_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'start_position': ('django.contrib.gis.db.models.fields.PointField', [], {}),
-            'start_time_stamp': ('django.db.models.fields.DateTimeField', [], {})
-        },
-        'Force.image': {
-            'Meta': {'unique_together': "(('deployment', 'date_time'),)", 'object_name': 'Image'},
-            'archive_location': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
-            'date_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'deployment': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['Force.Deployment']"}),
-            'depth': ('django.db.models.fields.FloatField', [], {}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image_position': ('django.contrib.gis.db.models.fields.PointField', [], {}),
-            'webimage_location': ('django.db.models.fields.CharField', [], {'max_length': '500'})
-        },
         'annotations.annotationcode': {
             'Meta': {'object_name': 'AnnotationCode'},
             'code_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -163,9 +125,10 @@ class Migration(SchemaMigration):
             'annotation_set': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'images'", 'to': "orm['annotations.ImageAnnotationSet']"}),
             'cover': ('django.db.models.fields.IntegerField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['Force.Image']"}),
+            'image': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.Pose']"}),
             'label': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['annotations.AnnotationCode']"}),
-            'labeller': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+            'labeller': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'qualifiers': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'image_annotations'", 'symmetrical': 'False', 'to': "orm['annotations.QualifierCode']"})
         },
         'annotations.imageannotationset': {
             'Meta': {'object_name': 'ImageAnnotationSet'},
@@ -174,20 +137,15 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
-        'annotations.imagequalifier': {
-            'Meta': {'object_name': 'ImageQualifier'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image_annotation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['annotations.ImageAnnotation']"}),
-            'qualifier_code': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['annotations.QualifierCode']"})
-        },
         'annotations.pointannotation': {
             'Meta': {'object_name': 'PointAnnotation'},
             'annotation_set': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'images'", 'to': "orm['annotations.PointAnnotationSet']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['Force.Image']"}),
+            'image': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.Pose']"}),
             'label': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['annotations.AnnotationCode']"}),
             'labeller': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
             'level': ('django.db.models.fields.IntegerField', [], {}),
+            'qualifiers': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'point_annotations'", 'symmetrical': 'False', 'to': "orm['annotations.QualifierCode']"}),
             'x': ('django.db.models.fields.FloatField', [], {}),
             'y': ('django.db.models.fields.FloatField', [], {})
         },
@@ -199,12 +157,6 @@ class Migration(SchemaMigration):
             'methodology': ('django.db.models.fields.IntegerField', [], {}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
-        },
-        'annotations.pointqualifier': {
-            'Meta': {'object_name': 'PointQualifier'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'point_annotation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['annotations.PointAnnotation']"}),
-            'qualifier_code': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['annotations.QualifierCode']"})
         },
         'annotations.qualifiercode': {
             'Meta': {'object_name': 'QualifierCode'},
@@ -241,19 +193,71 @@ class Migration(SchemaMigration):
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
+        'catamidb.camera': {
+            'Meta': {'unique_together': "(('deployment', 'name'),)", 'object_name': 'Camera'},
+            'angle': ('django.db.models.fields.IntegerField', [], {}),
+            'deployment': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.Deployment']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+        },
+        'catamidb.campaign': {
+            'Meta': {'unique_together': "(('date_start', 'short_name'),)", 'object_name': 'Campaign'},
+            'associated_publications': ('django.db.models.fields.TextField', [], {}),
+            'associated_research_grant': ('django.db.models.fields.TextField', [], {}),
+            'associated_researchers': ('django.db.models.fields.TextField', [], {}),
+            'contact_person': ('django.db.models.fields.TextField', [], {}),
+            'date_end': ('django.db.models.fields.DateField', [], {}),
+            'date_start': ('django.db.models.fields.DateField', [], {}),
+            'description': ('django.db.models.fields.TextField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'short_name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
+        'catamidb.deployment': {
+            'Meta': {'unique_together': "(('start_time_stamp', 'short_name'),)", 'object_name': 'Deployment'},
+            'campaign': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.Campaign']"}),
+            'contact_person': ('django.db.models.fields.TextField', [], {}),
+            'descriptive_keywords': ('django.db.models.fields.TextField', [], {}),
+            'end_position': ('django.contrib.gis.db.models.fields.PointField', [], {}),
+            'end_time_stamp': ('django.db.models.fields.DateTimeField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'license': ('django.db.models.fields.TextField', [], {}),
+            'max_depth': ('django.db.models.fields.FloatField', [], {}),
+            'min_depth': ('django.db.models.fields.FloatField', [], {}),
+            'mission_aim': ('django.db.models.fields.TextField', [], {}),
+            'short_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'start_position': ('django.contrib.gis.db.models.fields.PointField', [], {}),
+            'start_time_stamp': ('django.db.models.fields.DateTimeField', [], {}),
+            'transect_shape': ('django.contrib.gis.db.models.fields.PolygonField', [], {})
+        },
+        'catamidb.image': {
+            'Meta': {'unique_together': "(('pose', 'camera'),)", 'object_name': 'Image'},
+            'archive_location': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'camera': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.Camera']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'pose': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.Pose']"}),
+            'web_location': ('django.db.models.fields.CharField', [], {'max_length': '200'})
+        },
+        'catamidb.pose': {
+            'Meta': {'unique_together': "(('deployment', 'date_time'),)", 'object_name': 'Pose'},
+            'date_time': ('django.db.models.fields.DateTimeField', [], {}),
+            'deployment': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catamidb.Deployment']"}),
+            'depth': ('django.db.models.fields.FloatField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'position': ('django.contrib.gis.db.models.fields.PointField', [], {})
+        },
         'collection.collection': {
             'Meta': {'unique_together': "(('owner', 'name'),)", 'object_name': 'Collection'},
             'creation_date': ('django.db.models.fields.DateTimeField', [], {}),
             'creation_info': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'description': ('django.db.models.fields.TextField', [], {}),
+            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'images': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'collections'", 'symmetrical': 'False', 'to': "orm['Force.Image']"}),
+            'images': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'collections'", 'symmetrical': 'False', 'to': "orm['catamidb.Image']"}),
             'is_locked': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'modified_date': ('django.db.models.fields.DateTimeField', [], {}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'parent': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['collection.Collection']", 'null': 'True', 'blank': 'True'})
+            'parent': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['collection.Collection']", 'null': 'True', 'blank': 'True'})
         },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},

@@ -1,15 +1,21 @@
 from datetime import datetime
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
-from Force.models import Image, Deployment
+from catamidb.models import Image, Deployment
 from random import sample
 
+
 class CollectionManager(models.Manager):
+    """Manager for collection objects.
+
+    Has methods to assist in creation collections and worksets.
+    """
 
     def collection_from_deployment(self, user, deployment):
         """Create a collection using all images in a deployment.
 
-        Returns the created collection."""
+        :returns: the created collection.
+        """
 
         # create and prefill the collection as much as possible
         c = Collection()
@@ -25,9 +31,7 @@ class CollectionManager(models.Manager):
         c.save()
 
         # now add all the images
-#        for image in deployment.image_set.all():
-#            c.images.add(image)
-        images = deployment.image_set.all()
+        images = Image.objects.filter(pose__deployment=deployment)
         c.images.add(*images)
 
         return c
@@ -35,7 +39,8 @@ class CollectionManager(models.Manager):
     def collection_from_deployments_with_name(self, user, collection_name, deployment_id_list_string):
         """Create a collection using all images in a deployment.
 
-        Returns the created collection."""
+        :returns: the created collection.
+        """
 
         deployment_list = [int(x) for x in deployment_id_list_string.split(',')]
 
@@ -54,9 +59,7 @@ class CollectionManager(models.Manager):
 
         # now add all the images
         for value in deployment_list:
-#            for image in Image.objects.filter(deployment=Deployment.objects.filter(id=value)):
-#                c.images.add(image)
-            images = Image.objects.filter(deployment=Deployment.objects.filter(id=value))
+            images = Image.objects.filter(pose__deployment=Deployment.objects.filter(id=value))
             c.images.add(*images)
 
         return c
@@ -66,7 +69,7 @@ class CollectionManager(models.Manager):
     def workset_from_collection(self, user, name, description, ispublic, c_id, n, method):
         """Create a workset (or child collection) from a parent collection
 
-        Returns the created workset."""
+        :returns: the created workset."""
 
         c = Collection.objects.get(pk=c_id)
         cimages = c.images.all()
@@ -84,40 +87,42 @@ class CollectionManager(models.Manager):
 
         # check that n < number of images in collection
         if cimages.count() < n:
-            print "WARNING: Not enough images to subsample... setting n=images.count" # TODO: what is the best way to handle warnings?
+            print "WARNING: Not enough images to subsample... setting n=images.count"  # TODO: what is the best way to handle warnings?
             n = cimages.count()
 
         # subsample collection images and add to workset
-        if method == "random" :
-            wsimglist = sample(cimages,n)
+        if method == "random":
+            wsimglist = sample(cimages, n)
             ws.creation_info = "Random: {0} images".format(n)
-        elif method == "stratified" :
+        elif method == "stratified":
             wsimglist = cimages[0:cimages.count():n]
-            ws.creation_info = "Stratified: every {0}th image".format(n) # TODO: add some logic "th" does not work for 1-3
-        else :
-            print "ERROR: Unrecognised method" # TODO: what is the best way to handle warnings?
+            ws.creation_info = "Stratified: every {0}th image".format(n)  # TODO: add some logic "th" does not work for 1-3
+        else:
+            print "ERROR: Unrecognised method"  # TODO: what is the best way to handle warnings?
 
         # save the workset so we can associate images with it
         ws.save()
         # Associate images with workset
-#        for image in wsimglist:
-#            ws.images.add(image)
         ws.images.add(*wsimglist)
 
         return ws
 
 
-
-
 class Collection(models.Model):
+    """Collections are a set of images that a user works with.
+
+    They contain 'worksets' and 'collections' in front end
+    terminology. The only difference here is that collections
+    don't have a parent whilst worksets do.
+    """
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     owner = models.ForeignKey(User)
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()
     is_public = models.BooleanField()
     is_locked = models.BooleanField()
-    parent = models.ForeignKey('Collection', null=True, blank=True, default=None)
+    parent = models.ForeignKey('Collection', null=True, blank=True)
     images = models.ManyToManyField(Image, related_name='collections')
     creation_info = models.CharField(max_length=200)
 
