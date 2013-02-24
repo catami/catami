@@ -172,3 +172,9 @@ class ModelImportForm(forms.Form):
             raise TypeError("Expected subclass of django.db.models.Model")
 
 
+class ApiDeploymentForm(forms.Form):
+    short_name = forms.CharField()
+    campaign = forms.ModelChoiceField(queryset=Campaign.objects.all())
+    license = forms.CharField(max_length=500)
+    descriptive_keywords = forms.CharField(max_length=500)
+

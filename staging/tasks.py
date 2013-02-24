@@ -160,11 +160,11 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
     lon_lim = LimitTracker('longitude')
 
     # create the deployment instance
-    auvdeployment = Force.models.AUVDeployment()
+    auvdeployment = catamidb.models.AUVDeployment()
 
     # fill in the basic details
     auvdeployment.short_name = mission_text
-    auvdeployment.campaign = Force.models.Campaign.objects.get(short_name=campaign_name)
+    auvdeployment.campaign = catamidb.models.Campaign.objects.get(short_name=campaign_name)
     auvdeployment.mission_aim = "The aim of the mission."
     auvdeployment.license = "CC-BY"
     auvdeployment.descriptive_keywords = "keywords"
@@ -184,12 +184,12 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
     auvdeployment.save()
 
     # get the sm types that we are going to use
-    temperature = Force.models.ScientificMeasurementType.objects.get(normalised_name='temperature')
-    salinity = Force.models.ScientificMeasurementType.objects.get(normalised_name='salinity')
-    pitch = Force.models.ScientificMeasurementType.objects.get(normalised_name='pitch')
-    roll = Force.models.ScientificMeasurementType.objects.get(normalised_name='roll')
-    yaw = Force.models.ScientificMeasurementType.objects.get(normalised_name='yaw')
-    altitude = Force.models.ScientificMeasurementType.objects.get(normalised_name='altitude')
+    temperature = catamidb.models.ScientificMeasurementType.objects.get(normalised_name='temperature')
+    salinity = catamidb.models.ScientificMeasurementType.objects.get(normalised_name='salinity')
+    pitch = catamidb.models.ScientificMeasurementType.objects.get(normalised_name='pitch')
+    roll = catamidb.models.ScientificMeasurementType.objects.get(normalised_name='roll')
+    yaw = catamidb.models.ScientificMeasurementType.objects.get(normalised_name='yaw')
+    altitude = catamidb.models.ScientificMeasurementType.objects.get(normalised_name='altitude')
 
     first_image = None
     last_image = None
@@ -201,7 +201,7 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         if limit and len(poselist) / 2 >= limit:
             break
 
-        image = Force.models.Image()
+        image = catamidb.models.Image()
         limage = row['leftimage']
         #rimage = row['rightimage']
         image.deployment = auvdeployment
@@ -219,18 +219,13 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
         if image.depth < auvdeployment.min_depth:
             auvdeployment.min_depth = image.depth
 
-        #########################
-        image.left_image_reference = image_base + "{0}.tif".format(os.path.splitext(limage)[0])
-        image.left_thumbnail_reference = image.left_image_reference
+        image_path = os.path.join(image_base, image_name)
 
+        archive_path, webimage_path = image_import(campaign_name, mission_text, image_name, image_path)
 
-        #image_path = os.path.join(path, image_subfolder, image_name)
+        image.archive_location = archive_path
+        image.webimage_location = webimage_path
 
-        #archive_path, webimage_path = image_import(campaign_name, mission_text, image_name, image_path)
-
-        #image.archive_location = archive_path
-        #image.webimage_location = webimage_path
-        ############################
         lat_lim.check(row)
         lon_lim.check(row)
 
@@ -247,37 +242,37 @@ def auvprocess(track_file, netcdf_file, base_url, campaign_datestring, campaign_
             closer_seabird = later_seabird
 
         # add those extra scientific measurements
-        temp_m = Force.models.ScientificMeasurement()
+        temp_m = catamidb.models.ScientificMeasurement()
         temp_m.measurement_type = temperature
         temp_m.value = closer_seabird['temperature']
         temp_m.image = image
         temp_m.save()
 
-        sal_m = Force.models.ScientificMeasurement()
+        sal_m = catamidb.models.ScientificMeasurement()
         sal_m.measurement_type = salinity
         sal_m.value = closer_seabird['salinity']
         sal_m.image = image
         sal_m.save()
 
-        roll_m = Force.models.ScientificMeasurement()
+        roll_m = catamidb.models.ScientificMeasurement()
         roll_m.measurement_type = roll
         roll_m.value = row['roll']
         roll_m.image = image
         roll_m.save()
 
-        pitch_m = Force.models.ScientificMeasurement()
+        pitch_m = catamidb.models.ScientificMeasurement()
         pitch_m.measurement_type = pitch
         pitch_m.value = row['pitch']
         pitch_m.image = image
         pitch_m.save()
 
-        yaw_m = Force.models.ScientificMeasurement()
+        yaw_m = catamidb.models.ScientificMeasurement()
         yaw_m.measurement_type = yaw
         yaw_m.value = row['heading']
         yaw_m.image = image
         yaw_m.save()
 
-        alt_m = Force.models.ScientificMeasurement()
+        alt_m = catamidb.models.ScientificMeasurement()
         alt_m.measurement_type = altitude
         alt_m.value = row['altitude']
         alt_m.image = image
@@ -322,14 +317,14 @@ def json_real_load(data):
     This data can be either a string or file-like object from which data
     can be read.
 
-    Objects in the file have to be from Force.models else the whole contents
+    Objects in the file have to be from catamidb.models else the whole contents
     will be rejected. This is a security issue.
     """
     with transaction.commit_manually():
         try:
             for obj in serializers.deserialize('json', data):
-                # check if the class is in Force
-                if obj.object.__class__.__module__ == "Force.models":
+                # check if the class is in catamidb
+                if obj.object.__class__.__module__ == "catamidb.models":
                     obj.save()
                 else:
                     raise ValueError('Object does not come from target Module.', obj.object)
@@ -418,7 +413,7 @@ def metadata_import(model_class, fields_list, field_mappings):
     # second (that possibly will get removed) is that the levels
     # are only one deep (ie AUV -> Deployment, not A -> B -> Deployment)
 
-    base_model = Force.models.Deployment
+    base_model = catamidb.models.Deployment
 
     if len(model_class._meta.parents) != 1:
         raise Exception("Model to import to has multiple parents!")
@@ -498,7 +493,7 @@ def annotation_cpc_import(user, deployment, cpc_file_handles):
     # deployment is used to reduce the search space/chance of collision with images
     # still also need mapping of local ids to catami users
 
-    subset = Force.models.Image.objects.filter(deployment=deployment)
+    subset = catamidb.models.Image.objects.filter(deployment=deployment)
 
     # we are assuming AUV naming conventions for the image...
 
@@ -519,7 +514,7 @@ def annotation_cpc_import(user, deployment, cpc_file_handles):
         image = subset.get(date_time=image_datetime)
 
         for a in annotations:
-            an = Force.models.Annotation()
+            an = catamidb.models.Annotation()
             an.image_reference = image
             an.method = "50 Point CPC"
             an.code = a['label']

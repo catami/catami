@@ -42,12 +42,12 @@ class TestCollectionModel(TestCase):
 
         #check the images went across - IMPORTANT!
         #get images for the deployment and the collection
-        collection_images = collection.images.all().order_by("left_thumbnail_reference")
-        deployment_images = Image.objects.filter(deployment=self.deployment_one).order_by("left_thumbnail_reference")
+        collection_images = collection.images.all().order_by("webimage_location")
+        deployment_images = Image.objects.filter(deployment=self.deployment_one).order_by("webimage_location")
 
         #check the image set is the same
-        self.assertEqual(collection_images.values_list("left_thumbnail_reference").__str__(),
-                         deployment_images.values_list("left_thumbnail_reference").__str__())
+        self.assertEqual(collection_images.values_list("webimage_location").__str__(),
+                         deployment_images.values_list("webimage_location").__str__())
 
         #try create with no user, should be an error
         try:
@@ -79,9 +79,9 @@ class TestCollectionModel(TestCase):
 
         #check the images went across - IMPORTANT!
         #get images for the deployment and the collection
-        collection_images = collection.images.all().order_by("left_thumbnail_reference")
-        deployment_one_images = Image.objects.filter(deployment=self.deployment_one).order_by("left_thumbnail_reference")
-        deployment_two_images = Image.objects.filter(deployment=self.deployment_two).order_by("left_thumbnail_reference")
+        collection_images = collection.images.all().order_by("webimage_location")
+        deployment_one_images = Image.objects.filter(deployment=self.deployment_one).order_by("webimage_location")
+        deployment_two_images = Image.objects.filter(deployment=self.deployment_two).order_by("webimage_location")
 
         #check that combined lengths of the deployment images is the same as the collection
         self.assertEqual(collection_images.count(), deployment_one_images.count()+deployment_two_images.count())

@@ -199,11 +199,16 @@ class Camera(models.Model):
     as well as a name for the camera itself.
     """
 
+    DOWN_ANGLE = 0
+    UP_ANGLE = 1
+    SLANT_ANGLE = 2
+    HORIZONTAL_ANGLE = 3
+
     CAMERA_ANGLES = (
-        (0, 'Downward'),
-        (1, 'Upward'),
-        (2, 'Slanting/Oblique'),
-        (3, 'Horizontal/Seascape'),
+        (DOWN_ANGLE, 'Downward'),
+        (UP_ANGLE, 'Upward'),
+        (SLANT_ANGLE, 'Slanting/Oblique'),
+        (HORIZONTAL_ANGLE, 'Horizontal/Seascape'),
     )
 
     deployment = models.ForeignKey(Deployment)

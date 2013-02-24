@@ -8,6 +8,7 @@ SITE_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.p
 
 DEBUG = False
 TEMPLATE_DEBUG = False
+TASTYPIE_FULL_DEBUG = False
 
 POSTGIS_VERSION = (1, 5, 2)
 SOUTH_TESTS_MIGRATE = False # To disable migrations and use syncdb instead
@@ -65,6 +66,9 @@ USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
+
+IMAGES_ROOT = '/media/catami_live/importedimages/'
+IMAGES_URL = '/images/'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -175,6 +179,7 @@ INSTALLED_APPS = (
     'collection',
     'guardian',
     'easy_thumbnails',
+    'restthumbnails',
     'django_nose',
     'clustering',
     'annotations',

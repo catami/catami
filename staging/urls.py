@@ -43,4 +43,5 @@ urlpatterns = patterns('staging.views',
     url(r'^listing/(?P<path>.*)$', 'listdirectory'),
 
     url(r'^browse$', 'newbrowse'),
+    url(r'^create/auv/(?P<pk>\w[\w-]*)$', 'api_auv_form', name='api_auv_form')
 )

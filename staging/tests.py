@@ -21,7 +21,7 @@ from . import tasks
 from . import widgets
 from .annotations import CPCFileParser
 
-from Force.models import Campaign
+from catamidb.models import Campaign
 
 import datetime
 from dateutil.tz import tzutc

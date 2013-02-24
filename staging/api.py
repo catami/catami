@@ -1,10 +1,18 @@
 from tastypie import fields
 from tastypie.resources import ModelResource, Resource, Bundle
 from tastypie.exceptions import NotFound, BadRequest
+from tastypie.utils import trailing_slash
+from tastypie.authentication import BasicAuthentication
+from tastypie.authorization import DjangoAuthorization
 
 import staging.settings as staging_settings
+import staging.forms as staging_forms
+from staging.auvimport import AUVImporter
+
+from catamidb.models import AUVDeployment, Deployment
 
 from django.core.urlresolvers import reverse
+from django.conf.urls import url
 
 import os
 import os.path
@@ -26,52 +34,6 @@ class StagingFileObject(object):
         return self._data
 
 
-class FilesystemToOne(fields.RelatedField):
-    def dehydrate(self, bundle):
-        try:
-            foreign_obj = getattr(bundle.obj, self.attribute)
-        except ObjectDoesNotExist:
-            foreign_obj = None
-
-        if not foreign_obj:
-            if not self.null:
-                raise ApiFieldError("The model '%r' has an empty attribute and doesn't allow a null value." % (bundle.obj, self.attribute))
-            return None
-
-        fk_resource = self.get_related_resource(foreign_obj)
-        fk_bundle = Bundle(obj=foreign_obj, request=bundle.request)
-        return self.dehydrate_related(fk_bundle, fk_resource)
-
-
-class FilesystemToMany(fields.RelatedField):
-    def dehydrate(self, bundle):
-        if not bundle.obj or not bundle.obj.pk:
-            if not self.null:
-                raise ApiFieldError("The model '%r' does not have a primary key and can not be used in a ToMany context." % (bundle.obj))
-            return []
-
-        the_m2ms = None
-        if isinstance(self.attribute, basestring):
-            the_m2ms = getattr(bundle.obj, self.attribute)
-        elif callable(self.attribute):
-            the_m2ms = self.attribute(bundle)
-
-        if not the_m2ms:
-            if not self.null:
-                raise ApiFieldError("The model '%r' has an empty attribute and doesn't allow a null value." % (bundle.obj, self.attribute))
-            return []
-
-        m2m_resources = []
-        m2m_dehydrated = []
-
-        for m2m in the_m2ms:
-            m2m_resource = self.get_related_resource(m2m)
-            m2m_bundle = Bundle(obj=m2m, request=bundle.request)
-            m2m_resources.append(m2m_resource)
-            m2m_dehydrated.append(self.dehydrate_related(m2m_bundle, m2m_resource))
-
-        return m2m_dehydrated
-
 class StagingFilesResource(Resource):
     """Read only resource that allows exploration of the staging area."""
     pk = fields.CharField(attribute='pk')
@@ -79,12 +41,14 @@ class StagingFilesResource(Resource):
     name = fields.CharField(attribute='name')
     is_dir = fields.BooleanField(attribute='is_dir')
 
-#    children = FilesystemToMany('staging.api.StagingFilesResource', attribute='children', related_name="parent", null=True, full=False)
-    parent = fields.CharField(attribute='parent')   #FilesystemToOne('staging.api.StagingFilesResource', attribute='parent')
+    parent = fields.CharField(attribute='parent')
 
     class Meta:
         resource_name = 'stagingfiles'
         object_class = StagingFileObject
+        auv_create_allowed_methods = ['post']
+        authentication = BasicAuthentication()
+        authorization = DjangoAuthorization()
 
     def detail_uri_kwargs(self, bundle_or_obj):
         kwargs = {}
@@ -98,6 +62,30 @@ class StagingFilesResource(Resource):
 
     def get_object_list(self, request):
         pass
+
+    def get_auv_create_uri(self, bundle_or_obj):
+        """Get the URI to call auv import on this object."""
+
+        # these are both needed...
+        kwargs = {'api_name': self._meta.api_name,
+            'resource_name': self._meta.resource_name,
+            }
+
+        kwargs = {}
+
+        # get the objects pk/lookup
+        if isinstance(bundle_or_obj, Bundle):
+            pk = bundle_or_obj.obj.pk
+        else:
+            pk = bundle_or_obj.pk
+
+        # add it in
+        kwargs['pk'] = pk
+
+        # and get the reverse url from django
+        #return reverse("api_auv_create", kwargs=kwargs)
+        # the url of the form view (it can derive the api creation url)
+        return reverse("api_auv_form", kwargs=kwargs)
 
     def get_resource_uri(self, bundle_or_obj):
         """Get the API address of this URI."""
@@ -124,33 +112,6 @@ class StagingFilesResource(Resource):
         base = staging_settings.STAGING_IMPORT_DIR
         path = kwargs['pk'].decode('hex')
         system_dir = os.path.join(base, path)
-        print system_dir
-
-        # don't think I use this anymore...
-        if False:
-        #if os.path.isdir(system_dir):
-            child_files = []
-            for name in os.listdir(system_dir):
-                system_name = os.path.join(system_dir, name)
-                relative_name = os.path.join(path, name)
-
-                if os.path.isdir(system_name):
-                    is_dir = True
-                elif os.path.isfile(system_name):
-                    is_dir = False
-                else:
-                    # not a file or dir? skip on
-                    continue
-
-                # now create the StagingFileObject
-                data = {}
-                data['path'] = relative_name
-                data['pk'] = relative_name.encode('hex')
-                data['name'] = name
-                data['is_dir'] = is_dir
-                child_files.append(StagingFileObject(initial=data))
-        else:
-            child_files = []
 
         parent = {}
         parent_path = os.path.dirname(path)
@@ -166,8 +127,15 @@ class StagingFilesResource(Resource):
         data['parent'] = parent['pk'] # the straight key is more useful   parent_obj
         data['name'] = os.path.basename(path)
         data['is_dir'] = os.path.isdir(system_dir)
+        obj = StagingFileObject(initial=data)
 
-        return StagingFileObject(initial=data)
+        actions = {}
+        if AUVImporter.dependency_check(system_dir):
+            actions['auvcreate'] = self.get_auv_create_uri(obj)
+
+        obj.actions = actions
+
+        return obj
 
     def apply_filters(self, request, applicable_filters):
         parent_path = applicable_filters.get('folder', "").decode('hex')
@@ -203,7 +171,15 @@ class StagingFilesResource(Resource):
                 data['pk'] = relative_name.encode('hex')
                 data['name'] = name
                 data['is_dir'] = is_dir
-                children.append(StagingFileObject(initial=data))
+                obj = StagingFileObject(initial=data)
+
+                actions = {}
+                if AUVImporter.dependency_check(system_name):
+                    actions['auvcreate'] = self.get_auv_create_uri(obj)
+
+                obj.actions = actions
+                children.append(obj)
+                #children.append(StagingFileObject(initial=data))
         else:
             children = []
 
@@ -226,6 +202,13 @@ class StagingFilesResource(Resource):
         except ValueError:
             return BadRequest("Invalid resource lookup data provided (mismatched type).")
 
+    def dehydrate(self, bundle):
+        print bundle
+        print bundle.obj.actions
+        bundle.actions = bundle.obj.actions
+        bundle.data['actions'] = bundle.obj.actions
+        return bundle
+
     def obj_create(self, bundle, request=None, **kwargs):
         pass # not relevant?
     def obj_update(self, bundle, request=None, **kwargs):
@@ -236,3 +219,43 @@ class StagingFilesResource(Resource):
         pass  # not relevant?
     def rollback(self, bundles):
         pass  # not relevant?
+
+    # will become prepend_urls on upgrade to 0.9.12 (is deprecated at that point)
+    def override_urls(self):
+        return [url(r"^(?P<resource_name>%s)/create/(?P<pk>\w[\w/-]*)/auv%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('auv_create'), name="api_auv_create")]
+
+    def auv_create(self, request, **kwargs):
+        return self.dispatch("auv_create", request, **kwargs)
+
+    def post_auv_create(self, request, **kwargs):
+        # should extract and validate the form...
+        form = staging_forms.ApiDeploymentForm(request.POST)
+        if form.is_valid():
+            print "Validated"
+            # extract the path we are working with
+            base = staging_settings.STAGING_IMPORT_DIR
+            path = os.path.join(base, kwargs['pk'].decode('hex'))
+
+            # now we create the deployment
+            created_deployment = AUVDeployment()
+
+            data = form.cleaned_data
+
+            created_deployment.short_name = data['short_name']
+            created_deployment.campaign = data['campaign']
+            created_deployment.license = data['license']
+            created_deployment.descriptive_leywords = data['descriptive_keywords']
+            
+            print "passing to function to process"
+            # now pass to the parsing function
+            AUVImporter.import_path(created_deployment, path)
+            print "Exiting!"
+
+
+            # then return the new deployment
+            return self.create_response(request, created_deployment)
+
+        # on failure... not sure what to do yet
+        # probably just return the form
+        # or call the original view that should have created it?
+        print "Invalid"

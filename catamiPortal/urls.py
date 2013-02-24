@@ -10,7 +10,10 @@ from django.conf.urls import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from django.conf import settings
 admin.autodiscover()
+
+
 
 
 urlpatterns = patterns('',
@@ -27,6 +30,9 @@ urlpatterns = patterns('',
 
 
     url(r'^staging/', include('staging.urls')),
+
+    url(r'images/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': settings.IMAGES_ROOT, 'show_indexes': True}),
 
     url(r'^webinterface/', include('webinterface.urls')),
 

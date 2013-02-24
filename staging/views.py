@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from .forms import AUVImportForm, AUVManualImportForm, AUVLocalImportForm, FileImportForm, MetadataStagingForm, ModelImportForm, CampaignCreateForm
+from .forms import AUVImportForm, AUVManualImportForm, AUVLocalImportForm, FileImportForm, MetadataStagingForm, ModelImportForm, CampaignCreateForm, ApiDeploymentForm
 from .extras import UploadProgressCachedHandler
 from . import tasks
 from . import metadata
@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 from .api import StagingFilesResource
+
 @login_required
 def newbrowse(request):
     context = {}
@@ -35,6 +36,18 @@ def newbrowse(request):
     context['current_files'] = sf.obj_get_list(request)
 
     return render_to_response('staging/newbrowse.html', context, rcon)
+
+def api_auv_form(request, pk):
+    context = {}
+    rcon = RequestContext(request)
+
+    context['form'] = ApiDeploymentForm()
+    context['pk'] = pk
+    context['resource_name'] = 'stagingfiles'
+    context['api_name'] = 'dev'
+
+
+    return render_to_response('staging/api_deployment_create.html', context, rcon)
 
 @login_required
 def index(request):
