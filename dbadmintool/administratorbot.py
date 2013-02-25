@@ -29,7 +29,7 @@ class Robot():
         # how often to poll the server for connection in sec
         self.dt_connection = 10  # not used, using cron instead
 
-    def check_database_connection(self, dbname='Force'):
+    def check_database_connection(self, dbname='catamidb'):
         """Check to see if database connection is open. Return True or False
     
         The return is true if connection is open false if connection failed
@@ -47,7 +47,7 @@ class Robot():
                          dbname + ' :: Query failed')
             return False
 
-    def make_local_backup(self, dbname='Force', **kwargs):
+    def make_local_backup(self, dbname='catamidb', **kwargs):
         """Do a naive backup to local machine
 
         Keywords include:
@@ -229,7 +229,7 @@ class Robot():
                 sha.update(chunk)
         return sha.hexdigest()
 
-    def make_remote_backup(self, ipaddress, dbname='Force', **kwargs):
+    def make_remote_backup(self, ipaddress, dbname='catamidb', **kwargs):
         """Make a back up of an offsite database"""
 
 
@@ -310,7 +310,7 @@ class ReportTools():
 
         return tb_size
     
-    def query_database_size(self, dbase='Force'):
+    def query_database_size(self, dbase='catamidb'):
         """Queries the size of the database on the disk"""
         cursor = connection.cursor()
 
