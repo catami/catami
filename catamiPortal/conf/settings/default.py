@@ -67,8 +67,9 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-IMAGES_ROOT = '/media/catami_live/importedimages/'
-IMAGES_URL = '/images/'
+# dont have slashes at either end, they are automatically added
+IMAGES_URL = 'images'
+IMAGES_ROOT = '/media/catami_live/importedimages'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"

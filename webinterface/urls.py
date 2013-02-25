@@ -3,7 +3,7 @@
 __author__ = 'Ariell Friedman'
 
 from django.conf.urls import patterns, url, include
-#from django.contrib.auth.models import User
+from django.conf import settings
 
 from django.contrib import admin
 admin.autodiscover()
@@ -105,4 +105,6 @@ urlpatterns = patterns('webinterface.views',
 urlpatterns += patterns('',
                         url(r'^accounts/login/$', 'django.contrib.auth.views.login',
                         {'template_name': 'registration/login.html'}),
+    url(r'^{0}/(?P<path>.*)$'.format(settings.IMAGES_URL), 'django.views.static.serve',
+        {'document_root': settings.IMAGES_ROOT, 'show_indexes': False}),
                         )
