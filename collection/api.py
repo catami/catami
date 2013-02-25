@@ -23,3 +23,8 @@ class CollectionResource(ModelResource):
             'id': 'exact',
             'parent': 'exact'
         }
+
+    def dehydrate(self, bundle):
+        """Add an image_count field to CollectionResource."""
+        bundle.data['image_count'] = Collection.objects.get(pk=bundle.data['id']).images.count()
+        return bundle
