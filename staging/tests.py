@@ -56,9 +56,6 @@ class StagingTests(TestCase):
         test_urls.append(reverse('staging_index'))
         test_urls.append(reverse('staging_campaign_create'))
         test_urls.append(reverse('staging_campaign_created'))
-        test_urls.append(reverse('staging_auv_import'))
-        test_urls.append(reverse('staging_auv_import_manual'))
-        test_urls.append(reverse('staging_auv_imported'))
         test_urls.append(reverse('staging_auv_progress'))
         test_urls.append(reverse('staging_file_import'))
         test_urls.append(reverse('staging_file_imported'))
@@ -98,9 +95,6 @@ class StagingTests(TestCase):
         test_urls.append((reverse('staging_index'), 'staging/index.html'))
         test_urls.append((reverse('staging_campaign_create'), 'staging/campaigncreate.html'))
         test_urls.append((reverse('staging_campaign_created'), 'staging/campaigncreated.html'))
-        test_urls.append((reverse('staging_auv_import'), 'staging/auvimport.html'))
-        test_urls.append((reverse('staging_auv_import_manual'), 'staging/auvmanualimport.html'))
-        test_urls.append((reverse('staging_auv_imported'), 'staging/auvimported.html'))
         test_urls.append((reverse('staging_file_import'), 'staging/fileupload.html'))
         test_urls.append((reverse('staging_file_imported'), 'staging/fileuploaded.html'))
         test_urls.append((reverse('staging_file_imported'), 'staging/fileuploaded.html'))
@@ -120,65 +114,6 @@ class StagingTests(TestCase):
 
         # logout, don't check carefully, the other test does that
         response = self.client.get('/accounts/logout/')
-
-    def test_views_post_auv(self):
-        """Test posting to the main views."""
-        response = self.client.post('/accounts/signin/', self.login)
-        test_urls = []
-
-        campaign_create = reverse('staging_campaign_create')
-        post = dict()
-        post["short_name"] = "Tasmania200906"
-        post["description"] = "IMOS Survey"
-        post["date_start"] = "2009-06-01"
-        post["date_end"] = "2009-06-30"
-        post["associated_publications"] = "{Publications}"
-        post["associated_researchers"] = "{IMOS}, {TAFI}"
-        post["associated_research_grant"] = "{ARC LIEF}"
-        post["contact_person"] = "Catami <catami@ivec.org>"
-
-        # this works, redirects to created
-        response = self.client.post(campaign_create, post)
-        self.assertEqual(302, response.status_code)
-
-        # clone for 'failure' mode (incomplete)
-        del post["date_start"]
-        # invalid, return 200 with updated form
-        response = self.client.post(campaign_create, post)
-        self.assertEqual(200, response.status_code)
-
-
-        return # skip the parts of the test that depend on the data fabric
-
-        # now auv import
-        auv_import = reverse('staging_auv_import')
-
-        # get the previous campaign to make sure it imported
-        # and we can then use its pk
-        campaign = Campaign.objects.get(short_name=post["short_name"])
-
-        post = dict()
-        post["campaign_name"] = str(campaign.pk)
-        post["mission_name"] = "r20090611_131909_freycinet_mpa_04_mid_reef"
-        post["base_url"] = "http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV"
-        post["uuid"] = "23gfd65w"
-
-        response = self.client.post(auv_import, post)
-        self.assertEqual(302, response.status_code)
-
-        del post["mission_name"]
-        response = self.client.post(auv_import, post)
-        self.assertEqual(200, response.status_code)
-
-        # now to auvmanual import
-        post["mission_name"] = "r20090612_010629_freycinet_mpa_05_patch_reef"
-        post["trackfile_url"] = "http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV/Tasmania200906/r20090612_010629_freycinet_mpa_05_patch_reef/track_files/freycinet_mpa_05_patch_reef_latlong.csv"
-        post["netcdffile_url"] = "http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV/Tasmania200906/r20090612_010629_freycinet_mpa_05_patch_reef/hydro_netcdf/IMOS_AUV_ST_20090612T010632Z_SIRIUS_FV00.nc"
-
-        auv_manual_import = reverse('staging_auv_import_manual')
-        response = self.client.get('/accounts/logout/')
-        response = self.client.post(auv_import, post)
-        self.assertEqual(302, response.status_code)
 
     def test_views_post_metadata(self):
         """Test the metadata component."""
@@ -531,52 +466,4 @@ class WidgetTest(TestCase):
         field = widgets.MultiSourceField(base_field=base_field, columns=choices)
         widget = field.widget
         widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], ""]), {'id': 'name'})
-
-class AUVImport(TestCase):
-    """Tests for Staging that require the internet to access things."""
-
-    def setUp(self):
-        """Set up the test variables/parameters."""
-        setup_login(self)
-
-        # create a campaign
-        campaign = Campaign()
-        campaign.short_name = "Tasmania200906"
-        campaign.description = "IMOS Repeat Survey"
-        campaign.associated_researchers = "ACFR, UTas"
-        campaign.associated_publications = "Pending"
-        campaign.associated_research_grant = "Pending"
-        campaign.date_start = datetime.date(2009, 6, 1)
-        campaign.date_end = datetime.date(2009, 6, 30)
-        campaign.contact_person = "Catami <catami@ivec.org>"
-
-        campaign.save()
-
-        base_url = "http://df.arcs.org.au/ARCS/projects/IMOS/public/AUV"
-        campaign_name = campaign.short_name
-        campaign_start = campaign.date_start
-        mission_name = "r20090611_063540_freycinet_mpa_03_reef_south"
-        self.input_params = (base_url, str(campaign_start), campaign_name, mission_name)
-
-    def test_auv_fetch_names(self):
-        """Test auv_fetch name generation."""
-
-        # call the function we are testing
-        return_values = tasks.auvfetch(*self.input_params)
-
-        # break out the return values
-        track_url, netcdf_urlpattern, start_time = return_values
-
-        # calculate the values to compare against, and compare them
-        files_base = "{0}/{2}/{3}".format(*self.input_params)
-        self.assertEqual(track_url[0], files_base + "/track_files/freycinet_mpa_03_reef_south_latlong.csv")
-        self.assertEqual(netcdf_urlpattern, files_base + "/hydro_netcdf/IMOS_AUV_ST_{date_string}Z_SIRIUS_FV00.nc")
-        self.assertEqual(start_time, datetime.datetime(2009, 06, 11, 6, 35, 40, tzinfo=tzutc()))
-
-    def test_auv_process(self):
-        """Test auv_process importing."""
-
-        track_file = open('staging/fixtures/freycinet_mpa_03_reef_south_latlong.csv', 'r')
-        netcdf_file = open('staging/fixtures/IMOS_AUV_ST_20090611T063544Z_SIRIUS_FV00.nc', 'r')
-        tasks.auvprocess(track_file, netcdf_file, *self.input_params)
 

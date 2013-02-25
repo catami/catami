@@ -15,13 +15,6 @@ urlpatterns = patterns('staging.views',
     url(r'^campaign/create$', 'campaigncreate', name='staging_campaign_create'),
     url(r'^campaign/created$', 'campaigncreated', name='staging_campaign_created'),
 
-    # auv deployment (via datafabric importing)
-    url(r'^auv/import$', 'auvimport', name='staging_auv_import'),
-    url(r'^auv/manualimport$', 'auvmanualimport', name='staging_auv_import_manual'),
-    url(r'^auv/localimport$', 'auvlocalimport', name='staging_auv_import_local'),
-    url(r'^auv/progress$', 'auvprogress', name='staging_auv_progress'),
-    url(r'^auv/imported$', 'auvimported', name='staging_auv_imported'),
-
     # django json deserialisation
     url(r'^file/import$', 'fileupload', name='staging_file_import'),
     url(r'^file/imported$', 'fileuploaded', name='staging_file_imported'),
@@ -39,8 +32,6 @@ urlpatterns = patterns('staging.views',
     # annotations
     #url(r'^annotations/cpc/import$', 'annotationcpcimport', name='staging_annotation_cpc_import'),
     #url(r'^annotations/cpc/imported$', 'annotationcpcimported', name='staging_annotation_cpc_imported'),
-
-    url(r'^listing/(?P<path>.*)$', 'listdirectory'),
 
     url(r'^browse$', 'newbrowse'),
     url(r'^create/auv/(?P<pk>\w[\w-]*)$', 'api_auv_form', name='api_auv_form')
