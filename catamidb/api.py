@@ -63,12 +63,14 @@ class PoseResource(ModelResource):
 class ImageResource(ModelResource):
     pose = fields.ForeignKey(PoseResource, 'pose')
     measurements = fields.ToManyField('catamidb.api.ScientificImageMeasurementResource', 'scientificimagemeasurement_set')
+    collection = fields.ToManyField('collection.api.CollectionResource', 'collections')
     class Meta:
         queryset = Image.objects.all()
         resource_name = "image"
         excludes = ['archive_location']
         filtering = {
             'pose': ALL_WITH_RELATIONS,
+            'collection': ALL,
         }
 
     def dehydrate_measurements(self, bundle):
