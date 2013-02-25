@@ -13,7 +13,7 @@ def staging_breadcrumbs(path, base=staging_settings.STAGING_IMPORT_DIR):
             system_path = os.path.join(base, recurse_path)
             if os.path.exists(system_path) and os.path.isdir(system_path):
                 crumbs.append((recurse_path, d))
-            else
+            else:
                 raise Exception("Directory not valid.")
     return crumbs
 
