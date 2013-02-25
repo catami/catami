@@ -23,12 +23,11 @@ class CollectionAuthorization(Authorization):
                 if request.user == owner:
                     return True
         else:
-            print "No Object!"
             return True
 
-    def apply_limits(self, request, object_list):
-        print "Filtering collection list"
-        if request and hasattr(request, 'user'):
+    def read_list(self, object_list, bundle):
+        request = bundle.request
+        if hasattr(request, 'user'):
             return object_list.filter(Q(owner=request.user) | Q(is_public=True))
         else:
             return object_list.filter(is_public=True)

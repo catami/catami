@@ -17,7 +17,7 @@ django-userena
 django-nose
 python-memcached
 django-memcached
-django-tastypie
+django-tastypie==0.9.12
 django-orm-extensions
 -e git://github.com/hcarvalhoalves/django-rest-thumbnails.git@6e949d137246e9d3d8180dbc3fa26c512e753b11#egg=django-rest-thumbnails
 httplib2

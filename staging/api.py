@@ -3,7 +3,7 @@ from tastypie.resources import ModelResource, Resource, Bundle
 from tastypie.exceptions import NotFound, BadRequest
 from tastypie.utils import trailing_slash
 from tastypie.authentication import BasicAuthentication
-from tastypie.authorization import DjangoAuthorization
+from tastypie.authorization import ReadOnlyAuthorization
 
 import staging.settings as staging_settings
 import staging.forms as staging_forms
@@ -48,7 +48,7 @@ class StagingFilesResource(Resource):
         object_class = StagingFileObject
         auv_create_allowed_methods = ['post']
         authentication = BasicAuthentication()
-        authorization = DjangoAuthorization()
+        authorization = ReadOnlyAuthorization()
 
     def detail_uri_kwargs(self, bundle_or_obj):
         kwargs = {}
@@ -86,26 +86,6 @@ class StagingFilesResource(Resource):
         #return reverse("api_auv_create", kwargs=kwargs)
         # the url of the form view (it can derive the api creation url)
         return reverse("api_auv_form", kwargs=kwargs)
-
-    def get_resource_uri(self, bundle_or_obj):
-        """Get the API address of this URI."""
-
-        # these are both needed...
-        kwargs = {'api_name': self._meta.api_name,
-            'resource_name': self._meta.resource_name,
-            }
-
-        # get the objects pk/lookup
-        if isinstance(bundle_or_obj, Bundle):
-            pk = bundle_or_obj.obj.pk
-        else:
-            pk = bundle_or_obj.pk
-
-        # add it in
-        kwargs['pk'] = pk
-
-        # and get the reverse url from django
-        return reverse("api_dispatch_detail", kwargs=kwargs)
 
     def obj_get(self, request=None, **kwargs):
         # get the system dir and list child folders
@@ -186,19 +166,19 @@ class StagingFilesResource(Resource):
         return children
 
 
-    def obj_get_list(self, request=None, **kwargs):
+    def obj_get_list(self, bundle, **kwargs):
         # this is where filtering normally happens...
-        if hasattr(request, 'GET'):
-            filters = request.GET.copy()
+        filters = {}
+        if hasattr(bundle.request, 'GET'):
+            filters = bundle.request.GET.copy()
 
         filters.update(kwargs)
 
-        # skip this?
         applicable_filters = self.build_filters(filters=filters)
 
         try:
-            base_object_list = self.apply_filters(request, applicable_filters)
-            return self.apply_authorization_limits(request, base_object_list)
+            objects = self.apply_filters(bundle.request, applicable_filters)
+            return self.authorized_read_list(objects, bundle)
         except ValueError:
             return BadRequest("Invalid resource lookup data provided (mismatched type).")
 
@@ -221,7 +201,7 @@ class StagingFilesResource(Resource):
         pass  # not relevant?
 
     # will become prepend_urls on upgrade to 0.9.12 (is deprecated at that point)
-    def override_urls(self):
+    def prepend_urls(self):
         return [url(r"^(?P<resource_name>%s)/create/(?P<pk>\w[\w/-]*)/auv%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('auv_create'), name="api_auv_create")]
 
     def auv_create(self, request, **kwargs):

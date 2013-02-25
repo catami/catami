@@ -32,8 +32,9 @@ def newbrowse(request):
     rcon = RequestContext(request)
 
     sf = StagingFilesResource()
+    sf_bundle = sf.build_bundle(request=request)
 
-    context['current_files'] = sf.obj_get_list(request)
+    context['current_files'] = sf.obj_get_list(sf_bundle)
 
     return render_to_response('staging/newbrowse.html', context, rcon)
 
