@@ -56,7 +56,6 @@ class StagingTests(TestCase):
         test_urls.append(reverse('staging_index'))
         test_urls.append(reverse('staging_campaign_create'))
         test_urls.append(reverse('staging_campaign_created'))
-        test_urls.append(reverse('staging_auv_progress'))
         test_urls.append(reverse('staging_file_import'))
         test_urls.append(reverse('staging_file_imported'))
         test_urls.append(reverse('staging_metadata_stage'))
