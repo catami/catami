@@ -62,18 +62,18 @@ def index(request):
 
     for image in random_images:
         try:
-            AUVDeployment.objects.get(id=image.deployment.id)
+            AUVDeployment.objects.get(id=image.pose.deployment.id)
         except:
             pass
         else:
-            image_link = {"deployment_url":reverse(auvdeployments)+str(image.deployment.id),"image":image}
+            image_link = {"deployment_url":reverse(auvdeployments)+str(image.pose.deployment.id),"image":image}
 
         try:
             TIDeployment.objects.get(id=image.deployment.id)
         except:
             pass
         else:
-            image_link = {"deployment_url":reverse(tideployments)+str(image.deployment.id),"image":image}
+            image_link = {"deployment_url":reverse(tideployments)+str(image.pose.deployment.id),"image":image}
 
         image_link_list.append(image_link)
 
