@@ -8,7 +8,7 @@ import tarfile
 import traceback
 from django.core import serializers
 import sys
-from Force.models import Image
+from catamidb.models import Image
 import logging
 import datetime
 from features import FeaturesErrors
@@ -142,7 +142,7 @@ class DeployJobTool():
         """ Queries the database for the image locaitons based on the pks"""
         for image in self.image_primary_keys:
             self.image_location.append(Image.objects.get(pk=image).
-                left_image_reference)
+                archive_location)
 
     def deploy_job(self, server=object, job_type='libfeature'):
         """writes the reuqired scripts for the job, pushes them to the jobserver

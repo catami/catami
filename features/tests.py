@@ -11,17 +11,72 @@ import tarfile
 
 from django.test import TestCase
 from mock import Mock
-from Force.models import Image
+from catamidb.models import Image
 from features import FeaturesErrors
 import features
 from features.RunScriptTool import RunScriptTool, DeployJobTool, ServerTool
 from dbadmintool.administratorbot import Robot
 import logging
 from model_mommy import mommy
-from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import Point, Polygon
 
 logger = logging.getLogger(__name__)
 
+def create_setup(self):
+    self.campaign_one = mommy.make_one('catamidb.Campaign', id=1)
+
+    self.deployment_one = mommy.make_one('catamidb.Deployment',
+            start_position=Point(12.4604, 43.9420),
+            end_position=Point(12.4604, 43.9420),
+            transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
+            id=1,
+            campaign=self.campaign_one
+        )
+    self.deployment_two = mommy.make_one('catamidb.Deployment',
+            start_position=Point(12.4604, 43.9420),
+            end_position=Point(12.4604, 43.9420),
+            transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
+            id=1,
+            campaign=self.campaign_one
+        )
+
+    self.pose_one = mommy.make_one('catamidb.Pose',
+            position=Point(12.4, 23.5),
+            id=1,
+            deployment=self.deployment_one
+        )
+    self.pose_two = mommy.make_one('catamidb.Pose',
+            position=Point(12.4, 23.5),
+            id=2,
+            deployment=self.deployment_two
+        )
+        
+    self.camera_one = mommy.make_one('catamidb.Camera',
+            deployment=self.deployment_one,
+            id=1,
+        )
+    self.camera_two = mommy.make_one('catamidb.Camera',
+            deployment=self.deployment_two,
+            id=1,
+        )
+
+    self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
+    self.mock_image_one = mommy.make_one('catamidb.Image', 
+            pose=self.pose_one,
+            camera=self.camera_one,
+            web_location=self.image_list[0],
+            pk=1
+        )
+    self.mock_image_two = mommy.make_one('catamidb.Image',
+            pose=self.pose_two,
+            camera=self.camera_two,
+            web_location=self.image_list[1],
+            pk=2
+        )
+
+    image_objects = Image.objects.all()
+    for image in image_objects:
+        self.djt.image_primary_keys.append(image.pk)
 
 class DeployJobTest(TestCase):
     """Tests for the DeployJobTool"""
@@ -35,25 +90,8 @@ class DeployJobTest(TestCase):
         # for bender.check_sum_file method
         self.bender = Robot()
 
-        self.deployment_one = mommy.make_one('Force.Deployment',
-            start_position=Point(12.4604, 43.9420), id=1)
-        self.deployment_two = mommy.make_one('Force.Deployment',
-            start_position=Point(12.4604, 43.9420), id=2)
+        create_setup(self)
 
-        self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
-        self.mock_image = mommy.make_one('Force.Image', deployment=self.
-            deployment_one, left_image_reference=self.image_list[0],
-            image_position=Point(12.4604, 43.9420), pk=1)
-        self.mock_image2 = mommy.make_one('Force.Image', deployment=self.
-            deployment_two, left_image_reference=self.image_list[1],
-            image_position=Point(12.4604, 43.9420), pk=2)
-
-        image_objects = Image.objects.all()
-
-        for image in image_objects:
-            self.djt.image_primary_keys.append(image.pk)
-            # self.djt.image_primary_keys =
-            # [self.mock_image.pk,self.mock_image2.pk]
 
     def test_write_json_file(self):
         """Check the json file writer works"""
@@ -259,23 +297,8 @@ class ServerToolTest(TestCase):
 
         self.test_file = '/tmp/CATAMI/features/Anon/tmp.txt'
 
-        self.deployment_one = mommy.make_one('Force.Deployment',
-            start_position=Point(12.4604, 43.9420), id=1)
-        self.deployment_two = mommy.make_one('Force.Deployment',
-            start_position=Point(12.4604, 43.9420), id=2)
+        create_setup(self)
 
-        self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
-        self.mock_image = mommy.make_one('Force.Image', deployment=self.
-            deployment_one, left_image_reference=self.image_list[0],
-            image_position=Point(12.4604, 43.9420), pk=1)
-        self.mock_image2 = mommy.make_one('Force.Image', deployment=self.
-            deployment_two, left_image_reference=self.image_list[1],
-            image_position=Point(12.4604, 43.9420), pk=2)
-
-        image_objects = Image.objects.all()
-
-        for image in image_objects:
-            self.djt.image_primary_keys.append(image.pk)
 
     def test_compress_files(self):
 

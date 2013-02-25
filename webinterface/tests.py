@@ -10,7 +10,7 @@ from django.test import TestCase
 from django.utils.datetime_safe import datetime
 from model_mommy import mommy
 from model_mommy.recipe import Recipe
-from Force.models import AUVDeployment
+from catamidb.models import AUVDeployment
 from waffle import Switch
 
 
@@ -25,12 +25,12 @@ class TestViews(TestCase):
         # self.flag_mommy = mommy.make_one('waffle.Flag', id=1, name='Collections', everyone=True)
 
         # this turns on waffle switched collection code for test
-        # we might like to load th waffle.json fixture instead, but it's sitting in Force/fixtures
+        # we might like to load th waffle.json fixture instead, but it's sitting in catamidb/fixtures
         Switch.objects.create(name='Collections', active=True)
 
         self.factory = RequestFactory()
         self.first_campaign_id = 1
-        self.campaign_01 = mommy.make_one('Force.Campaign', id=1)
+        self.campaign_01 = mommy.make_one('catamidb.Campaign', id=1)
         self.deployment1 = mommy.make_recipe('webinterface.auvdeployment1', id=1, campaign=self.campaign_01)
         self.deployment2 = mommy.make_recipe('webinterface.auvdeployment2', id=2, campaign=self.campaign_01)
 
@@ -38,10 +38,16 @@ class TestViews(TestCase):
 
         self.second_campaign_id = 2
         self.third_campaign_id = 3
-        self.campaign_02 = mommy.make_one('Force.Campaign', id=self.second_campaign_id)
-        self.campaign_03 = mommy.make_one('Force.Campaign', id=self.third_campaign_id)
+        self.campaign_02 = mommy.make_one('catamidb.Campaign', id=self.second_campaign_id)
+        self.campaign_03 = mommy.make_one('catamidb.Campaign', id=self.third_campaign_id)
 
-        self.dummy_dep = mommy.make_one('Force.Deployment', start_position=Point(12.4604, 43.9420), id=1, campaign=self.campaign_02)
+        self.dummy_dep = mommy.make_one('catamidb.Deployment',
+                start_position=Point(12.4604, 43.9420),
+                end_position=Point(12.4604, 43.9420),
+                transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
+                id=1,
+                campaign=self.campaign_02
+            )
 
         self.dummy_dep1 = mommy.make_recipe('webinterface.auvdeployment', id=3, campaign=self.campaign_02)
         self.dummy_dep2 = mommy.make_recipe('webinterface.bruvdeployment', id=4, campaign=self.campaign_02)
@@ -50,12 +56,12 @@ class TestViews(TestCase):
         self.dummy_dep5 = mommy.make_recipe('webinterface.tideployment', id=7, campaign=self.campaign_02)
 
         #setup some images and assign to deployment_one
-        self.image_list = list()
-        for i in xrange(0, 200):
-            #print i
-            self.image_list.append(mommy.make_one('Force.Image', deployment=self.dummy_dep1, image_position=Point(12.4604, 43.9420)))
+        #self.image_list = list()
+        #for i in xrange(0, 200):
+        #    #print i
+        #    self.image_list.append(mommy.make_one('catamidb.Image', deployment=self.dummy_dep1, image_position=Point(12.4604, 43.9420)))
 
-        self.test_collection = mommy.make_one('collection.collection', id=1, creation_info='Deployments: 1', images=self.image_list)
+        #self.test_collection = mommy.make_one('collection.collection', id=1, creation_info='Deployments: 1', images=self.image_list)
 
     def tearDown(self):
         '''Verify environment is tore down properly'''  # Printed if test fails

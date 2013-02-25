@@ -1,31 +1,73 @@
 import logging
 from django.contrib.auth.models import User
-from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import Point, Polygon
 from django.test.utils import setup_test_environment
 from django.test import TestCase
 from model_mommy import mommy
-from Force.models import Image
+from catamidb.models import Image
 from collection.models import CollectionManager, Collection
 
 logger = logging.getLogger(__name__)
 
+def create_setup(self):
+    self.campaign_one = mommy.make_one('catamidb.Campaign', id=1)
+
+    self.deployment_one = mommy.make_one('catamidb.Deployment',
+            start_position=Point(12.4604, 43.9420),
+            end_position=Point(12.4604, 43.9420),
+            transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
+            id=1,
+            campaign=self.campaign_one
+        )
+    self.deployment_two = mommy.make_one('catamidb.Deployment',
+            start_position=Point(12.4604, 43.9420),
+            end_position=Point(12.4604, 43.9420),
+            transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
+            id=2,
+            campaign=self.campaign_one
+        )
+
+    self.pose_one = mommy.make_one('catamidb.Pose',
+            position=Point(12.4, 23.5),
+            id=1,
+            deployment=self.deployment_one
+        )
+    self.pose_two = mommy.make_one('catamidb.Pose',
+            position=Point(12.4, 23.5),
+            id=2,
+            deployment=self.deployment_two
+        )
+        
+    self.camera_one = mommy.make_one('catamidb.Camera',
+            deployment=self.deployment_one,
+            id=1,
+        )
+    self.camera_two = mommy.make_one('catamidb.Camera',
+            deployment=self.deployment_two,
+            id=2,
+        )
+
+    self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
+    self.mock_image_one = mommy.make_one('catamidb.Image', 
+            pose=self.pose_one,
+            camera=self.camera_one,
+            web_location=self.image_list[0],
+            pk=1
+        )
+    self.mock_image_two = mommy.make_one('catamidb.Image',
+            pose=self.pose_two,
+            camera=self.camera_two,
+            web_location=self.image_list[1],
+            pk=2
+        )
+
 class TestCollectionModel(TestCase):
 
     def setUp(self):
-        self.deployment_one = mommy.make_one('Force.Deployment', start_position=Point(12.4604, 43.9420), id=1)
-        self.deployment_two = mommy.make_one('Force.Deployment', start_position=Point(12.4604, 43.9420), id=2)
+        create_setup(self)
         self.user = User.objects.create_user("Joe")
-        self.collection_name = "Collection Named"
+        self.collection_name = "Joe's Collection"
         self.collection_manager = CollectionManager()
-        self.image_list = []
-
-        #setup some images and assign to deployment_one
-        for i in xrange(0, 1):
-            self.image_list.append(mommy.make_one('Force.Image', deployment=self.deployment_one, image_position=Point(12.4604, 43.9420)))
-
-        #setup some images and assign to deployment_two
-        for i in xrange(0, 1):
-            self.image_list.append(mommy.make_one('Force.Image', deployment=self.deployment_two, image_position=Point(12.4604, 43.9420)))
 
     def test_collection_from_deployment(self):
         #create a collection
@@ -42,12 +84,12 @@ class TestCollectionModel(TestCase):
 
         #check the images went across - IMPORTANT!
         #get images for the deployment and the collection
-        collection_images = collection.images.all().order_by("webimage_location")
-        deployment_images = Image.objects.filter(deployment=self.deployment_one).order_by("webimage_location")
+        collection_images = collection.images.all().order_by("web_location")
+        deployment_images = Image.objects.filter(pose__deployment=self.deployment_one).order_by("web_location")
 
         #check the image set is the same
-        self.assertEqual(collection_images.values_list("webimage_location").__str__(),
-                         deployment_images.values_list("webimage_location").__str__())
+        self.assertEqual(collection_images.values_list("web_location").__str__(),
+                         deployment_images.values_list("web_location").__str__())
 
         #try create with no user, should be an error
         try:
@@ -79,9 +121,9 @@ class TestCollectionModel(TestCase):
 
         #check the images went across - IMPORTANT!
         #get images for the deployment and the collection
-        collection_images = collection.images.all().order_by("webimage_location")
-        deployment_one_images = Image.objects.filter(deployment=self.deployment_one).order_by("webimage_location")
-        deployment_two_images = Image.objects.filter(deployment=self.deployment_two).order_by("webimage_location")
+        collection_images = collection.images.all().order_by("web_location")
+        deployment_one_images = Image.objects.filter(pose__deployment=self.deployment_one).order_by("web_location")
+        deployment_two_images = Image.objects.filter(pose__deployment=self.deployment_two).order_by("web_location")
 
         #check that combined lengths of the deployment images is the same as the collection
         self.assertEqual(collection_images.count(), deployment_one_images.count()+deployment_two_images.count())
@@ -120,21 +162,10 @@ class TestCollectionModel(TestCase):
 class TestCollectionAPI(TestCase):
 
     def set_up(self):
-        self.campaign_one = mommy.make_one("Force.Campaign")
-        self.campaign_two = mommy.make_one("Force.Campaign")
-        self.deployment_one = mommy.make_one('Force.Deployment', start_position=Point(12.4604, 43.9420), id=1)
-        self.deployment_two = mommy.make_one('Force.Deployment', start_position=Point(12.4604, 43.9420), id=2)
+        create_setup(self)
         self.collection_one = mommy.make_one("collections.Collection")
         self.user = User.objects.create_user("Joe")
         self.collection_manager = CollectionManager()
-
-        #setup some images and assign to deployment_one
-        for i in xrange(0, 1):
-            mommy.make_one('Force.Image', deployment=self.deployment_one, image_position=Point(12.4604, 43.9420))
-
-        #setup some images and assign to deployment_two
-        for i in xrange(0, 1):
-            mommy.make_one('Force.Image', deployment=self.deployment_two, image_position=Point(12.4604, 43.9420))
 
     def test_get_all_camapaigns(self):
         api_url = "/api/dev/campaign/?format=json&campaign="
