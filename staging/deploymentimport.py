@@ -70,7 +70,43 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
     image = cv2.imread(image_path)
 
     # save the web version
-    #image.MAXBLOCK = (max(image.size)+8)**2
+    # if we are wanting lowres web version... scale it down
+    if staging_settings.STAGING_LOWRES_WEB_IMAGES:
+        # calculate the nominal new size of the image to fit within 96x72px
+        # (this size chosen due to 4:3 ratio, and multiples of 8)
+
+        # target size
+        target_width = 96
+        target_height = 72
+
+        # get original image parameters
+        height, width, channels = image.shape
+
+        # calculating scaling factor
+        scale_width = target_width / width
+        scale_height = target_height / height
+
+        # determine which scaling factor we want to use as we are aiming for
+        # a max size take the smaller factor and use it
+        if scale_width < scale_height:
+            scale = scale_width
+        else:
+            scale = scale_height
+
+        # scale them
+        out_width = width * scale
+        out_height = height * scale
+
+        outsize = (out_height, out_width)
+
+        # use INTER_AREA to see better shrunk results
+        # use INTER_CUBIC, INTER_LINEAR for better enlargement
+        if scale < 1.0:
+            image = cv2.resize(image, outsize, interpolation=INTER_AREA)
+        else:
+            image = cv2.resize(image, outsize, interpolation=INTER_LINEAR)
+    
+    # save the web version (full size or shrunk)
     cv2.imwrite(webimage_path, image)
 
     # copy/move to archive
