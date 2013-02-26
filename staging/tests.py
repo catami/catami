@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 
 from django.forms import FloatField, TextInput, SplitDateTimeField
 
-from .auvimport import LimitTracker
+from .auvimport import LimitTracker, NetCDFParser, TrackParser
 from . import tasks
 from . import widgets
 from .annotations import CPCFileParser
@@ -66,8 +66,6 @@ class StagingTests(TestCase):
         test_urls.append(reverse('staging_metadata_sheet', args=['0', 'name']))
         test_urls.append(reverse('staging_metadata_import', args=['0', 'name', 'model']))
         test_urls.append(reverse('staging_metadata_imported'))
-        #test_urls.append(reverse('staging_annotation_cpc_import'))
-        #test_urls.append(reverse('staging_annotation_cpc_imported'))
 
         # actually test each url
         for test_url in test_urls:
@@ -208,6 +206,25 @@ class AUVImportTools(TestCase):
 
         self.assertEqual(direct_track.minimum, -10.0)
         self.assertEqual(direct_track.maximum, 10.0)
+
+    def test_netcdf_parser(self):
+        """Test NetCDFParser used in auvimports."""
+        netcdf_file = open('staging/fixtures/IMOS_AUV_ST_20090611T063544Z_SIRIUS_FV00.nc', 'r')
+
+        # test that opening works and that we can get a value
+        netcdf_parser = NetCDFParser(netcdf_file)
+        val = netcdf_parser.next()
+
+    def test_track_parser(self):
+        """Test TrackParser used in auvimports."""
+        track_file = open('staging/fixtures/freycinet_mpa_03_reef_south_latlong.csv', 'r')
+
+        # test that opening works and we can get a value
+        track_parser = TrackParser(track_file)
+        val = track_parser.next()
+
+        self.assertTrue("year" in val)
+
 
     def test_cpc_importer(self):
         """Test CPCFileParser used in annotation import."""
