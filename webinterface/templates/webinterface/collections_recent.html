@@ -71,7 +71,7 @@
         </div>
     </div>
     <div class="span6">
-        <div class="well"><p>Preview: <span id="preview-name"> none selected</span></p></div>
+        <div class="well"><p>Preview (TODO: CSS): <span id="preview-name"> none selected</span></p></div>
         {% include "webinterface/dataviews/mapview.html"%}
     </div>
 </div>
@@ -85,9 +85,14 @@
 
     <script type="text/javascript">
 
-    // Instantiate collection list and filter object
-    cl = new CollectionList('collectionSelectAction'); // TODO: make this an anonymous functions instead of a string
-    filt = new ApiFilters(function(){ // Define filt.update() function
+    // Instantiate collection list object
+    cl = new CollectionList({preview_fnc : 'collectionSelectAction'}); // TODO: make this an anonymous functions instead of a string
+
+    // Collection info object
+    clinfo = new CollectionInfo();
+
+    // Instantiate filter object
+    filt = new ApiFilter(function(){                           // Define filt.update() function
         cl.getFullCollectionList(filt.get(), "#collections");   // Get nested collections and workset list
         cl.collapseList();                                      // Collapse the list
         $('.cldescription').shorten({showChars : 80});          // Shorten descriptions for nicer display
@@ -104,7 +109,8 @@
 
     function collectionSelectAction(id) {
         updateMapForSelectedCollection(id);
-        $('#preview-name').html('Collection ID: '+id);
+        clinfo.getCollectionInfo(id,'#preview-name');
+        //$('#preview-name').html('Collection ID: '+id);
     }
 
     </script>
