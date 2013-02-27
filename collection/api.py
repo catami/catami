@@ -16,6 +16,8 @@ class CollectionResource(ModelResource):
         resource_name = "collection"
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), Authentication())
         authorization = CollectionAuthorization()
+        detail_allowed_methods = ['get', 'delete', 'put']
+        list_allowed_methods = ['get']
         filtering = {
             'is_public': 'exact',
             'owner': 'exact',
