@@ -108,4 +108,3 @@ class ApiDeploymentForm(forms.Form):
     campaign = forms.ModelChoiceField(queryset=Campaign.objects.all())
     license = forms.CharField(max_length=500)
     descriptive_keywords = forms.CharField(max_length=500)
-

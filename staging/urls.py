@@ -5,7 +5,6 @@ __author__ = 'Lachlan Toohey'
 from django.conf.urls import patterns, url
 #from django.contrib.auth.models import User
 
-
 urlpatterns = patterns('staging.views',
     url(r'^$', 'index', name='staging_index'),
     #url(r'^accounts/'+str(User.get), '---', name='user_url'),

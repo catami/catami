@@ -19,6 +19,7 @@ import staging.settings as staging_settings
 
 logger = logging.getLogger(__name__)
 
+
 class CSVParser(csv.DictReader):
     """A class to parse CSV row by row (with a heading row)."""
 
@@ -33,6 +34,7 @@ class CSVParser(csv.DictReader):
         file_handle.seek(0)
 
         csv.DictReader.__init__(self, file_handle, dialect=dialect)
+
 
 def image_import(campaign_name, deployment_name, image_name, image_path):
     """Create the web versions of the given images and return their path.
@@ -105,7 +107,7 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
             image = cv2.resize(image, outsize, interpolation=INTER_AREA)
         else:
             image = cv2.resize(image, outsize, interpolation=INTER_LINEAR)
-    
+
     # save the web version (full size or shrunk)
     cv2.imwrite(webimage_path, image)
 
@@ -199,7 +201,7 @@ def deployment_import(deployment, path):
 
         # we need to slugify all the keys first however...
         im_att = {}
-        for k,v in image_attributes.iteritems():
+        for k, v in image_attributes.iteritems():
             im_att[slugify(k)] = v
 
         # get the name of the file
@@ -278,13 +280,13 @@ def deployment_import(deployment, path):
 
     # our work is now done!
 
-
 def deployment_habitat_import(deployment, habitat_file_name):
     """Import habitat information from a csv knowing the source deployment.
 
     Expected headers are ImageName, and HabitatCode.
     """
     pass
+
 
 def deployment_annotation_import(deployment, annotation_file_name):
     """Import Point Labels (annotations) from a csv knowing source deployment.

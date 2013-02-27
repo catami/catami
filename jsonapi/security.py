@@ -4,12 +4,14 @@ from tastypie.exceptions import Unauthorized
 
 from django.db.models import Q
 
+
 class CollectionAuthorization(Authorization):
     """Implements authorization for collections.
 
     Restricts access to reading, deleting and updating of details,
     and to only reading of lists.
     """
+
     def read_list(self, object_list, bundle):
         """Restrict the list to only show public/user owned collections."""
         request = bundle.request
@@ -29,7 +31,7 @@ class CollectionAuthorization(Authorization):
         #TODO: extend to check for dependant collections and annotation sets
         # basically anything that looks at this and expects it to exist
         # for now just prevent deletion
-        if False: #bundle.obj.owner == bundle.request.user:
+        if False:  # bundle.obj.owner == bundle.request.user:
             return True
         else:
             raise Unauthorized("You do not have permission to see this collection.")

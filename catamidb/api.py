@@ -12,6 +12,7 @@ class CampaignResource(ModelResource):
 
 class DeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
+
     class Meta:
         queryset = Deployment.objects.all()
         resource_name = "deployment"
@@ -24,6 +25,7 @@ class PoseResource(ModelResource):
     deployment = fields.ForeignKey(DeploymentResource, 'deployment')
     images = fields.ToManyField('catamidb.api.ImageResource', 'image_set', full=True)
     measurements = fields.ToManyField('catamidb.api.ScientificPoseMeasurementResource', 'scientificposemeasurement_set', full=True)
+
     class Meta:
         queryset = Pose.objects.all()
         resource_name = "pose"
@@ -60,10 +62,12 @@ class PoseResource(ModelResource):
 
         return outlist
 
+
 class ImageResource(ModelResource):
     pose = fields.ForeignKey(PoseResource, 'pose')
     measurements = fields.ToManyField('catamidb.api.ScientificImageMeasurementResource', 'scientificimagemeasurement_set')
     collection = fields.ToManyField('collection.api.CollectionResource', 'collections')
+
     class Meta:
         queryset = Image.objects.all()
         resource_name = "image"
@@ -97,6 +101,7 @@ class ScientificMeasurementTypeResource(ModelResource):
 class ScientificPoseMeasurementResource(ModelResource):
     pose = fields.ToOneField('catamidb.api.PoseResource', 'pose')
     mtype = fields.ToOneField('catamidb.api.ScientificMeasurementTypeResource', "measurement_type", full=True)
+
     class Meta:
         queryset = ScientificPoseMeasurement.objects.all()
         resource_name = "scientificposemeasurement"
@@ -107,6 +112,7 @@ class ScientificPoseMeasurementResource(ModelResource):
 
 class ScientificImageMeasurementResource(ModelResource):
     image = fields.ToOneField('catamidb.models.ImageResource', 'image')
+
     class Meta:
         queryset = ScientificImageMeasurement.objects.all()
         resource_name = "scientificimagemeasurement"

@@ -18,10 +18,10 @@ from dateutil import parser
 from django.test import TestCase
 from django.contrib.gis.geos import Point
 
+
 # The following is the class in which all functions will be ran by unittest
 class TestViews(TestCase):
     ''' Main class for add testing; Can be added to a suite'''
-
 
     #fixtures = ['force_data.json', ]
 
@@ -33,18 +33,15 @@ class TestViews(TestCase):
         # some dummy data from mommy
         self.factory = RequestFactory()
 
-
     # The function "tearDown" will always be ran in order to cleanup the
     # test environment after all the tests have run.
     def tearDown(self):
         '''Verify environment is tore down properly'''  # Printed if test fails
         pass
-
     #==================================================#
     # Add unittests here
     #==================================================#
-    
-        
+
     def test_checkdb(self):
         """Check that the checkdb command checks the database
 
@@ -55,7 +52,7 @@ class TestViews(TestCase):
         management.call_command('checkdb', stderr=content, interactive=False)
         content.seek(0)
         data = content.read()
-        self.assertTrue(data,'Detected 0 errors in 0 models')
+        self.assertTrue(data, 'Detected 0 errors in 0 models')
 
 if __name__ == '__main__':
     unittest.main()

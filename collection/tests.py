@@ -9,6 +9,7 @@ from collection.models import CollectionManager, Collection
 
 logger = logging.getLogger(__name__)
 
+
 def create_setup(self):
     self.campaign_one = mommy.make_one('catamidb.Campaign', id=1)
 
@@ -37,7 +38,7 @@ def create_setup(self):
             id=2,
             deployment=self.deployment_two
         )
-        
+
     self.camera_one = mommy.make_one('catamidb.Camera',
             deployment=self.deployment_one,
             id=1,
@@ -48,7 +49,7 @@ def create_setup(self):
         )
 
     self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
-    self.mock_image_one = mommy.make_one('catamidb.Image', 
+    self.mock_image_one = mommy.make_one('catamidb.Image',
             pose=self.pose_one,
             camera=self.camera_one,
             web_location=self.image_list[0],
@@ -60,6 +61,7 @@ def create_setup(self):
             web_location=self.image_list[1],
             pk=2
         )
+
 
 class TestCollectionModel(TestCase):
 
@@ -126,7 +128,7 @@ class TestCollectionModel(TestCase):
         deployment_two_images = Image.objects.filter(pose__deployment=self.deployment_two).order_by("web_location")
 
         #check that combined lengths of the deployment images is the same as the collection
-        self.assertEqual(collection_images.count(), deployment_one_images.count()+deployment_two_images.count())
+        self.assertEqual(collection_images.count(), deployment_one_images.count() + deployment_two_images.count())
 
         #check that the collection contains all the images from both deployments
         for image in deployment_one_images:
@@ -158,6 +160,7 @@ class TestCollectionModel(TestCase):
             self.collection_manager.collection_from_deployments_with_name(self.user, self.collection_name, deployment_ids.__str__())
         except Exception:
             self.assertTrue(True)
+
 
 class TestCollectionAPI(TestCase):
 

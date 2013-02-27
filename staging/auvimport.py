@@ -26,6 +26,7 @@ from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
+
 class LimitTracker:
     """A class to easily track limits of a value/field.
 
@@ -256,7 +257,7 @@ def auvdeployment_import(auvdeployment, files):
     start and end positions, min and max depths and mission aim. Additionally the
     region column, and other AUV specific fields are filled.
     """
-    
+
     print "Entered!"
     logger.debug("Entering auvdeployment import")
 
@@ -335,7 +336,7 @@ def auvdeployment_import(auvdeployment, files):
 
         if pose.depth > auvdeployment.max_depth:
             auvdeployment.max_depth = pose.depth
-        
+
         if pose.depth < auvdeployment.min_depth:
             auvdeployment.min_depth = pose.depth
 

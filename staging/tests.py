@@ -26,6 +26,7 @@ from catamidb.models import Campaign
 import datetime
 from dateutil.tz import tzutc
 
+
 def setup_login(self):
     # create a testing user
     self.username = 'testing'
@@ -82,7 +83,6 @@ class StagingTests(TestCase):
         response = self.client.get('logout/')
         #self.assertRedirects(response, '/')
 
-
     def test_views_get(self):
         """Test getting the views (after login)."""
         # login, don't check carefully the other test does that
@@ -137,7 +137,7 @@ class StagingTests(TestCase):
         post = dict()
         post["is_public"] = "on"
         post["description"] = "IMOS Survey"
-        post["metadata_file"] = open('staging/fixtures/bruv_metadata.xls','r')
+        post["metadata_file"] = open('staging/fixtures/bruv_metadata.xls', 'r')
 
         # this works, redirects to created
         response = self.client.post(metadata_staging, post)
@@ -225,7 +225,6 @@ class AUVImportTools(TestCase):
 
         self.assertTrue("year" in val)
 
-
     def test_cpc_importer(self):
         """Test CPCFileParser used in annotation import."""
         cpc_file = open('staging/fixtures/cpctest.cpc')
@@ -281,6 +280,7 @@ class MetadataImport(TestCase):
         self.assertIsNotNone(tasks.metadata_transform(self.xlsx_file_name, self.xlsx_sheet_names[0]))
 
         self.assertIsNone(tasks.metadata_transform(self.invalid_file_name, ""))
+
 
 class WidgetTest(TestCase):
     """Tests the multi-value widgets that were created."""
@@ -482,4 +482,3 @@ class WidgetTest(TestCase):
         field = widgets.MultiSourceField(base_field=base_field, columns=choices)
         widget = field.widget
         widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], ""]), {'id': 'name'})
-

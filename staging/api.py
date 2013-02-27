@@ -17,6 +17,7 @@ from django.conf.urls import url
 import os
 import os.path
 
+
 class StagingFileObject(object):
     def __init__(self, initial=None):
         self.__dict__['_data'] = {}
@@ -104,7 +105,7 @@ class StagingFilesResource(Resource):
         data = {}
         data['path'] = path
         data['pk'] = path.encode('hex')
-        data['parent'] = parent['pk'] # the straight key is more useful   parent_obj
+        data['parent'] = parent['pk']  # the straight key is more useful   parent_obj
         data['name'] = os.path.basename(path)
         data['is_dir'] = os.path.isdir(system_dir)
         obj = StagingFileObject(initial=data)
@@ -165,7 +166,6 @@ class StagingFilesResource(Resource):
 
         return children
 
-
     def obj_get_list(self, bundle, **kwargs):
         # this is where filtering normally happens...
         filters = {}
@@ -190,13 +190,21 @@ class StagingFilesResource(Resource):
         return bundle
 
     def obj_create(self, bundle, request=None, **kwargs):
-        pass # not relevant?
+        pass
+
+  # not relevant?
     def obj_update(self, bundle, request=None, **kwargs):
-        pass  # not relevant?
+        pass
+
+  # not relevant?
     def obj_delete_list(self, request=None, **kwargs):
-        pass  # not relevant?
+        pass
+
+  # not relevant?
     def obj_delete(self, request=None, **kwargs):
-        pass  # not relevant?
+        pass
+
+  # not relevant?
     def rollback(self, bundles):
         pass  # not relevant?
 
@@ -225,12 +233,11 @@ class StagingFilesResource(Resource):
             created_deployment.campaign = data['campaign']
             created_deployment.license = data['license']
             created_deployment.descriptive_leywords = data['descriptive_keywords']
-            
+
             print "passing to function to process"
             # now pass to the parsing function
             AUVImporter.import_path(created_deployment, path)
             print "Exiting!"
-
 
             # then return the new deployment
             return self.create_response(request, created_deployment)

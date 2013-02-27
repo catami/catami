@@ -23,8 +23,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
 from .api import StagingFilesResource
+
 
 @login_required
 def newbrowse(request):
@@ -38,6 +38,7 @@ def newbrowse(request):
 
     return render_to_response('staging/newbrowse.html', context, rcon)
 
+
 def api_auv_form(request, pk):
     context = {}
     rcon = RequestContext(request)
@@ -47,8 +48,8 @@ def api_auv_form(request, pk):
     context['resource_name'] = 'stagingfiles'
     context['api_name'] = 'dev'
 
-
     return render_to_response('staging/api_deployment_create.html', context, rcon)
+
 
 @login_required
 def index(request):

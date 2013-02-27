@@ -25,6 +25,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def json_sload(json_string):
     """Load the json string into the database."""
     # now load into the database

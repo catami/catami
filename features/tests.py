@@ -22,6 +22,7 @@ from django.contrib.gis.geos import Point, Polygon
 
 logger = logging.getLogger(__name__)
 
+
 def create_setup(self):
     self.campaign_one = mommy.make_one('catamidb.Campaign', id=1)
 
@@ -50,7 +51,7 @@ def create_setup(self):
             id=2,
             deployment=self.deployment_two
         )
-        
+
     self.camera_one = mommy.make_one('catamidb.Camera',
             deployment=self.deployment_one,
             id=1,
@@ -61,7 +62,7 @@ def create_setup(self):
         )
 
     self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
-    self.mock_image_one = mommy.make_one('catamidb.Image', 
+    self.mock_image_one = mommy.make_one('catamidb.Image',
             pose=self.pose_one,
             camera=self.camera_one,
             web_location=self.image_list[0],
@@ -78,6 +79,7 @@ def create_setup(self):
     for image in image_objects:
         self.djt.image_primary_keys.append(image.pk)
 
+
 class DeployJobTest(TestCase):
     """Tests for the DeployJobTool"""
 
@@ -91,7 +93,6 @@ class DeployJobTest(TestCase):
         self.bender = Robot()
 
         create_setup(self)
-
 
     def test_write_json_file(self):
         """Check the json file writer works"""
@@ -298,7 +299,6 @@ class ServerToolTest(TestCase):
         self.test_file = '/tmp/CATAMI/features/Anon/tmp.txt'
 
         create_setup(self)
-
 
     def test_compress_files(self):
 

@@ -2,6 +2,7 @@ import staging.settings as staging_settings
 import os
 import os.path
 
+
 def staging_breadcrumbs(path, base=staging_settings.STAGING_IMPORT_DIR):
     """Returns the intermediate paths above this one as elements of a tuple."""
     crumbs = [("", "Root")]
@@ -16,6 +17,7 @@ def staging_breadcrumbs(path, base=staging_settings.STAGING_IMPORT_DIR):
             else:
                 raise Exception("Directory not valid.")
     return crumbs
+
 
 def staging_browse(path, base=staging_settings.STAGING_IMPORT_DIR):
     """Return all the subdirectories and files in path.
@@ -40,4 +42,3 @@ def staging_browse(path, base=staging_settings.STAGING_IMPORT_DIR):
             pass
 
     return directories, files
-
