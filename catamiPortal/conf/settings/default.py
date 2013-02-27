@@ -20,9 +20,6 @@ NOSE_ARGS = [
             #    '--coverage-exclude=../*migrations*'
             ]
 
-# The root directory for staging/local storage.
-STAGING_ROOT_DIR = '/media/catami/'
-
 WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
 WMS_LAYER_NAME = "catami:catamidb_image"
 WMS_COLLECTION_LAYER_NAME = "catami:collection_images"
@@ -70,6 +67,10 @@ USE_TZ = True
 # dont have slashes at either end, they are automatically added
 IMAGES_URL = 'images'
 IMAGES_ROOT = '/media/catami_live/importedimages'
+
+THUMBNAILS_SOURCE_ROOT = IMAGES_ROOT
+THUMBNAILS_STORAGE_PATH = '/{0}/'.format(IMAGES_URL)
+THUMBNAILS_RESPONSE_BACKEND = 'restthumbnails.responses.apache.sendfile'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
