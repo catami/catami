@@ -27,7 +27,7 @@ class CollectionAuthorization(Authorization):
 
     def read_list(self, object_list, bundle):
         request = bundle.request
-        if hasattr(request, 'user'):
+        if hasattr(request, 'user') and request.user.is_authenticated():
             return object_list.filter(Q(owner=request.user) | Q(is_public=True))
         else:
             return object_list.filter(is_public=True)

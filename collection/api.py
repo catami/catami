@@ -2,8 +2,7 @@ from tastypie import fields
 from tastypie.resources import ModelResource
 from .models import Collection
 
-from tastypie.authentication import BasicAuthentication, SessionAuthentication, MultiAuthentication, ApiKeyAuthentication
-from tastypie.authentication import BasicAuthentication
+from tastypie.authentication import Authentication, SessionAuthentication, MultiAuthentication, ApiKeyAuthentication
 
 from jsonapi.security import CollectionAuthorization
 from jsonapi.api import UserResource
@@ -15,7 +14,7 @@ class CollectionResource(ModelResource):
     class Meta:
         queryset = Collection.objects.all()
         resource_name = "collection"
-        authentication = MultiAuthentication(BasicAuthentication(), SessionAuthentication(), ApiKeyAuthentication())
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), Authentication())
         authorization = CollectionAuthorization()
         filtering = {
             'is_public': 'exact',
