@@ -69,6 +69,7 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
             raise Exception("Could not create thumbnail location, full path: {0}".format(webimage_path))
 
     # now actually move/convert the images
+    logger.debug("Trying to read image file: " + image_path)
     image = cv2.imread(image_path)
 
     # save the web version
@@ -85,8 +86,8 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
         height, width, channels = image.shape
 
         # calculating scaling factor
-        scale_width = target_width / width
-        scale_height = target_height / height
+        scale_width = float(target_width) / float(width)
+        scale_height = float(target_height) / float(height)
 
         # determine which scaling factor we want to use as we are aiming for
         # a max size take the smaller factor and use it
@@ -99,14 +100,15 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
         out_width = width * scale
         out_height = height * scale
 
-        outsize = (out_height, out_width)
+        #outsize = (out_height, out_width)
+        outsize = (target_width, target_height)
 
         # use INTER_AREA to see better shrunk results
         # use INTER_CUBIC, INTER_LINEAR for better enlargement
         if scale < 1.0:
-            image = cv2.resize(image, outsize, interpolation=INTER_AREA)
+            image = cv2.resize(image, outsize, interpolation=cv2.INTER_AREA)
         else:
-            image = cv2.resize(image, outsize, interpolation=INTER_LINEAR)
+            image = cv2.resize(image, outsize, interpolation=cv2.INTER_LINEAR)
 
     # save the web version (full size or shrunk)
     cv2.imwrite(webimage_path, image)

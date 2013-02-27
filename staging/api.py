@@ -13,6 +13,9 @@ from catamidb.models import AUVDeployment, Deployment
 
 from django.core.urlresolvers import reverse
 from django.conf.urls import url
+import logging
+
+logger = logging.getLogger(__name__)
 
 import os
 import os.path
@@ -236,7 +239,11 @@ class StagingFilesResource(Resource):
 
             print "passing to function to process"
             # now pass to the parsing function
-            AUVImporter.import_path(created_deployment, path)
+            try:
+                AUVImporter.import_path(created_deployment, path)
+            except Exception:
+                logger.exception("Unable to import deployment.")
+
             print "Exiting!"
 
             # then return the new deployment
