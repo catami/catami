@@ -47,7 +47,7 @@ Template-specific HTML
             </div>
         </div>
         <a class="btn btn-primary" style="width: 80%;" href="#_" id="btnSelectWorkset"><i class="icon-th-list"></i> Select Workset</a>
-        <a class="btn btn-primary" style="width: 80%;" onclick="openNewWorksetModalWindow();"><i class="icon-plus-sign icon-white"></i> Create new Workset</a>
+        <a class="btn btn-primary" style="width: 80%;" href="#NewWorksetModal" onclick="openNewWorksetModalWindow();"><i class="icon-plus-sign icon-white"></i> Create new Workset</a>
     <!--
     </div>
     -->
@@ -201,6 +201,7 @@ Template-specific javascript functions
         $('#clearWorksetLink').attr('onClick','clearWorkset('+cl_id+');');
     }
 
+    /*
     function selectWorkset(id) {
         getNewImageList('collection='+id);
         //alert('Wokset has been selected. ID: '+id);
@@ -214,6 +215,7 @@ Template-specific javascript functions
         $('#showWorksetMapLink').attr('onClick','updateMapForSelectedCollection('+id+');');
         $('#showWorksetMapLink').html('map');
     }
+    */
 
     function clearWorkset(reset_cl_id) {
         getNewImageList('collection='+reset_cl_id);

@@ -59,13 +59,22 @@ function ApiFilter(updatefnc) {
     this.get = function() {
         var filter = 'format=json';
 
+        // Extract values from radio button elements
         $('.api-filter input:radio:checked').each(function(i, obj) {
-            if (obj.value != '') {
+            if ($(obj).val() != '') {
                 filter += '&'+$(obj).attr('name')+'='+$(obj).val();
                 //alert($(obj).parent().text());
                 $(obj).closest(".api-filter").find('.api-filt-text').html($(obj).parent().text());
             }
         });
+
+        // Extract values from hidden elements
+        $('.api-filter input[type=hidden]').each(function(i, obj) {
+            if ($(obj).val() != '') {
+                filter += '&'+$(obj).attr('name')+'='+$(obj).val();
+            }
+        });
+
         return filter;
     }
 }

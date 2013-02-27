@@ -16,10 +16,16 @@ var collection_global_config = {
 function CollectionList(settings) {
 
     // Set default config params
-    var config = jQuery.extend({},collection_global_config);
+    var config = jQuery.extend({},collection_global_config); // clone copy of config
     if (settings) $.extend(config, settings);  // replace defaults with input arguments
 
-
+    var clactions = {
+        name    : 'Jump to',
+        items   : new Array(
+                    {name:'Map View', link:'#_', js:'some_func1'},
+                    {name:'Thumbnail view', link:'#_', js:'some_func2'}
+                )
+    }
 
     /* Public methods
      ******************************************************************************************************************/
@@ -143,7 +149,8 @@ function CollectionList(settings) {
         var actionclass = 'btn '; // btn-small
         var infoclass = 'btn btn-mini disabled ';
 
-        if ( !parent_id ) { // This item is a parent Collection
+
+        if ( clobj.parent == null ) { // This item is a parent Collection
             link = config.linkurl+clobj.id+'/';
             actions += '<li class="nav-header">Jump to:</li><li><a href="'+link+'#map" title="View Workset map"><i class="icon-globe"></i> Map view</a></li>';
             actions += '<li><a href="'+link+'#thm" title="View Workset images"><i class="icon-picture"></i> Thumbnail view</a></li>';
@@ -190,7 +197,7 @@ function CollectionList(settings) {
         listitem += '</span></span>';
         listitem += '<span class="clname list-toggle" >'+itemtype+': ' + clobj.name + ' ('+clobj.creation_info+')</span> ';
         //listitem += '<span class="cldate">'+clobj.creation_date.substr(0,10)+'</span> ';
-        if (clobj.description) listitem += '<span class="cldescription"><br>'+clobj.description+'</span>'
+        if (clobj.description) listitem += '<span class="cldescription">'+clobj.description+'</span>'
         listitem += sublist;
         listitem += '</li>';
 
@@ -202,9 +209,10 @@ function CollectionList(settings) {
 
 function CollectionInfo(settings) {
     // Set default config params
-    var config = jQuery.extend({},collection_global_config);
+    var config = jQuery.extend({},collection_global_config);  // clone copy of config
     if (settings) $.extend(config, settings);  // replace defaults with input arguments
 
+    var infoclass = 'btn btn-mini disabled ';
 
 
     this.getCollectionInfo = function(id,outputelement) {
@@ -223,11 +231,21 @@ function CollectionInfo(settings) {
                 if (config.preview_fnc) clinfo += '<button class="btn" onclick="'+config.select_fnc+'('+clobj.id+');" rel="btn-tooltip" title="Preview"><i class="icon-eye-open"></i></button>';
                 if (config.select_fnc) clinfo += '<button class="btn" onclick="'+config.preview_fnc+'('+clobj.id+');" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></button>';
                 clinfo += '</span> ';
-                clinfo += '<span class="clname">' + clobj.name + ' ('+clobj.creation_info+')</span> ';
-                clinfo += '<span class="cldate">'+(clobj.creation_date)+'</span> ';
-                clinfo += '<span class="clowner">'+clobj.owner.username+'</span> ';
-                clinfo += '<span class="claccess">'+(clobj.is_public ? 'Public': 'Private') +'</span> ';
-                if (clobj.description) clinfo += '<span class="cldescription">'+clobj.description+'</span>'
+
+                clinfo += '<span class="clinfo btn-group  btn-group-vertical pull-right">';
+                if (clobj.is_public) {
+                    clinfo += '<span class="claccess '+infoclass+' btn-danger" rel="btn-tooltip" title="This item is publicly accessible">Public</span> ';
+                } else {
+                    clinfo += '<span class="claccess '+infoclass+' btn-success" rel="btn-tooltip" title="This item is private">Private</span> ';
+                }
+                clinfo += '<span class="clowner '+infoclass+'" rel="btn-tooltip" title="This item is owned by '+clobj.owner.username+'">'+clobj.owner.username+'</span> ';
+                clinfo += '<span class="cldate '+infoclass+'" rel="btn-tooltip" title="This item was created on '+clobj.creation_date+'">'+clobj.creation_date.substr(0,10)+'</span> ';
+                //clinfo += '<span class="claccess">'+(clobj.is_public ? 'Public': 'Private') +'</span> ';
+                clinfo += '</span> ';
+
+                clinfo += '<span class="clname">' + clobj.name + '</span> ';
+                clinfo += '<br><span class="clcreation">' + clobj.creation_info+'</span> ';
+                if (clobj.description) clinfo += '<br><span class="cldescription">'+clobj.description+'</span>'
             }
         })
         if (outputelement) {

@@ -16,7 +16,7 @@
 
     <div class="span6">
         <form class="form-inline well">
-            <label>Apply filters:</label>
+            <label>Filters:</label>
             <div class="btn-group api-filter">
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Owner: <span class="api-filt-text">All</span> <span class="caret"></span></a>
                 <ul class="dropdown-menu" style="padding: 10px;">
@@ -49,6 +49,8 @@
                 </ul>
             </div>
             {% endif %}
+            <div class="api-filter"><input type="hidden" name="parent" value="none"></div>
+            <!--
             <div class="btn-group api-filter">
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Type: <span class="api-filt-text">Both</span> <span class="caret"></span></a>
                 <ul class="dropdown-menu" style="padding: 10px;">
@@ -64,6 +66,7 @@
                 </ul>
             </div>
             <input type="text" placeholder="Keyword" style="width: 120px;">
+            -->
         </form>
 
         <div class="collection-list" id="collections">
@@ -71,7 +74,7 @@
         </div>
     </div>
     <div class="span6">
-        <div class="well"><p>Preview (TODO: CSS): <span id="preview-name"> none selected</span></p></div>
+        <div class="well cl-info-inline"><span class="clname">Preview: </span><span id="preview-name"> none selected</span></div>
         {% include "webinterface/dataviews/mapview.html"%}
     </div>
 </div>
@@ -111,6 +114,8 @@
         updateMapForSelectedCollection(id);
         clinfo.getCollectionInfo(id,'#preview-name');
         //$('#preview-name').html('Collection ID: '+id);
+        $('#preview-name .cldescription').shorten({showChars : 80});          // Shorten descriptions for nicer display
+        //$("[rel=btn-tooltip]").tooltip({container: 'body'});    // Activate bootstrap tooltips for dynamic content
     }
 
     </script>
