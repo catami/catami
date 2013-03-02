@@ -1,13 +1,115 @@
+from django.contrib.auth.models import User
+import guardian
+from guardian.shortcuts import get_objects_for_user, get_perms_for_model, get_users_with_perms, get_groups_with_perms
 from tastypie import fields
+from tastypie.authentication import MultiAuthentication, SessionAuthentication, ApiKeyAuthentication, Authentication, BasicAuthentication
+from tastypie.authorization import Authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.exceptions import Unauthorized
 from tastypie.resources import ModelResource
 from .models import *
 
+# Used to allow authent of anonymous users for GET requests
+class AnonymousGetAuthentication(SessionAuthentication):
+
+    def is_authenticated(self, request, **kwargs):
+
+        # let anonymous users in for GET requests - Authorisation logic will stop them from accessing things not allowed to access
+        if request.user.is_anonymous() and request.method == "GET":
+            return True
+
+        return super(AnonymousGetAuthentication, self).is_authenticated(request, **kwargs)
+
+class CampaignAuthorization(Authorization):
+
+    #need this because guardian lookups require the actual django user object
+    def get_real_user_object(self, tastypie_user_object):
+
+        # blank username is anonymous
+        if tastypie_user_object.is_anonymous():
+            user = guardian.utils.get_anonymous_user()
+        else: # if not anonymous, get the real user object from django
+            user = User.objects.get(id=tastypie_user_object.id)
+
+        #send it off
+        return user
+
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = self.get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        user_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
+
+        # send em off
+        return user_objects
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = self.get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('catamidb.view_campaign', bundle.obj):
+            return True
+
+        # raise hell! - https://github.com/toastdriven/django-tastypie/issues/826
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
 
 class CampaignResource(ModelResource):
+
     class Meta:
         queryset = Campaign.objects.all()
         resource_name = "campaign"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(), BasicAuthentication(), ApiKeyAuthentication())
+        authorization = CampaignAuthorization()
+        allowed_methods = ['get']
+
+    #def obj_create(self, bundle, request=None, **kwargs):
+
+        # translate JSON object into a campaign object - didn't think I had to do this, but leaving to
+        # tastypie caused duplicate key exceptions
+#        campaign = Campaign()
+#        campaign.short_name = bundle.data["short_name"]
+#        campaign.description = bundle.data["description"]
+#        campaign.associated_researchers = bundle.data["associated_researchers"]
+#        campaign.associated_publications = bundle.data["associated_publications"]
+#        campaign.associated_research_grant = bundle.data["associated_research_grant"]
+#        campaign.date_start = bundle.data["date_start"]
+#        campaign.date_end = bundle.data["date_end"]
+#        campaign.contact_person = bundle.data["contact_person"]
+#
+#        return campaign
+
+    #for POST
+#    def obj_create(self, bundle, request, **kwargs):
+#        #check permissions first
+#        bundle = self._meta.authorization.apply_limits(request, bundle)
+#        return super(CampaignResource, self).obj_create(bundle, request, **kwargs)
+#
+#    #for PUT
+#    def obj_update(self, bundle, request, **kwargs):
+#        #check permissions first
+#        bundle = self._meta.authorization.apply_limits(request, bundle)
+#        return super(CampaignResource, self).obj_update(bundle, request, **kwargs)
 
 
 class DeploymentResource(ModelResource):
@@ -19,7 +121,6 @@ class DeploymentResource(ModelResource):
         filtering = {
             'campaign': ALL_WITH_RELATIONS,
         }
-
 
 class PoseResource(ModelResource):
     deployment = fields.ForeignKey(DeploymentResource, 'deployment')

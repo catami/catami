@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from catamidb import authorization
 
 from .forms import FileImportForm, MetadataStagingForm, ModelImportForm, CampaignCreateForm, ApiDeploymentForm
 from .extras import UploadProgressCachedHandler
@@ -69,7 +70,11 @@ def campaigncreate(request):
         form = CampaignCreateForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            campaign = form.save()
+
+            # apply authorisation rules to the newly created campaign
+            authorization.apply_campaign_permissions(request.user, campaign)
+
             return redirect('staging.views.campaigncreated')
     else:
         form = CampaignCreateForm()

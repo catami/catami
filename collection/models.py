@@ -3,6 +3,9 @@ from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 from catamidb.models import Image, Deployment
 from random import sample
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class CollectionManager(models.Manager):
@@ -87,7 +90,7 @@ class CollectionManager(models.Manager):
 
         # check that n < number of images in collection
         if cimages.count() < n:
-            print "WARNING: Not enough images to subsample... setting n=images.count"  # TODO: what is the best way to handle warnings?
+            logger.warning("Not enough images to subsample... setting n=images.count")  # TODO: what is the best way to handle warnings?
             n = cimages.count()
 
         # subsample collection images and add to workset
@@ -98,7 +101,7 @@ class CollectionManager(models.Manager):
             wsimglist = cimages[0:cimages.count():n]
             ws.creation_info = "Stratified: every {0}th image".format(n)  # TODO: add some logic "th" does not work for 1-3
         else:
-            print "ERROR: Unrecognised method"  # TODO: what is the best way to handle warnings?
+            logger.error("Unrecognised method")  # TODO: what is the best way to handle warnings?
 
         # save the workset so we can associate images with it
         ws.save()

@@ -5,6 +5,8 @@ from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerE
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
+import guardian
+from guardian.shortcuts import get_objects_for_user
 from waffle.decorators import waffle_switch
 from collection.api import CollectionResource
 from django.contrib.auth.models import User
@@ -39,7 +41,6 @@ from django import forms
 class CreateCollectionForm(forms.Form):
     deployment_ids = forms.CharField()
     collection_name = forms.CharField()
-
 
 class CreateWorksetForm(forms.Form):
     name = forms.CharField()
@@ -722,7 +723,14 @@ def campaigns(request):
     """@brief Campaign list html for entire database
 
     """
-    latest_campaign_list = Campaign.objects.all()
+
+    user = request.user
+
+    #just make sure we get the anonymous user from the database - so we can user permissions
+    if request.user.is_anonymous():
+        user = guardian.utils.get_anonymous_user()
+
+    latest_campaign_list = get_objects_for_user(user, ['catamidb.view_campaign']) #Campaign.objects.all()
     campaign_rects = list()
 
     for campaign in latest_campaign_list:
@@ -747,8 +755,19 @@ def campaign_detail(request, campaign_id):
     """@brief Campaign html for a specifed campaign object
 
     """
+
+    user = request.user
+    #just make sure we get the anonymous user from the database - so we can user permissions
+    if request.user.is_anonymous():
+        user = guardian.utils.get_anonymous_user()
+
     try:
         campaign_object = Campaign.objects.get(id=campaign_id)
+
+        #check for permissions
+        if user.has_perm('catamidb.view_campaign', campaign_object) == False:
+            raise Campaign.DoesNotExist
+
     except Campaign.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(

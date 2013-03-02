@@ -6,9 +6,16 @@ d.marrable@ivec.org
 Significantly rewritten Lachlan Toohey 21/2/2013
 
 """
+from django.contrib.auth.models import Group
 
 from django.contrib.gis.db import models
+from django.dispatch import receiver
+from guardian.shortcuts import assign
+from userena.signals import signup_complete
+from gadjo.requestprovider.signals import get_request
+import logging
 
+logger = logging.getLogger(__name__)
 
 class CampaignManager(models.GeoManager):
     """Model Manager for Campaign.
@@ -31,7 +38,6 @@ class CampaignManager(models.GeoManager):
                 date_start__month=month,
                 short_name=short_name
                 )
-
 
 class Campaign(models.Model):
     """A campaign describes a field campaign that has many deployments."""
@@ -62,6 +68,8 @@ class Campaign(models.Model):
     class Meta:
         """Defines Metaparameters of the model."""
         unique_together = (('date_start', 'short_name'), )
+        permissions = (('view_campaign', 'View the campaign'),)
+
 
 
 class DeploymentManager(models.GeoManager):

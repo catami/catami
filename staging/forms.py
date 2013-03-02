@@ -21,7 +21,6 @@ class CampaignCreateForm(forms.ModelForm):
     class Meta:
         model = Campaign
 
-
 class FileImportForm(forms.Form):
     """Form to assist with uploading a json file.
 

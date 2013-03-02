@@ -1,5 +1,7 @@
 """URL Mappings for the webinterface application.
 """
+from catamidb import authorization
+
 __author__ = 'Ariell Friedman'
 
 from django.conf.urls import patterns, url, include
@@ -7,6 +9,9 @@ from django.conf import settings
 
 from django.contrib import admin
 admin.autodiscover()
+
+#configure initial auth and groups
+authorization.on_startup_configuration()
 
 urlpatterns = patterns('webinterface.views',
     url(r'^$', 'index', name='index'),
