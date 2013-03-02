@@ -12,7 +12,6 @@ from django.contrib.gis.db import models
 from django.dispatch import receiver
 from guardian.shortcuts import assign
 from userena.signals import signup_complete
-from gadjo.requestprovider.signals import get_request
 import logging
 
 logger = logging.getLogger(__name__)
