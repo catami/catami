@@ -284,6 +284,7 @@ def collections(request):
 @waffle_switch('Collections')
 def view_collection(request, collection_id):
     return render_to_response('webinterface/viewcollection.html',
+    #return render_to_response('webinterface/viewcollectionalternative.html',
         {"collection_id": collection_id,
         'WMS_URL': settings.WMS_URL, #imported from settings
         'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
@@ -293,6 +294,7 @@ def view_collection(request, collection_id):
 @waffle_switch('Collections')
 def view_workset(request, collection_id, workset_id):
     return render_to_response('webinterface/viewcollection.html',
+    #return render_to_response('webinterface/viewcollectionalternative.html',
         {"collection_id": collection_id,
          "workset_id": workset_id,
          'WMS_URL': settings.WMS_URL, #imported from settings
