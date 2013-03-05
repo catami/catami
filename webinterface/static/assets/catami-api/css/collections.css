@@ -1,41 +1,65 @@
 /**********************************************************************************************************************
- * Style elements of collection lists
+ * Style cl-info-inline
  **********************************************************************************************************************/
-.cl-info-inline {
-    overflow: auto;
+.cl-info-inline {overflow: auto;}
+.cl-info-inline .claction {margin: 0 0 0 5px; padding: 0;}
+.cl-info-inline .clactionitem {}
+.cl-info-inline .clinfo {margin: 0 0 0 5px; padding: 0;}
+.cl-info-inline .clinfoitem {}
+.cl-info-inline .clcreation {margin-left: 10px;font-size: 10px;font-style: italic;color: #6b6b6b;}
+.cl-info-inline .cldescription {padding-top: 5px; font-style: italic; display: inline-block; width: 100%;color: #747474;}
+.cl-info-inline .clname {font-size: 16px; font-weight: bold;}
+
+
+
+/**********************************************************************************************************************
+ * Style cl-nested-list
+ **********************************************************************************************************************/
+.cl-nested-list ul.list-main{list-style: none;margin: 0;padding: 0;}
+.cl-nested-list ul.list-main .claction {margin: 0 0 0 5px; padding: 0;}
+.cl-nested-list ul.list-main .clactionitem {}
+.cl-nested-list ul.list-main .clinfo {margin: 0 0 0 5px; padding: 0;}
+.cl-nested-list ul.list-main .clinfoitem {}
+.cl-nested-list ul.list-main .clcreation {margin-left: 10px;font-size: 10px;font-style: italic;color: #6b6b6b;}
+.cl-nested-list ul.list-main .cldescription {width: 100%;font-style: italic;display: inline-block;color: #747474;font-size: 12px;}
+.cl-nested-list ul.list-main .clname {font-size: 16px; font-weight: bold;}
+
+.cl-nested-list ul.list-main .list-toggle {cursor: pointer;}
+
+.cl-nested-list ul.list-sub {list-style: none; margin: 15px 0 10px 0;padding: 10px;}
+.cl-nested-list ul.list-main > li, .cl-nested-list ul.list-sub > li {padding: 3px;margin-bottom: 5px;}
+.cl-nested-list ul.list-main li.parent {}
+
+.cl-nested-list ul.list-main li .clname {
+    background-image: url('http://code.stephenmorley.org/javascript/collapsible-lists/button.png');
+    background-position: 0 3px;
+    background-repeat: no-repeat;
+    padding-left: 20px;
 }
-.cl-info-inline .clname {
-    font-size: 16px;
-    font-weight: bold;
+.cl-nested-list ul.list-main > li.parent > .clname {
+    background-image: url('http://code.stephenmorley.org/javascript/collapsible-lists/button-closed.png');
 }
 
-.cl-info-inline .cldate {
-
+/* Make DataTasks menu align to the right*/
+.cl-nested-list ul.list-main .clactions ul.dropdown-menu {
+    left: auto;
+    right: 0;
+    text-align: left;
 }
 
-.cl-info-inline .clowner {
 
-}
 
-.cl-info-inline .claccess {
 
-}
 
-.cl-info-inline .clactions {
 
-}
 
-.cl-info-inline .cldescription {
-    /*width: 100%;*/
-    padding-top: 5px;
-    font-style: italic;
-    /*display: inline-block;*/
-}
 
-.cl-info-inline>.clinfo {
-    margin: 0;
-    /*float: right;*/
-}
+
+a {cursor: pointer;}
+.clinfoitem_green {background-color: #00b800;}
+.clinfoitem_red {background-color: #ff0000;}
+
+
 /**********************************************************************************************************************
  * Style elements of collection lists
  **********************************************************************************************************************/
@@ -64,7 +88,6 @@
     line-height: 15px;
 }
 
-
 .cl-info-sidepanel .clactions {
 
 }
@@ -82,77 +105,6 @@
 /**********************************************************************************************************************
  * Style collapsible Collection lists
  **********************************************************************************************************************/
-ul.collapsibleList {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-ul.collapsibleList .list-toggle {
-    cursor: pointer;
-    font-weight: bold;
-}
-ul.collapsibleSubList {
-    list-style: none;
-    margin: 15px 0 10px 0;
-    padding: 10px;
-}
-ul.collapsibleList > li, ul.collapsibleSubList > li {
-    padding: 3px;
-    /*border-bottom: 1px #d9d9d9 solid;*/
-    /*overflow: hidden;*/
-    margin-bottom: 10px;
-    /*min-height: 25px;*/
-}
-
-ul.collapsibleList li.parent {
-
-}
-
-ul.collapsibleList li .clname {
-    background-image: url('http://code.stephenmorley.org/javascript/collapsible-lists/button.png');
-    background-position: 0 3px;
-    background-repeat: no-repeat;
-    padding-left: 20px;
-}
-ul.collapsibleList > li.parent > .clname {
-    background-image: url('http://code.stephenmorley.org/javascript/collapsible-lists/button-closed.png');
-}
-ul.collapsibleList .cldate{
-
-}
-ul.collapsibleList .clowner, ul.collapsibleList .claccess{
-    /*float: right;*/
-    /*margin-top: 2px;*/
-    /*margin-right: 10px;*/
-    /*display: block;*/
-}
-ul.collapsibleList .clactions{
-    /*width: 100px;*/
-    text-align: right;
-    float: right;
-    /*margin-top: 5px;*/
-    display: block;
-    margin: 0;
-    padding: 0;
-}
-/* Make DataTasks menu align to the right*/
-.clactions ul.dropdown-menu {
-    left: auto;
-    right: 0;
-    text-align: left;
-}
-
-ul.collapsibleList .cldescription {
-    width: 100%;
-    /*padding-top: 5px;*/
-    font-style: italic;
-    display: inline-block;
-}
-
-ul.collapsibleList a {
-    cursor: pointer;
-}
-
 
 
 
@@ -165,17 +117,17 @@ ul.collapsibleList a {
 
 
 /*
-ul.collapsibleList li{
+ul.list-main li{
     list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button.png');
     cursor:auto;
 }
 
-li.collapsibleListOpen{
+li.list-mainOpen{
     list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button-open.png');
     cursor:pointer;
 }
 
-li.collapsibleListClosed{
+li.list-mainClosed{
     list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button-closed.png');
     cursor:pointer;
 }
@@ -207,12 +159,12 @@ li.collapsibleListClosed{
     cursor:auto;
 }
 
-.treeView li.collapsibleListOpen{
+.treeView li.list-mainOpen{
     list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button-open.png');
     cursor:pointer;
 }
 
-.treeView li.collapsibleListClosed{
+.treeView li.list-mainClosed{
     list-style-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/button-closed.png');
     cursor:pointer;
 }
@@ -226,11 +178,11 @@ li.collapsibleListClosed{
     background-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/list-item-last.png');
 }
 
-.treeView li.collapsibleListOpen{
+.treeView li.list-mainOpen{
     background-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/list-item-open.png');
 }
 
-.treeView li.collapsibleListOpen.lastChild{
+.treeView li.list-mainOpen.lastChild{
     background-image:url('http://code.stephenmorley.org/javascript/collapsible-lists/list-item-last-open.png');
 }
 */
