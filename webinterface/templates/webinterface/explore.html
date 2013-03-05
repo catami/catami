@@ -141,9 +141,6 @@
 
 {% block add_script %}
 
-
-
-
     <script type="text/javascript">
 
         var currentSelectedDeployments = [];
@@ -286,9 +283,6 @@
                     var geographic = new OpenLayers.Projection("EPSG:4326");
                     var mercator = new OpenLayers.Projection("EPSG:900913");
                     deploymentMap.zoomToExtent(bounds.transform(geographic, mercator));
-
-                    if(deploymentMap.getZoom() > 2)
-                        deploymentMap.zoomTo(deploymentMap.getZoom()-2);
                 }
             });
         }

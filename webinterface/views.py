@@ -18,7 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 import httplib2
 
 #not API compliant - to be removed after the views are compliant
-from catamidb.models import Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment
+from catamidb.models import Pose, Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment
 from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
@@ -818,7 +818,8 @@ def get_multiple_deployment_extent(request):
     if request.method == 'POST':  # If the form has been submitted...
         deployment_ids = request.POST.get('deployment_ids')
         deployment_ids = deployment_ids.__str__().split(",")
-        extent = AUVDeployment.objects.filter(id__in=deployment_ids).extent().__str__()
+        extent = Pose.objects.filter(deployment_id__in=deployment_ids).extent().__str__()
+
         response_data = {"extent": extent}
         return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
 
