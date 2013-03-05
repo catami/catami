@@ -23,7 +23,7 @@ class CollectionResource(ModelResource):
             'is_public': 'exact',
             'owner': 'exact',
             'id': 'exact',
-            'parent': 'exact'
+            'parent': ['exact', 'isnull'],
         }
 
     def dehydrate(self, bundle):
