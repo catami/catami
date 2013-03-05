@@ -16,11 +16,6 @@ authorization.on_startup_configuration()
 urlpatterns = patterns('webinterface.views',
     url(r'^$', 'index', name='index'),
 
-    #front page data views
-    #url(r'^front_login_panel$', 'front_login_panel'),
-    #url(r'^front_newdata_panel$', 'front_newdata_panel'),
-    #url(r'^front_imageview_panel$', 'front_imageview_panel'),
-
     #Info Pages
     url(r'^faq', 'faq'),
     url(r'^contact', 'contact'),
@@ -30,6 +25,7 @@ urlpatterns = patterns('webinterface.views',
 
     url(r'^explore$', 'explore'),
     url(r'^explore/getmapextent$', 'get_multiple_deployment_extent'),
+
     url(r'^explore_campaign/(?P<campaign_id>\d+)/$', 'explore_campaign'),
 
     #url(r'^viewcollection$', 'viewcollection'),
@@ -60,8 +56,9 @@ urlpatterns = patterns('webinterface.views',
     #Collection Management
     url(r'^collections/create/$', 'create_collection_from_deployments'),
     url(r'^collections/createworkset/(?P<method>[\w\-]+)/$', 'create_workset_from_collection'),
+    url(r'^collections/getcollectionextent$', 'get_collection_extent'),
 
-    #force views
+    #plain data views
     url(r'^data/$', 'data'),
     url(r'^data/auvdeployments/$', 'auvdeployments'),
     url(r'^data/auvdeployments/map/$', 'auvdeployments_map'),

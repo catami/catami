@@ -827,6 +827,22 @@ def get_multiple_deployment_extent(request):
 
 
 @csrf_exempt
+def get_collection_extent(request):
+
+    if request.method == 'POST':  # If the form has been submitted...
+        collection_id = request.POST.get('collection_id')
+        image_set = Collection.objects.get(id=collection_id).images.all()
+        pose_id_set = image_set.values_list("pose_id")
+
+        extent = Pose.objects.filter(id__in=pose_id_set).extent().__str__()
+
+        response_data = {"extent": extent}
+        return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
+    
+    return HttpResponse(simplejson.dumps({"message": "GET operation invalid, must use POST."}), mimetype="application/json")
+
+
+@csrf_exempt
 def create_collection_from_deployments(request):
     if request.method == 'POST':  # If the form has been submitted...
         form = CreateCollectionForm(request.POST)  # A form bound to the POST data

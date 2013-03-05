@@ -31,9 +31,26 @@
         }));
 
         updateMapUsingFilter(filter_array);
+        updateMapBoundsForCollection();
     }
 
-
+    function updateMapBoundsForCollection() {
+		$.ajax({
+		    type: "POST",
+		    url: '{% url webinterface.views.get_collection_extent %}',
+		    data: "collection_id=1",
+		    success: function(response, textStatus, jqXHR) {
+		        var boundsArr = response.extent.replace("(","").replace(")","").split(",");
+		        var bounds = new OpenLayers.Bounds();
+		        bounds.extend(new OpenLayers.LonLat(boundsArr[0], boundsArr[1]));
+		        bounds.extend(new OpenLayers.LonLat(boundsArr[2], boundsArr[3]));
+		        var geographic = new OpenLayers.Projection("EPSG:4326");
+		        var mercator = new OpenLayers.Projection("EPSG:900913");
+		        deploymentMap.zoomToExtent(bounds.transform(geographic, mercator));
+		    }
+		});
+    }
+    
     function updateMapForSelectedDeployments(deployment_ids){
         filter_array.length=0;
         for (var i = 0; i < deployment_ids.length;i ++) {
