@@ -1,7 +1,14 @@
 from django.contrib.gis.geos import Point, Polygon
 from django.utils.datetime_safe import datetime
 from model_mommy.recipe import Recipe
-from catamidb.models import AUVDeployment, DOVDeployment, BRUVDeployment, TVDeployment, TIDeployment
+from catamidb.models import AUVDeployment, DOVDeployment, BRUVDeployment, TVDeployment, TIDeployment, Pose
+
+
+pose_01 = Recipe(Pose,
+                 position=Point(12.4604, 43.9420),
+                 depth=27.5,
+                 date_time=datetime.now()
+                )
 
 auvdeployment1 = Recipe(AUVDeployment,
                         start_position=Point(12.4604, 43.9420),
