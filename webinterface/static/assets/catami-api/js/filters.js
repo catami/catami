@@ -44,8 +44,10 @@ function ApiFilter(updatefnc) {
      * sets change functions for filter radio buttons
      */
     this.init = function() {
-        $('.api-filter input:radio').on('change',function() {
-            updatefnc();
+        $('.api-filter input').each(function(i,obj) {
+            $(obj).on('change',function() {
+                updatefnc();
+            });
         });
     }
 
@@ -64,8 +66,8 @@ function ApiFilter(updatefnc) {
             if ($(obj).val() != '') {
                 filter += '&'+$(obj).attr('name')+'='+$(obj).val();
                 //alert($(obj).parent().text());
-                $(obj).closest(".api-filter").find('.api-filt-text').html($(obj).parent().text());
             }
+            $(obj).closest(".api-filter").find('.api-filt-text').html($(obj).parent().text());
         });
 
         // Extract values from hidden elements

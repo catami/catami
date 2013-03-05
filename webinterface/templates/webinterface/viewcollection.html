@@ -42,17 +42,16 @@
 <div class="row-fluid">
 
 <div class="span2">
-    <div class="well sidepanel">
-        <div id="cl-info" class="cl-info-sidepanel"></div>
-        <span class="pull-right"><a href="#_" id="showCollectionMapLink" onclick="updateMapForSelectedCollection({{ collection_id }});">map</a></span>
+    Collection: <span class="pull-right"><a href="#_" id="showCollectionMapLink" onclick="updateMapForSelectedCollection({{ collection_id }});">map</a></span>
+    <div id="cl-info" class="well sidepanel cl-info-sidepanel">
     </div>
+    Workset:<span class="pull-right"><a href="#_" id="clearWorksetLink"></a> &nbsp; <a href="#map" data-toggle="tab" id="showWorksetMapLink"></a></span>
     <div class="well sidepanel" style="padding:5px;">
         <div id="ws-info" class="cl-info-sidepanel"></div><hr>
-        <span class="pull-right"><a href="#_" id="clearWorksetLink"></a> &nbsp;&nbsp; <a href="#map" data-toggle="tab" id="showWorksetMapLink"></a></span>
-        <hr>
-        {% with "Workset" as clname %}
-            {% include "webinterface/dataviews/worksetlists.html"%}
-        {% endwith %}
+        <div id="ws-list"></div>
+{#        {% with "Workset" as clname %}#}
+{#            {% include "webinterface/dataviews/worksetlists.html"%}#}
+{#        {% endwith %}#}
     </div>
 </div>
 
@@ -105,6 +104,10 @@
     // Collection info object
     clinfo = new CollectionInfo();
 
+    // Instantiate workset list object
+    wslist = new Collection({select_fnc : 'selectWorkset'});
+
+
     $(document).ready(function(){
         getNewImageList('collection={{ collection_id }}');
         //initDeploymentMap ();
@@ -112,7 +115,8 @@
         clinfo.getCollectionInfo({{ collection_id }},'#cl-info');
         $('.cldescription').shorten({showChars : 50});          // Shorten descriptions for nicer display
 
-        setWorksetLists({{ collection_id }});
+        //setWorksetLists({{ collection_id }});
+        wslist.getWorksetList("", {{ collection_id }}, "#ws-list");   // Get workset list
 
         initDeploymentMap();
         updateMapForSelectedCollection({{ collection_id }});

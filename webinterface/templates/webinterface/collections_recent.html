@@ -16,7 +16,7 @@
 
     <div class="span6">
         <form class="form-inline well">
-            <label>Filters:</label>
+            <span style="font-size: 10px; color: #a8a8a8; text-transform: uppercase;">Filters: </span><br>
             <div class="btn-group api-filter">
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Owner: <span class="api-filt-text">All</span> <span class="caret"></span></a>
                 <ul class="dropdown-menu" style="padding: 10px;">
@@ -74,7 +74,7 @@
         </div>
     </div>
     <div class="span6">
-        <div class="well cl-info-inline"><span class="clname">Preview: </span><span id="preview-name"> none selected</span></div>
+        <div class="well"><span style="font-size: 10px; color: #a8a8a8; text-transform: uppercase;">Preview: </span><br><span id="preview-name"> none selected</span></div>
         {% include "webinterface/dataviews/mapview.html"%}
     </div>
 </div>
@@ -89,17 +89,27 @@
     <script type="text/javascript">
 
     // Instantiate collection list object
-    cl = new CollectionList({preview_fnc : 'collectionSelectAction'}); // TODO: make this an anonymous functions instead of a string
+    cl = new CollectionAPI({
+        config : {preview_fnc : 'collectionSelectAction({0})'}
+    });
 
     // Collection info object
-    clinfo = new CollectionInfo();
+    //clinfo = new CollectionInfo();
+    clinfo = new CollectionAPI({
+        listconfig : {
+            itemorder : 'actions,info,name,creation_info,description',
+            format    : 'cl-info-inline',
+            nested    : false
+        }
+    });
 
     // Instantiate filter object
     filt = new ApiFilter(function(){                           // Define filt.update() function
-        cl.getFullCollectionList(filt.get(), "#collections");   // Get nested collections and workset list
+        cl.getCollectionList(filt.get(), "#collections");   // Get nested collections and workset list
         cl.collapseList();                                      // Collapse the list
         $('.cldescription').shorten({showChars : 80});          // Shorten descriptions for nicer display
         $("[rel=btn-tooltip]").tooltip({container: 'body'});    // Activate bootstrap tooltips for dynamic content
+        alert(filt.get());
     });
 
     // OnLoad function
@@ -115,7 +125,7 @@
         clinfo.getCollectionInfo(id,'#preview-name');
         //$('#preview-name').html('Collection ID: '+id);
         $('#preview-name .cldescription').shorten({showChars : 80});          // Shorten descriptions for nicer display
-        //$("[rel=btn-tooltip]").tooltip({container: 'body'});    // Activate bootstrap tooltips for dynamic content
+        $("[rel=btn-tooltip]").tooltip({container: 'body'});    // Activate bootstrap tooltips for dynamic content
     }
 
     </script>
