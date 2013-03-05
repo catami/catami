@@ -130,4 +130,15 @@ class Collection(models.Model):
     creation_info = models.CharField(max_length=200)
 
     class Meta:
-        unique_together = (('owner', 'name'), )
+        unique_together = (('owner', 'name', 'parent'), )
+
+    def __unicode__(self):
+        description = u"Collection: {0}".format(self.name)
+        if self.is_public:
+            description += u" - public"
+        else:
+            description += u" - private"
+
+        if self.is_locked:
+            description += u" - locked"
+        return description

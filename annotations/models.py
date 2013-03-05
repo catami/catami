@@ -67,6 +67,9 @@ class PointAnnotationSet(AnnotationSet):
     # not always used
     count = models.IntegerField()
 
+    class Meta:
+        unique_together = (('owner', 'name', 'collection'), )
+
 LEVELS = (
     (0, "Primary"),
     (1, "Secondary"),
@@ -96,7 +99,9 @@ class PointAnnotation(Annotation):
 class ImageAnnotationSet(AnnotationSet):
     """A Whole Image annotation set.
     """
-    pass
+
+    class Meta:
+        unique_together = (('owner', 'name', 'collection'), )
 
 COVER = (
     (0, "C > 80%"),
