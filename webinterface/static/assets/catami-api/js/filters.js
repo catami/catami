@@ -44,7 +44,7 @@ function ApiFilter(updatefnc) {
      * sets change functions for filter radio buttons
      */
     this.init = function() {
-        $('.api-filter input').each(function(i,obj) {
+        $('.api-filter').find('input:radio').each(function(i,obj) {
             $(obj).on('change',function() {
                 updatefnc();
             });

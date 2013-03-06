@@ -21,9 +21,6 @@
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Owner: <span class="api-filt-text">All</span> <span class="caret"></span></a>
                 <ul class="dropdown-menu" style="padding: 10px;">
                     <li>
-                        <input type="text" placeholder="Search owners" style="width: 150px;">
-                    </li>
-                    <li>
                         <label class="radio"><input type="radio" name="owner" value="" checked>All</label>
                     </li>
                     {% if user.is_authenticated %}
@@ -67,6 +64,7 @@
             </div>
             <input type="text" placeholder="Keyword" style="width: 120px;">
             -->
+            <button class="btn btn-primary pull-right"><i class="icon-plus-sign-alt"></i> New Collection</button>
         </form>
 
         <div class="collection-list" id="collections">
@@ -90,13 +88,13 @@
 
     // Instantiate collection list object
     cl = new CollectionAPI({
-        config : {preview_fnc : 'collectionSelectAction({0})'}
+        settings : {preview_fnc : 'collectionSelectAction({0})'}
     });
 
     // Collection info object
     //clinfo = new CollectionInfo();
     clinfo = new CollectionAPI({
-        listconfig : {
+        config : {
             itemorder : 'actions,info,name,creation_info,description',
             format    : 'cl-info-inline',
             nested    : false
@@ -109,7 +107,7 @@
         cl.collapseList();                                      // Collapse the list
         $('.cldescription').shorten({showChars : 80});          // Shorten descriptions for nicer display
         $("[rel=btn-tooltip]").tooltip({container: 'body'});    // Activate bootstrap tooltips for dynamic content
-        alert(filt.get());
+        //alert(filt.get());
     });
 
     // OnLoad function

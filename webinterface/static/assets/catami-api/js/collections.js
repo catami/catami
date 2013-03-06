@@ -6,39 +6,34 @@
  * @param select_fnc
  * @constructor
  **********************************************************************************************************************/
-var collection_config_defaults = {
-    api_baseurl : '/api/dev/collection/',
-    linkurl : "/collections/",
-    preview_fnc : false,
-    select_fnc : false
-};
 
+function CollectionAPI(usrsettings) {
 
-function CollectionAPI(settings) {
-
-    // Set default config params
-    var config = {
+    // Default settings params
+    var settings = {
         api_baseurl : '/api/dev/collection/',
         linkurl : "/collections/",
         preview_fnc : false,
-        select_fnc : false
+        select_fnc : false,
+        check_fnc : false,
+        radio_fnc : false
     };
-    if (settings.config) $.extend(config, settings.config);  // replace defaults with input arguments
+    if (usrsettings.settings) $.extend(settings, usrsettings.settings);  // override defaults with input arguments
 
-
-    var listconfig = {
-        itemorder : 'actions,info,name,creation_info,description',
+    // Default display config
+    var config = {
+        itemorder : 'listctrl,actions,info,select,name,creation_info,description',
         //actions   : 'preview,select,more',
         //info      : 'date,owner,access',
         format    : 'cl-nested-list',
         nested    : true
     }
-    if (settings.listconfig) $.extend(listconfig, settings.listconfig);  // replace defaults with input arguments
+    if (usrsettings.config) $.extend(config, usrsettings.config);  // override defaults with input arguments
 
 
-    var cssconf = getCSS(listconfig.format);
-    if (settings.css_collection) $.extend(cssconf.collection, settings.css_collection);  // replace defaults with input arguments
-    if (settings.css_workset) $.extend(cssconf.workset, settings.css_workset);  // replace defaults with input arguments
+    var cssconf = getCSS(config.format);
+    if (usrsettings.css_collection) $.extend(cssconf.collection, usrsettings.css_collection);  // replace defaults with input arguments
+    if (usrsettings.css_workset) $.extend(cssconf.workset, usrsettings.css_workset);  // replace defaults with input arguments
 
 
 
@@ -60,7 +55,7 @@ function CollectionAPI(settings) {
         var list = createCollectionList(filter, cssconf.collection);
 
         if (outputelement) {
-            if (!$(outputelement).hasClass(listconfig.format)) $(outputelement).addClass(listconfig.format);
+            if (!$(outputelement).hasClass(config.format)) $(outputelement).addClass(config.format);
             $(outputelement).html(list);
         }
         return list;
@@ -69,9 +64,9 @@ function CollectionAPI(settings) {
 
     this.getCollectionInfo = function(id, outputelement) {
 
-        var api_url = config.api_baseurl+'?id='+id;
+        var api_url = settings.api_baseurl+'?id='+id;
         var clinfo = '';
-        var fieldlist = listconfig.itemorder.split(',');
+        var fieldlist = config.itemorder.split(',');
 
         $.ajax({
             dataType: "json",
@@ -85,7 +80,7 @@ function CollectionAPI(settings) {
             }
         });
         if (outputelement) {
-            if (!$(outputelement).hasClass(listconfig.format)) $(outputelement).addClass(listconfig.format);
+            if (!$(outputelement).hasClass(config.format)) $(outputelement).addClass(config.format);
             $(outputelement).html(clinfo);
         }
         return clinfo;
@@ -121,14 +116,16 @@ function CollectionAPI(settings) {
      * @param parent_id
      * @return {String}
      */
-    var createCollectionList = function(filter, css) {
+    var createCollectionList = function(filter, css, showerror) {
+
+        showerror = ((typeof showerror !== 'undefined') ? showerror : true);
 
         var list = '';
 
         $.ajax({
             dataType: "json",
             async: false,  // prevent asyncronous mode to allow setting of variables within function
-            url: config.api_baseurl+filter ,
+            url: settings.api_baseurl+filter ,
             success: function(cl){
                 if (cl.objects.length > 0) {
                     list += '<ul class="'+css.listname+'">';
@@ -137,7 +134,7 @@ function CollectionAPI(settings) {
                     }
                     list += '</ul>';
                 }
-                else if (!parent_id) {
+                else if (showerror) {
                     list += '<p class="alert alert-error">There are no collections to display.</p>'
                 }
             }
@@ -153,7 +150,7 @@ function CollectionAPI(settings) {
      * @return {String}
      */
     var createListItem = function(clobj, css, filter) {
-        var fieldlist = listconfig.itemorder.split(',');
+        var fieldlist = config.itemorder.split(',');
 
         var listitem = '<li>';
 
@@ -161,8 +158,8 @@ function CollectionAPI(settings) {
             listitem += getCollectionField (clobj,fieldlist[i], css);
         }
 
-        if ( clobj.parent_id == null && listconfig.nested) { // This item is a parent Collection
-            listitem += createCollectionList(filter+'&parent='+clobj.id, cssconf.workset); // Recursive call to create nested workset list (if available)
+        if ( clobj.parent_id == null && config.nested) { // This item is a parent Collection
+            listitem += createCollectionList(filter+'&parent='+clobj.id, cssconf.workset, false); // Recursive call to create nested workset list (if available)
         }
         listitem += '</li>';
 
@@ -180,20 +177,25 @@ function CollectionAPI(settings) {
 
         var fieldtext = '';
         var link = (clobj.parent_id)
-            ? config.linkurl + clobj.parent_id + '/' + clobj.id + '/'   // child collection (i.e: workset)
-            : config.linkurl + clobj.id+'/';                            // parent collection
+            ? settings.linkurl + clobj.parent_id + '/' + clobj.id + '/'   // child collection (i.e: workset)
+            : settings.linkurl + clobj.id+'/';                            // parent collection
 
 
-
-        if (field=='actions') {
-            fieldtext += '<span class="'+css[field]+'">';
-            if (config.preview_fnc) {
-                fieldtext += '<a class="'+css.actionitem+'" onclick="'+config.preview_fnc.format(clobj['id'])+';" rel="btn-tooltip" title="Preview"><i class="icon-eye-open"></i></a>';
-            }
-            if (config.select_fnc) {
-                fieldtext += '<a class="'+css.actionitem+'" onclick="'+config.select_fnc.format(clobj['id'])+';" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></a>';
+        if (field=='radio') {
+            fieldtext += '<input type="radio" name="worset" onclick="'+settings.radio_fnc.format(clobj['id'])+';">';
+        }
+        else if (field=='select') {
+            if (settings.select_fnc) {
+                fieldtext += '<a class="'+css[field]+'" onclick="'+settings.select_fnc.format(clobj['id'])+';" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></a>';
             } else {
-                fieldtext += '<a class="'+css.actionitem+'" href="'+link+'" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></a>';
+                fieldtext += '<a class="'+css[field]+'" href="'+link+'" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></a>';
+            }
+        } else if (field=='listctrl') {
+            fieldtext += '<span class="'+css[field]+'"></span>';
+        } else if (field=='actions') {
+            fieldtext += '<span class="'+css[field]+'">';
+            if (settings.preview_fnc) {
+                fieldtext += '<a class="'+css.actionitem+'" onclick="'+settings.preview_fnc.format(clobj['id'])+';" rel="btn-tooltip" title="Preview"><i class="icon-eye-open"></i></a>';
             }
 
             // TODO: populate these actions from something more configurable, dynamic and D.R.Y.
@@ -253,11 +255,13 @@ function CollectionAPI(settings) {
             cssconf = {
                 collection : {
                     listname : 'list-main',
+                    listctrl : 'cllistctrl list-toggle',
+                    select : 'clselect btn btn-inverse btn-mini',
                     actions : 'claction btn-group pull-right',
                     actionitem : 'clactionitem btn btn-primary btn-mini',
                     info : 'clinfo btn-group pull-right',
                     infoitem : 'clinfoitem btn btn-mini disabled',
-                    creation_info : 'clcreation list-toggle',
+                    creation_info : 'clcreation',
                     description : 'cldescription shorten',
                     name : 'clname list-toggle'
                 }
@@ -272,12 +276,41 @@ function CollectionAPI(settings) {
                 collection : {
                     listname : 'list-main',
                     actions : 'claction btn-group pull-right',
+                    select : 'clselect btn btn-inverse btn-mini',
                     actionitem : 'clactionitem btn btn-primary btn-mini',
                     info : 'clinfo btn-group pull-right',
                     infoitem : 'clinfoitem btn btn-mini disabled',
                     creation_info : 'clcreation list-toggle',
                     description : 'cldescription shorten',
                     name : 'clname list-toggle'
+                }
+            }
+        } else if (format=='cl-info-navbar'){
+            cssconf = {
+                collection : {
+                    listname : 'list-main',
+                    actions : 'claction',
+                    select : 'clselect',
+                    actionitem : 'clactionitem',
+                    info : 'clinfo',
+                    infoitem : 'clinfoitem',
+                    creation_info : 'clcreation',
+                    description : 'cldescription ',
+                    name : 'clname '
+                }
+            }
+        } else if (format=='cl-list-navbar'){
+            cssconf = {
+                collection : {
+                    listname : 'list-main',
+                    select : 'clselect',
+                    actions : 'claction',
+                    actionitem : 'clactionitem',
+                    info : 'clinfo',
+                    infoitem : 'clinfoitem',
+                    creation_info : 'clcreation',
+                    description : 'cldescription',
+                    name : 'clname'
                 }
             }
         }

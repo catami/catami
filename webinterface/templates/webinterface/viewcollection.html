@@ -43,11 +43,11 @@
 
 <div class="span2">
     Collection: <span class="pull-right"><a href="#_" id="showCollectionMapLink" onclick="updateMapForSelectedCollection({{ collection_id }});">map</a></span>
-    <div id="cl-info" class="well sidepanel cl-info-sidepanel">
+    <div id="cl-info" class="well sidepanel">
     </div>
     Workset:<span class="pull-right"><a href="#_" id="clearWorksetLink"></a> &nbsp; <a href="#map" data-toggle="tab" id="showWorksetMapLink"></a></span>
     <div class="well sidepanel" style="padding:5px;">
-        <div id="ws-info" class="cl-info-sidepanel"></div><hr>
+        <div id="ws-info"></div><hr>
         <div id="ws-list"></div>
 {#        {% with "Workset" as clname %}#}
 {#            {% include "webinterface/dataviews/worksetlists.html"%}#}
@@ -101,11 +101,37 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/collections.js"></script>
     <script type="text/javascript">
 
-    // Collection info object
+    /*// Collection info object
     clinfo = new CollectionInfo();
 
     // Instantiate workset list object
-    wslist = new Collection({select_fnc : 'selectWorkset'});
+    wslist = new Collection({select_fnc : 'selectWorkset'});*/
+
+
+    // Instantiate collection list object
+    wslist = new CollectionAPI({
+        settings : {
+            radio_fnc : 'selectWorkset({0})'
+        },
+        config   : {
+            itemorder : 'radio,name,creation_info',
+            format    : 'cl-list-navbar',
+            nested    : false
+        }
+    });
+
+    // Collection info object
+    //clinfo = new CollectionInfo();
+    clinfo = new CollectionAPI({
+        config : {
+            itemorder : 'info,name,creation_info,description',
+            format    : 'cl-info-navbar',
+            nested    : false
+        }
+    });
+
+
+
 
 
     $(document).ready(function(){
@@ -116,7 +142,8 @@
         $('.cldescription').shorten({showChars : 50});          // Shorten descriptions for nicer display
 
         //setWorksetLists({{ collection_id }});
-        wslist.getWorksetList("", {{ collection_id }}, "#ws-list");   // Get workset list
+        wslist.getCollectionList('parent={{ collection_id }}', '#ws-list')
+        //wslist.getWorksetList("", {{ collection_id }}, "#ws-list");   // Get workset list
 
         initDeploymentMap();
         updateMapForSelectedCollection({{ collection_id }});
