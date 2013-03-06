@@ -12,36 +12,30 @@ function CollectionAPI(usrsettings) {
     // Default settings params
     var settings = {
         api_baseurl : '/api/dev/collection/',
-        linkurl : "/collections/",
-        preview_fnc : false,
-        select_fnc : false,
-        check_fnc : false,
-        radio_fnc : false
+        linkurl : "/collections/"
     };
     if (usrsettings.settings) $.extend(settings, usrsettings.settings);  // override defaults with input arguments
 
     // Default display config
     var config = {
-        itemorder : 'listctrl,actions,info,select,name,creation_info,description',
-        //actions   : 'preview,select,more',
-        //info      : 'date,owner,access',
-        format    : 'cl-nested-list',
-        nested    : true
+        theme    : 'cl-sidebar',
+        format   : false,
+        nested    : false,
+        linkname  : false,
+        showactions : false,
+        preview_fnc : false,
+        select_fnc : false,
+        checkbox_fnc : false,
+        radio_fnc : false,
+        unselect_fnc : false
     }
     if (usrsettings.config) $.extend(config, usrsettings.config);  // override defaults with input arguments
-
-
-    var cssconf = getCSS(config.format);
-    if (usrsettings.css_collection) $.extend(cssconf.collection, usrsettings.css_collection);  // replace defaults with input arguments
-    if (usrsettings.css_workset) $.extend(cssconf.workset, usrsettings.css_workset);  // replace defaults with input arguments
-
+    if (!config.format) config.format = getFormat(config.theme);
 
 
     /* Public methods
      ******************************************************************************************************************/
     /**
-     * Method: getFullCollectionList
-     * Get full nested list of Collections and Worksets
      *
      * @param filter
      * @param outputelement
@@ -52,35 +46,40 @@ function CollectionAPI(usrsettings) {
         outputelement = ((typeof outputelement !== 'undefined') ? outputelement : false);
         filter = ((typeof filter !== 'undefined') ? '?'+filter : '');
 
-        var list = createCollectionList(filter, cssconf.collection);
+        var list = createCollectionList(filter, 'list-main');
 
         if (outputelement) {
-            if (!$(outputelement).hasClass(config.format)) $(outputelement).addClass(config.format);
+            if (!$(outputelement).hasClass(config.theme)) $(outputelement).addClass(config.theme);
             $(outputelement).html(list);
         }
         return list;
     }
 
 
+    /**
+     *
+     * @param id
+     * @param outputelement
+     * @return {String}
+     */
     this.getCollectionInfo = function(id, outputelement) {
 
         var api_url = settings.api_baseurl+'?id='+id;
         var clinfo = '';
-        var fieldlist = config.itemorder.split(',');
 
         $.ajax({
             dataType: "json",
             async: false,  // prevent asyncronous mode to allow setting of variables within function
             url: api_url ,
             success: function(cl){
-                var clobj = cl.objects[0];
-                for (var i in fieldlist) {
-                    clinfo += getCollectionField (clobj,fieldlist[i], cssconf.collection);
-                }
+                var clobj = getClObj(cl.objects[0]);
+                clinfo = formatClObj(config.format , clobj);
             }
         });
+
+
         if (outputelement) {
-            if (!$(outputelement).hasClass(config.format)) $(outputelement).addClass(config.format);
+            if (!$(outputelement).hasClass(config.theme)) $(outputelement).addClass(config.theme);
             $(outputelement).html(clinfo);
         }
         return clinfo;
@@ -88,8 +87,7 @@ function CollectionAPI(usrsettings) {
 
 
     /**
-     * Method: collapseList
-     * Collapse nested list from getFullCollectionList()
+     *
      */
     this.collapseList = function()  {
         $('li > ul.list-sub').each(function(i) {
@@ -99,6 +97,8 @@ function CollectionAPI(usrsettings) {
 
             // Add toggle function to list-toggle class
             parent_li.find('.list-toggle').click(function() {
+                if (parent_li.find('.cllistctrl').hasClass('clopen')) parent_li.find('.cllistctrl').removeClass('clopen');
+                else parent_li.find('.cllistctrl').addClass('clopen');
                 sub_ul.toggle();
             });
             parent_li.append(sub_ul);                       // Reattach child-list.
@@ -112,11 +112,12 @@ function CollectionAPI(usrsettings) {
      ******************************************************************************************************************/
     /**
      *
-     * @param api_url
-     * @param parent_id
+     * @param filter
+     * @param listname
+     * @param showerror
      * @return {String}
      */
-    var createCollectionList = function(filter, css, showerror) {
+    var createCollectionList = function(filter, listname, showerror) {
 
         showerror = ((typeof showerror !== 'undefined') ? showerror : true);
 
@@ -128,9 +129,9 @@ function CollectionAPI(usrsettings) {
             url: settings.api_baseurl+filter ,
             success: function(cl){
                 if (cl.objects.length > 0) {
-                    list += '<ul class="'+css.listname+'">';
+                    list += '<ul class="'+listname+'">';
                     for (var i = 0; i < cl.objects.length; i++) {
-                        list += createListItem(cl.objects[i], css, filter);
+                        list += createListItem(cl.objects[i], filter);
                     }
                     list += '</ul>';
                 }
@@ -142,24 +143,22 @@ function CollectionAPI(usrsettings) {
         return list;
     }
 
+
     /**
      *
      * @param clobj
-     * @param api_url
-     * @param parent_id
+     * @param filter
      * @return {String}
      */
-    var createListItem = function(clobj, css, filter) {
-        var fieldlist = config.itemorder.split(',');
+    var createListItem = function(clobj, filter) {
 
         var listitem = '<li>';
 
-        for (var i in fieldlist) {
-            listitem += getCollectionField (clobj,fieldlist[i], css);
-        }
+        clobj = getClObj(clobj);
+        listitem += formatClObj(config.format , clobj);
 
         if ( clobj.parent_id == null && config.nested) { // This item is a parent Collection
-            listitem += createCollectionList(filter+'&parent='+clobj.id, cssconf.workset, false); // Recursive call to create nested workset list (if available)
+            listitem += createCollectionList(filter+'&parent='+clobj.id, 'list-sub well', false); // Recursive call to create nested workset list (if available)
         }
         listitem += '</li>';
 
@@ -170,214 +169,102 @@ function CollectionAPI(usrsettings) {
 
     /**
      *
-     * @param field : actions|info|name|creation|description
-     * @param css
+     * @param clobj
+     * @return {Object}
      */
-    var getCollectionField = function(clobj,field, css) {
+    function getClObj(clobj) {
+        var clobjout = {
+            id            : clobj.id,
+            name          : clobj.name,
+            description   : clobj.description,
+            username      : clobj.owner.username,
+            image_count   : clobj.image_count,
+            parent_id     : clobj.parent_id,
+            parent        : clobj.parent,
+            creation_info : clobj.creation_info,
+            creation_date : clobj.creation_date.substr(0,10),
+            access        : (clobj.is_public) ? 'Public' : 'Private',
+            link          : (clobj.parent_id) ? settings.linkurl + clobj.parent_id + '/' + clobj.id + '/' : settings.linkurl + clobj.id+'/',
+            type          : (clobj.parent_id) ? 'Workset' : 'Collection'
+        };
 
-        var fieldtext = '';
-        var link = (clobj.parent_id)
-            ? settings.linkurl + clobj.parent_id + '/' + clobj.id + '/'   // child collection (i.e: workset)
-            : settings.linkurl + clobj.id+'/';                            // parent collection
-
-
-        if (field=='radio') {
-            fieldtext += '<input type="radio" name="worset" onclick="'+settings.radio_fnc.format(clobj['id'])+';">';
-        }
-        else if (field=='select') {
-            if (settings.select_fnc) {
-                fieldtext += '<a class="'+css[field]+'" onclick="'+settings.select_fnc.format(clobj['id'])+';" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></a>';
-            } else {
-                fieldtext += '<a class="'+css[field]+'" href="'+link+'" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></a>';
-            }
-        } else if (field=='listctrl') {
-            fieldtext += '<span class="'+css[field]+'"></span>';
-        } else if (field=='actions') {
-            fieldtext += '<span class="'+css[field]+'">';
-            if (settings.preview_fnc) {
-                fieldtext += '<a class="'+css.actionitem+'" onclick="'+settings.preview_fnc.format(clobj['id'])+';" rel="btn-tooltip" title="Preview"><i class="icon-eye-open"></i></a>';
-            }
-
-            // TODO: populate these actions from something more configurable, dynamic and D.R.Y.
-            fieldtext += '<a class="'+css.actionitem+' dropdown-toggle" data-toggle="dropdown" rel="btn-tooltip" title="More..."><b class="caret"></b></a>';
-            if ( clobj.parent_id == null ) { // This item is a parent Collection
-                fieldtext += '<ul class="dropdown-menu">';
-                fieldtext += '<li class="nav-header">Jump to:</li>';
-                fieldtext += '<li><a href="'+link+'#map" title="View Workset map"><i class="icon-globe"></i> Map view</a></li>';
-                fieldtext += '<li><a href="'+link+'#thm" title="View Workset images"><i class="icon-picture"></i> Thumbnail view</a></li>';
-                fieldtext += '<li class="nav-header">Data Tasks:</li>';
-                fieldtext += '<li><a href="'+link+'#NewWorksetModal" title="Create new Workset"><i class="icon-plus"></i> Create new Workset</a></li>';
-                fieldtext += '<li><a href="'+link+'#dwn" title="Download Data"><i class="icon-download-alt"></i> Download</a></li>';
-                fieldtext += '</ul>';
-
-            } else { // This item is a child Collection (i.e: a Workset)
-                fieldtext += '<ul class="dropdown-menu">';
-                fieldtext += '<li class="nav-header">Jump to:</li>';
-                fieldtext += '<li><a href="'+link+'#map" title="View Collection map"><i class="icon-globe"></i> Map view</a></li>';
-                fieldtext += '<li><a href="'+link+'#thm" title="View Collection images"><i class="icon-picture"></i> Thumbnail view</a></li>';
-                fieldtext += '<li class="nav-header">Data Tasks</li>';
-                fieldtext += '<li><a href="/imageview" class="imageframe" data-fancybox-group="group'+clobj.id+'" data-fancybox-type="iframe" title="Annotate Workset"><i class="icon-tag"></i> Annotate Workset</a></li>';
-                fieldtext += '<li><a href="'+link+'#dwn" title="Download Data"><i class="icon-download-alt"></i> Download</a></li>';
-                fieldtext += '</ul>';
-            }
-            fieldtext += '</span>';
-
-        } else if (field=='info') {
-            var collectiontype = (clobj.parent_id) ? 'Workset' : 'Collection';
-
-            fieldtext += '<span class="'+css[field]+'">';
-            fieldtext += '<span class="'+css.infoitem+'"  rel="btn-tooltip" title="This item is a '+collectiontype+'">'+collectiontype+'</span> ';
-            fieldtext += '<span class="'+css.infoitem+'"  rel="btn-tooltip" title="This '+collectiontype+' was created on '+clobj['creation_date']+'">'+clobj['creation_date'].substr(0,10)+'</span> ';
-            fieldtext += '<span class="'+css.infoitem+'"  rel="btn-tooltip" title="This '+collectiontype+' is owned by '+clobj.owner.username+'">'+clobj.owner.username+'</span> ';
-            fieldtext += '<span class="'+css.infoitem+'"  rel="btn-tooltip" title="This '+collectiontype+' contains '+clobj.image_count+' images">'+clobj.image_count+'</span> ';
-            if (clobj.is_public) {
-                fieldtext += '<span class="'+css.infoitem+' btn-danger" rel="btn-tooltip" title="This '+collectiontype+' is publicly accessible">Public</span> ';
-            } else {
-                fieldtext += '<span class="'+css.infoitem+' btn-success" rel="btn-tooltip" title="This '+collectiontype+' is private">Private</span> ';
-            }
-            fieldtext += '</span>';
-
-        } else if (field && clobj[field]) {
-            fieldtext += '<span class="'+css[field]+'">';
-            fieldtext += clobj[field];
-            fieldtext += '</span>';
-
-        }
-
-
-        return fieldtext;
+        return clobjout;
     }
 
-    function getCSS(format) {
-        var cssconf = {};
 
-        if (format=='cl-nested-list') {
-            cssconf = {
-                collection : {
-                    listname : 'list-main',
-                    listctrl : 'cllistctrl list-toggle',
-                    select : 'clselect btn btn-inverse btn-mini',
-                    actions : 'claction btn-group pull-right',
-                    actionitem : 'clactionitem btn btn-primary btn-mini',
-                    info : 'clinfo btn-group pull-right',
-                    infoitem : 'clinfoitem btn btn-mini disabled',
-                    creation_info : 'clcreation',
-                    description : 'cldescription shorten',
-                    name : 'clname list-toggle'
-                }
-            }
-            cssconf.workset = $.extend({},cssconf.collection);
-            $.extend(cssconf.workset, {
-                listname : 'list-sub well',
-                actionitem: 'clactionitem btn btn-mini'
-            });
-        } else if (format=='cl-info-inline'){
-            cssconf = {
-                collection : {
-                    listname : 'list-main',
-                    actions : 'claction btn-group pull-right',
-                    select : 'clselect btn btn-inverse btn-mini',
-                    actionitem : 'clactionitem btn btn-primary btn-mini',
-                    info : 'clinfo btn-group pull-right',
-                    infoitem : 'clinfoitem btn btn-mini disabled',
-                    creation_info : 'clcreation list-toggle',
-                    description : 'cldescription shorten',
-                    name : 'clname list-toggle'
-                }
-            }
-        } else if (format=='cl-info-navbar'){
-            cssconf = {
-                collection : {
-                    listname : 'list-main',
-                    actions : 'claction',
-                    select : 'clselect',
-                    actionitem : 'clactionitem',
-                    info : 'clinfo',
-                    infoitem : 'clinfoitem',
-                    creation_info : 'clcreation',
-                    description : 'cldescription ',
-                    name : 'clname '
-                }
-            }
-        } else if (format=='cl-list-navbar'){
-            cssconf = {
-                collection : {
-                    listname : 'list-main',
-                    select : 'clselect',
-                    actions : 'claction',
-                    actionitem : 'clactionitem',
-                    info : 'clinfo',
-                    infoitem : 'clinfoitem',
-                    creation_info : 'clcreation',
-                    description : 'cldescription',
-                    name : 'clname'
-                }
-            }
-        }
-
-        return cssconf;
-    }
-}
-
-/*
-function CollectionInfo(settings) {
-    // Set default config params
-    var config = $.extend({},collection_config_defaults);  // clone copy of config
-    if (settings) $.extend(config, settings);  // replace defaults with input arguments
-
-    var infoclass = 'btn btn-mini disabled ';
-
-
-    this.getCollectionInfo = function(id,outputelement) {
-        nolinks = ((typeof nolinks !== 'undefined') ? nolinks : true);
-        var api_url = config.api_baseurl+'?id='+id;
-        var clinfo = '';
-        $.ajax({
-            dataType: "json",
-            async: false,  // prevent asyncronous mode to allow setting of variables within function
-            url: api_url ,
-            success: function(cl){
-                var clobj = cl.objects[0];
-                var link = ((clobj.parent == 'none') ? config.linkurl+clobj.id+'/' : link = config.linkurl+clobj.parent+'/'+clobj.id + '/');
-
-                clinfo += '<span class="clactions btn-group">';
-                if (config.preview_fnc) clinfo += '<a class="btn" onclick="'+config.select_fnc+'('+clobj.id+');" rel="btn-tooltip" title="Preview"><i class="icon-eye-open"></i></a>';
-                if (config.select_fnc) clinfo += '<a class="btn" onclick="'+config.preview_fnc+'('+clobj.id+');" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></a>';
-                clinfo += '</span> ';
-
-                clinfo += '<span class="clinfo btn-group  btn-group-vertical pull-right">';
-                if (clobj.is_public) {
-                    clinfo += '<span class="clinfoaccess '+infoclass+' btn-danger" rel="btn-tooltip" title="This item is publicly accessible">Public</span> ';
-                } else {
-                    clinfo += '<span class="clinfoaccess '+infoclass+' btn-success" rel="btn-tooltip" title="This item is private">Private</span> ';
-                }
-                clinfo += '<span class="clinfoowner '+infoclass+'" rel="btn-tooltip" title="This item is owned by '+clobj.owner.username+'">'+clobj.owner.username+'</span> ';
-                clinfo += '<span class="clinfodate '+infoclass+'" rel="btn-tooltip" title="This item was created on '+clobj.creation_date+'">'+clobj.creation_date.substr(0,10)+'</span> ';
-                //clinfo += '<span class="clinfoaccess">'+(clobj.is_public ? 'Public': 'Private') +'</span> ';
-                clinfo += '</span> ';
-
-                clinfo += '<span class="clname">' + clobj.name + '</span> ';
-                clinfo += '<br><span class="clcreation">' + clobj.creation_info+'</span> ';
-                if (clobj.description) clinfo += '<br><span class="cldescription">'+clobj.description+'</span>'
-            }
-        })
-        if (outputelement) {
-            $(outputelement).html(clinfo);
-        }
-        return clinfo;
-    }
-}
-*/
-
-//first, checks if it isn't implemented yet
-if (!String.prototype.format) {
-    String.prototype.format = function() {
-        var args = arguments;
-        return this.replace(/{(\d+)}/g, function(match, number) {
-            return typeof args[number] != 'undefined'
-                ? args[number]
+    /**
+     *
+     * @param format
+     * @param clobj
+     * @return {String|XML|void}
+     */
+    function formatClObj (format, clobj) {
+        return format.replace(/{(.*?)}/g, function(match, string) {
+            //alert(string+' : '+match+' : '+clobj[string]);
+            return typeof clobj[string] != 'undefined'
+                ? clobj[string]
                 : match
                 ;
         });
-    };
+    }
+
+
+    /**
+     *
+     * @param theme
+     * @return {String}
+     */
+    function getFormat (theme) {
+        var format = '';
+        if (theme=='cl-sidebar-name') {
+            if (config.showactions) {
+                format += '<span class="claction btn-group pull-right">';
+                if (config.select_fnc) format += '<a class="clactionitem btn btn-mini" onclick="'+config.select_fnc+';" rel="btn-tooltip" title="Select"><i class="icon-circle-arrow-up"></i></a>';
+                format += '</span>';
+            }
+            format += '<span class="clinfo btn-group pull-right"><span class="clinfoitem btn btn-mini disabled" rel="btn-tooltip" title="This {type} contains {image_count} images">{image_count}</span></span>'+
+                '<span class="clname">{name}</span>';
+        } else if (theme=='cl-sidebar') {
+            if (config.showactions) {
+                format += '<span class="claction btn-group pull-right">';
+                if (config.unselect_fnc) format += '<a class="clactionitem btn btn-mini" onclick="'+config.unselect_fnc+';" rel="btn-tooltip" title="Un-select"><i class="icon-remove-sign"></i></a>';
+                if (config.preview_fnc) format += '<a class="clactionitem btn btn-mini" onclick="'+config.preview_fnc+';" rel="btn-tooltip" title="Preview"><i class="icon-signin"></i></a>';
+                format += '</span>';
+            }
+            format += '<span class="clname">{name}</span>'+
+                '<span class="clcreation">{creation_info}</span>'+
+                '<span class="cldescription">{description}</span>';
+        }
+        else if (theme=='cl-inline-full-bootstrap') {
+            format += '<span class="cllistctrl list-toggle"></span>';
+            if (config.showactions) {
+                format += '<span class="claction btn-group pull-right">';
+                if (config.preview_fnc) format += '<a class="clactionitem btn btn-mini" onclick="'+config.preview_fnc+';" rel="btn-tooltip" title="Preview"><i class="icon-search"></i></a>';
+                if (config.select_fnc) {
+                    format += '<a class="clactionitem btn btn-mini" onclick="'+config.select_fnc+';" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></a>';
+                } else {
+                    format += '<a class="clactionitem btn btn-mini" href="{link}" rel="btn-tooltip" title="Select"><i class="icon-external-link"></i></a>';
+                }
+                format +='<a class="clactionitem btn btn-mini dropdown-toggle" data-toggle="dropdown" rel="btn-tooltip" title="More..."><b class="caret"></b></a>'+
+                    '<ul class="dropdown-menu">'+
+                    '<li class="nav-header">Jump to:</li>'+
+                    '<li><a href="{link}#map" title="View {type} map"><i class="icon-globe"></i> Map view</a></li>'+
+                    '<li><a href="{link}#thm" title="View {type} images"><i class="icon-picture"></i> Thumbnail view</a></li>'+
+                    '<li class="nav-header">Data Tasks</li>'+
+                    '<li><a href="{link}#dwn" title="Download Data"><i class="icon-download-alt"></i> Download</a></li>'+
+                    '</ul></span>';
+            }
+            format +='<span class="clinfo btn-group pull-right list-toggle">'+
+                '<span class="clinfoitem btn btn-mini disabled {type}" rel="btn-tooltip" title="This item is a {type}">{type}</span>'+
+                '<span class="clinfoitem btn btn-mini disabled" rel="btn-tooltip" title="This {type} was created on {creation_date}">{creation_date}</span>'+
+                '<span class="clinfoitem btn btn-mini disabled" rel="btn-tooltip" title="This {type} is owned by {username}">{username}</span> '+
+                '<span class="clinfoitem btn btn-mini disabled" rel="btn-tooltip" title="This {type} contains {image_count} images">{image_count}</span> '+
+                '<span class="clinfoitem btn btn-mini disabled {access}" rel="btn-tooltip" title="This {type} is {access}">{access}</span>'+
+                '</span>'+
+                '<a href="{link}" class="clname">{name}</a>'+
+                '<span class="clcreation">{creation_info}</span>'+
+                '<span class="cldescription shorten">{description}</span>';
+        }
+        return format;
+    }
 }
