@@ -9,6 +9,23 @@ from tastypie.exceptions import Unauthorized
 from tastypie.resources import ModelResource
 from .models import *
 
+
+# ==============================
+# Auth configuration for the API
+# ==============================
+
+#need this because guardian lookups require the actual django user object
+def get_real_user_object(tastypie_user_object):
+
+    # blank username is anonymous
+    if tastypie_user_object.is_anonymous():
+        user = guardian.utils.get_anonymous_user()
+    else: # if not anonymous, get the real user object from django
+        user = User.objects.get(id=tastypie_user_object.id)
+
+    #send it off
+    return user
+
 # Used to allow authent of anonymous users for GET requests
 class AnonymousGetAuthentication(SessionAuthentication):
 
@@ -22,21 +39,9 @@ class AnonymousGetAuthentication(SessionAuthentication):
 
 class CampaignAuthorization(Authorization):
 
-    #need this because guardian lookups require the actual django user object
-    def get_real_user_object(self, tastypie_user_object):
-
-        # blank username is anonymous
-        if tastypie_user_object.is_anonymous():
-            user = guardian.utils.get_anonymous_user()
-        else: # if not anonymous, get the real user object from django
-            user = User.objects.get(id=tastypie_user_object.id)
-
-        #send it off
-        return user
-
     def read_list(self, object_list, bundle):
         # get real user object
-        user = self.get_real_user_object(bundle.request.user)
+        user = get_real_user_object(bundle.request.user)
 
         # get the objects the user has permission to see
         user_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
@@ -46,10 +51,59 @@ class CampaignAuthorization(Authorization):
 
     def read_detail(self, object_list, bundle):
         # get real user
-        user = self.get_real_user_object(bundle.request.user)
+        user = get_real_user_object(bundle.request.user)
 
         # check the user has permission to view this object
         if user.has_perm('catamidb.view_campaign', bundle.obj):
+            return True
+
+
+        # raise hell! - https://github.com/toastdriven/django-tastypie/issues/826
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
+class DeploymentAuthorization(Authorization):
+
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
+
+        deployment_objects = []
+
+        for deployment in object_list:
+            if campaign_objects.__contains__(deployment.campaign):
+                deployment_objects.append(deployment)
+
+        # send em off
+        return deployment_objects
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('catamidb.view_campaign', bundle.obj.campaign):
             return True
 
         # raise hell! - https://github.com/toastdriven/django-tastypie/issues/826
@@ -74,12 +128,112 @@ class CampaignAuthorization(Authorization):
     def delete_detail(self, object_list, bundle):
         raise Unauthorized("Sorry, no deletes.")
 
+class PoseAuthorization(Authorization):
+
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
+
+        deployment_objects = []
+
+        for pose in object_list:
+            if campaign_objects.__contains__(pose.deployment.campaign):
+                deployment_objects.append(pose)
+
+        # send em off
+        return deployment_objects
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('catamidb.view_campaign', bundle.obj.deployment.campaign):
+            return True
+
+        # raise hell! - https://github.com/toastdriven/django-tastypie/issues/826
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
+class ImageAuthorization(Authorization):
+
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
+
+        deployment_objects = []
+
+        for image in object_list:
+            if campaign_objects.__contains__(image.pose.deployment.campaign):
+                deployment_objects.append(image)
+
+        # send em off
+        return deployment_objects
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('catamidb.view_campaign', bundle.obj.pose.deployment.campaign):
+            return True
+
+        # raise hell! - https://github.com/toastdriven/django-tastypie/issues/826
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
+# ========================
+# API configuration
+# ========================
+
 class CampaignResource(ModelResource):
 
     class Meta:
         queryset = Campaign.objects.all()
         resource_name = "campaign"
-        authentication = MultiAuthentication(AnonymousGetAuthentication(), BasicAuthentication(), ApiKeyAuthentication())
+        authentication = MultiAuthentication(AnonymousGetAuthentication(), ApiKeyAuthentication())
         authorization = CampaignAuthorization()
         allowed_methods = ['get']
 
@@ -111,16 +265,18 @@ class CampaignResource(ModelResource):
 #        bundle = self._meta.authorization.apply_limits(request, bundle)
 #        return super(CampaignResource, self).obj_update(bundle, request, **kwargs)
 
-
 class DeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
 
     class Meta:
         queryset = Deployment.objects.all()
         resource_name = "deployment"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(), ApiKeyAuthentication())
+        authorization = DeploymentAuthorization()
         filtering = {
             'campaign': ALL_WITH_RELATIONS,
         }
+        allowed_methods = ['get']
 
 class PoseResource(ModelResource):
     deployment = fields.ForeignKey(DeploymentResource, 'deployment')
@@ -130,9 +286,12 @@ class PoseResource(ModelResource):
     class Meta:
         queryset = Pose.objects.all()
         resource_name = "pose"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(), ApiKeyAuthentication())
+        authorization = PoseAuthorization()
         filtering = {
             'deployment': ALL_WITH_RELATIONS,
         }
+        allowed_methods = ['get']
 
     def dehydrate_measurements(self, bundle):
         # change to view a small subset of the info
@@ -163,7 +322,6 @@ class PoseResource(ModelResource):
 
         return outlist
 
-
 class ImageResource(ModelResource):
     pose = fields.ForeignKey(PoseResource, 'pose')
     measurements = fields.ToManyField('catamidb.api.ScientificImageMeasurementResource', 'scientificimagemeasurement_set')
@@ -173,10 +331,13 @@ class ImageResource(ModelResource):
         queryset = Image.objects.all()
         resource_name = "image"
         excludes = ['archive_location']
+        authentication = MultiAuthentication(AnonymousGetAuthentication(), ApiKeyAuthentication())
+        authorization = ImageAuthorization()
         filtering = {
             'pose': ALL_WITH_RELATIONS,
             'collection': ALL,
         }
+        allowed_methods = ['get']
 
     def dehydrate_measurements(self, bundle):
         # change to view a small subset of the info
@@ -192,11 +353,11 @@ class ImageResource(ModelResource):
 
         return outlist
 
-
 class ScientificMeasurementTypeResource(ModelResource):
     class Meta:
         queryset = ScientificMeasurementType.objects.all()
         resource_name = "scientificmeasurementtype"
+        allowed_methods = ['get']
 
 
 class ScientificPoseMeasurementResource(ModelResource):
@@ -209,7 +370,7 @@ class ScientificPoseMeasurementResource(ModelResource):
         filtering = {
             'pose': 'exact',
         }
-
+        allowed_methods = ['get']
 
 class ScientificImageMeasurementResource(ModelResource):
     image = fields.ToOneField('catamidb.models.ImageResource', 'image')
@@ -220,21 +381,32 @@ class ScientificImageMeasurementResource(ModelResource):
         filtering = {
             'image': 'exact',
         }
+        allowed_methods = ['get']
 
 
 class AUVDeploymentResource(ModelResource):
     class Meta:
         queryset = AUVDeployment.objects.all()
         resource_name = "auvdeployment"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(), ApiKeyAuthentication())
+        authorization = DeploymentAuthorization()
+        allowed_methods = ['get']
 
 
 class BRUVDeploymentResource(ModelResource):
     class Meta:
         queryset = BRUVDeployment.objects.all()
         resource_name = "bruvdeployment"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(), ApiKeyAuthentication())
+        authorization = DeploymentAuthorization()
+        allowed_methods = ['get']
 
 
 class DOVDeploymentResource(ModelResource):
     class Meta:
         queryset = DOVDeployment.objects.all()
         resource_name = "dovdeployment"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(), ApiKeyAuthentication())
+        authorization = DeploymentAuthorization()
+        allowed_methods = ['get']
+
