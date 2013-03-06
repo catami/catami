@@ -188,16 +188,23 @@
             queryVisible: true,
             eventListeners: {
                 getfeatureinfo: function(event) {
-                    var popup = new OpenLayers.Popup.FramedCloud(
-                            "Details",
-                            deploymentMap.getLonLatFromPixel(event.xy),
-                            null,
-                            event.text,
-                            null,
-                            true,
-                            null
-                    );
-                    deploymentMap.addPopup(popup, true);
+                	if (event.text.search('ServiceExceptionReport') > 0 ) {
+	                	event.text='<p>I have encountered an error looking for Catami image data,<br>please contact <a href="mailto:catami@ivec.org?subject=Catami%20Error%20Report&body=Error%20Text%0A%0A'+encodeURIComponent(event.text)+'%0A%0APlease%20enter%20any%20other%20revelant%20information."><br>Catami Support</a></p>';
+                    };
+                    
+                    //ugly hack:  if there are no img tags there are no thumbnails, so the popup would be empty.
+					if (event.text.search('img') != -1){
+						var popup = new OpenLayers.Popup.FramedCloud(
+						        "Details",
+						        deploymentMap.getLonLatFromPixel(event.xy),
+						        null,
+						        event.text,
+						        null,
+						        true,
+						        null
+						);
+						deploymentMap.addPopup(popup, true);
+					};
                 }
             }
         });
