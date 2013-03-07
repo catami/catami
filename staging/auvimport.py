@@ -321,12 +321,11 @@ def auvdeployment_import(auvdeployment, files):
 
         pose.deployment = auvdeployment
 
-        seconds, centiseconds = row['second'].split('.')
         pose_datetime = datetime.datetime.strptime(os.path.splitext(image_name)[0], "PR_%Y%m%d_%H%M%S_%f_LC16")
         pose.date_time = pose_datetime.replace(tzinfo=tzutc())
         pose.position = "POINT ({0} {1})".format(row['longitude'], row['latitude'])
 
-        pose.depth = row['depth']
+        pose.depth = float(row['depth'])
 
         # save now as it is complete and so image
         # can refer to it
