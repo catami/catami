@@ -69,7 +69,6 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
             raise Exception("Could not create thumbnail location, full path: {0}".format(webimage_path))
 
     # now actually move/convert the images
-    logger.debug("Trying to read image file: " + image_path)
     image = cv2.imread(image_path)
 
     # save the web version
