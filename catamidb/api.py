@@ -44,7 +44,7 @@ class CampaignAuthorization(Authorization):
         user = get_real_user_object(bundle.request.user)
 
         # get the objects the user has permission to see
-        user_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
+        user_objects = get_objects_for_user(user, ['catamidb.view_campaign'], object_list)
 
         # send em off
         return user_objects
@@ -56,7 +56,6 @@ class CampaignAuthorization(Authorization):
         # check the user has permission to view this object
         if user.has_perm('catamidb.view_campaign', bundle.obj):
             return True
-
 
         # raise hell! - https://github.com/toastdriven/django-tastypie/issues/826
         raise Unauthorized()
@@ -89,11 +88,12 @@ class DeploymentAuthorization(Authorization):
         # get the objects the user has permission to see
         campaign_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
 
-        deployment_objects = []
+        # get all deployments for the above allowable campaigns
+        deployments = Deployment.objects.select_related("campaign")
+        deployment_ids = deployments.filter(campaign__in=campaign_objects).values_list('id')
 
-        for deployment in object_list:
-            if campaign_objects.__contains__(deployment.campaign):
-                deployment_objects.append(deployment)
+        #now filter out the deployments we are not allowed to see
+        deployment_objects = object_list.filter(id__in=deployment_ids)
 
         # send em off
         return deployment_objects
@@ -137,14 +137,15 @@ class PoseAuthorization(Authorization):
         # get the objects the user has permission to see
         campaign_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
 
-        deployment_objects = []
+        # get all poses for the above allowable campaigns
+        poses = Pose.objects.select_related("deployment__campaign")
+        pose_ids = poses.filter(deployment__campaign__in=campaign_objects).values_list('id')
 
-        for pose in object_list:
-            if campaign_objects.__contains__(pose.deployment.campaign):
-                deployment_objects.append(pose)
+        #now filter out the poses we are not allowed to see
+        pose_objects = object_list.filter(id__in=pose_ids)
 
         # send em off
-        return deployment_objects
+        return pose_objects
 
     def read_detail(self, object_list, bundle):
         # get real user
@@ -185,14 +186,15 @@ class ImageAuthorization(Authorization):
         # get the objects the user has permission to see
         campaign_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
 
-        deployment_objects = []
+        # get all images for the above allowable campaigns
+        images = Image.objects.select_related("pose__deployment__campaign")
+        image_ids = images.filter(pose__deployment__campaign__in=campaign_objects).values_list('id')
 
-        for image in object_list:
-            if campaign_objects.__contains__(image.pose.deployment.campaign):
-                deployment_objects.append(image)
+        #now filter out the images we are not allowed to see
+        image_objects = object_list.filter(id__in=image_ids)
 
         # send em off
-        return deployment_objects
+        return image_objects
 
     def read_detail(self, object_list, bundle):
         # get real user
