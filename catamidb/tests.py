@@ -521,5 +521,251 @@ class TestImageResource(ResourceTestCase):
         response = self.anon_api_client.get(self.image_url + "3/", format='json')
         self.assertHttpUnauthorized(response)
 
+class TestScientificPoseMeasurementResource(ResourceTestCase):
+
+    def setUp(self):
+
+        #Tastypie stuff
+        super(TestScientificPoseMeasurementResource, self).setUp()
+
+        self.bob_api_client = TestApiClient()
+        self.bill_api_client = TestApiClient()
+        self.anon_api_client = TestApiClient()
+
+        # Create a user bob.
+        self.user_bob_username = 'bob'
+        self.user_bob_password = 'bob'
+        self.user_bob = User.objects.create_user(self.user_bob_username, 'daniel@example.com', self.user_bob_password)
+
+        # Create a user bob.
+        self.user_bill_username = 'bill'
+        self.user_bill_password = 'bill'
+        self.user_bill = User.objects.create_user(self.user_bill_username, 'daniel@example.com', self.user_bill_password)
+
+        self.bob_api_client.client.login(username='bob', password='bob')
+        self.bill_api_client.client.login(username='bill', password='bill')
+
+        #assign users to the Public group
+        public_group, created = Group.objects.get_or_create(name='Public')
+        self.user_bob.groups.add(public_group)
+        self.user_bill.groups.add(public_group)
+        guardian.utils.get_anonymous_user().groups.add(public_group)
+
+        #make a couple of campaigns and save
+        self.campaign_bobs = mommy.make_one('catamidb.Campaign', id=1)
+        self.campaign_bills = mommy.make_one('catamidb.Campaign', id=2)
+
+        #make a deployments
+        self.deployment_bobs = mommy.make_recipe('catamidb.auvdeployment1', id=1, campaign=self.campaign_bobs)
+        self.deployment_bills = mommy.make_recipe('catamidb.auvdeployment2', id=2, campaign=self.campaign_bills)
+
+        #make poses
+        self.pose_bobs = mommy.make_recipe('catamidb.pose1', id=1, deployment=self.deployment_bobs)
+        self.pose_bills = mommy.make_recipe('catamidb.pose2', id=2, deployment=self.deployment_bills)
+
+        #make cameras
+        self.camera_bobs = mommy.make_one('catamidb.Camera',id=1,deployment=self.deployment_bobs)
+        self.camera_bills = mommy.make_one('catamidb.Camera',id=2,deployment=self.deployment_bills)
+
+        #make pose measurements
+        self.pose_measurement_bobs = mommy.make_one('catamidb.ScientificPoseMeasurement', id=1, pose=self.pose_bobs)
+        self.pose_measurement_bills = mommy.make_one('catamidb.ScientificPoseMeasurement', id=2, pose=self.pose_bills)
+
+        #assign this one to bob
+        authorization.apply_campaign_permissions(self.user_bob, self.campaign_bobs)
+
+        #assign this one to bill
+        authorization.apply_campaign_permissions(self.user_bill, self.campaign_bills)
+
+        #the API url for campaigns
+        self.pose_measurement_url = '/api/dev/scientificposemeasurement/'
+
+        self.post_data = []
+
+    # can only do GET at this stage
+    def test_pose_measurement_operations_disabled(self):
+
+        # test that we can NOT create
+        self.assertHttpMethodNotAllowed(self.anon_api_client.post(self.pose_measurement_url, format='json', data=self.post_data))
+
+        # test that we can NOT modify
+        self.assertHttpMethodNotAllowed(self.anon_api_client.put(self.pose_measurement_url + self.deployment_bobs.id.__str__() + "/", format='json', data={}))
+
+        # test that we can NOT delete
+        self.assertHttpMethodNotAllowed(self.anon_api_client.delete(self.pose_measurement_url + self.deployment_bobs.id.__str__() + "/", format='json'))
+
+        # test that we can NOT create authenticated
+        self.assertHttpMethodNotAllowed(self.bob_api_client.post(self.pose_measurement_url, format='json', data=self.post_data))
+
+        # test that we can NOT modify authenticated
+        self.assertHttpMethodNotAllowed(self.bob_api_client.put(self.pose_measurement_url + self.deployment_bobs.id.__str__() + "/", format='json', data={}))
+
+        # test that we can NOT delete authenticated
+        self.assertHttpMethodNotAllowed(self.bob_api_client.delete(self.pose_measurement_url + self.deployment_bobs.id.__str__() + "/", format='json'))
+
+    def test_pose_measurement_operations_as_authorised_users(self):
+        # create a campaign & deployment that ONLY bill can see
+        bills_campaign = mommy.make_one('catamidb.Campaign', id=3)
+        bills_deployment = mommy.make_recipe('catamidb.auvdeployment', id=3, campaign=bills_campaign)
+        bills_pose = mommy.make_recipe('catamidb.pose3', id=3, deployment=bills_deployment)
+        bills_camera = mommy.make_one('catamidb.Camera',id=3,deployment=bills_deployment)
+        bills_pose_measurement = mommy.make_one('catamidb.ScientificPoseMeasurement', id=3, pose=bills_pose)
+        assign('view_campaign', self.user_bill, bills_campaign)
+
+        # check that bill can see via the API
+        response = self.bill_api_client.get(self.pose_measurement_url, format='json')
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+
+        # check that bill can get to the object itself
+        response = self.bill_api_client.get(self.pose_measurement_url + "3/", format='json')
+        self.assertValidJSONResponse(response)
+
+        # check that bob can not see - now we know tastypie API has correct permission validation
+        response = self.bob_api_client.get(self.pose_measurement_url, format='json')
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+
+        # check bob can NOT get to the hidden object
+        response = self.bob_api_client.get(self.pose_measurement_url + "3/", format='json')
+        self.assertHttpUnauthorized(response)
+
+        #check that anonymous can see public ones as well
+        response = self.anon_api_client.get(self.pose_measurement_url, format='json')
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+
+        #check anonymous can NOT get to the hidden object
+        response = self.anon_api_client.get(self.pose_measurement_url + "3/", format='json')
+        self.assertHttpUnauthorized(response)
+
+class TestScientificImageMeasurementResource(ResourceTestCase):
+
+    def setUp(self):
+
+        #Tastypie stuff
+        super(TestScientificImageMeasurementResource, self).setUp()
+
+        self.bob_api_client = TestApiClient()
+        self.bill_api_client = TestApiClient()
+        self.anon_api_client = TestApiClient()
+
+        # Create a user bob.
+        self.user_bob_username = 'bob'
+        self.user_bob_password = 'bob'
+        self.user_bob = User.objects.create_user(self.user_bob_username, 'daniel@example.com', self.user_bob_password)
+
+        # Create a user bob.
+        self.user_bill_username = 'bill'
+        self.user_bill_password = 'bill'
+        self.user_bill = User.objects.create_user(self.user_bill_username, 'daniel@example.com', self.user_bill_password)
+
+        self.bob_api_client.client.login(username='bob', password='bob')
+        self.bill_api_client.client.login(username='bill', password='bill')
+
+        #assign users to the Public group
+        public_group, created = Group.objects.get_or_create(name='Public')
+        self.user_bob.groups.add(public_group)
+        self.user_bill.groups.add(public_group)
+        guardian.utils.get_anonymous_user().groups.add(public_group)
+
+        #make a couple of campaigns and save
+        self.campaign_bobs = mommy.make_one('catamidb.Campaign', id=1)
+        self.campaign_bills = mommy.make_one('catamidb.Campaign', id=2)
+
+        #make a deployments
+        self.deployment_bobs = mommy.make_recipe('catamidb.auvdeployment1', id=1, campaign=self.campaign_bobs)
+        self.deployment_bills = mommy.make_recipe('catamidb.auvdeployment2', id=2, campaign=self.campaign_bills)
+
+        #make poses
+        self.pose_bobs = mommy.make_recipe('catamidb.pose1', id=1, deployment=self.deployment_bobs)
+        self.pose_bills = mommy.make_recipe('catamidb.pose2', id=2, deployment=self.deployment_bills)
+
+        #make cameras
+        self.camera_bobs = mommy.make_one('catamidb.Camera',id=1,deployment=self.deployment_bobs)
+        self.camera_bills = mommy.make_one('catamidb.Camera',id=2,deployment=self.deployment_bills)
+
+        #make images
+        self.image_bobs = mommy.make_one('catamidb.Image', id=1, pose=self.pose_bobs, camera=self.camera_bobs)
+        self.image_bills = mommy.make_one('catamidb.Image', id=2, pose=self.pose_bills, camera=self.camera_bills)
+
+        #make image measurements
+        self.image_measurement_bobs = mommy.make_one('catamidb.ScientificImageMeasurement', id=1, image=self.image_bobs)
+        self.image_measurement_bills = mommy.make_one('catamidb.ScientificImageMeasurement', id=2, image=self.image_bills)
+
+        #assign this one to bob
+        authorization.apply_campaign_permissions(self.user_bob, self.campaign_bobs)
+
+        #assign this one to bill
+        authorization.apply_campaign_permissions(self.user_bill, self.campaign_bills)
+
+        #the API url for campaigns
+        self.image_measurement_url = '/api/dev/scientificimagemeasurement/'
+
+        self.post_data = []
+
+    # can only do GET at this stage
+    def test_image_measurement_operations_disabled(self):
+
+        # test that we can NOT create
+        self.assertHttpMethodNotAllowed(self.anon_api_client.post(self.image_measurement_url, format='json', data=self.post_data))
+
+        # test that we can NOT modify
+        self.assertHttpMethodNotAllowed(self.anon_api_client.put(self.image_measurement_url + self.deployment_bobs.id.__str__() + "/", format='json', data={}))
+
+        # test that we can NOT delete
+        self.assertHttpMethodNotAllowed(self.anon_api_client.delete(self.image_measurement_url + self.deployment_bobs.id.__str__() + "/", format='json'))
+
+        # test that we can NOT create authenticated
+        self.assertHttpMethodNotAllowed(self.bob_api_client.post(self.image_measurement_url, format='json', data=self.post_data))
+
+        # test that we can NOT modify authenticated
+        self.assertHttpMethodNotAllowed(self.bob_api_client.put(self.image_measurement_url + self.deployment_bobs.id.__str__() + "/", format='json', data={}))
+
+        # test that we can NOT delete authenticated
+        self.assertHttpMethodNotAllowed(self.bob_api_client.delete(self.image_measurement_url + self.deployment_bobs.id.__str__() + "/", format='json'))
+
+    def test_image_measurement_operations_as_authorised_users(self):
+        # create a campaign & deployment that ONLY bill can see
+        bills_campaign = mommy.make_one('catamidb.Campaign', id=3)
+        bills_deployment = mommy.make_recipe('catamidb.auvdeployment', id=3, campaign=bills_campaign)
+        bills_pose = mommy.make_recipe('catamidb.pose3', id=3, deployment=bills_deployment)
+        bills_camera = mommy.make_one('catamidb.Camera',id=3,deployment=bills_deployment)
+        bills_image = mommy.make_one('catamidb.Image', id=3, pose=bills_pose, camera=bills_camera)
+        bills_image_measurement = mommy.make_one('catamidb.ScientificImageMeasurement', id=3, image=bills_image)
+        assign('view_campaign', self.user_bill, bills_campaign)
+
+        # check that bill can see via the API
+        response = self.bill_api_client.get(self.image_measurement_url, format='json')
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+
+        # check that bill can get to the object itself
+        response = self.bill_api_client.get(self.image_measurement_url + "3/", format='json')
+        self.assertValidJSONResponse(response)
+
+        # check that bob can not see - now we know tastypie API has correct permission validation
+        response = self.bob_api_client.get(self.image_measurement_url, format='json')
+
+        print "==================================="
+        print self.deserialize(response)['objects']
+        print "==================================="
+
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+
+        # check bob can NOT get to the hidden object
+        response = self.bob_api_client.get(self.image_measurement_url + "3/", format='json')
+        self.assertHttpUnauthorized(response)
+
+        #check that anonymous can see public ones as well
+        response = self.anon_api_client.get(self.image_measurement_url, format='json')
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+
+        #check anonymous can NOT get to the hidden object
+        response = self.anon_api_client.get(self.image_measurement_url + "3/", format='json')
+        self.assertHttpUnauthorized(response)
+
 if __name__ == '__main__':
     unittest.main()

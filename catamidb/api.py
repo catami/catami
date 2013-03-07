@@ -226,6 +226,105 @@ class ImageAuthorization(Authorization):
     def delete_detail(self, object_list, bundle):
         raise Unauthorized("Sorry, no deletes.")
 
+class ScientificPoseMeasurementAuthorization(Authorization):
+
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
+
+        # get all measurements for the above allowable campaigns
+        measurements = ScientificPoseMeasurement.objects.select_related("pose__deployment__campaign")
+        measurement_ids = measurements.filter(pose__deployment__campaign__in=campaign_objects).values_list('id')
+
+        #now filter out the measurements we are not allowed to see
+        measurement_objects = object_list.filter(id__in=measurement_ids)
+
+        # send em off
+        return measurement_objects
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('catamidb.view_campaign', bundle.obj.pose.deployment.campaign):
+            return True
+
+        # raise hell! - https://github.com/toastdriven/django-tastypie/issues/826
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
+class ScientificImageMeasurementAuthorization(Authorization):
+
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, ['catamidb.view_campaign'])
+
+        # get all measurements for the above allowable campaigns
+        measurements = ScientificImageMeasurement.objects.select_related("image__pose__deployment__campaign")
+        measurements2 = measurements.filter(image__pose__deployment__campaign__in=campaign_objects)
+        measurement_ids = measurements2.values_list('id')
+
+        #now filter out the measurements we are not allowed to see
+        measurement_objects = object_list.filter(id__in=measurement_ids)
+
+        # send em off
+        return measurement_objects
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('catamidb.view_campaign', bundle.obj.image.pose.deployment.campaign):
+            return True
+
+        # raise hell! - https://github.com/toastdriven/django-tastypie/issues/826
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
 # ========================
 # API configuration
 # ========================
@@ -361,7 +460,6 @@ class ScientificMeasurementTypeResource(ModelResource):
         resource_name = "scientificmeasurementtype"
         allowed_methods = ['get']
 
-
 class ScientificPoseMeasurementResource(ModelResource):
     pose = fields.ToOneField('catamidb.api.PoseResource', 'pose')
     mtype = fields.ToOneField('catamidb.api.ScientificMeasurementTypeResource', "measurement_type", full=True)
@@ -369,17 +467,21 @@ class ScientificPoseMeasurementResource(ModelResource):
     class Meta:
         queryset = ScientificPoseMeasurement.objects.all()
         resource_name = "scientificposemeasurement"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(), ApiKeyAuthentication())
+        authorization = ScientificPoseMeasurementAuthorization()
         filtering = {
             'pose': 'exact',
         }
         allowed_methods = ['get']
 
 class ScientificImageMeasurementResource(ModelResource):
-    image = fields.ToOneField('catamidb.models.ImageResource', 'image')
+    image = fields.ToOneField('catamidb.api.ImageResource', 'image')
 
     class Meta:
         queryset = ScientificImageMeasurement.objects.all()
         resource_name = "scientificimagemeasurement"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(), ApiKeyAuthentication())
+        authorization = ScientificImageMeasurementAuthorization()
         filtering = {
             'image': 'exact',
         }
