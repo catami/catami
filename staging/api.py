@@ -2,8 +2,9 @@ from tastypie import fields
 from tastypie.resources import ModelResource, Resource, Bundle
 from tastypie.exceptions import NotFound, BadRequest
 from tastypie.utils import trailing_slash
-from tastypie.authentication import BasicAuthentication
-from tastypie.authorization import ReadOnlyAuthorization
+from tastypie.authentication import Authentication, SessionAuthentication, MultiAuthentication, ApiKeyAuthentication
+from tastypie.authorization import Authorization
+from tastypie.exceptions import Unauthorized
 
 import staging.settings as staging_settings
 import staging.forms as staging_forms
@@ -37,6 +38,15 @@ class StagingFileObject(object):
     def to_dict(self):
         return self._data
 
+class StagingAuthorization(Authorization):
+    def post_auv(self, object_list, bundle):
+        logger.debug("Checking create_auv permissions.")
+        request = bundle.request
+        if hasattr(request, 'user') and request.user.is_authenticated():
+            return True
+        else:
+            raise Unauthorized("You do not have permission to create auv deployments.")
+
 
 class StagingFilesResource(Resource):
     """Read only resource that allows exploration of the staging area."""
@@ -50,9 +60,10 @@ class StagingFilesResource(Resource):
     class Meta:
         resource_name = 'stagingfiles'
         object_class = StagingFileObject
-        auv_create_allowed_methods = ['post']
-        authentication = BasicAuthentication()
-        authorization = ReadOnlyAuthorization()
+        auv_allowed_methods = ['post']
+        allowed_methods = ['get', 'post']
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), Authentication())
+        authorization = StagingAuthorization()
 
     def detail_uri_kwargs(self, bundle_or_obj):
         kwargs = {}
@@ -186,8 +197,6 @@ class StagingFilesResource(Resource):
             return BadRequest("Invalid resource lookup data provided (mismatched type).")
 
     def dehydrate(self, bundle):
-        print bundle
-        print bundle.obj.actions
         bundle.actions = bundle.obj.actions
         bundle.data['actions'] = bundle.obj.actions
         return bundle
@@ -213,16 +222,15 @@ class StagingFilesResource(Resource):
 
     # will become prepend_urls on upgrade to 0.9.12 (is deprecated at that point)
     def prepend_urls(self):
-        return [url(r"^(?P<resource_name>%s)/create/(?P<pk>\w[\w/-]*)/auv%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('auv_create'), name="api_auv_create")]
+        return [url(r"^(?P<resource_name>%s)/create/(?P<pk>\w[\w/-]*)/auv%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('dispatch_auv'), name="api_auv")]
 
-    def auv_create(self, request, **kwargs):
-        return self.dispatch("auv_create", request, **kwargs)
+    def dispatch_auv(self, request, **kwargs):
+        return self.dispatch("auv", request, **kwargs)
 
-    def post_auv_create(self, request, **kwargs):
+    def post_auv(self, request, **kwargs):
         # should extract and validate the form...
         form = staging_forms.ApiDeploymentForm(request.POST)
         if form.is_valid():
-            print "Validated"
             # extract the path we are working with
             base = staging_settings.STAGING_IMPORT_DIR
             path = os.path.join(base, kwargs['pk'].decode('hex'))
@@ -241,15 +249,13 @@ class StagingFilesResource(Resource):
             # now pass to the parsing function
             try:
                 AUVImporter.import_path(created_deployment, path)
+                logger.debug("AUVImporter Run successfully.")
+                return self.create_response(request, created_deployment)
             except Exception:
                 logger.exception("Unable to import deployment.")
 
-            print "Exiting!"
-
             # then return the new deployment
-            return self.create_response(request, created_deployment)
 
         # on failure... not sure what to do yet
         # probably just return the form
         # or call the original view that should have created it?
-        print "Invalid"
