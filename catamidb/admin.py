@@ -11,8 +11,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
-
 admin.site.register(Campaign, admin.GeoModelAdmin)
 admin.site.register(Deployment, admin.GeoModelAdmin)
 admin.site.register(Pose, admin.GeoModelAdmin)

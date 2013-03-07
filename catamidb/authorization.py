@@ -8,6 +8,7 @@ from userena.signals import signup_complete
 
 logger = logging.getLogger(__name__)
 
+
 # this is to be called from webinterface urls.py
 def on_startup_configuration():
 
@@ -23,6 +24,7 @@ def on_startup_configuration():
     guardian.utils.get_anonymous_user().groups.add(public_group)
     logger.debug("Assigned AnonymousUser to the Public group.")
 
+
 #this is for listening to when userena is finished registering users
 @receiver(signup_complete)
 def on_signup_assign_to_public_group(sender, **kwargs):
@@ -31,10 +33,12 @@ def on_signup_assign_to_public_group(sender, **kwargs):
     public_group, created = Group.objects.get_or_create(name='Public')
     kwargs.get('user').groups.add(public_group)
 
+
 # default permissions for campaign objects
 def apply_campaign_permissions(user, campaign):
     #assign all permissions view, add, change, delete
-    logger.debug("Applying owner permissions to campaign: " + campaign.short_name)
+    logger.debug("Applying owner permissions to campaign: " + campaign.
+        short_name)
 
     assign('view_campaign', user, campaign)
     assign('add_campaign', user, campaign)

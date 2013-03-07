@@ -16,6 +16,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class CampaignManager(models.GeoManager):
     """Model Manager for Campaign.
     
@@ -37,6 +38,7 @@ class CampaignManager(models.GeoManager):
                 date_start__month=month,
                 short_name=short_name
                 )
+
 
 class Campaign(models.Model):
     """A campaign describes a field campaign that has many deployments."""
@@ -67,8 +69,7 @@ class Campaign(models.Model):
     class Meta:
         """Defines Metaparameters of the model."""
         unique_together = (('date_start', 'short_name'), )
-        permissions = (('view_campaign', 'View the campaign'),)
-
+        permissions = (('view_campaign', 'View the campaign'), )
 
 
 class DeploymentManager(models.GeoManager):

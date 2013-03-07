@@ -28,7 +28,11 @@ auvdeployment1 = Recipe(AUVDeployment,
     end_time_stamp=datetime.now(),
     min_depth=10.0,
     max_depth=50.0,
-    transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0)))
+    transect_shape=Polygon(((0.0, 0.0),
+                            (0.0, 50.0),
+                            (50.0, 50.0),
+                            (50.0, 0.0),
+                            (0.0, 0.0)))
 )
 
 auvdeployment2 = Recipe(AUVDeployment,
@@ -38,7 +42,11 @@ auvdeployment2 = Recipe(AUVDeployment,
     end_time_stamp=datetime.now(),
     min_depth=10.0,
     max_depth=50.0,
-    transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0)))
+    transect_shape=Polygon(((0.0, 0.0),
+                            (0.0, 50.0),
+                            (50.0, 50.0),
+                            (50.0, 0.0),
+                            (0.0, 0.0)))
 )
 
 auvdeployment = Recipe(AUVDeployment,
@@ -48,7 +56,11 @@ auvdeployment = Recipe(AUVDeployment,
     end_time_stamp=datetime.now(),
     min_depth=10.0,
     max_depth=50.0,
-    transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0)))
+    transect_shape=Polygon(((0.0, 0.0),
+                            (0.0, 50.0),
+                            (50.0, 50.0),
+                            (50.0, 0.0),
+                            (0.0, 0.0)))
 )
 
 dovdeployment = Recipe(DOVDeployment,
@@ -58,7 +70,11 @@ dovdeployment = Recipe(DOVDeployment,
     end_time_stamp=datetime.now(),
     min_depth=10.0,
     max_depth=50.0,
-    transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0)))
+    transect_shape=Polygon(((0.0, 0.0),
+                            (0.0, 50.0),
+                            (50.0, 50.0),
+                            (50.0, 0.0),
+                            (0.0, 0.0)))
 )
 
 bruvdeployment = Recipe(BRUVDeployment,
@@ -68,7 +84,11 @@ bruvdeployment = Recipe(BRUVDeployment,
     end_time_stamp=datetime.now(),
     min_depth=10.0,
     max_depth=50.0,
-    transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0)))
+    transect_shape=Polygon(((0.0, 0.0),
+                            (0.0, 50.0),
+                            (50.0, 50.0),
+                            (50.0, 0.0),
+                            (0.0, 0.0)))
 
 )
 
@@ -79,7 +99,11 @@ tvdeployment = Recipe(TVDeployment,
     end_time_stamp=datetime.now(),
     min_depth=10.0,
     max_depth=50.0,
-    transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0)))
+    transect_shape=Polygon(((0.0, 0.0),
+                            (0.0, 50.0),
+                            (50.0, 50.0),
+                            (50.0, 0.0),
+                            (0.0, 0.0)))
 
 )
 
@@ -90,4 +114,8 @@ tideployment = Recipe(TIDeployment,
     end_time_stamp=datetime.now(),
     min_depth=10.0,
     max_depth=50.0,
-    transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))))
+    transect_shape=Polygon(((0.0, 0.0),
+                            (0.0, 50.0),
+                            (50.0, 50.0),
+                            (50.0, 0.0),
+                            (0.0, 0.0))))
