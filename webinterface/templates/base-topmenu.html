@@ -50,11 +50,13 @@
                     <ul class="nav">
                         <li class="{% ifequal request.path url.webinterface.views.index %}active{% endifequal %}"><a href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home "></i> Home</a></li>
                         <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-search "></i> Explore</a>
+                            <!--
                             <ul class="dropdown-menu">
                                 <li class="{% ifequal request.path "/data/campaigns" %}active{% endifequal %}"><a href="{% url webinterface.views.campaigns %}"><i class="icon-heart"></i> Data: Campaigns</a></li>
                                 <li class="{% ifequal request.path "/data/deployments" %}active{% endifequal %}"><a href="{% url webinterface.views.deployments %}"><i class="icon-heart"></i> Data: Deployments</a></li>
 
                             </ul>
+                            -->
                         </li>
 
                         {% switch Collections %}
@@ -64,12 +66,14 @@
                         {% switch Experimental %}
                         <li class="dropdown"><a href="#" class="dropdown-toggle"><i class="icon-tasks "></i> Data Tasks <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-eye-open"></i> View Collection</a></li>
-                                <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-cog"></i> Cluster Collection</a></li>
-                                <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-th-list"></i> Create Workset</a></li>
-                                <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal" ><i class="icon-tag"></i> Annotate Workset</a></li>
-                                   <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-sitemap"></i> Auto-classify Collection</a></li>
-                                   <li><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-download-alt"></i> Download data</a></li>
+                                <li class="nav-header">Collection</li>
+                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-cog"></i> Cluster Collection</a></li>
+                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-th-list"></i> Create Workset</a></li>
+                                <li class="nav-header">Workset</li>
+                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal" ><i class="icon-tag"></i> Annotate Workset</a></li>
+                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-sitemap"></i> Auto-classify Collection</a></li>
+                                <li class="nav-header">Data</li>
+                                <li ><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-download-alt"></i> Download data</a></li>
                                 <li><a href="/staging/"><i class="icon-cloud-upload"></i> Upload data</a></li>
                             </ul>
                         </li>
@@ -124,8 +128,7 @@
         </div>
             <div class="modal-body">
             <p>The idea of these Data Tasks are to provide a user-centric, task oriented interface.</p>
-            <p>Each of the Data Tasks will link to/pop up a modal window to select a relevant Collection/Workset to perform the selected Data Task.</p>
-            <p>For the mean time, you can demo these Tasks from the Collection section.</p>
+            <p>Each of the Data Tasks will be activated according to context.</p>
         </div>
             <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
