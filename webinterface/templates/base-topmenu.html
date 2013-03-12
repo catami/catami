@@ -58,7 +58,7 @@
                         </li>
 
                         {% switch Collections %}
-                            <li class="dropdown {% ifequal request.path "/collections" %}active{% endifequal %}"><a href="{% url webinterface.views.collections %}"><i class="icon-list-alt "></i> Collections</a>
+                            <li class="dropdown {% ifequal request.path "/projects" %}active{% endifequal %}"><a href="{% url webinterface.views.projects %}"><i class="icon-list-alt "></i> Projects</a>
                         {% endswitch %}
 
                         {% switch Experimental %}

@@ -192,7 +192,7 @@ def explore_campaign(request, campaign_id):
 
 # Collection pages
 @waffle_switch('Collections')
-def collections(request):
+def projects(request):
 #    my_collections_error = ''
 #    public_collections_error =''
 #
@@ -221,7 +221,7 @@ def collections(request):
 #        else:
 #            public_collections_error = 'An undetermined error has occured. Please contact support'
 
-    return render_to_response('webinterface/collections_recent.html',
+    return render_to_response('webinterface/projects.html',
 #        {"my_rec_cols": cl_my_rec,
 #         "my_collections_error": my_collections_error,
 #         "pub_rec_cols": cl_pub_rec,

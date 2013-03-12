@@ -33,8 +33,10 @@ urlpatterns = patterns('webinterface.views',
     #Staging
     url(r'^staging/', include('staging.urls')),
 
-    #Collection List Views
-    url(r'^collections$', 'collections'),
+    # Projects
+    url(r'^projects$', 'projects'),
+
+    #Collection detail Views
     url(r'^collections/(?P<collection_id>\d+)/$', 'view_collection'),
     url(r'^collections/(?P<collection_id>\d+)/(?P<workset_id>\d+)/$', 'view_workset'),
 #    url(r'^my_collections$', 'my_collections'),
