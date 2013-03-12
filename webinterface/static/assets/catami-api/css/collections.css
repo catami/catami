@@ -23,7 +23,7 @@
 .cl-inline-full-bootstrap ul.list-main{list-style: none;margin: 0;padding: 0;}
 .cl-inline-full-bootstrap ul.list-main .list-toggle {cursor: pointer;}
 .cl-inline-full-bootstrap ul.list-main > li {margin-top: 10px;}
-.cl-inline-full-bootstrap ul.list-sub > li {}
+.cl-inline-full-bootstrap ul.list-sub > li {margin-top: 5px;}
 .cl-inline-full-bootstrap ul.list-main li.parent {}
 .cl-inline-full-bootstrap ul.list-main li .cllistctrl {
     background-image: url('http://code.stephenmorley.org/javascript/collapsible-lists/button.png');
@@ -31,7 +31,7 @@
     background-repeat: no-repeat;
     width: 20px;
     height: 20px;
-    padding:10px;
+    padding:10px 20px 10px 10px;
 }
 .cl-inline-full-bootstrap ul.list-main > li.parent > .cllistctrl {
     background-image: url('http://code.stephenmorley.org/javascript/collapsible-lists/button-closed.png');
@@ -49,7 +49,7 @@
 .cl-inline-full-bootstrap ul.list-sub {list-style: none; margin: 5px 0 15px 0;padding: 10px;}
 .cl-inline-full-bootstrap ul.list-sub .clname {font-size: 14px;}
 
-
+.cl-inline-full-bootstrap a {color: #000000;}
 
 
 /**********************************************************************************************************************

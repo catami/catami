@@ -6,14 +6,14 @@
     <div class="btn-group api-filter">
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Parameter name: <span class="api-filt-text">Default text</span> <span class="caret"></span></a>
         <ul class="dropdown-menu">
-            <li><label class="radio"><input type="radio" name="filtparam" value="VALUE1" checked>Option 1</label></li>
-            <li><label class="radio"><input type="radio" name="filtparam" value="VALUE2">Option 2</label></li>
+            <li><label class="radio"><input type="radio" name="grp" id="param" value="VALUE1" checked>Option 1</label></li>
+            <li><label class="radio"><input type="radio" name="grp" id="param" value="VALUE2">Option 2</label></li>
         </ul>
     </div>
  *
  * NOTE: the class of the div: "api-filter"
  *       the class of the span: "api-filt-text"
- *       the name attribute of the input "filtparam" is the name of the api filter parameter
+ *       the id attribute of the input "param" is the name of the api filter parameter
  *       the value attribute of the input is the value of the api filter parameter
  *       the label and the input is used to set the content "api-filt-text" span
  *
@@ -64,7 +64,7 @@ function ApiFilter(updatefnc) {
         // Extract values from radio button elements
         $('.api-filter input:radio:checked').each(function(i, obj) {
             if ($(obj).val() != '') {
-                filter += '&'+$(obj).attr('name')+'='+$(obj).val();
+                filter += '&'+$(obj).attr('id')+'='+$(obj).val();
                 //alert($(obj).parent().text());
             }
             $(obj).closest(".api-filter").find('.api-filt-text').html($(obj).parent().text());
@@ -73,7 +73,7 @@ function ApiFilter(updatefnc) {
         // Extract values from hidden elements
         $('.api-filter input[type=hidden]').each(function(i, obj) {
             if ($(obj).val() != '') {
-                filter += '&'+$(obj).attr('name')+'='+$(obj).val();
+                filter += '&'+$(obj).attr('id')+'='+$(obj).val();
             }
         });
 

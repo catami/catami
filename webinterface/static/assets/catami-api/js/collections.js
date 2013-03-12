@@ -136,7 +136,7 @@ function CollectionAPI(usrsettings) {
                     list += '</ul>';
                 }
                 else if (showerror) {
-                    list += '<p class="alert alert-error">There are no collections to display.</p>'
+                    list += '<p class="alert alert-error">No items to display.</p>'
                 }
             }
         });
@@ -256,14 +256,11 @@ function CollectionAPI(usrsettings) {
             }
             format +='<span class="clinfo btn-group pull-right list-toggle">'+
                 '<span class="clinfoitem btn btn-mini disabled {type}" rel="btn-tooltip" title="This item is a {type}">{type}</span>'+
-                '<span class="clinfoitem btn btn-mini disabled" rel="btn-tooltip" title="This {type} was created on {creation_date}">{creation_date}</span>'+
-                '<span class="clinfoitem btn btn-mini disabled" rel="btn-tooltip" title="This {type} is owned by {username}">{username}</span> '+
-                '<span class="clinfoitem btn btn-mini disabled" rel="btn-tooltip" title="This {type} contains {image_count} images">{image_count}</span> '+
                 '<span class="clinfoitem btn btn-mini disabled {access}" rel="btn-tooltip" title="This {type} is {access}">{access}</span>'+
+                '<a href="#_" class="clinfoitem clinfopopover btn btn-mini" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" data-content="<p>This <b>{type}</b> was created by <b>{username}</b> on <b>{creation_date}</b> and contains <b>{image_count}</b> images</p><small>{description}</small>" data-original-title="{type} info"><i class="icon-info-sign"></i></a>'+
                 '</span>'+
                 '<a href="{link}" class="clname">{name}</a>'+
-                '<span class="clcreation">{creation_info}</span>'+
-                '<span class="cldescription shorten">{description}</span>';
+                '<span class="clcreation">{creation_info}</span>';
         }
         return format;
     }

@@ -27,11 +27,11 @@
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Owner: <span class="api-filt-text">All</span> <span class="caret"></span></a>
                 <ul class="dropdown-menu" style="padding: 10px;">
                     <li>
-                        <label class="radio"><input type="radio" name="owner" value="" checked>All</label>
+                        <label class="radio"><input type="radio" name="owner" id="owner" value="" checked>All</label>
                     </li>
                     {% if user.is_authenticated %}
                     <li>
-                        <label class="radio"><input type="radio" name="owner" value="{{ user.id }}">Me</label>
+                        <label class="radio"><input type="radio" name="owner" id="owner" value="{{ user.id }}">Me</label>
                     </li>
                     {% endif %}
                 </ul>
@@ -41,18 +41,32 @@
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Access: <span class="api-filt-text">Any</span> <span class="caret"></span></a>
                 <ul class="dropdown-menu" style="padding: 10px;">
                     <li>
-                        <label class="radio"><input type="radio" name="is_public" value="" checked>Any</label>
+                        <label class="radio"><input type="radio" name="is_public" id="is_public" value="" checked>Any</label>
                     </li>
                     <li>
-                        <label class="radio"><input type="radio" name="is_public" value="true">Public</label>
+                        <label class="radio"><input type="radio" name="is_public" id="is_public" value="true">Public</label>
                     </li>
                     <li>
-                        <label class="radio"><input type="radio" name="is_public" value="false" >Private</label>
+                        <label class="radio"><input type="radio" name="is_public" id="is_public" value="false" >Private</label>
                     </li>
                 </ul>
             </div>
             {% endif %}
-            <div class="api-filter"><input type="hidden" name="parent" value="none"></div>
+            <div class="btn-group api-filter">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Type: <span class="api-filt-text">Both</span> <span class="caret"></span></a>
+                <ul class="dropdown-menu" style="padding: 10px;">
+                    <li>
+                        <label class="radio"><input type="radio" name="parent" id="parent" value="none" checked>Both</label>
+                    </li>
+                    <li>
+                        <label class="radio"><input type="radio" name="parent" id="parent__isnull" value="True">Collections</label>
+                    </li>
+                    <li>
+                        <label class="radio"><input type="radio" name="parent" id="parent__isnull" value="False">Worksets</label>
+                    </li>
+                </ul>
+            </div>
+            <!-- <div class="api-filter"><input type="hidden" id="parent" value="none"></div> -->
             <!--
             <div class="btn-group api-filter">
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Type: <span class="api-filt-text">Both</span> <span class="caret"></span></a>
