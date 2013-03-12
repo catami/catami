@@ -849,7 +849,7 @@ def create_collection_from_deployments(request):
         if form.is_valid():  # All validation rules pass
             # make a new collection here from the deployment list
             CollectionManager().collection_from_deployments_with_name(request.user, request.POST.get('collection_name'), request.POST.get('deployment_ids'))
-            return HttpResponseRedirect('/collections')  # Redirect after POST
+            return HttpResponseRedirect('/projects')  # Redirect after POST
 
     return render(request, 'noworky.html', {'form': form, })
 
