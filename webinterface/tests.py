@@ -143,7 +143,7 @@ class TestViews(TestCase):
         """@brief Test collection and workset views
 
         """
-        response = self.client.get("/collections")
+        response = self.client.get("/projects")
         self.assertEqual(response.status_code, 200)
 
 #        response = self.client.get("/my_collections")
@@ -160,6 +160,24 @@ class TestViews(TestCase):
 
         response = self.client.get("/collections/1/")
         self.assertEqual(response.status_code, 200)
+
+        #make a collection from a deployment using random
+        post_data = {"name": "TEST_RAND", "n":"50","ispublic":"true","description":"test description", "c_id":"1"}
+        response = self.client.post("/collections/createworkset/random", post_data)
+        self.assertEqual(response.status_code, 301)
+
+        response = self.client.get("/collections/1/1/")
+        self.assertEqual(response.status_code, 200)
+
+        #make a collection from a deployment using random
+        post_data = {"name": "TEST_STRAT", "n":"50","ispublic":"true","description":"test description", "c_id":"1"}
+        response = self.client.post("/collections/createworkset/stratified", post_data)
+        self.assertEqual(response.status_code, 301)
+
+        response = self.client.get("/collections/1/2/")
+        self.assertEqual(response.status_code, 200)
+
+
 
     def test_campaigns(self):
         """@brief Test campaign browser interfaces
