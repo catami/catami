@@ -81,7 +81,6 @@ class TestCollectionModel(TestCase):
 
         #check that the user and details were assigned
         self.assertEqual(collection.owner, self.user)
-        self.assertEqual(collection.is_public, True)
         self.assertEqual(collection.is_locked, True)
 
         #check the images went across - IMPORTANT!
@@ -118,7 +117,6 @@ class TestCollectionModel(TestCase):
 
         #check that the user and details were assigned
         self.assertEqual(collection.owner, self.user)
-        self.assertEqual(collection.is_public, False)
         self.assertEqual(collection.is_locked, True)
 
         #check the images went across - IMPORTANT!
