@@ -11,6 +11,7 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import Unauthorized
 from tastypie.resources import ModelResource
 from .models import *
+from restthumbnails.helpers import get_thumbnail_proxy
 
 
 # ==============================
@@ -490,6 +491,17 @@ class ImageResource(ModelResource):
             outlist.append(outitem)
 
         return outlist
+
+    def dehydrate(self, bundle):
+        file_name = bundle.data['web_location']
+        bundle.data['thumbnail_location'] = get_thumbnail_proxy(
+                file_name,
+                "96x72",
+                'scale',
+                '.jpg'
+            ).url
+        bundle.data['web_location'] = 'images/{0}'.format(file_name)
+        return bundle
 
 
 class ScientificMeasurementTypeResource(ModelResource):

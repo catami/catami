@@ -69,7 +69,7 @@ IMAGES_URL = 'images'
 IMAGES_ROOT = '/media/catami_live/importedimages'
 
 THUMBNAILS_SOURCE_ROOT = IMAGES_ROOT
-THUMBNAILS_STORAGE_PATH = '/{0}/'.format(IMAGES_URL)
+THUMBNAILS_STORAGE_ROOT = '/media/catami_live/thumbnailimages'
 THUMBNAILS_RESPONSE_BACKEND = 'restthumbnails.responses.apache.sendfile'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.

@@ -109,7 +109,9 @@ urlpatterns = patterns('webinterface.views',
 urlpatterns += patterns('',
     url(r'^accounts/login/$', 'django.contrib.auth.views.login',
         {'template_name': 'registration/login.html'}),
+    # the raw original images
     url(r'^{0}/(?P<path>.*)$'.format(settings.IMAGES_URL), 'django.views.static.serve',
         {'document_root': settings.IMAGES_ROOT, 'show_indexes': False}),
-    url(r'^', include('restthumbnails.urls')),
+    # and the thumbnails...
+    url(r'^thumbnails/', include('restthumbnails.urls')),
     )
