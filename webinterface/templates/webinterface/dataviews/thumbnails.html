@@ -43,7 +43,7 @@ Template-specific javascript functions
         $.getJSON(apiurl , function(img){
             var images = '';
             for (var i = 0; i < img.objects.length; i++) {
-                images += '<img src="/images/' +img.objects[i].web_location + '"/>';
+                images += '<img src="' + img.objects[i].thumbnail_location + '"/>';
             }
             $("#thmlist").append(images);
 
