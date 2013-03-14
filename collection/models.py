@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil.tz import tzutc
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 from catamidb.models import Image, Deployment
@@ -24,11 +25,10 @@ class CollectionManager(models.Manager):
         c = Collection()
         c.name = deployment.short_name
         c.owner = user
-        c.creation_date = datetime.now()
-        c.modified_date = datetime.now()
-        c.is_public = True
+        c.creation_date = datetime.now(tz=tzutc())
+        c.modified_date = datetime.now(tz=tzutc())
         c.is_locked = True
-        c.creation_info = "Deployments: {0}".format(deployment)
+        c.creation_info = "Deployments: {0}".format(deployment.short_name)
 
         # save the collection so we can associate images with it
         c.save()
@@ -51,8 +51,8 @@ class CollectionManager(models.Manager):
         c = Collection()
         c.name = collection_name
         c.owner = user
-        c.creation_date = datetime.now()
-        c.modified_date = datetime.now()
+        c.creation_date = datetime.now(tz=tzutc())
+        c.modified_date = datetime.now(tz=tzutc())
         c.is_public = False
         c.is_locked = True
         c.creation_info = "Deployments: {0}".format(deployment_id_list_string)
@@ -82,8 +82,8 @@ class CollectionManager(models.Manager):
         ws.parent = c
         ws.name = name
         ws.owner = user
-        ws.creation_date = datetime.now()
-        ws.modified_date = datetime.now()
+        c.creation_date = datetime.now(tz=tzutc())
+        c.modified_date = datetime.now(tz=tzutc())
         ws.is_public = ispublic
         ws.description = description
         ws.is_locked = True
@@ -119,11 +119,10 @@ class Collection(models.Model):
     don't have a parent whilst worksets do.
     """
     name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, null=True)
     owner = models.ForeignKey(User)
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()
-    is_public = models.BooleanField()
     is_locked = models.BooleanField()
     parent = models.ForeignKey('Collection', null=True, blank=True)
     images = models.ManyToManyField(Image, related_name='collections')
@@ -131,13 +130,13 @@ class Collection(models.Model):
 
     class Meta:
         unique_together = (('owner', 'name', 'parent'), )
+        permissions = (
+                ('view_collection', 'View the collection.'),
+                ('update_collection', 'Edit the collection.'),
+            )
 
     def __unicode__(self):
         description = u"Collection: {0}".format(self.name)
-        if self.is_public:
-            description += u" - public"
-        else:
-            description += u" - private"
 
         if self.is_locked:
             description += u" - locked"
