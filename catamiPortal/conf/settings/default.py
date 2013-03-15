@@ -20,7 +20,7 @@ NOSE_ARGS = [
             #    '--coverage-exclude=../*migrations*'
             ]
 
-WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
+WMS_URL = "http://sandbox.catami.org:8080/geoserver/wms" # standard config for local host
 WMS_LAYER_NAME = "catami:catamidb_images"
 WMS_COLLECTION_LAYER_NAME = "catami:collection_images"
 
