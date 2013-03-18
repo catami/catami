@@ -1,15 +1,11 @@
 # Create your views here.
 from django.template import RequestContext
-from django.shortcuts import render_to_response, redirect, get_object_or_404, render
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect
+from django.shortcuts import render_to_response, render
+from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
-from django.contrib.auth.decorators import login_required
-from django.core.cache import cache
 import guardian
 from guardian.shortcuts import get_objects_for_user
 from waffle.decorators import waffle_switch
-from collection.api import CollectionResource
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 import logging
 
@@ -19,23 +15,16 @@ import httplib2
 
 #not API compliant - to be removed after the views are compliant
 from catamidb.models import Pose, Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment
-from vectorformats.Formats import Django, GeoJSON
 from django.contrib.gis.geos import fromstr
-from django.contrib.gis.measure import D
 from django.db.models import Max, Min
 import simplejson
 from django.conf import settings
 from collection.models import Collection, CollectionManager
 
 #account management
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
 logger = logging.getLogger(__name__)
-#@login_required
-
-from django import forms
-
 
 @waffle_switch('Collections')
 class CreateCollectionForm(forms.Form):
@@ -169,10 +158,10 @@ def explore(request):
         auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign)
         bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign)
         dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign)
-        if(len(auv_deployment_list) > 0):
+        if len(auv_deployment_list) > 0:
             sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign).extent())
             campaign_rects.append(sm.envelope.geojson)
-        if(len(bruv_deployment_list) > 0):
+        if len(bruv_deployment_list) > 0:
             sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign).extent())
             campaign_rects.append(sm.envelope.geojson)
 
@@ -326,12 +315,12 @@ def view_workset(request, collection_id, workset_id):
 # collection object tasks
 @waffle_switch('Collections')
 def delete_collection(request):
-    return nil
+    return None
 
 
 @waffle_switch('Collections')
 def flip_public_collection(request):
-    return nil
+    return None
 
 
 # Subset pages
@@ -441,19 +430,19 @@ def auvdeployment_display(request, auvdeployment_id):
 
 
 #subsamples lists of numbers and makes them suitable to be swallowed up by flot charts
-def subsample_list(list):
-    list_length = len(list)
+def subsample_list(list_to_subsample):
+    list_length = len(list_to_subsample)
 
-    #this is used to scale down the list, so that flot isn't overwhelmed with points to render
+    #this is used to scale down the list_to_subsample, so that flot isn't overwhelmed with points to render
     scale_factor = 4
 
-    #try and pre-allocate some space in memory for the list
+    #try and pre-allocate some space in memory for the list_to_subsample
     #new_list = list_length/scale_factor*[None]
     new_list = []
 
     #iterate through points and subsample based on the scale_factor
     for i in range(0, list_length, scale_factor):
-        new_list.append([i, list[i]])
+        new_list.append([i, list_to_subsample[i]])
 
     return new_list
 
@@ -536,12 +525,12 @@ def annotationview(request, auvdeployment_id, image_index):
     #get annotation list. Not all images have annotation
 
 
-    if(initial_image_index == 0):
+    if initial_image_index == 0:
         #find first annotated image
         for image in image_list:
-            local_image_index = local_image_index + 1
+            local_image_index += 1
 
-            if(Annotation.objects.filter(image_reference=image).count() > 0):
+            if Annotation.objects.filter(image_reference=image).count() > 0:
                 return render_to_response(
                     'Force/annotationview.html',
                     {'auvdeployment_object': auvdeployment_object,
@@ -553,9 +542,9 @@ def annotationview(request, auvdeployment_id, image_index):
                     context_instance=RequestContext(request))
 
     for image in image_list:
-        local_image_index = local_image_index + 1
-        if(Annotation.objects.filter(image_reference=image).count() > 0):
-            if(local_image_index > initial_image_index):
+        local_image_index += 1
+        if Annotation.objects.filter(image_reference=image).count() > 0:
+            if local_image_index > initial_image_index:
 
                 for annotation in Annotation.objects.filter(image_reference=image):
                     text = "<p style='z-index:100; position:absolute;  color:white; font-size:12px; font-weight:normal; left:" + str(annotation.point.x * 100) + "%; top:" + str(str(annotation.point.y * 100)) + "%;'>" + annotation.code + "</p>"
@@ -739,10 +728,10 @@ def campaigns(request):
         auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign)
         bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign)
         dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign)
-        if(len(auv_deployment_list) > 0):
+        if len(auv_deployment_list) > 0:
             sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign).extent())
             campaign_rects.append(sm.envelope.geojson)
-        if(len(bruv_deployment_list) > 0):
+        if len(bruv_deployment_list) > 0:
             sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign).extent())
             campaign_rects.append(sm.envelope.geojson)
 
@@ -767,7 +756,7 @@ def campaign_detail(request, campaign_id):
         campaign_object = Campaign.objects.get(id=campaign_id)
 
         #check for permissions
-        if user.has_perm('catamidb.view_campaign', campaign_object) == False:
+        if not user.has_perm('catamidb.view_campaign', campaign_object):
             raise Campaign.DoesNotExist
 
     except Campaign.DoesNotExist:
@@ -788,10 +777,10 @@ def campaign_detail(request, campaign_id):
     #sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign_object).extent())
 
     sm = ' '
-    if(len(auv_deployment_list) > 0):
+    if len(auv_deployment_list) > 0:
         sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign_object).extent())
         campaign_rects.append(sm.envelope.geojson)
-    if(len(bruv_deployment_list) > 0):
+    if len(bruv_deployment_list) > 0:
         sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign_object).extent())
         campaign_rects.append(sm.envelope.geojson)
     try:
