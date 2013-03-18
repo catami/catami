@@ -1,9 +1,22 @@
-
-<table background-color="#111">
+<table background-color="#111" class="table table-striped table-condensed">
 <tr height="73" background-color="#111">
 <#list features as feature>
-    <td width="98"><a href="javascript:window.open('${feature.left_thumbnail_reference.value}')"><img style="position:absolute;z-index:1;width:98px;height:73px;" src="${feature.left_thumbnail_reference.value}"/></a><div style="color:white;z-index:2;position:relative;font-size:10px;">Depth:${feature.depth.value}</div></td>
+    <td width="98"><a href="javascript:window.open('http://localhost:8888/${feature.web_location.value}')"><img src="http://localhost:8888/${feature.web_location.value}" width="73" height="98"/></td>
+</#list>
+</tr>
+<tr>
+<#list features as feature>
+<td><div style="font-size:10px;"><strong>Depth:</strong>${feature.depth.value}</div></td>
+</#list>
+</tr>
+<tr>
+<#list features as feature>
+<td><div style="font-size:10px;"><strong>Lat:</strong>${feature.position.rawValue[7..13]}</div></td>
+</#list>
+</tr>
+<tr>
+<#list features as feature>
+<td><div style="font-size:10px;"><strong>Long:</strong>${feature.position.rawValue[19..25]}</div></td>
 </#list>
 </tr>
 </table>
-<br/>
