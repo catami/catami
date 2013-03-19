@@ -5,77 +5,85 @@
 {% endblock %}
 {% block content %}
 
-<div class="row-fluid">
-    <div class="hero-unit">
-        <h1>Collections</h1>
-        <p>This page shows a summary of some recent collections. A Collection is a set of data (images and associated metadata) that has been prepared by a user for further processing, downloading or sharing. The data may come from one or more deployments, surveys or campaigns.</p>
-    </div>
-</div>
+    <div class="row-fluid">
+        <div class="hero-unit">
+            <h1>Collections</h1>
 
-<div class="row-fluid">
-
-    <div class="span6">
-        <form class="form-inline well">
-            <span style="font-size: 10px; color: #a8a8a8; text-transform: uppercase;">Filters: </span><br>
-            <a class="btn btn-primary pull-right" href="{% url webinterface.views.explore %}"><i class="icon-plus-sign-alt"></i> New Collection</a>
-            <div class="btn-group api-filter">
-                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Owner: <span class="api-filt-text">All</span> <span class="caret"></span></a>
-                <ul class="dropdown-menu" style="padding: 10px;">
-                    <li>
-                        <label class="radio"><input type="radio" name="owner" value="" checked>All</label>
-                    </li>
-                    {% if user.is_authenticated %}
-                    <li>
-                        <label class="radio"><input type="radio" name="owner" value="{{ user.id }}">Me</label>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
-            {% if user.is_authenticated %}
-            <div class="btn-group api-filter">
-                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Access: <span class="api-filt-text">Any</span> <span class="caret"></span></a>
-                <ul class="dropdown-menu" style="padding: 10px;">
-                    <li>
-                        <label class="radio"><input type="radio" name="is_public" value="" checked>Any</label>
-                    </li>
-                    <li>
-                        <label class="radio"><input type="radio" name="is_public" value="true">Public</label>
-                    </li>
-                    <li>
-                        <label class="radio"><input type="radio" name="is_public" value="false" >Private</label>
-                    </li>
-                </ul>
-            </div>
-            {% endif %}
-            <div class="api-filter"><input type="hidden" name="parent" value="none"></div>
-            <!--
-            <div class="btn-group api-filter">
-                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Type: <span class="api-filt-text">Both</span> <span class="caret"></span></a>
-                <ul class="dropdown-menu" style="padding: 10px;">
-                    <li>
-                        <label class="radio"><input type="radio" name="parent" value="none" checked>Both</label>
-                    </li>
-                    <li>
-                        <label class="radio"><input type="radio" name="parent" value="none">Collections</label>
-                    </li>
-                    <li>
-                        <label class="radio"><input type="radio" name="parent" value="none">Worksets</label>
-                    </li>
-                </ul>
-            </div>
-            <input type="text" placeholder="Keyword" style="width: 120px;">
-            -->
-        </form>
-
-        <div class="collection-list" id="collections">
-        Loading...
+            <p>This page shows a summary of some recent collections. A Collection is a set of data (images and
+                associated metadata) that has been prepared by a user for further processing, downloading or sharing.
+                The data may come from one or more deployments, surveys or campaigns.</p>
         </div>
     </div>
-    <div class="span6">
-        <div class="well"><span style="font-size: 10px; color: #a8a8a8; text-transform: uppercase;">Preview: </span><br><span id="preview-name"> none selected</span></div>
-        {% include "webinterface/dataviews/mapview.html"%}
+
+    <div class="row-fluid">
+
+        <div class="span6">
+            <form class="form-inline well">
+                <span style="font-size: 10px; color: #a8a8a8; text-transform: uppercase;">Filters: </span><br>
+                <a class="btn btn-primary pull-right" href="{% url webinterface.views.explore %}"><i
+                        class="icon-plus-sign-alt"></i> New Collection</a>
+
+                <div class="btn-group api-filter">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Owner: <span class="api-filt-text">All</span>
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu" style="padding: 10px;">
+                        <li>
+                            <label class="radio"><input type="radio" name="owner" value="" checked>All</label>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <li>
+                                <label class="radio"><input type="radio" name="owner" value="{{ user.id }}">Me</label>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% if user.is_authenticated %}
+                    <div class="btn-group api-filter">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Access: <span
+                                class="api-filt-text">Any</span> <span class="caret"></span></a>
+                        <ul class="dropdown-menu" style="padding: 10px;">
+                            <li>
+                                <label class="radio"><input type="radio" name="is_public" value="" checked>Any</label>
+                            </li>
+                            <li>
+                                <label class="radio"><input type="radio" name="is_public" value="true">Public</label>
+                            </li>
+                            <li>
+                                <label class="radio"><input type="radio" name="is_public" value="false">Private</label>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+                <div class="api-filter"><input type="hidden" name="parent" value="none"></div>
+                <!--
+                <div class="btn-group api-filter">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Type: <span class="api-filt-text">Both</span> <span class="caret"></span></a>
+                    <ul class="dropdown-menu" style="padding: 10px;">
+                        <li>
+                            <label class="radio"><input type="radio" name="parent" value="none" checked>Both</label>
+                        </li>
+                        <li>
+                            <label class="radio"><input type="radio" name="parent" value="none">Collections</label>
+                        </li>
+                        <li>
+                            <label class="radio"><input type="radio" name="parent" value="none">Worksets</label>
+                        </li>
+                    </ul>
+                </div>
+                <input type="text" placeholder="Keyword" style="width: 120px;">
+                -->
+            </form>
+
+            <div class="collection-list" id="collections">
+                Loading...
+            </div>
+        </div>
+        <div class="span6">
+            <div class="well"><span style="font-size: 10px; color: #a8a8a8; text-transform: uppercase;">Preview: </span><br><span
+                    id="preview-name"> none selected</span></div>
+            {% include "webinterface/dataviews/mapview.html" %}
+        </div>
     </div>
-</div>
 
 {% endblock %}
 
@@ -86,48 +94,48 @@
 
     <script type="text/javascript">
 
-    // Instantiate collection list object
-    cl = new CollectionAPI({
-        config   : {
-            theme    : 'cl-inline-full-bootstrap',
-            linkname : true,
-            nested : true,
-            showactions : true,
-            preview_fnc : 'collectionSelectAction({id})'
+        // Instantiate collection list object
+        cl = new CollectionAPI({
+            config: {
+                theme: 'cl-inline-full-bootstrap',
+                linkname: true,
+                nested: true,
+                showactions: true,
+                preview_fnc: 'collectionSelectAction({id})'
+            }
+        });
+
+        // Collection info object
+        clinfo = new CollectionAPI({
+            config: {
+                theme: 'cl-inline-full-bootstrap',
+                nested: false,
+                showactions: true
+            }
+        });
+
+        // Instantiate filter object
+        filt = new ApiFilter(function () {                           // Define filt.update() function
+            cl.getCollectionList(filt.get(), "#collections");   // Get nested collections and workset list
+            cl.collapseList();                                      // Collapse the list
+            $('.cldescription').shorten({showChars: 80});          // Shorten descriptions for nicer display
+            $("[rel=btn-tooltip]").tooltip({container: 'body'});    // Activate bootstrap tooltips for dynamic content
+        });
+
+
+        function collectionSelectAction(id) {
+            updateMapForSelectedCollection(id);
+            clinfo.getCollectionInfo(id, '#preview-name');
+            //$('#preview-name>.cldescription').shorten({showChars : 80});          // Shorten descriptions for nicer display
+            $("[rel=btn-tooltip]").tooltip({container: 'body'});    // Activate bootstrap tooltips for dynamic content
         }
-    });
 
-    // Collection info object
-    clinfo = new CollectionAPI({
-        config : {
-            theme    : 'cl-inline-full-bootstrap',
-            nested    : false,
-            showactions : true
-        }
-    });
-
-    // Instantiate filter object
-    filt = new ApiFilter(function(){                           // Define filt.update() function
-        cl.getCollectionList(filt.get(), "#collections");   // Get nested collections and workset list
-        cl.collapseList();                                      // Collapse the list
-        $('.cldescription').shorten({showChars : 80});          // Shorten descriptions for nicer display
-        $("[rel=btn-tooltip]").tooltip({container: 'body'});    // Activate bootstrap tooltips for dynamic content
-    });
-
-
-    function collectionSelectAction(id) {
-        updateMapForSelectedCollection(id);
-        clinfo.getCollectionInfo(id,'#preview-name');
-        //$('#preview-name>.cldescription').shorten({showChars : 80});          // Shorten descriptions for nicer display
-        $("[rel=btn-tooltip]").tooltip({container: 'body'});    // Activate bootstrap tooltips for dynamic content
-    }
-
-    // OnLoad function
-    $(document).ready(function(){
-        filt.init();                    // initialise API filters
-        filt.update();                  // Set and update filters
-        initDeploymentMap();            // Initialise map
-    });
+        // OnLoad function
+        $(document).ready(function () {
+            filt.init();                    // initialise API filters
+            filt.update();                  // Set and update filters
+            initDeploymentMap();            // Initialise map
+        });
 
 
     </script>

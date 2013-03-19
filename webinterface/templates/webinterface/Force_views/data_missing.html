@@ -2,28 +2,32 @@
 
 
 {% block sidebar %}
-  <div id="sidebar-nav" class="span3" style="padding-left:10px;">
+    <div id="sidebar-nav" class="span3" style="padding-left:10px;">
 
-    <h1>Data</h1>  
-    <div class="well well-small" style="align:center;">
+        <h1>Data</h1>
 
-      <p class="lead">Data Error</p>
-      <p>options</p>
-    </div><!--/.well -->
+        <div class="well well-small" style="align:center;">
 
-  </div>
+            <p class="lead">Data Error</p>
+
+            <p>options</p>
+        </div>
+        <!--/.well -->
+
+    </div>
 {% endblock %}
 
 {% block content_header %}
-  <ul class="breadcrumb">
-    <li><a href="{% url webinterface.views.data %}">Data</a> <span class="divider">></span></li>
-  </ul>
-  
+    <ul class="breadcrumb">
+        <li><a href="{% url webinterface.views.data %}">Data</a> <span class="divider">></span></li>
+    </ul>
+
 {% endblock %}
 
 {% block content %}
     <div class="alert">
-      <strong>Warning!</strong> The data you have requested cannot be found.  This might be your fault or it might be our fault
+        <strong>Warning!</strong> The data you have requested cannot be found. This might be your fault or it might be
+        our fault
     </div>
 {% endblock %}
 

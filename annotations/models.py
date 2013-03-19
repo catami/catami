@@ -48,6 +48,7 @@ class Annotation(models.Model):
         """Defines Metaparameters of the model."""
         abstract = True
 
+
 POINT_METHODOLOGIES = (
     (0, 'Random Point'),
     (1, 'Stratified'),
@@ -70,6 +71,7 @@ class PointAnnotationSet(AnnotationSet):
     class Meta:
         unique_together = (('owner', 'name', 'collection'), )
 
+
 LEVELS = (
     (0, "Primary"),
     (1, "Secondary"),
@@ -84,16 +86,16 @@ class PointAnnotation(Annotation):
     the set to which it belongs.
     """
     annotation_set = models.ForeignKey(
-            PointAnnotationSet,
-            related_name='images'
-        )
+        PointAnnotationSet,
+        related_name='images'
+    )
     x = models.FloatField()
     y = models.FloatField()
     level = models.IntegerField(choices=LEVELS)
     qualifiers = models.ManyToManyField(
-            'QualifierCode',
-            related_name='point_annotations'
-        )
+        'QualifierCode',
+        related_name='point_annotations'
+    )
 
 
 class ImageAnnotationSet(AnnotationSet):
@@ -102,6 +104,7 @@ class ImageAnnotationSet(AnnotationSet):
 
     class Meta:
         unique_together = (('owner', 'name', 'collection'), )
+
 
 COVER = (
     (0, "C > 80%"),
@@ -118,11 +121,11 @@ class ImageAnnotation(Annotation):
     Contains the percent cover for the dominant class.
     """
     annotation_set = models.ForeignKey(
-            ImageAnnotationSet,
-            related_name='images'
-        )
+        ImageAnnotationSet,
+        related_name='images'
+    )
     cover = models.IntegerField(choices=COVER)
     qualifiers = models.ManyToManyField(
-            'QualifierCode',
-            related_name='image_annotations'
-        )
+        'QualifierCode',
+        related_name='image_annotations'
+    )

@@ -3,20 +3,20 @@ body {
 }
 
 div.hero-unit {
-	padding: 20px;
+    padding: 20px;
 }
 
 .navbar .brand {
-	max-height:40px; 
-	overflow: visible; 
-	padding-top: 0px; 
-	padding-bottom: 0px
+    max-height: 40px;
+    overflow: visible;
+    padding-top: 0px;
+    padding-bottom: 0px
 }
 
-ul.nav li.dropdown:hover ul.dropdown-menu{
-    display: block;    
+ul.nav li.dropdown:hover ul.dropdown-menu {
+    display: block;
 }
 
 .navbar .dropdown-menu {
-	margin-top: 0px;
+    margin-top: 0px;
 }

@@ -4,37 +4,57 @@
 {% load force_extras %}
 
 {% block tail_head %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/leaflet.css" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/Control.MiniMap.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/leaflet.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/Control.MiniMap.css"/>
 
 
     <style>
-    .leaflet-control-zoom-fullscreen { background-image: url({{ STATIC_URL }}assets/css/images/icon-fullscreen.png); }
-    .leaflet-control-zoom-fullscreen.last { margin-top: 5px }
-    #leaflet_container:-webkit-full-screen { width: 100% !important; height: 100% !important; }
-    #leaflet_container:-moz-full-screen { width: 100% !important; height: 100% !important; }
-    #leaflet_container:full-screen { width: 100% !important; height: 100% !important; }
-    .info {
-    padding: 0px 8px;
-    align: right;
-    font: 14px/16px Helvetica, Arial, sans-serif;
-    background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
-    }
-    .legend {
-    text-align: left;
-    line-height: 18px;
-    color: #555;
-    }
-    .legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 0.7;
-    }
+        .leaflet-control-zoom-fullscreen {
+            background-image: url({{ STATIC_URL }}assets/css/images/icon-fullscreen.png);
+        }
+
+        .leaflet-control-zoom-fullscreen.last {
+            margin-top: 5px
+        }
+
+        #leaflet_container:-webkit-full-screen {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        #leaflet_container:-moz-full-screen {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        #leaflet_container:full-screen {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .info {
+            padding: 0px 8px;
+            align: right;
+            font: 14px/16px Helvetica, Arial, sans-serif;
+            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .legend {
+            text-align: left;
+            line-height: 18px;
+            color: #555;
+        }
+
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
     </style>
 
 {% endblock %}
@@ -46,9 +66,15 @@
             <div id='deployment-map' style="width:100%;height:430px;"></div>
         </div>
         <div class="row-fluid">
-            <div class="span4"><div id="placeholder_01" style="width:100%;height:100px"></div></div>
-            <div class="span4"><div id="placeholder_02" style="width:100%;height:100px"></div></div>
-            <div class="span4"><div id="placeholder_03" style="width:100%;height:100px"></div></div>
+            <div class="span4">
+                <div id="placeholder_01" style="width:100%;height:100px"></div>
+            </div>
+            <div class="span4">
+                <div id="placeholder_02" style="width:100%;height:100px"></div>
+            </div>
+            <div class="span4">
+                <div id="placeholder_03" style="width:100%;height:100px"></div>
+            </div>
         </div>
 
         <!--
@@ -58,8 +84,8 @@
         -->
 
         {% switch Collections %}
-        <br>
-        <button type="button" class="btn btn-large btn-primary" onclick="convert();">Add to My Collections</button>
+            <br>
+            <button type="button" class="btn btn-large btn-primary" onclick="convert();">Add to My Collections</button>
         {% endswitch %}
 
     {% endif %}
@@ -67,11 +93,11 @@
 {% endblock %}
 
 {% block add_script %}
-    <script src='{{ STATIC_URL }}assets/js/excanvas.min.js'> </script>
-    <script src='{{ STATIC_URL }}assets/js/leaflet.js'> </script>
-    <script src='{{ STATIC_URL }}assets/js/Control.MiniMap.js'> </script>
-    <script src='{{ STATIC_URL }}assets/js/rainbowvis.js'> </script>
-    <script src='{{ STATIC_URL }}assets/js/jquery.flot.js'> </script>
+    <script src='{{ STATIC_URL }}assets/js/excanvas.min.js'></script>
+    <script src='{{ STATIC_URL }}assets/js/leaflet.js'></script>
+    <script src='{{ STATIC_URL }}assets/js/Control.MiniMap.js'></script>
+    <script src='{{ STATIC_URL }}assets/js/rainbowvis.js'></script>
+    <script src='{{ STATIC_URL }}assets/js/jquery.flot.js'></script>
     <script src='{{ STATIC_URL }}assets/js/jquery.flot.resize.js'></script>
     <script src='{{ STATIC_URL }}assets/js/Control.FullScreen.js'></script>
     <script src='{{ STATIC_URL }}assets/js/jquery.flot.axislabels.js'></script>
@@ -84,7 +110,7 @@
         //need so the ajax queries can make it outside the projects domain and contact geoserver
         OpenLayers.ProxyHost = "/proxy/";
 
-        $(document).ready(function(){
+        $(document).ready(function () {
             //prep some data we need to use to display the points
             var WMS_URL = "{{ WMS_URL }}";
             var WMSLayerName = "{{ WMS_layer_name }}";
@@ -155,7 +181,7 @@
                     4.777314267158508, 2.388657133579254,
                     1.194328566789627, 0.5971642833948135],
                 transitionEffect: 'resize',
-                isBaseLayer:true,
+                isBaseLayer: true,
                 minZoomLevel: 1,
                 maxZoomLevel: 25,
                 numZoomLevels: 25,
@@ -164,7 +190,7 @@
             deploymentMap.addLayer(osm);
 
             //this is the layer for our points to be displayed with
-            var imagePointsLayer = new OpenLayers.Layer.WMS( "Images",
+            var imagePointsLayer = new OpenLayers.Layer.WMS("Images",
                     WMS_URL,
                     {layers: WMSLayerName, transparent: "true", format: "image/png", filter: xml.write(filter_1_1.write(filter))},
                     {isBaseLayer: false, minZoomLevel: 1, maxZoomLevel: 25, numZoomLevels: 25}
@@ -172,7 +198,7 @@
             deploymentMap.addLayer(imagePointsLayer);
 
             //TODO: work out a better way to do this. This bounds code has a bad smell.
-            var boundsArr = "{{ deployment_extent }}".replace("(","").replace(")","").split(",");
+            var boundsArr = "{{ deployment_extent }}".replace("(", "").replace(")", "").split(",");
             var bounds = new OpenLayers.Bounds();
             bounds.extend(new OpenLayers.LonLat(boundsArr[0], boundsArr[1]));
             bounds.extend(new OpenLayers.LonLat(boundsArr[2], boundsArr[3]));
@@ -184,11 +210,11 @@
                 title: 'Identify features by clicking',
                 queryVisible: true,
                 eventListeners: {
-                    getfeatureinfo: function(event) {
+                    getfeatureinfo: function (event) {
                         var popup = new OpenLayers.Popup.FramedCloud(
                                 "Details",
                                 deploymentMap.getLonLatFromPixel(event.xy),
-                                new OpenLayers.Size(200,200),
+                                new OpenLayers.Size(200, 200),
                                 event.text,
                                 null,
                                 true,
@@ -222,27 +248,33 @@
 
             $.plot($("#placeholder_01"), [
                 {
-                    data:d1,
+                    data: d1,
                     lines: { show: true, fill: true },
-                    shadowSize:0
+                    shadowSize: 0
                 }
-            ],{yaxes: [{axisLabel: 'Depth (m)'}],grid: {borderWidth:0}});
+            ], {yaxes: [
+                {axisLabel: 'Depth (m)'}
+            ], grid: {borderWidth: 0}});
 
             $.plot($("#placeholder_02"), [
                 {
-                    data:d2,
+                    data: d2,
                     lines: { show: true, fill: false },
-                    shadowSize:0
+                    shadowSize: 0
                 }
-            ],{yaxes: [{axisLabel: 'Salinity'}],grid: {borderWidth:0}});
+            ], {yaxes: [
+                {axisLabel: 'Salinity'}
+            ], grid: {borderWidth: 0}});
 
             $.plot($("#placeholder_03"), [
                 {
-                    data:d3,
+                    data: d3,
                     lines: { show: true, fill: false },
-                    shadowSize:0
+                    shadowSize: 0
                 }
-            ],{yaxes: [{axisLabel: 'Temp (C)'}],grid: {borderWidth:0}});
+            ], {yaxes: [
+                {axisLabel: 'Temp (C)'}
+            ], grid: {borderWidth: 0}});
 
 
         });

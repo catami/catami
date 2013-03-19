@@ -5,6 +5,7 @@ __author__ = "Lachlan Toohey"
 
 from openpyxl import load_workbook  # for xlsx
 from openpyxl.cell import column_index_from_string
+
 from xlrd import open_workbook, xldate_as_tuple
 import os.path
 
@@ -82,7 +83,8 @@ def xlsx_outline(metadata_file, heading_row=0):
     return descriptor
 
 
-def xls_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields={}, heading_row=0):
+def xls_transform(metadata_file, sheet_name, field_heading_map={},
+                  shared_fields={}, heading_row=0):
     """Prepares rows of excel file to 'structure' format for further processing.
 
     Takes the excel file to use, the name of the worksheet to import from
@@ -101,7 +103,8 @@ def xls_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields
 
     for col in xrange(ncols):
         heading_column_map[worksheet.cell_value(heading_row, col)] = col
-    logger.debug("xls_transform: found {0} headings.".format(len(heading_column_map)))
+    logger.debug(
+        "xls_transform: found {0} headings.".format(len(heading_column_map)))
 
     # create a map from field to column directly
     # or use heading to column if there is a null mapping
@@ -110,11 +113,13 @@ def xls_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields
         logger.debug("xls_transform: using headings as fields.")
     else:
         field_column_map = {}
-        logger.debug("xls_transform: mapping {0} fields.".format(len(field_heading_map)))
+        logger.debug("xls_transform: mapping {0} fields.".format(
+            len(field_heading_map)))
         for field, heading in field_heading_map.iteritems():
             field_column_map[field] = heading_column_map[heading]
 
-    logger.debug("xls_transform: mapping {0} columns.".format(len(field_column_map)))
+    logger.debug(
+        "xls_transform: mapping {0} columns.".format(len(field_column_map)))
 
     structure = []
     for row in xrange(heading_row + 1, nrows):
@@ -145,7 +150,8 @@ def xls_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields
                         # check that the time is not exactly midnight
                         # this is a heuristic to hopefully reduce incorrect
                         # recognitions of dates
-                        if output[0] < 1950 and output[3] == 0 and output[4] == 0 and output[5] == 0:
+                        if output[0] < 1950 and output[3] == 0 and output[
+                            4] == 0 and output[5] == 0:
                             # time is midnight... year is too early, likely mis-recognised
                             fields[field] = cell.value
                         else:
@@ -158,7 +164,8 @@ def xls_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields
     return structure
 
 
-def xlsx_transform(metadata_file, sheet_name, field_heading_map={}, shared_fields={}, heading_row=0):
+def xlsx_transform(metadata_file, sheet_name, field_heading_map={},
+                   shared_fields={}, heading_row=0):
     """Prepares rows of excel file to 'structure' format for further processing.
 
     Takes the excel file to use, the name of the worksheet to import from
@@ -175,8 +182,10 @@ def xlsx_transform(metadata_file, sheet_name, field_heading_map={}, shared_field
     heading_column_map = {}
     for cell in worksheet.rows[heading_row]:
         # the index returned from fn is 1 based, later function needs 0 based
-        heading_column_map[cell.value] = column_index_from_string(column=cell.column) - 1
-    logger.debug("xlsx_transform: found {0} headings.".format(len(heading_column_map)))
+        heading_column_map[cell.value] = column_index_from_string(
+            column=cell.column) - 1
+    logger.debug(
+        "xlsx_transform: found {0} headings.".format(len(heading_column_map)))
 
     # create a map from field to column directly
     # or use heading to column if there is a null mapping
@@ -185,11 +194,13 @@ def xlsx_transform(metadata_file, sheet_name, field_heading_map={}, shared_field
         logger.debug("xlsx_transform: using headings as fields.")
     else:
         field_column_map = {}
-        logger.debug("xlsx_transform: mapping {0} fields.".format(len(field_heading_map)))
+        logger.debug("xlsx_transform: mapping {0} fields.".format(
+            len(field_heading_map)))
         for field, heading in field_heading_map.iteritems():
             field_column_map[field] = heading_column_map[heading]
 
-    logger.debug("xlsx_transform: mapping {0} columns.".format(len(field_column_map)))
+    logger.debug(
+        "xlsx_transform: mapping {0} columns.".format(len(field_column_map)))
 
     structure = []
     # now extract the real rows of interest

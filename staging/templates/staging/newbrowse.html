@@ -1,15 +1,15 @@
 {% extends "base-topmenu.html" %}
-{% block title %}{{ block.super }} : {{request.path }}{% endblock %}
+{% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
 
 {% block content %}
-{% include "staging/browser.html" %}
+    {% include "staging/browser.html" %}
 {% endblock %}
 
 {% block add_script %}
-<script type="text/javascript">
-    $(document).ready(function(){
-        getFolderContents('');
-    });
-</script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getFolderContents('');
+        });
+    </script>
 
 {% endblock %}

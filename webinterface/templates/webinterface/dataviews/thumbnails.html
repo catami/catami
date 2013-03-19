@@ -2,15 +2,16 @@
 Template-specific styles
 ------------------------------------------->
 <style type="text/css">
-	#thmcontainer {
-		width:950px;
-	}
-	#thmlist img {
-		width:150px;
-		margin-right:5px;
-		margin-bottom:5px;
-		background-color:#CCC;
-	}
+    #thmcontainer {
+        width: 950px;
+    }
+
+    #thmlist img {
+        width: 150px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        background-color: #CCC;
+    }
 </style>
 
 <!------------------------------------------
@@ -18,7 +19,7 @@ Template-specific HTML
 ------------------------------------------->
 <div id="thmcontainer">
     <div id="thmlist" style="width:100%;">
-    	<!-- Content inserted using javascript function -->
+        <!-- Content inserted using javascript function -->
     </div>
     <div style="width:100%; text-align: center;">
         <a href="#_" class="btn btn-primary" id="btnnext"><i class="icon-plus-sign"></i> View more images</a><br>
@@ -35,23 +36,23 @@ Template-specific javascript functions
 
     function getNewImageList(filter, numimgs) {
         numimgs = numimgs || 36;            // set default number of images
-        var apiurl = '/api/dev/image/?limit='+numimgs+'&'+filter;    //create api url with filter
+        var apiurl = '/api/dev/image/?limit=' + numimgs + '&' + filter;    //create api url with filter
         $("#thmlist").html('');                    //clear thumbnail list
-        appendImageListAPI (apiurl);               //add thumbnails to image list
+        appendImageListAPI(apiurl);               //add thumbnails to image list
     }
-    function appendImageListAPI (apiurl) {
-        $.getJSON(apiurl , function(img){
+    function appendImageListAPI(apiurl) {
+        $.getJSON(apiurl, function (img) {
             var images = '';
             for (var i = 0; i < img.objects.length; i++) {
                 images += '<img src="' + img.objects[i].thumbnail_location + '"/>';
             }
             $("#thmlist").append(images);
 
-            if (img.meta.total_count>0) {
+            if (img.meta.total_count > 0) {
                 //$('#deploymentSelect option:first').attr('selected', 'selected');
                 //$("#btnprev").attr("onClick","getImageList('"+img.meta.previous+"',0);");
-                $("#btnnext").attr("onClick","appendImageListAPI('"+img.meta.next+"');");
-                $("#thminfo").html('Viewing 1 to '+Math.min((img.meta.offset+img.meta.limit),img.meta.total_count)+' of '+img.meta.total_count);
+                $("#btnnext").attr("onClick", "appendImageListAPI('" + img.meta.next + "');");
+                $("#thminfo").html('Viewing 1 to ' + Math.min((img.meta.offset + img.meta.limit), img.meta.total_count) + ' of ' + img.meta.total_count);
             } else {
                 $("#thminfo").html('No images available...');
             }

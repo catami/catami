@@ -26,7 +26,7 @@ dev_api.register(jsonapi.api.UserResource())
 dev_api.register(staging.api.StagingFilesResource())
 
 urlpatterns = patterns('',
-    (r'^$', 'jsonapi.views.help'),
-    (r'', include(dev_api.urls)),
-    (r'', include(v1_api.urls)),
+                       (r'^$', 'jsonapi.views.help'),
+                       (r'', include(dev_api.urls)),
+                       (r'', include(v1_api.urls)),
 )

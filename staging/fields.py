@@ -3,7 +3,6 @@ from django.forms.widgets import FileInput
 
 
 class MultiFileInput(FileInput):
-
     def render(self, name, value, attrs=None):
         base = attrs or {}
         attrs = dict(base)

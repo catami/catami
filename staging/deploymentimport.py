@@ -7,6 +7,7 @@ import os.path
 import shutil
 
 import csv
+
 import cv2
 import datetime
 from dateutil.parser import parse as dateparse
@@ -45,28 +46,36 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
     """
 
     # the location to place the original image
-    archive_path = os.path.join(staging_settings.STAGING_ARCHIVE_DIR, campaign_name, deployment_name, image_name)
+    archive_path = os.path.join(staging_settings.STAGING_ARCHIVE_DIR,
+                                campaign_name, deployment_name, image_name)
 
-    if staging_settings.STAGING_MOVE_ORIGINAL_IMAGES and not os.path.exists(os.path.dirname(archive_path)):
+    if staging_settings.STAGING_MOVE_ORIGINAL_IMAGES and not os.path.exists(
+            os.path.dirname(archive_path)):
         try:
             os.makedirs(os.path.dirname(archive_path))
         except OSError:
-            raise Exception("Could not create archive location, full path: {0}".format(archive_path))
+            raise Exception(
+                "Could not create archive location, full path: {0}".format(
+                    archive_path))
 
     # the place to put the web version of the image
     # (converted from whatever to jpg with high quality etc.)
     image_title, original_type = os.path.splitext(image_name)
     webimage_name = image_title + '.jpg'
     # the place relative to serving root
-    webimage_location = os.path.join(campaign_name, deployment_name, webimage_name)
+    webimage_location = os.path.join(campaign_name, deployment_name,
+                                     webimage_name)
     # absolute filesystem location
-    webimage_path = os.path.join(staging_settings.STAGING_WEBIMAGE_DIR, webimage_location)
+    webimage_path = os.path.join(staging_settings.STAGING_WEBIMAGE_DIR,
+                                 webimage_location)
 
     if not os.path.exists(os.path.dirname(webimage_path)):
         try:
             os.makedirs(os.path.dirname(webimage_path))
         except OSError:
-            raise Exception("Could not create thumbnail location, full path: {0}".format(webimage_path))
+            raise Exception(
+                "Could not create thumbnail location, full path: {0}".format(
+                    webimage_path))
 
     # now actually move/convert the images
     image = cv2.imread(image_path)
@@ -137,8 +146,10 @@ def deployment_import(deployment, path):
 
     description_file_name = os.path.join(path, 'description.txt')
     image_location_file_name = os.path.join(path, 'image-locations.csv')
-    whole_image_file_name = os.path.join(path, 'whole-image-classification.csv')
-    point_label_file_name = os.path.join(path, 'within-image-classifcation.csv')
+    whole_image_file_name = os.path.join(path,
+                                         'whole-image-classification.csv')
+    point_label_file_name = os.path.join(path,
+                                         'within-image-classifcation.csv')
 
     # check the path exists
     if not os.path.isdir(path):
@@ -213,7 +224,8 @@ def deployment_import(deployment, path):
         image = models.Image()
         image.deployment = deployment
         image.date_time = dateparse(im_att['datetime'])
-        image.image_position = "POINT({0} {1})".format(im_att['longitude'], im_att['latitude'])
+        image.image_position = "POINT({0} {1})".format(im_att['longitude'],
+                                                       im_att['latitude'])
         image.depth = im_att['depth']
 
         if image.depth > deployment.max_depth:
@@ -227,7 +239,9 @@ def deployment_import(deployment, path):
         deployment_name = deployment.short_name
         image_path = os.path.join(path, 'image', image_name)
 
-        archive_path, webimage_path = image_import(campaign_name, deployment_name, image_name, image_path)
+        archive_path, webimage_path = image_import(campaign_name,
+                                                   deployment_name, image_name,
+                                                   image_path)
 
         image.archive_location = archive_path
         image.webimage_location = webimage_path
@@ -279,7 +293,8 @@ def deployment_import(deployment, path):
         # import point annotations
         deployment_annotation_import(deployment, point_image_file_name)
 
-    # our work is now done!
+        # our work is now done!
+
 
 def deployment_habitat_import(deployment, habitat_file_name):
     """Import habitat information from a csv knowing the source deployment.

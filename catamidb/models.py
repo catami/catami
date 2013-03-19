@@ -19,14 +19,12 @@ logger = logging.getLogger(__name__)
 
 class CampaignManager(models.GeoManager):
     """Model Manager for Campaign.
-    
     Provides (by inheritance) gis methods and ability
     to get a campaign by natural key.
     """
 
     def get_by_natural_key(self, year, month, short_name):
         """Get a campaign from its natural key.
-
         :date_start: the start date of the campaign
         :short_name: the name of the campaign
         :returns: the campaign with the given natural key
@@ -34,10 +32,10 @@ class CampaignManager(models.GeoManager):
         """
 
         return self.get(
-                date_start__year=year,
-                date_start__month=month,
-                short_name=short_name
-                )
+            date_start__year=year,
+            date_start__month=month,
+            short_name=short_name
+        )
 
 
 class Campaign(models.Model):
@@ -59,9 +57,7 @@ class Campaign(models.Model):
 
     def natural_key(self):
         """Return the natural key for this Campaign.
-
         :returns: tuple representing the natural key
-        
         """
 
         return (self.date_start.year, self.date_start.month, self.short_name)
@@ -74,7 +70,6 @@ class Campaign(models.Model):
 
 class DeploymentManager(models.GeoManager):
     """Model Manager for Deployment.
-    
     Provides (by inheritance) gis methods and ability
     to get a deployment by natural key.
     """
@@ -91,7 +86,6 @@ class DeploymentManager(models.GeoManager):
 
 class Deployment(models.Model):
     """Core Deployment class that holds basic position and time information.
-
     This is inherited by other types where more specific information is stored.
     """
     objects = DeploymentManager()
@@ -117,12 +111,12 @@ class Deployment(models.Model):
 
     def __unicode__(self):
         subtypes = [
-                'bruvdeployment',
-                'auvdeployment',
-                'dovdeployment',
-                'tideployment',
-                'tvdeployment'
-                ]
+            'bruvdeployment',
+            'auvdeployment',
+            'dovdeployment',
+            'tideployment',
+            'tvdeployment'
+        ]
 
         # check if subclass member variables exist
         for subtype in subtypes:
@@ -136,12 +130,11 @@ class Deployment(models.Model):
         else:
             # If no sub type is matched
             return "Deployment: {0} - {1}".format(
-                        self.start_time_stamp, self.short_name
-                    )
+                self.start_time_stamp, self.short_name
+            )
 
     def natural_key(self):
         """Get the natural key of this object.
-
         :returns: tuple representing the natural key
         """
 
@@ -154,7 +147,6 @@ class Deployment(models.Model):
 
 class PoseManager(models.GeoManager):
     """Model Manager for Pose.
-    
     Provides (by inheritance) gis methods and ability
     to get a pose by natural key.
     """
@@ -170,10 +162,8 @@ class PoseManager(models.GeoManager):
 
 class Pose(models.Model):
     """Position of vehicle at image capture time.
-    
     The intent is that there will be more than one image linking
     to a particular pose.
-
     Also associated are scientific measurements from other sensors
     such as salinity, chlorophyll and vehicle orientation. Images
     may have their own parameters attached that are image specific
@@ -188,7 +178,6 @@ class Pose(models.Model):
 
     def natural_key(self):
         """Get the natural key of the pose.
-        
         :returns: natural key of the pose"""
         return self.deployment.natural_key() + (self.date_time, )
 
@@ -202,7 +191,6 @@ class Pose(models.Model):
 
 class Camera(models.Model):
     """Data about a camera used in a deployment.
-    
     Contains information about the orientation and quality of the images
     as well as a name for the camera itself.
     """
@@ -230,7 +218,6 @@ class Camera(models.Model):
 
 class Image(models.Model):
     """The Image model that refers to a single still capture.
-    
     It refers to a pose (for position of the image) and a
     camera to gain extra information about the orientation
     of the camera.
@@ -251,7 +238,6 @@ class ScientificMeasurementTypeManager(models.Manager):
 
     def get_by_natural_key(self, normalised_name):
         """Accessor to query for type based on normalised name.
-        
         :returns: object with given natural key.
         """
         return self.get(normalised_name=normalised_name)
@@ -259,7 +245,6 @@ class ScientificMeasurementTypeManager(models.Manager):
 
 class ScientificMeasurementType(models.Model):
     """A type of Scientific Measurement (ie salinity).
-
     This is used to store validation information about a measurement
     type as well as the units and general description.
     """
@@ -291,7 +276,6 @@ class ScientificMeasurementType(models.Model):
 
     def natural_key(self):
         """Returns the natural key of the measurement type.
-        
         :returns: tuple representing the natural key
         """
         return (self.normalised_name, )

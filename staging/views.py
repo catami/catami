@@ -2,6 +2,7 @@
 """
 
 from django.template import RequestContext
+
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseServerError
 from django import forms
@@ -9,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.conf import settings
 from django.core.urlresolvers import reverse
+
 from catamidb import authorization
 
 from .forms import FileImportForm, MetadataStagingForm, ModelImportForm, CampaignCreateForm, ApiDeploymentForm
@@ -49,7 +51,8 @@ def api_auv_form(request, pk):
     context['resource_name'] = 'stagingfiles'
     context['api_name'] = 'dev'
 
-    return render_to_response('staging/api_deployment_create.html', context, rcon)
+    return render_to_response('staging/api_deployment_create.html', context,
+                              rcon)
 
 
 @login_required
@@ -111,7 +114,7 @@ def auvprogress(request):
 
     if not uuid:
         raise Exception("Could not find uuid in cache.")
-    # contains three elements that are needed to render
+        # contains three elements that are needed to render
 
     return render_to_response('staging/auvprogress.html', context, rcon)
 
@@ -131,7 +134,7 @@ def fileprogress(request):
 
     if not uuid:
         raise Exception("Coult not find uuid in cache.")
-    # contains three elements that are needed to render
+        # contains three elements that are needed to render
 
     return render_to_response('staging/fileprogress.html', context, rcon)
 
@@ -170,18 +173,24 @@ def _fileupload(request):
             # else read the entirety into a string
             try:
                 if hasattr(upload, 'temporary_file_path'):
-                    logger.debug("_fileupload: large file so pass filename to json_fload.")
+                    logger.debug(
+                        "_fileupload: large file so pass filename to json_fload.")
                     tasks.json_fload(upload.temporary_file_path())
                 else:
-                    logger.debug("_fileupload: small file so pass string to json_sload.")
+                    logger.debug(
+                        "_fileupload: small file so pass string to json_sload.")
                     tasks.json_sload(upload.read())
 
             except Exception as exc:
-                errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, forms.util.ErrorList())
+                errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS,
+                                                 forms.util.ErrorList())
                 errors.append("{0}: {1}".format(exc.__class__.__name__, exc))
-                logger.debug('_fileupload: failed to import json contents: ({0}): {1}'.format(exc.__class__.__name__, exc))
+                logger.debug(
+                    '_fileupload: failed to import json contents: ({0}): {1}'.format(
+                        exc.__class__.__name__, exc))
             else:
-                logger.debug("_fileupload: import successful, redirecting to fileuploaded.")
+                logger.debug(
+                    "_fileupload: import successful, redirecting to fileuploaded.")
                 return redirect('staging.views.fileuploaded')
     else:
         form = FileImportForm()
@@ -212,11 +221,13 @@ def upload_progress(request):
         progress_id = request.META['X-Progress-ID']
     if progress_id:
         from django.utils import simplejson
+
         cache_key = "%s_%s" % (request.META['REMOTE_ADDR'], progress_id)
         data = cache.get(cache_key)
         return HttpResponse(simplejson.dumps(data))
     else:
-        return HttpResponseServerError('Server Error: You must provide X-Progress-ID header or query param.')
+        return HttpResponseServerError(
+            'Server Error: You must provide X-Progress-ID header or query param.')
 
 
 @login_required
@@ -286,10 +297,12 @@ def change_public(request):
     # then check if the user is the owner
     if file_object.owner != current_user:
         # permission denied
-        return HttpResponseForbidden("You do not have permission to delete this metadata file.")
+        return HttpResponseForbidden(
+            "You do not have permission to delete this metadata file.")
     else:
         # then if so set the is_public parameter
-        logger.debug("Setting file {0} public status to {1}".format(file_id, is_public))
+        logger.debug(
+            "Setting file {0} public status to {1}".format(file_id, is_public))
         file_object.is_public = is_public
         file_object.save()
         logger.debug("The object: {0}".format(file_object))
@@ -332,7 +345,8 @@ def metadatasheet(request, file_id, page_name):
         structure = tasks.metadata_transform(filename, sheet_name)
     else:
         # permission denied
-        return HttpResponseForbidden("You do not have permission to view this metadata file.")
+        return HttpResponseForbidden(
+            "You do not have permission to view this metadata file.")
 
     # process the structure to get what we need
     # it is a set of dictionaries
@@ -376,7 +390,8 @@ def metadataimport(request, file_id, page_name, model_name):
         structure = tasks.metadata_transform(filename, sheet_name)
     else:
         # permission denied
-        return HttpResponseForbidden("You do not have permission to use this metadata file.")
+        return HttpResponseForbidden(
+            "You do not have permission to use this metadata file.")
 
     # map the name to the deployment model
     model_mapping = metadata.metadata_models()
@@ -433,7 +448,8 @@ def metadatadelete(request, file_id):
         file_entry.delete()
     else:
         # don't delete it, the owner is not here
-        return HttpResponseForbidden("You do not have permission to delete this metadata file.")
+        return HttpResponseForbidden(
+            "You do not have permission to delete this metadata file.")
 
     return redirect('staging.views.metadatalist')
 
@@ -464,7 +480,8 @@ def annotationcpcimport(request):
             user = form.cleaned_data['user']
 
             # do the importing magic!
-            tasks.annotation_cpc_import(user, form.cleaned_data['deployment'], cpc_files)
+            tasks.annotation_cpc_import(user, form.cleaned_data['deployment'],
+                                        cpc_files)
 
             # redirect on completion
             return redirect('staging.views.annotationcpcimported')
@@ -475,7 +492,8 @@ def annotationcpcimport(request):
 
     context['form'] = form
 
-    return render_to_response('staging/annotationcpcimport.html', context, rcon)
+    return render_to_response('staging/annotationcpcimport.html', context,
+                              rcon)
 
 
 @login_required
@@ -484,4 +502,5 @@ def annotationcpcimported(request):
     context = {}
     rcon = RequestContext(request)
 
-    return render_to_response('staging/annotationcpcimported.html', context, rcon)
+    return render_to_response('staging/annotationcpcimported.html', context,
+                              rcon)

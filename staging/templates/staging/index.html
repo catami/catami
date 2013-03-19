@@ -2,14 +2,14 @@
 {% block title %}Catami Project - Staging {% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1>Staging</h1>
-</div>
-<ul>
-    <li><a href="{% url staging.views.campaigncreate %}">Create Campaign</a></li>
-    <li><a href="{% url staging.views.fileupload %}">JSON (pre-processed) File Upload</a></li>
-    <li><a href="{% url staging.views.metadatastage %}">Metadata File Staging</a></li>
-    <li><a href="{% url staging.views.metadatalist %}">Metadata Files</a></li>
-    <li><a href="{% url staging.views.newbrowse %}">New Local Browse</a></li>
-</ul>
+    <div class="page-header">
+        <h1>Staging</h1>
+    </div>
+    <ul>
+        <li><a href="{% url staging.views.campaigncreate %}">Create Campaign</a></li>
+        <li><a href="{% url staging.views.fileupload %}">JSON (pre-processed) File Upload</a></li>
+        <li><a href="{% url staging.views.metadatastage %}">Metadata File Staging</a></li>
+        <li><a href="{% url staging.views.metadatalist %}">Metadata Files</a></li>
+        <li><a href="{% url staging.views.newbrowse %}">New Local Browse</a></li>
+    </ul>
 {% endblock %}

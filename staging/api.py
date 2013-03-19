@@ -1,4 +1,5 @@
 from tastypie import fields
+
 from tastypie.resources import ModelResource, Resource, Bundle
 from tastypie.exceptions import NotFound, BadRequest
 from tastypie.utils import trailing_slash
@@ -38,6 +39,7 @@ class StagingFileObject(object):
     def to_dict(self):
         return self._data
 
+
 class StagingAuthorization(Authorization):
     def post_auv(self, object_list, bundle):
         logger.debug("Checking create_auv permissions.")
@@ -45,7 +47,8 @@ class StagingAuthorization(Authorization):
         if hasattr(request, 'user') and request.user.is_authenticated():
             return True
         else:
-            raise Unauthorized("You do not have permission to create auv deployments.")
+            raise Unauthorized(
+                "You do not have permission to create auv deployments.")
 
 
 class StagingFilesResource(Resource):
@@ -62,7 +65,9 @@ class StagingFilesResource(Resource):
         object_class = StagingFileObject
         auv_allowed_methods = ['post']
         allowed_methods = ['get', 'post']
-        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), Authentication())
+        authentication = MultiAuthentication(SessionAuthentication(),
+                                             ApiKeyAuthentication(),
+                                             Authentication())
         authorization = StagingAuthorization()
 
     def detail_uri_kwargs(self, bundle_or_obj):
@@ -83,8 +88,8 @@ class StagingFilesResource(Resource):
 
         # these are both needed...
         kwargs = {'api_name': self._meta.api_name,
-            'resource_name': self._meta.resource_name,
-            }
+                  'resource_name': self._meta.resource_name,
+        }
 
         kwargs = {}
 
@@ -119,7 +124,8 @@ class StagingFilesResource(Resource):
         data = {}
         data['path'] = path
         data['pk'] = path.encode('hex')
-        data['parent'] = parent['pk']  # the straight key is more useful   parent_obj
+        data['parent'] = parent[
+            'pk']  # the straight key is more useful   parent_obj
         data['name'] = os.path.basename(path)
         data['is_dir'] = os.path.isdir(system_dir)
         obj = StagingFileObject(initial=data)
@@ -194,7 +200,8 @@ class StagingFilesResource(Resource):
             objects = self.apply_filters(bundle.request, applicable_filters)
             return self.authorized_read_list(objects, bundle)
         except ValueError:
-            return BadRequest("Invalid resource lookup data provided (mismatched type).")
+            return BadRequest(
+                "Invalid resource lookup data provided (mismatched type).")
 
     def dehydrate(self, bundle):
         bundle.actions = bundle.obj.actions
@@ -204,25 +211,32 @@ class StagingFilesResource(Resource):
     def obj_create(self, bundle, request=None, **kwargs):
         pass
 
-  # not relevant?
+        # not relevant?
+
     def obj_update(self, bundle, request=None, **kwargs):
         pass
 
-  # not relevant?
+        # not relevant?
+
     def obj_delete_list(self, request=None, **kwargs):
         pass
 
-  # not relevant?
+        # not relevant?
+
     def obj_delete(self, request=None, **kwargs):
         pass
 
-  # not relevant?
+        # not relevant?
+
     def rollback(self, bundles):
         pass  # not relevant?
 
     # will become prepend_urls on upgrade to 0.9.12 (is deprecated at that point)
     def prepend_urls(self):
-        return [url(r"^(?P<resource_name>%s)/create/(?P<pk>\w[\w/-]*)/auv%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('dispatch_auv'), name="api_auv")]
+        return [url(
+            r"^(?P<resource_name>%s)/create/(?P<pk>\w[\w/-]*)/auv%s$" % (
+            self._meta.resource_name, trailing_slash()),
+            self.wrap_view('dispatch_auv'), name="api_auv")]
 
     def dispatch_auv(self, request, **kwargs):
         return self.dispatch("auv", request, **kwargs)
@@ -243,7 +257,8 @@ class StagingFilesResource(Resource):
             created_deployment.short_name = data['short_name']
             created_deployment.campaign = data['campaign']
             created_deployment.license = data['license']
-            created_deployment.descriptive_leywords = data['descriptive_keywords']
+            created_deployment.descriptive_leywords = data[
+                'descriptive_keywords']
 
             print "passing to function to process"
             # now pass to the parsing function
@@ -254,8 +269,8 @@ class StagingFilesResource(Resource):
             except Exception:
                 logger.exception("Unable to import deployment.")
 
-            # then return the new deployment
+                # then return the new deployment
 
-        # on failure... not sure what to do yet
-        # probably just return the form
-        # or call the original view that should have created it?
+                # on failure... not sure what to do yet
+                # probably just return the form
+                # or call the original view that should have created it?

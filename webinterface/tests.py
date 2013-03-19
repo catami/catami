@@ -32,26 +32,26 @@ class TestViews(TestCase):
         self.first_campaign_id = 1
         self.campaign_01 = mommy.make_one('catamidb.Campaign', id=1)
         self.deployment1 = mommy.make_recipe('webinterface.auvdeployment1',
-            id=1, campaign=self.campaign_01)
+                                             id=1, campaign=self.campaign_01)
         self.deployment2 = mommy.make_recipe('webinterface.auvdeployment2',
-            id=2, campaign=self.campaign_01)
+                                             id=2, campaign=self.campaign_01)
 
         self.pose_01 = mommy.make_recipe('webinterface.pose_01',
-                                        id=1,
-                                        deployment=self.deployment1)
+                                         id=1,
+                                         deployment=self.deployment1)
 
         self.pose_02 = mommy.make_recipe('webinterface.pose_01',
-                                        id=2,
-                                        deployment=self.deployment2)
+                                         id=2,
+                                         deployment=self.deployment2)
 
         self.camera_01 = mommy.make_one('catamidb.Camera', deployment=self.
-            deployment1)
+        deployment1)
 
         self.image_01 = mommy.make_one('catamidb.Image',
                                        id=1,
                                        pose=self.pose_01,
                                        camera=self.camera_01
-                                      )
+        )
 
         self.collection_01 = mommy.make_one('collection.Collection', images=[
             self.image_01])
@@ -59,26 +59,26 @@ class TestViews(TestCase):
         self.second_campaign_id = 2
         self.third_campaign_id = 3
         self.campaign_02 = mommy.make_one('catamidb.Campaign', id=self.
-            second_campaign_id)
+        second_campaign_id)
         self.campaign_03 = mommy.make_one('catamidb.Campaign', id=self.
-            third_campaign_id)
+        third_campaign_id)
 
         self.dummy_dep = mommy.make_one('catamidb.Deployment',
-            start_position=Point(12.4604, 43.9420), end_position=Point(
-            12.4604, 43.9420), transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0
+                                        start_position=Point(12.4604, 43.9420), end_position=Point(
+                12.4604, 43.9420), transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0
             ), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))), id=1, campaign=self.
             campaign_02)
 
         self.dummy_dep1 = mommy.make_recipe('webinterface.auvdeployment',
-            id=3, campaign=self.campaign_02)
+                                            id=3, campaign=self.campaign_02)
         self.dummy_dep2 = mommy.make_recipe('webinterface.bruvdeployment',
-            id=4, campaign=self.campaign_02)
+                                            id=4, campaign=self.campaign_02)
         self.dummy_dep3 = mommy.make_recipe('webinterface.dovdeployment',
-            id=5, campaign=self.campaign_02)
+                                            id=5, campaign=self.campaign_02)
         self.dummy_dep4 = mommy.make_recipe('webinterface.tvdeployment', id=6,
-            campaign=self.campaign_02)
+                                            campaign=self.campaign_02)
         self.dummy_dep5 = mommy.make_recipe('webinterface.tideployment', id=7,
-            campaign=self.campaign_02)
+                                            campaign=self.campaign_02)
         # setup some images and assign to deployment_one self.image_list =
         # list() for i in xrange(0, 200): #print i
         # self.image_list.append(mommy.make_one('catamidb.Image',
@@ -91,21 +91,19 @@ class TestViews(TestCase):
         pass
 
     def test_get_multiple_deployment_extent(self):
-
         # test OK
         post_data = {"deployment_ids": self.deployment1.id.__str__() + "," +
-            self.deployment2.id.__str__()}
+                                       self.deployment2.id.__str__()}
         response = self.client.post("/explore/getmapextent", post_data)
         self.assertEqual(response.content.__str__(),
-            "{\"extent\": \"(12.4604, 43.942, 12.4604, 43.942)\"}")
+                         "{\"extent\": \"(12.4604, 43.942, 12.4604, 43.942)\"}")
 
         # test with GET
         response = self.client.get("/explore/getmapextent")
         self.assertEqual(response.content.__str__(),
-            "{\"message\": \"GET operation invalid, must use POST.\"}")
+                         "{\"message\": \"GET operation invalid, must use POST.\"}")
 
     def test_get_collection_extent(self):
-
         # post_data = {"deployment_ids": self.deployment1.id,
         # "collection_name": "collection_testname"} response =
         # self.client.post("/collections/create", post_data)
@@ -114,14 +112,14 @@ class TestViews(TestCase):
         # self.assertEqual(response.status_code, 200)  test OK
         post_data = {"collection_id": self.collection_01.id}
         response = self.client.post("/collections/getcollectionextent",
-            post_data)
+                                    post_data)
         self.assertEqual(response.content.__str__(),
-            "{\"extent\": \"(12.4604, 43.942, 12.4604, 43.942)\"}")
+                         "{\"extent\": \"(12.4604, 43.942, 12.4604, 43.942)\"}")
 
         # test with GET
         response = self.client.get("/collections/getcollectionextent")
         self.assertEqual(response.content.__str__(),
-            "{\"message\": \"GET operation invalid, must use POST.\"}")
+                         "{\"message\": \"GET operation invalid, must use POST.\"}")
 
     #==================================================#
     # Add unittests here
@@ -146,11 +144,11 @@ class TestViews(TestCase):
         response = self.client.get("/projects")
         self.assertEqual(response.status_code, 200)
 
-#        response = self.client.get("/my_collections")
-#        self.assertEqual(response.status_code, 200)
+        #        response = self.client.get("/my_collections")
+        #        self.assertEqual(response.status_code, 200)
 
-#        response = self.client.get("/public_collections")
-#        self.assertEqual(response.status_code, 200)
+        #        response = self.client.get("/public_collections")
+        #        self.assertEqual(response.status_code, 200)
 
         #make a collection from a deployment
         post_data = {"deployment_ids": self.deployment1.id, "collection_name":
@@ -162,7 +160,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
 
         #make a collection from a deployment using random
-        post_data = {"name": "TEST_RAND", "n":"50","ispublic":"true","description":"test description", "c_id":"1"}
+        post_data = {"name": "TEST_RAND", "n": "50", "ispublic": "true", "description": "test description", "c_id": "1"}
         response = self.client.post("/collections/createworkset/random", post_data)
         self.assertEqual(response.status_code, 301)
 
@@ -170,13 +168,13 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
 
         #make a collection from a deployment using random
-        post_data = {"name": "TEST_STRAT", "n":"50","ispublic":"true","description":"test description", "c_id":"1"}
+        post_data = {"name": "TEST_STRAT", "n": "50", "ispublic": "true", "description": "test description",
+                     "c_id": "1"}
         response = self.client.post("/collections/createworkset/stratified", post_data)
         self.assertEqual(response.status_code, 301)
 
         response = self.client.get("/collections/1/2/")
         self.assertEqual(response.status_code, 200)
-
 
 
     def test_campaigns(self):
@@ -187,11 +185,11 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get("/data/campaigns/" + str(self.
-            first_campaign_id) + "/")
+        first_campaign_id) + "/")
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get("/data/campaigns/" + str(self.
-            second_campaign_id) + "/")
+        second_campaign_id) + "/")
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get("/data/campaigns/99999/")

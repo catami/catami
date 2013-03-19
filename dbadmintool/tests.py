@@ -38,7 +38,7 @@ class DatabaseTest(TestCase):
         self.assertTrue(self.bender.make_local_backup())
         self.assertTrue(self.bender.make_local_backup(do_zip=False))
         self.assertFalse(self.bender.make_local_backup(do_zip=False,
-            unit_test='corrupt'))
+                                                       unit_test='corrupt'))
         self.assertFalse(self.bender.make_local_backup(unit_test='corrupt'))
 
     def test_collect_db_stats(self):
@@ -48,6 +48,6 @@ class DatabaseTest(TestCase):
         self.assertTrue(isinstance(self.april.query_database_size(), int))
         self.assertTrue(isinstance(self.april.query_table_size(), list))
 
-    #def test_db_stats_view(self):
+        #def test_db_stats_view(self):
         #response = self.client.get("/report/")
 

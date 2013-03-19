@@ -1,5 +1,6 @@
 # Create your views here.
 from django.template import RequestContext
+
 from django.shortcuts import render_to_response, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
@@ -14,7 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 import httplib2
 
 #not API compliant - to be removed after the views are compliant
-from catamidb.models import Pose, Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment
+from catamidb.models import Pose, Image, Campaign, AUVDeployment, \
+    BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment
 from django.contrib.gis.geos import fromstr
 from django.db.models import Max, Min
 import simplejson
@@ -26,10 +28,12 @@ from django.contrib.auth import logout
 
 logger = logging.getLogger(__name__)
 
+
 @waffle_switch('Collections')
 class CreateCollectionForm(forms.Form):
     deployment_ids = forms.CharField()
     collection_name = forms.CharField()
+
 
 class CreateWorksetForm(forms.Form):
     name = forms.CharField()
@@ -58,14 +62,16 @@ def index(request):
         except:
             pass
         else:
-            image_link = {"deployment_url": reverse(auvdeployments) + str(image.pose.deployment.id), "image": image}
+            image_link = {"deployment_url": reverse(auvdeployments) + str(
+                image.pose.deployment.id), "image": image}
 
         try:
             TIDeployment.objects.get(id=image.deployment.id)
         except:
             pass
         else:
-            image_link = {"deployment_url": reverse(tideployments) + str(image.pose.deployment.id), "image": image}
+            image_link = {"deployment_url": reverse(tideployments) + str(
+                image.pose.deployment.id), "image": image}
 
         image_link_list.append(image_link)
 
@@ -110,13 +116,16 @@ def index(request):
             deployment_type = "TV Deployment"
             deployment_url = reverse(tvdeployments) + str(deployment.id)
 
-        styled_deployment = {"deployment_type": deployment_type, "deployment_url": deployment_url, "deployment": deployment}
+        styled_deployment = {"deployment_type": deployment_type,
+                             "deployment_url": deployment_url,
+                             "deployment": deployment}
         styled_deployment_list.append(styled_deployment)
 
     return render_to_response('webinterface/index.html',
-        {'styled_deployment_list': styled_deployment_list,
-         'image_link_list': image_link_list},
-        RequestContext(request))
+                              {
+                              'styled_deployment_list': styled_deployment_list,
+                              'image_link_list': image_link_list},
+                              RequestContext(request))
 
 
 # Account stuff
@@ -130,19 +139,23 @@ def logout_view(request):
 
 # Info pages
 def faq(request):
-    return render_to_response('webinterface/faq.html', {}, RequestContext(request))
+    return render_to_response('webinterface/faq.html', {},
+                              RequestContext(request))
 
 
 def contact(request):
-    return render_to_response('webinterface/contact.html', {}, RequestContext(request))
+    return render_to_response('webinterface/contact.html', {},
+                              RequestContext(request))
 
 
 def about(request):
-    return render_to_response('webinterface/about.html', {}, RequestContext(request))
+    return render_to_response('webinterface/about.html', {},
+                              RequestContext(request))
 
 
 def howto(request):
-    return render_to_response('webinterface/howto.html', {}, RequestContext(request))
+    return render_to_response('webinterface/howto.html', {},
+                              RequestContext(request))
 
 
 # Explore pages
@@ -159,24 +172,31 @@ def explore(request):
         bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign)
         dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign)
         if len(auv_deployment_list) > 0:
-            sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign).extent())
+            sm = fromstr(
+                'MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(
+                    campaign=campaign).extent())
             campaign_rects.append(sm.envelope.geojson)
         if len(bruv_deployment_list) > 0:
-            sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign).extent())
+            sm = fromstr(
+                'MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(
+                    campaign=campaign).extent())
             campaign_rects.append(sm.envelope.geojson)
 
     return render_to_response('webinterface/explore.html',
                               {'latest_campaign_list': latest_campaign_list,
                                'latest_deployment_list': latest_deployment_list,
-                               'WMS_URL': settings.WMS_URL, #imported from settings
-                               'WMS_layer_name': settings.WMS_LAYER_NAME, #imported from settings
+                               'WMS_URL': settings.WMS_URL,
+                               #imported from settings
+                               'WMS_layer_name': settings.WMS_LAYER_NAME,
+                               #imported from settings
                                'campaign_rects': campaign_rects},
                               context_instance=RequestContext(request))
 
 
 # Explore pages
 def explore_campaign(request, campaign_id):
-    return render_to_response('webinterface/explore.html', {}, context_instance=RequestContext(request))
+    return render_to_response('webinterface/explore.html', {},
+                              context_instance=RequestContext(request))
 
 
 # Collection pages
@@ -211,13 +231,14 @@ def projects(request):
 #            public_collections_error = 'An undetermined error has occured. Please contact support'
 
     return render_to_response('webinterface/projects.html',
-#        {"my_rec_cols": cl_my_rec,
-#         "my_collections_error": my_collections_error,
-#         "pub_rec_cols": cl_pub_rec,
-#         "public_collections_error":public_collections_error,
-         {'WMS_URL': settings.WMS_URL, #imported from settings
-         'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
-         RequestContext(request))
+                              #        {"my_rec_cols": cl_my_rec,
+                              #         "my_collections_error": my_collections_error,
+                              #         "pub_rec_cols": cl_pub_rec,
+                              #         "public_collections_error":public_collections_error,
+                              {'WMS_URL': settings.WMS_URL,
+                               #imported from settings
+                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
+                              RequestContext(request))
 
 #@waffle_switch('Collections')
 #def my_collections(request):
@@ -273,22 +294,24 @@ def projects(request):
 @waffle_switch('Collections')
 def view_collection(request, collection_id):
     return render_to_response('webinterface/viewcollection.html',
-    #return render_to_response('webinterface/viewcollectionalternative.html',
-        {"collection_id": collection_id,
-        'WMS_URL': settings.WMS_URL, #imported from settings
-        'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
-        RequestContext(request))
+                              #return render_to_response('webinterface/viewcollectionalternative.html',
+                              {"collection_id": collection_id,
+                               'WMS_URL': settings.WMS_URL,
+                               #imported from settings
+                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
+                              RequestContext(request))
 
 
 @waffle_switch('Collections')
 def view_workset(request, collection_id, workset_id):
     return render_to_response('webinterface/viewcollection.html',
-    #return render_to_response('webinterface/viewcollectionalternative.html',
-        {"collection_id": collection_id,
-         "workset_id": workset_id,
-         'WMS_URL': settings.WMS_URL, #imported from settings
-         'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
-        RequestContext(request))
+                              #return render_to_response('webinterface/viewcollectionalternative.html',
+                              {"collection_id": collection_id,
+                               "workset_id": workset_id,
+                               'WMS_URL': settings.WMS_URL,
+                               #imported from settings
+                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
+                              RequestContext(request))
 
 
 # view collection table views
@@ -326,40 +349,49 @@ def flip_public_collection(request):
 # Subset pages
 @waffle_switch('Collections')
 def view_subset(request):
-    return render_to_response('webinterface/viewsubset.html', {}, RequestContext(request))
+    return render_to_response('webinterface/viewsubset.html', {},
+                              RequestContext(request))
 
 
 @waffle_switch('Collections')
 def all_subsets(request, collection_id):
-    return render_to_response('webinterface/allsubsets.html', {"collection_id": collection_id}, RequestContext(request))
+    return render_to_response('webinterface/allsubsets.html',
+                              {"collection_id": collection_id},
+                              RequestContext(request))
 
 
 @waffle_switch('Collections')
 def my_subsets(request):
-    return render_to_response('webinterface/mysubsets.html', {}, RequestContext(request))
+    return render_to_response('webinterface/mysubsets.html', {},
+                              RequestContext(request))
 
 
 @waffle_switch('Collections')
 def public_subsets(request):
-    return render_to_response('webinterface/publicsubsets.html', {}, RequestContext(request))
+    return render_to_response('webinterface/publicsubsets.html', {},
+                              RequestContext(request))
 
 
 # Single image pages
 def image_view(request):
-    return render_to_response('webinterface/imageview.html', {}, RequestContext(request))
+    return render_to_response('webinterface/imageview.html', {},
+                              RequestContext(request))
 
 
 def image_annotate(request):
-    return render_to_response('webinterface/imageannotate.html', {}, RequestContext(request))
+    return render_to_response('webinterface/imageannotate.html', {},
+                              RequestContext(request))
 
 
 def image_edit(request):
-    return render_to_response('webinterface/imageedit.html', {}, RequestContext(request))
+    return render_to_response('webinterface/imageedit.html', {},
+                              RequestContext(request))
 
 
 #Force views from old view setup (NOT API COMPLIANT)
 def data(request):
-    return render_to_response('webinterface/Force_views/index.html', {}, RequestContext(request))
+    return render_to_response('webinterface/Force_views/index.html', {},
+                              RequestContext(request))
 
 
 def deployments(request):
@@ -372,8 +404,8 @@ def deployments(request):
     return render_to_response(
         'webinterface/Force_views/DeploymentIndex.html',
         {'auv_deployment_list': auv_deployment_list,
-        'bruv_deployment_list': bruv_deployment_list,
-        'dov_deployment_list': dov_deployment_list},
+         'bruv_deployment_list': bruv_deployment_list,
+         'dov_deployment_list': dov_deployment_list},
         context_instance=RequestContext(request))
 
 
@@ -420,7 +452,8 @@ def auvdeployment_display(request, auvdeployment_id):
     except AUVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
+            'webinterface/Force_views/data_missing.html',
+            context_instance=RequestContext(request))
         #raise Http404
 
     return render_to_response(
@@ -457,21 +490,32 @@ def auvdeployment_detail(request, auvdeployment_id):
     except AUVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-            'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
+            'webinterface/Force_views/data_missing.html',
+            context_instance=RequestContext(request))
         #raise Http404
 
     image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
-    salinity_data = ScientificMeasurement.objects.filter(measurement_type__normalised_name='salinity', image__deployment=auvdeployment_id)
-    temperature_data = ScientificMeasurement.objects.filter(measurement_type__normalised_name='temperature', image__deployment=auvdeployment_id)
+    salinity_data = ScientificMeasurement.objects.filter(
+        measurement_type__normalised_name='salinity',
+        image__deployment=auvdeployment_id)
+    temperature_data = ScientificMeasurement.objects.filter(
+        measurement_type__normalised_name='temperature',
+        image__deployment=auvdeployment_id)
 
-    depth_range = {'max': image_list.aggregate(Max('depth'))['depth__max'], 'min': image_list.aggregate(Min('depth'))['depth__min']}
-    salinity_range = {'max': 100, 'min': 0}  # {'max':image_list.aggregate(Max('scientificmeasurement__salinity'))['scientificmeasurement__salinity__max'],'min':image_list.aggregate(Min('scientificmeasurement__salinity'))['scientificmeasurement__salinity__min']}
-    temperature_range = {'max': 100, 'min': 0}  # {'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
+    depth_range = {'max': image_list.aggregate(Max('depth'))['depth__max'],
+                   'min': image_list.aggregate(Min('depth'))['depth__min']}
+    salinity_range = {'max': 100,
+                      'min': 0}  # {'max':image_list.aggregate(Max('scientificmeasurement__salinity'))['scientificmeasurement__salinity__max'],'min':image_list.aggregate(Min('scientificmeasurement__salinity'))['scientificmeasurement__salinity__min']}
+    temperature_range = {'max': 100,
+                         'min': 0}  # {'max':image_list.aggregate(Max('temperature'))['temperature__max'],'min':image_list.aggregate(Min('temperature'))['temperature__min']}
 
     #subsample these values to display in flot
-    depth_data_sampled = subsample_list(image_list.values_list('depth', flat=True).order_by('id'))
-    salinity_data_sampled = subsample_list(salinity_data.values_list('value', flat=True).order_by('id'))
-    temperature_data_sampled = subsample_list(temperature_data.values_list('value', flat=True).order_by('id'))
+    depth_data_sampled = subsample_list(
+        image_list.values_list('depth', flat=True).order_by('id'))
+    salinity_data_sampled = subsample_list(
+        salinity_data.values_list('value', flat=True).order_by('id'))
+    temperature_data_sampled = subsample_list(
+        temperature_data.values_list('value', flat=True).order_by('id'))
 
     return render_to_response(
         'webinterface/Force_views/auvdeploymentDetail.html',
@@ -486,7 +530,7 @@ def auvdeployment_detail(request, auvdeployment_id):
          'WMS_URL': settings.WMS_URL, #imported from settings
          'WMS_layer_name': settings.WMS_LAYER_NAME, #imported from settings
          'deployment_id': auvdeployment_object.id},
-          context_instance=RequestContext(request))
+        context_instance=RequestContext(request))
 
 
 def auvimage_list(request, auvdeployment_id):
@@ -498,14 +542,15 @@ def auvimage_list(request, auvdeployment_id):
     except AUVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
+            'webinterface/Force_views/data_missing.html',
+            context_instance=RequestContext(request))
         #raise Http404
 
     image_list = StereoImage.objects.filter(deployment=auvdeployment_id)
     return render_to_response(
         'Force/auv_image_list.html',
         {'auvdeployment_object': auvdeployment_object,
-        'image_list': image_list},
+         'image_list': image_list},
         context_instance=RequestContext(request))
 
 
@@ -538,7 +583,8 @@ def annotationview(request, auvdeployment_id, image_index):
                      'image_index_prev': local_image_index - 1,
                      'image_index_next': local_image_index + 1,
                      'annotated_image': image,
-                     'annotation_list': Annotation.objects.filter(image_reference=image)},
+                     'annotation_list': Annotation.objects.filter(
+                         image_reference=image)},
                     context_instance=RequestContext(request))
 
     for image in image_list:
@@ -546,24 +592,29 @@ def annotationview(request, auvdeployment_id, image_index):
         if Annotation.objects.filter(image_reference=image).count() > 0:
             if local_image_index > initial_image_index:
 
-                for annotation in Annotation.objects.filter(image_reference=image):
-                    text = "<p style='z-index:100; position:absolute;  color:white; font-size:12px; font-weight:normal; left:" + str(annotation.point.x * 100) + "%; top:" + str(str(annotation.point.y * 100)) + "%;'>" + annotation.code + "</p>"
+                for annotation in Annotation.objects.filter(
+                        image_reference=image):
+                    text = "<p style='z-index:100; position:absolute;  color:white; font-size:12px; font-weight:normal; left:" + str(
+                        annotation.point.x * 100) + "%; top:" + str(
+                        str(
+                            annotation.point.y * 100)) + "%;'>" + annotation.code + "</p>"
                     styled_annotation_data.append(text)
                 return render_to_response(
                     'webinterface/Force_views/annotationview.html',
                     {'auvdeployment_object': auvdeployment_object,
-                    'image_index': local_image_index,
+                     'image_index': local_image_index,
                      'image_index_prev': local_image_index - 1,
                      'image_index_next': local_image_index + 1,
                      'annotated_image': image,
                      'styled_annotation_data': styled_annotation_data,
-                     'annotation_list': Annotation.objects.filter(image_reference=image)},
+                     'annotation_list': Annotation.objects.filter(
+                         image_reference=image)},
                     context_instance=RequestContext(request))
 
     return render_to_response(
         'webinterface/Force_views/annotationview.html',
         {'auvdeployment_object': auvdeployment_object,
-        'image_notfound_index': image_index},
+         'image_notfound_index': image_index},
         context_instance=RequestContext(request))
 
 
@@ -595,19 +646,21 @@ def bruvdeployment_detail(request, bruvdeployment_id):
     """
 
     try:
-        bruvdeployment_object = BRUVDeployment.objects.get(id=bruvdeployment_id)
+        bruvdeployment_object = BRUVDeployment.objects.get(
+            id=bruvdeployment_id)
     except BRUVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'Force/data_missing.html', context_instance=RequestContext(request))
+            'Force/data_missing.html',
+            context_instance=RequestContext(request))
 
     image_list = StereoImage.objects.filter(deployment=bruvdeployment_id)
 
     return render_to_response(
         'Force/bruvdeploymentInstance.html',
         {'bruvdeployment_object': bruvdeployment_object,
-        'deployment_as_geojson': bruvdeployment_object.start_position.geojson,
-        'image_list': image_list},
+         'deployment_as_geojson': bruvdeployment_object.start_position.geojson,
+         'image_list': image_list},
         context_instance=RequestContext(request))
 
 
@@ -632,15 +685,16 @@ def dovdeployment_detail(request, dovdeployment_id):
     except DOVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
+            'webinterface/Force_views/data_missing.html',
+            context_instance=RequestContext(request))
 
     image_list = StereoImage.objects.filter(deployment=dovdeployment_id)
 
     return render_to_response(
         'webinterface/Force_views/tvdeploymentInstance.html',
         {'dovdeployment_object': dovdeployment_object,
-        'deployment_as_geojson': dovdeployment_object.start_position.geojson,
-        'image_list': image_list},
+         'deployment_as_geojson': dovdeployment_object.start_position.geojson,
+         'image_list': image_list},
         context_instance=RequestContext(request))
 
 
@@ -665,15 +719,16 @@ def tvdeployment_detail(request, tvdeployment_id):
     except TVDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
+            'webinterface/Force_views/data_missing.html',
+            context_instance=RequestContext(request))
 
     image_list = StereoImage.objects.filter(deployment=tvdeployment_id)
 
     return render_to_response(
         'webinterface/Force_views/tvdeploymentInstance.html',
         {'tvdeployment_object': tvdeployment_object,
-        'deployment_as_geojson': tvdeployment_object.start_position.geojson,
-        'image_list': image_list},
+         'deployment_as_geojson': tvdeployment_object.start_position.geojson,
+         'image_list': image_list},
         context_instance=RequestContext(request))
 
 
@@ -698,15 +753,16 @@ def tideployment_detail(request, tideployment_id):
     except TIDeployment.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
+            'webinterface/Force_views/data_missing.html',
+            context_instance=RequestContext(request))
 
     image_list = StereoImage.objects.filter(deployment=tideployment_id)
 
     return render_to_response(
         'Force/tideploymentInstance.html',
         {'tideployment_object': tideployment_object,
-        'deployment_as_geojson': tideployment_object.start_position.geojson,
-        'image_list': image_list},
+         'deployment_as_geojson': tideployment_object.start_position.geojson,
+         'image_list': image_list},
         context_instance=RequestContext(request))
 
 
@@ -721,7 +777,8 @@ def campaigns(request):
     if request.user.is_anonymous():
         user = guardian.utils.get_anonymous_user()
 
-    latest_campaign_list = get_objects_for_user(user, ['catamidb.view_campaign']) #Campaign.objects.all()
+    latest_campaign_list = get_objects_for_user(user, [
+        'catamidb.view_campaign']) #Campaign.objects.all()
     campaign_rects = list()
 
     for campaign in latest_campaign_list:
@@ -729,16 +786,20 @@ def campaigns(request):
         bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign)
         dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign)
         if len(auv_deployment_list) > 0:
-            sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign).extent())
+            sm = fromstr(
+                'MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(
+                    campaign=campaign).extent())
             campaign_rects.append(sm.envelope.geojson)
         if len(bruv_deployment_list) > 0:
-            sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign).extent())
+            sm = fromstr(
+                'MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(
+                    campaign=campaign).extent())
             campaign_rects.append(sm.envelope.geojson)
 
     return render_to_response(
         'webinterface/Force_views/campaignIndex.html',
         {'latest_campaign_list': latest_campaign_list,
-        'campaign_rects': campaign_rects},
+         'campaign_rects': campaign_rects},
         context_instance=RequestContext(request))
 
 
@@ -762,13 +823,17 @@ def campaign_detail(request, campaign_id):
     except Campaign.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
-           'webinterface/Force_views/data_missing.html', context_instance=RequestContext(request))
+            'webinterface/Force_views/data_missing.html',
+            context_instance=RequestContext(request))
     campaign_rects = list()
     #djf = Django.Django(geodjango="extent", properties=[''])
 
-    auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign_object)
-    bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign_object)
-    dov_deployment_list = DOVDeployment.objects.filter(campaign=campaign_object)
+    auv_deployment_list = AUVDeployment.objects.filter(
+        campaign=campaign_object)
+    bruv_deployment_list = BRUVDeployment.objects.filter(
+        campaign=campaign_object)
+    dov_deployment_list = DOVDeployment.objects.filter(
+        campaign=campaign_object)
     ti_deployment_list = TIDeployment.objects.filter(campaign=campaign_object)
     tv_deployment_list = TVDeployment.objects.filter(campaign=campaign_object)
     #geoj = GeoJSON.GeoJSON()
@@ -778,10 +843,14 @@ def campaign_detail(request, campaign_id):
 
     sm = ' '
     if len(auv_deployment_list) > 0:
-        sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign_object).extent())
+        sm = fromstr(
+            'MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(
+                campaign=campaign_object).extent())
         campaign_rects.append(sm.envelope.geojson)
     if len(bruv_deployment_list) > 0:
-        sm = fromstr('MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(campaign=campaign_object).extent())
+        sm = fromstr(
+            'MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(
+                campaign=campaign_object).extent())
         campaign_rects.append(sm.envelope.geojson)
     try:
         sm_envelope = sm.envelope.geojson
@@ -791,33 +860,35 @@ def campaign_detail(request, campaign_id):
     return render_to_response(
         'webinterface/Force_views/campaign_detail.html',
         {'campaign_object': campaign_object,
-        'auv_deployment_list': auv_deployment_list,
-        'bruv_deployment_list': bruv_deployment_list,
-        'dov_deployment_list': dov_deployment_list,
-        'ti_deployment_list': ti_deployment_list,
-        'tv_deployment_list': tv_deployment_list,
+         'auv_deployment_list': auv_deployment_list,
+         'bruv_deployment_list': bruv_deployment_list,
+         'dov_deployment_list': dov_deployment_list,
+         'ti_deployment_list': ti_deployment_list,
+         'tv_deployment_list': tv_deployment_list,
 
-        'campaign_as_geojson': sm_envelope},
+         'campaign_as_geojson': sm_envelope},
         context_instance=RequestContext(request))
 
 
 @csrf_exempt
 def get_multiple_deployment_extent(request):
-
     if request.method == 'POST':  # If the form has been submitted...
         deployment_ids = request.POST.get('deployment_ids')
         deployment_ids = deployment_ids.__str__().split(",")
-        extent = Pose.objects.filter(deployment_id__in=deployment_ids).extent().__str__()
+        extent = Pose.objects.filter(
+            deployment_id__in=deployment_ids).extent().__str__()
 
         response_data = {"extent": extent}
-        return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
+        return HttpResponse(simplejson.dumps(response_data),
+                            mimetype="application/json")
 
-    return HttpResponse(simplejson.dumps({"message": "GET operation invalid, must use POST."}), mimetype="application/json")
+    return HttpResponse(
+        simplejson.dumps({"message": "GET operation invalid, must use POST."}),
+        mimetype="application/json")
 
 
 @csrf_exempt
 def get_collection_extent(request):
-
     if request.method == 'POST':  # If the form has been submitted...
         collection_id = request.POST.get('collection_id')
         image_set = Collection.objects.get(id=collection_id).images.all()
@@ -826,18 +897,24 @@ def get_collection_extent(request):
         extent = Pose.objects.filter(id__in=pose_id_set).extent().__str__()
 
         response_data = {"extent": extent}
-        return HttpResponse(simplejson.dumps(response_data), mimetype="application/json")
-    
-    return HttpResponse(simplejson.dumps({"message": "GET operation invalid, must use POST."}), mimetype="application/json")
+        return HttpResponse(simplejson.dumps(response_data),
+                            mimetype="application/json")
+
+    return HttpResponse(
+        simplejson.dumps({"message": "GET operation invalid, must use POST."}),
+        mimetype="application/json")
 
 
 @csrf_exempt
 def create_collection_from_deployments(request):
     if request.method == 'POST':  # If the form has been submitted...
-        form = CreateCollectionForm(request.POST)  # A form bound to the POST data
+        form = CreateCollectionForm(
+            request.POST)  # A form bound to the POST data
         if form.is_valid():  # All validation rules pass
             # make a new collection here from the deployment list
-            CollectionManager().collection_from_deployments_with_name(request.user, request.POST.get('collection_name'), request.POST.get('deployment_ids'))
+            CollectionManager().collection_from_deployments_with_name(
+                request.user, request.POST.get('collection_name'),
+                request.POST.get('deployment_ids'))
             return HttpResponseRedirect('/projects')  # Redirect after POST
 
     return render(request, 'noworky.html', {'form': form, })
@@ -848,8 +925,20 @@ def create_workset_from_collection(request, method):
     if request.method == 'POST':  # If the form has been submitted...
         form = CreateWorksetForm(request.POST)  # A form bound to the POST data
         if form.is_valid():  # All validation rules pass
-            CollectionManager().workset_from_collection(request.user, request.POST.get('name'), request.POST.get('description'), request.POST.get('ispublic') == "true", int(request.POST.get('c_id')), int(request.POST.get('n')), method)
-            return HttpResponseRedirect('/collections/' + request.POST.get('c_id') + '/#SelectWorksetModal')  # Redirect after POST
+            CollectionManager().workset_from_collection(request.user,
+                                                        request.POST.get(
+                                                            'name'),
+                                                        request.POST.get(
+                                                            'description'),
+                                                        request.POST.get(
+                                                            'ispublic') == "true",
+                                                        int(request.POST.get(
+                                                            'c_id')), int(
+                    request.POST.get('n')),
+                                                        method)
+            return HttpResponseRedirect(
+                '/collections/' + request.POST.get(
+                    'c_id') + '/#SelectWorksetModal')  # Redirect after POST
 
     return HttpResponse(form)
 

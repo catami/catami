@@ -21,8 +21,8 @@ class ImageProbability(models.Model):
     """The probability the image belongs to a label."""
     image = models.ForeignKey(Image)
     probability = models.FloatField(
-            validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
-        )
+        validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
+    )
     cluster_label = models.ForeignKey('ClusterLabel')
 
 
@@ -31,8 +31,8 @@ class ClusterLabel(models.Model):
     images = models.ManyToManyField(Image, related_name='clusters')
     cluster_label = models.IntegerField()
     probabilities = models.ManyToManyField(
-            Image,
-            through='ImageProbability',
-            related_name='cluster_probabilities',
-        )
+        Image,
+        through='ImageProbability',
+        related_name='cluster_probabilities',
+    )
     cluster_run = models.ForeignKey(ClusterRun)

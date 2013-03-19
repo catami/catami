@@ -1,15 +1,15 @@
 // Generate 32 char random uuid 
 function gen_uuid() {
     var uuid = ""
-    for (var i=0; i < 32; i++) {
-        uuid += Math.floor(Math.random() * 16).toString(16); 
+    for (var i = 0; i < 32; i++) {
+        uuid += Math.floor(Math.random() * 16).toString(16);
     }
     return uuid
 }
 
 // Add upload progress for multipart forms.
-$(function() {
-    $('form[@enctype=multipart/form-data]').submit(function(){ 
+$(function () {
+    $('form[@enctype=multipart/form-data]').submit(function () {
         // Prevent multiple submits
         if ($.data(this, 'submitted')) return false;
 
@@ -19,12 +19,12 @@ $(function() {
 
         // Append X-Progress-ID uuid form action
         this.action += (this.action.indexOf('?') == -1 ? '?' : '&') + 'X-Progress-ID=' + uuid;
-        
+
         //var $progress = $('<div id="upload-progress" class="upload-progress"></div>').
         //    appendTo(document.body).append('<div class="progress-container"><span class="progress-info">uploading 0%</span><div class="progress-bar"></div></div>');
         $('#upload_container').addClass('progress')
         $('#upload_progress').width('30%')
-        
+
         // progress bar position
         //$progress.css({
         //    position: ($.browser.msie && $.browser.version < 7 )? 'absolute' : 'fixed',  

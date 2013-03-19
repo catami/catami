@@ -37,7 +37,8 @@ def setup_login(self):
     self.login_url = '/accounts/signin/?next='
 
     # this creates the testing user and saves it
-    self.user = User.objects.create_user(self.username, self.email, self.password)
+    self.user = User.objects.create_user(self.username, self.email,
+                                         self.password)
 
 
 class StagingTests(TestCase):
@@ -65,7 +66,8 @@ class StagingTests(TestCase):
         test_urls.append(reverse('staging_metadata_book', args=['0']))
         test_urls.append(reverse('staging_metadata_delete', args=['0']))
         test_urls.append(reverse('staging_metadata_sheet', args=['0', 'name']))
-        test_urls.append(reverse('staging_metadata_import', args=['0', 'name', 'model']))
+        test_urls.append(
+            reverse('staging_metadata_import', args=['0', 'name', 'model']))
         test_urls.append(reverse('staging_metadata_imported'))
 
         # actually test each url
@@ -90,16 +92,26 @@ class StagingTests(TestCase):
 
         test_urls = []
         test_urls.append((reverse('staging_index'), 'staging/index.html'))
-        test_urls.append((reverse('staging_campaign_create'), 'staging/campaigncreate.html'))
-        test_urls.append((reverse('staging_campaign_created'), 'staging/campaigncreated.html'))
-        test_urls.append((reverse('staging_file_import'), 'staging/fileupload.html'))
-        test_urls.append((reverse('staging_file_imported'), 'staging/fileuploaded.html'))
-        test_urls.append((reverse('staging_file_imported'), 'staging/fileuploaded.html'))
-        test_urls.append((reverse('staging_metadata_stage'), 'staging/metadatastage.html'))
-        test_urls.append((reverse('staging_metadata_list'), 'staging/metadatalist.html'))
-        test_urls.append((reverse('staging_metadata_imported'), 'staging/metadataimported.html'))
-        #test_urls.append((reverse('staging_annotation_cpc_import'), 'staging/annotationcpcimport.html'))
-        #test_urls.append((reverse('staging_annotation_cpc_imported'), 'staging/annotationcpcimported.html'))
+        test_urls.append((
+        reverse('staging_campaign_create'), 'staging/campaigncreate.html'))
+        test_urls.append((
+        reverse('staging_campaign_created'), 'staging/campaigncreated.html'))
+        test_urls.append(
+            (reverse('staging_file_import'), 'staging/fileupload.html'))
+        test_urls.append(
+            (reverse('staging_file_imported'), 'staging/fileuploaded.html'))
+        test_urls.append(
+            (reverse('staging_file_imported'), 'staging/fileuploaded.html'))
+        test_urls.append(
+            (reverse('staging_metadata_stage'), 'staging/metadatastage.html'))
+        test_urls.append(
+            (reverse('staging_metadata_list'), 'staging/metadatalist.html'))
+        test_urls.append((
+        reverse('staging_metadata_imported'), 'staging/metadataimported.html'))
+        #test_urls.append((reverse('staging_annotation_cpc_import'),
+        # 'staging/annotationcpcimport.html'))
+        #test_urls.append((reverse('staging_annotation_cpc_imported'),
+        # 'staging/annotationcpcimported.html'))
 
         for test_url, template in test_urls:
             response = self.client.get(test_url)
@@ -153,7 +165,8 @@ class JSONImport(TestCase):
         invalid_file_name = "staging/fixtures/klsdfkldfskldf.json"
 
         self.assertRaises(ValueError, tasks.json_fload, non_force_file_name)
-        self.assertRaises(DeserializationError, tasks.json_fload, invalid_model_file_name)
+        self.assertRaises(DeserializationError, tasks.json_fload,
+                          invalid_model_file_name)
         self.assertRaises(IOError, tasks.json_fload, invalid_file_name)
 
 
@@ -209,7 +222,9 @@ class AUVImportTools(TestCase):
 
     def test_netcdf_parser(self):
         """Test NetCDFParser used in auvimports."""
-        netcdf_file = open('staging/fixtures/IMOS_AUV_ST_20090611T063544Z_SIRIUS_FV00.nc', 'r')
+        netcdf_file = open(
+            'staging/fixtures/IMOS_AUV_ST_20090611T063544Z_SIRIUS_FV00.nc',
+            'r')
 
         # test that opening works and that we can get a value
         netcdf_parser = NetCDFParser(netcdf_file)
@@ -217,7 +232,8 @@ class AUVImportTools(TestCase):
 
     def test_track_parser(self):
         """Test TrackParser used in auvimports."""
-        track_file = open('staging/fixtures/freycinet_mpa_03_reef_south_latlong.csv', 'r')
+        track_file = open(
+            'staging/fixtures/freycinet_mpa_03_reef_south_latlong.csv', 'r')
 
         # test that opening works and we can get a value
         track_parser = TrackParser(track_file)
@@ -251,9 +267,11 @@ class MetadataImport(TestCase):
         self.xls_file_name = "staging/fixtures/bruv_metadata.xls"
         self.xlsx_file_name = "staging/fixtures/bruv_metadata.xlsx"
         self.xls_sheet_names = [u"Offshore BRUVS Co-ord",
-            u"Inshore BRUVS co-ord", u"BRUVS Lengths", u"BRUVS MaxN"]
+                                u"Inshore BRUVS co-ord", u"BRUVS Lengths",
+                                u"BRUVS MaxN"]
         self.xlsx_sheet_names = [u"Offshore BRUVS Co-ord",
-            u"Inshore BRUVS co-ord", u"BRUVS Lengths", u"BRUVS MaxN"]
+                                 u"Inshore BRUVS co-ord", u"BRUVS Lengths",
+                                 u"BRUVS MaxN"]
         self.invalid_file_name = "staging/fixtures/invalid.extension"
 
     def test_type_recognition(self):
@@ -266,8 +284,10 @@ class MetadataImport(TestCase):
     def test_sheet_names(self):
         """Test that sheet names are correctly extracted."""
 
-        self.assertEqual(self.xls_sheet_names, tasks.metadata_sheet_names(self.xls_file_name))
-        self.assertEqual(self.xlsx_sheet_names, tasks.metadata_sheet_names(self.xlsx_file_name))
+        self.assertEqual(self.xls_sheet_names,
+                         tasks.metadata_sheet_names(self.xls_file_name))
+        self.assertEqual(self.xlsx_sheet_names,
+                         tasks.metadata_sheet_names(self.xlsx_file_name))
 
     def test_outline(self):
         """Test that the outlines work correctly."""
@@ -276,8 +296,11 @@ class MetadataImport(TestCase):
         self.assertIsNone(tasks.metadata_outline(self.invalid_file_name))
 
     def test_transform(self):
-        self.assertIsNotNone(tasks.metadata_transform(self.xls_file_name, self.xls_sheet_names[0]))
-        self.assertIsNotNone(tasks.metadata_transform(self.xlsx_file_name, self.xlsx_sheet_names[0]))
+        self.assertIsNotNone(tasks.metadata_transform(self.xls_file_name,
+                                                      self.xls_sheet_names[0]))
+        self.assertIsNotNone(tasks.metadata_transform(self.xlsx_file_name,
+                                                      self.xlsx_sheet_names[
+                                                          0]))
 
         self.assertIsNone(tasks.metadata_transform(self.invalid_file_name, ""))
 
@@ -294,18 +317,26 @@ class WidgetTest(TestCase):
         self.assertEqual([None, None], point_widget.decompress(None))
         self.assertEqual([None, None], point_widget.decompress(""))
         self.assertEqual([None, None], point_widget.decompress("a string"))
-        self.assertEqual([None, None], point_widget.decompress("1.5456 6.23345"))
-        self.assertEqual([None, None], point_widget.decompress("POINT(5.6, 36.3)"))
-        self.assertEqual([None, None], point_widget.decompress("POINT(5.636.3)"))
-        self.assertEqual([None, None], point_widget.decompress("POINT(5.6363)"))
+        self.assertEqual([None, None],
+                         point_widget.decompress("1.5456 6.23345"))
+        self.assertEqual([None, None],
+                         point_widget.decompress("POINT(5.6, 36.3)"))
+        self.assertEqual([None, None],
+                         point_widget.decompress("POINT(5.636.3)"))
+        self.assertEqual([None, None],
+                         point_widget.decompress("POINT(5.6363)"))
 
         # valid strings
         self.assertEqual([1.5, 2.5], point_widget.decompress("POINT(2.5 1.5)"))
-        self.assertEqual([1.5, 2.5], point_widget.decompress("POINT     (2.5 1.5)"))
-        self.assertEqual([1.5, 2.5], point_widget.decompress("POINT ( 2.5   1.5  )"))
+        self.assertEqual([1.5, 2.5],
+                         point_widget.decompress("POINT     (2.5 1.5)"))
+        self.assertEqual([1.5, 2.5],
+                         point_widget.decompress("POINT ( 2.5   1.5  )"))
 
-        self.assertEqual([-1.5, 2.5], point_widget.decompress("POINT(+2.5 -1.5)"))
-        self.assertEqual([-1.5, 2.5], point_widget.decompress("POINT     ( 2.5 -1.5)"))
+        self.assertEqual([-1.5, 2.5],
+                         point_widget.decompress("POINT(+2.5 -1.5)"))
+        self.assertEqual([-1.5, 2.5],
+                         point_widget.decompress("POINT     ( 2.5 -1.5)"))
 
         # empty value
         self.assertIsNone(point_value.compress(None))
@@ -313,9 +344,12 @@ class WidgetTest(TestCase):
         # actual values
         self.assertEqual("POINT(2.0 2.0)", point_value.compress([2.0, 2.0]))
         self.assertEqual("POINT(4.5 4.5)", point_value.compress([4.5, 4.5]))
-        self.assertEqual("POINT(8.25 8.25)", point_value.compress([8.25, 8.25]))
-        self.assertEqual("POINT(-8.25 4.25)", point_value.compress([4.25, -8.25]))
-        self.assertEqual("POINT(1.25 -8.25)", point_value.compress([-8.25, 1.25]))
+        self.assertEqual("POINT(8.25 8.25)",
+                         point_value.compress([8.25, 8.25]))
+        self.assertEqual("POINT(-8.25 4.25)",
+                         point_value.compress([4.25, -8.25]))
+        self.assertEqual("POINT(1.25 -8.25)",
+                         point_value.compress([-8.25, 1.25]))
 
         # check exceptions
         self.assertRaises(ValidationError, point_value.compress, [None, 4.5])
@@ -325,10 +359,12 @@ class WidgetTest(TestCase):
         values = [[1.5, 1.5], [2.0, 1.5], [1.0, 10.0], [-10.0, 5.0]]
 
         for value in values:
-            self.assertEqual(value, point_widget.decompress(point_value.compress(value)))
+            self.assertEqual(value, point_widget.decompress(
+                point_value.compress(value)))
 
     def test_extract_single_column(self):
-        """Test the utility used to wrap data chunks in the multi fields/widgets."""
+        """Test the utility used to wrap data chunks in the multi
+            fields/widgets."""
         columns = {'first': '1.0', 'second': '2.0', 'third': '3.0'}
         base_field = FloatField()  # the field this is all based on
         source = 'fixed'  # 'fixed' or 'column' depending on source sub widget
@@ -345,13 +381,15 @@ class WidgetTest(TestCase):
         self.assertEqual(extractor.get_data(columns), 1.0)
 
     def test_extract_multiple_columns(self):
-        """Test the utility used to wrap data chunks in the multi fields/widgets."""
+        """Test the utility used to wrap data chunks in the multi
+            fields/widgets."""
         columns = {'first': '1.0', 'second': '2.0', 'third': '3.0'}
         base_field = widgets.PointField()  # the field this is all based on
         source = 'fixed'  # 'fixed' or 'column' depending on source sub widget
         labels = ['first', 'third']  # the column label selected
         fixed_data = "POINT(1.0 2.0)"  # the fixed data entered (post cleaning)
-        cleaned_data = "POINT(3.0 1.0)"  # the fixed data entered (post cleaning)
+        cleaned_data = "POINT(3.0 1.0)"
+        # the fixed data entered (post cleaning)
 
         extractor = widgets.ExtractData(base_field, source, labels, fixed_data)
 
@@ -368,7 +406,8 @@ class WidgetTest(TestCase):
         base_field = FloatField()
         headings = ['first', 'second', 'third', 'fourth']
         choices = zip(headings, headings)
-        field = widgets.MultiSourceField(base_field=base_field, columns=choices)
+        field = widgets.MultiSourceField(base_field=base_field,
+                                         columns=choices)
 
         # test a full working instance
         data = ['fixed', 'first', 4.5]
@@ -436,7 +475,8 @@ class WidgetTest(TestCase):
         # error inducing
         base_field = widgets.PointWidget()
         base_widget = None
-        self.assertRaises(Exception, widgets.MultiColumnField, base_field, columns, widget=widget)
+        self.assertRaises(Exception, widgets.MultiColumnField, base_field,
+                          columns, widget=widget)
 
     def test_multi_column_widget(self):
         """Test initialise and decompress of MultiColumnWidget."""
@@ -462,23 +502,31 @@ class WidgetTest(TestCase):
         base_field = FloatField()
         headings = ['first', 'second', 'third', 'fourth']
         choices = zip(headings, headings)
-        field = widgets.MultiSourceField(base_field=base_field, columns=choices)
+        field = widgets.MultiSourceField(base_field=base_field,
+                                         columns=choices)
         widget = field.widget
-        widget.render("widget_name", ["fixed", headings[0], 4.3], {'id': 'name'})
-        widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], 4.2]))
+        widget.render("widget_name", ["fixed", headings[0], 4.3],
+                      {'id': 'name'})
+        widget.render("widget_name", widgets.ExtractData(base_field, *[
+            "fixed", headings[ 0], 4.2]))
 
         self.assertEqual(widget.decompress(None), ["column", [None], None])
 
         # multi column
         base_field = widgets.PointField()
-        field = widgets.MultiSourceField(base_field=base_field, columns=choices)
+        field = widgets.MultiSourceField(base_field=base_field,
+                                         columns=choices)
         widget = field.widget
-        widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], "POINT(2.0 1.0)"]), {'id': 'name'})
-        widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], "POINT(2.0 1.0)"]))
+        widget.render("widget_name", widgets.ExtractData(base_field, *[
+            "fixed", headings[ 0], "POINT(2.0 1.0)"]), {'id': 'name'})
+        widget.render("widget_name", widgets.ExtractData(base_field, *[
+            "fixed", headings[ 0], "POINT(2.0 1.0)"]))
 
         self.assertEqual(widget.decompress(None), ["column", [None] * 2, None])
 
         base_field = SplitDateTimeField()
-        field = widgets.MultiSourceField(base_field=base_field, columns=choices)
+        field = widgets.MultiSourceField(base_field=base_field,
+                                         columns=choices)
         widget = field.widget
-        widget.render("widget_name", widgets.ExtractData(base_field, *["fixed", headings[0], ""]), {'id': 'name'})
+        widget.render("widget_name", widgets.ExtractData(base_field, *[
+            "fixed", headings[ 0], ""]), {'id': 'name'})

@@ -1,23 +1,26 @@
 {% extends "base-topmenu.html" %}
 
 {% block sidebar %}
-  <div id="sidebar-nav" class="span3" style="padding-left:10px;">
+    <div id="sidebar-nav" class="span3" style="padding-left:10px;">
 
-    <h1>Deployment Map</h1>  
-    <div class="well well-small" style="align:center;">
+        <h1>Deployment Map</h1>
 
-      <p class="lead"> Deployment Map</p>
-      <p>options</p>
-    </div><!--/.well -->
-  </div>
+        <div class="well well-small" style="align:center;">
+
+            <p class="lead"> Deployment Map</p>
+
+            <p>options</p>
+        </div>
+        <!--/.well -->
+    </div>
 {% endblock %}
 
 {% block content_header %}
-  <ul class="breadcrumb">
-    <li><a href="/data">Data</a>  
-    <li><a href="/data/deployments/"><span class="divider">></span> Deployment List</a></li>
-    <li class="active"><span class="divider">></span> Deployment Map</li>
-  </ul>
+    <ul class="breadcrumb">
+        <li><a href="/data">Data</a>
+        <li><a href="/data/deployments/"><span class="divider">></span> Deployment List</a></li>
+        <li class="active"><span class="divider">></span> Deployment Map</li>
+    </ul>
 {% endblock %}
 
 <!--{% block breadcrumbs %}
@@ -25,7 +28,7 @@
 {% endblock %}-->
 
 {% block content %}
-  <!--{% if latest_deployment_list %}
+    <!--{% if latest_deployment_list %}
     <table class="table table-striped">
       <tbody>
           {% for deployment in latest_deployment_list %}
@@ -39,39 +42,39 @@
   {% else %}
       <p>No deployments are available.</p>
   {% endif %}-->
-  <div id='map_container2'></div>
-  
+    <div id='map_container2'></div>
+
 
 {% endblock %}
 
 {% block add_script %}
-    <script src='{{ STATIC_URL }}assets/openlayers/OpenLayers.js'> </script>
+    <script src='{{ STATIC_URL }}assets/openlayers/OpenLayers.js'></script>
     <script src='{{ STATIC_URL }}assets/esriOceanBasemap/map.js'></script>
-    
+
     <script type="text/javascript">
         var lon = 138;
         var lat = -35;
         var zoom = 4;
         var map, layer;
 
- function init(){
+        function init() {
 
             map = new OpenLayers.Map('map_container2');
-            layer = new OpenLayers.Layer.WMS( "OpenLayers WMS", 
+            layer = new OpenLayers.Layer.WMS("OpenLayers WMS",
                     "http://vmap0.tiles.osgeo.org/wms/vmap0",
-                    {layers: 'basic'} );
-            
+                    {layers: 'basic'});
+
             map.addLayer(layer);
             map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
-var geojson_data = '{ "type": "FeatureCollection", "features": [ {"geometry": { "type": "GeometryCollection", "geometries": [\
+            var geojson_data = '{ "type": "FeatureCollection", "features": [ {"geometry": { "type": "GeometryCollection", "geometries": [\
 {% for deployment in latest_deployment_list %}{% if not forloop.last %}{{deployment.start_position.geojson|safe}},{% else %}{{deployment.start_position.geojson|safe}}{% endif %}{% endfor %}] }, "type": "Feature", "properties": {}} ] }';
-           
-           var geojson_format = new OpenLayers.Format.GeoJSON();
-           var featurecollection = geojson_format.read(geojson_data);
-           
-           var vector_layer = new OpenLayers.Layer.Vector(); 
-           map.addLayer(vector_layer);
-           vector_layer.addFeatures(geojson_format.read(geojson_data));
+
+            var geojson_format = new OpenLayers.Format.GeoJSON();
+            var featurecollection = geojson_format.read(geojson_data);
+
+            var vector_layer = new OpenLayers.Layer.Vector();
+            map.addLayer(vector_layer);
+            vector_layer.addFeatures(geojson_format.read(geojson_data));
 
         }
     </script>

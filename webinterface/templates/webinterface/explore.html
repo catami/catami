@@ -60,15 +60,15 @@
 
             <form>
                 {% switch Experimental %}
-                Year:
-                <input type="number" min="2006" step="1" value="2007"><br><br>
-                Source:
-                <select style="width: 100%">
-                    <option selected>AUV
-                    <option>BRUVs
-                    <option>Towed Video
-                </select>
-                {%  endswitch %}
+                    Year:
+                    <input type="number" min="2006" step="1" value="2007"><br><br>
+                    Source:
+                    <select style="width: 100%">
+                        <option selected>AUV
+                        <option>BRUVs
+                        <option>Towed Video
+                    </select>
+                {% endswitch %}
                 <br><br>
                 Campaign:
                 <select name="campaignSelect" multiple="multiple" class="workpane" id="campaignSelect"
@@ -82,24 +82,26 @@
                 </select>
                 <br><br>
                 {% switch Experimental %}
-                Depth Range: <strong id="selectedDepthMin"></strong> to <strong id="selectedDepthMax"></strong> m<br>
-                <span id="depthMin"></span><span id="depthMax" style="float:right"></span><br>
-                <div id="depthSlider" style="width:100%; height:5px"></div>
-                <br><br>
+                    Depth Range: <strong id="selectedDepthMin"></strong> to <strong id="selectedDepthMax"></strong> m
+                    <br>
+                    <span id="depthMin"></span><span id="depthMax" style="float:right"></span><br>
+                    <div id="depthSlider" style="width:100%; height:5px"></div>
+                    <br><br>
                 {% endswitch %}
             </form>
 
             {% switch Collections %}
-            <div id="savecollection" class="well">
-                <p id="collection_info">Getting points...</p>
-                <a href="#" class="btn btn-primary btn-create-collection newCollection"
-                   rel="popover"
-                   data-html="true"
-                   id="newCollectionPopover"
-                   data-content="<div id='collection_options'>Collection Name <input type='text' id='collection_name' value='my new collection'><br><button class='btn btn-warning btn-create-collection pull-left' onclick='dismissPopover();'>Forget it</button><button class='btn btn-primary btn-create-collection pull-right' onclick='createCollection();'> Make it</button><br><p> </p></div>"
-                   data-original-title="New Collection Options"> <i class="icon-plus-sign icon-2x pull-left"></i> Save
-                    As Collection</a>
-            </div>
+                <div id="savecollection" class="well">
+                    <p id="collection_info">Getting points...</p>
+                    <a href="#" class="btn btn-primary btn-create-collection newCollection"
+                       rel="popover"
+                       data-html="true"
+                       id="newCollectionPopover"
+                       data-content="<div id='collection_options'>Collection Name <input type='text' id='collection_name' value='my new collection'><br><button class='btn btn-warning btn-create-collection pull-left' onclick='dismissPopover();'>Forget it</button><button class='btn btn-primary btn-create-collection pull-right' onclick='createCollection();'> Make it</button><br><p> </p></div>"
+                       data-original-title="New Collection Options"> <i class="icon-plus-sign icon-2x pull-left"></i>
+                        Save
+                        As Collection</a>
+                </div>
             {% endswitch %}
         </div>
 
@@ -110,7 +112,7 @@
                 <li class="active"><a href="#map" data-toggle="tab">Map</a></li>
                 <li><a href="#thm" data-toggle="tab">Thumbnails</a></li>
                 {% switch Experimental %}
-                <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
+                    <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
                 {% endswitch %}
             </ul>
 
@@ -122,9 +124,9 @@
                 </div>
 
                 {% switch Experimental %}
-                <div class="tab-pane" id="tax">
-                    {% include "webinterface/dataviews/taxonomytree.html" %}
-                </div>
+                    <div class="tab-pane" id="tax">
+                        {% include "webinterface/dataviews/taxonomytree.html" %}
+                    </div>
                 {% endswitch %}
 
                 <div class="tab-pane" id="thm">
@@ -142,7 +144,7 @@
 
         var currentSelectedDeployments = [];
 
-        $('.newCollection').popover({ html:true});
+        $('.newCollection').popover({ html: true});
 
         function dismissPopover() {
             $("#newCollectionPopover").popover('hide');
@@ -150,11 +152,11 @@
 
         function setDepthRange(minDepth, maxDepth) {
             $("#depthSlider").slider({
-                range:true,
-                min:minDepth,
-                max:maxDepth,
-                values:[ minDepth, maxDepth ],
-                slide:function (event, ui) {
+                range: true,
+                min: minDepth,
+                max: maxDepth,
+                values: [ minDepth, maxDepth ],
+                slide: function (event, ui) {
                     $("#selectedDepthMin").html(ui.values[ 0 ]);
                     $("#selectedDepthMax").html(ui.values[ 1 ]);
                 }
@@ -272,8 +274,8 @@
                 type: "POST",
                 url: '{% url webinterface.views.get_multiple_deployment_extent %}',
                 data: "deployment_ids=" + currentSelectedDeployments,
-                success: function(response, textStatus, jqXHR) {
-                    var boundsArr = response.extent.replace("(","").replace(")","").split(",");
+                success: function (response, textStatus, jqXHR) {
+                    var boundsArr = response.extent.replace("(", "").replace(")", "").split(",");
                     var bounds = new OpenLayers.Bounds();
                     bounds.extend(new OpenLayers.LonLat(boundsArr[0], boundsArr[1]));
                     bounds.extend(new OpenLayers.LonLat(boundsArr[2], boundsArr[3]));

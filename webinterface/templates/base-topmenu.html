@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     {% block lead_head %}{% endblock %}
     <title>{% block title %}Catami{% endblock %}</title>
@@ -11,12 +11,13 @@
 
     <!-- Le styles -->
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/jquery-ui-1.8.23.custom.css" type="text/css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/bootstrap.css" type="text/css" >
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/bootstrap.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/fullscreenMap.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/overlay-basic.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/bootstrap-responsive.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/font-awesome/css/font-awesome.css" type="text/css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}assets/fancybox/source/jquery.fancybox.css?v=2.1.3" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/fancybox/source/jquery.fancybox.css?v=2.1.3" type="text/css"
+          media="screen"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/topmenu.css" type="text/css">
 
 
@@ -27,58 +28,79 @@
 
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="{{ STATIC_URL }}assets/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ STATIC_URL }}assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ STATIC_URL }}assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ STATIC_URL }}assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144"
+          href="{{ STATIC_URL }}assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114"
+          href="{{ STATIC_URL }}assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72"
+          href="{{ STATIC_URL }}assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="{{ STATIC_URL }}assets/ico/apple-touch-icon-57-precomposed.png">
 
     {% block tail_head %}{% endblock %}
-    </head>
+</head>
 
-    <body>
-    
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container-fluid">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
-                <a class="brand" href="#"><img src="{{ STATIC_URL }}assets/img/catamiheader-blue-small.png" alt="catami_icon_small" width="140"></a>
-                <div class="nav-collapse collapse">
-                    <ul class="nav">
-                        <li class="{% ifequal request.path url.webinterface.views.index %}active{% endifequal %}"><a href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home "></i> Home</a></li>
-                        <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}"><a href="{% url webinterface.views.explore %}"><i class="icon-search "></i> Explore</a>
-                            <!--
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="#"><img src="{{ STATIC_URL }}assets/img/catamiheader-blue-small.png"
+                                           alt="catami_icon_small" width="140"></a>
+
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="{% ifequal request.path url.webinterface.views.index %}active{% endifequal %}"><a
+                            href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home "></i>
+                        Home</a></li>
+                    <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}"><a
+                            href="{% url webinterface.views.explore %}"><i class="icon-search "></i> Explore</a>
+                        <!--
                             <ul class="dropdown-menu">
-                                <li class="{% ifequal request.path "/data/campaigns" %}active{% endifequal %}"><a href="{% url webinterface.views.campaigns %}"><i class="icon-heart"></i> Data: Campaigns</a></li>
-                                <li class="{% ifequal request.path "/data/deployments" %}active{% endifequal %}"><a href="{% url webinterface.views.deployments %}"><i class="icon-heart"></i> Data: Deployments</a></li>
+                                <li class="{% ifequal request.path "/data/campaigns" %}
+                            active{% endifequal %}"><a href="{% url webinterface.views.campaigns %}"><i class="icon-heart"></i> Data: Campaigns</a></li>
+                                <li class="{% ifequal request.path "/data/deployments" %}
+                            active{% endifequal %}"><a href="{% url webinterface.views.deployments %}"><i class="icon-heart"></i> Data: Deployments</a></li>
 
                             </ul>
                             -->
-                        </li>
+                    </li>
 
-                        {% switch Collections %}
-                            <li class="dropdown {% ifequal request.path "/projects" %}active{% endifequal %}"><a href="{% url webinterface.views.projects %}"><i class="icon-list-alt "></i> Projects</a>
-                        {% endswitch %}
+                    {% switch Collections %}
+                        <li class="dropdown {% ifequal request.path "/projects" %}active{% endifequal %}">
+                        <a href="{% url webinterface.views.projects %}"><i class="icon-list-alt "></i> Projects</a>
+                    {% endswitch %}
 
-                        {% switch Experimental %}
-                        <li class="dropdown"><a href="#" class="dropdown-toggle"><i class="icon-tasks "></i> Data Tasks <b class="caret"></b></a>
+                    {% switch Experimental %}
+                        <li class="dropdown"><a href="#" class="dropdown-toggle"><i class="icon-tasks "></i> Data Tasks
+                            <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li class="nav-header">Collection</li>
-                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-cog"></i> Cluster Collection</a></li>
-                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-th-list"></i> Create Workset</a></li>
+                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"
+                                                        data-target="#TaskModal"><i class="icon-cog"></i> Cluster
+                                    Collection</a></li>
+                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"
+                                                        data-target="#TaskModal"><i class="icon-th-list"></i> Create
+                                    Workset</a></li>
                                 <li class="nav-header">Workset</li>
-                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal" ><i class="icon-tag"></i> Annotate Workset</a></li>
-                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-sitemap"></i> Auto-classify Collection</a></li>
+                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"
+                                                        data-target="#TaskModal"><i class="icon-tag"></i> Annotate
+                                    Workset</a></li>
+                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"
+                                                        data-target="#TaskModal"><i class="icon-sitemap"></i>
+                                    Auto-classify Collection</a></li>
                                 <li class="nav-header">Data</li>
-                                <li ><a href="#TaskModal" data-toggle="modal"  data-target="#TaskModal"><i class="icon-download-alt"></i> Download data</a></li>
+                                <li><a href="#TaskModal" data-toggle="modal" data-target="#TaskModal"><i
+                                        class="icon-download-alt"></i> Download data</a></li>
                                 <li><a href="/staging/"><i class="icon-cloud-upload"></i> Upload data</a></li>
                             </ul>
                         </li>
-                        {% endswitch %}
-<!--
+                    {% endswitch %}
+                    <!--
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage<b class="caret"></b> </a>
                             <ul class="dropdown-menu">
@@ -87,97 +109,110 @@
                             </ul>
                         </li>
 -->
-                        
-                        <!--<li class="divider-vertical"></li>-->
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign "></i> <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="{% url webinterface.views.about %}"><i class="icon-info-sign"></i> About</a></li>
-                                <li><a href="{% url webinterface.views.contact %}"><i class="icon-envelope"></i> Contact us</a></li>
-                                <li><a href="{% url webinterface.views.faq %}"><i class="icon-question-sign"></i> FAQ</a></li>
-                                <li><a href="{% url webinterface.views.howto %}"><i class="icon-question-sign"></i> How To</a></li>
-                            </ul>
-                        </li>
-                        
-                        <!--<li><a href="#" rel="popover" data-placement="bottom" data-content="This will be a snippet of information that is useful in the context of the current section." data-original-title="Information"><i class="icon-info-sign  "></i></a>
-                        </li>-->
-                    </ul>
-                    {% if user.is_authenticated %}
-                        <a href="/logout/" class="btn btn-small pull-right"> Logout</a>
-                        <p class="navbar-text pull-right"><i class="icon-user "></i> Logged in as <a href="#"> {{ user.username }} </a>&nbsp;</p>
-                    {% else %}
-                        <a href="/accounts/signin/" role="button" class="btn btn-small pull-right" data-toggle="modal" >Login</a>
-                        <p class="navbar-text pull-right"><i class="icon-user "></i> Welcome visitor! <a href="#"> {{ user.username }} </a>&nbsp;</p>
-                    {% endif %}			   
-                </div><!--/.nav-collapse -->
-            </div><!-- container-fluid -->
-        </div><!-- navbar-inner -->
-    </div><!-- navbar navbar-inverse navbar-fixed-top -->
-    
-    
 
-    <div class="container-fluid" style="margin-top:60px;">
-        {% block content %}{% endblock %}
-    </div>
-    
-    <!-- Data Task Modal -->
-    <div id="TaskModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Select Context-relevant Options</h3>
-        </div>
-            <div class="modal-body">
-            <p>The idea of these Data Tasks are to provide a user-centric, task oriented interface.</p>
-            <p>Each of the Data Tasks will be activated according to context.</p>
-        </div>
-            <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        </div>
-    </div>
-	
-	 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery-ui.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tooltip.2.3.0.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tab.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/fancybox/source/jquery.fancybox.pack.js?v=2.1.3"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.shorten.1.0.js"></script>
+                    <!--<li class="divider-vertical"></li>-->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign "></i>
+                            <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url webinterface.views.about %}"><i class="icon-info-sign"></i> About</a>
+                            </li>
+                            <li><a href="{% url webinterface.views.contact %}"><i class="icon-envelope"></i> Contact us</a>
+                            </li>
+                            <li><a href="{% url webinterface.views.faq %}"><i class="icon-question-sign"></i> FAQ</a>
+                            </li>
+                            <li><a href="{% url webinterface.views.howto %}"><i class="icon-question-sign"></i> How
+                                To</a></li>
+                        </ul>
+                    </li>
 
-    <!-- popover js -->
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $(".imageframe").fancybox({
-        		maxWidth	: 2000,
-        		maxHeight	: 1400,
-        		fitToView	: false,
-        		width		: '95%',
-        		height		: '95%',
-        		autoSize	: false,
-        		closeClick	: false,
-        		openEffect	: 'fade',
-        		closeEffect	: 'none'
-            });
-            $("[rel=tooltip]").tooltip();
-            $("[rel=popover-roll]").popover({ trigger: "hover" });
-            $("[rel=popover]").popover();
+                    <!--<li><a href="#" rel="popover" data-placement="bottom" data-content="This will be a snippet of information that is useful in the context of the current section." data-original-title="Information"><i class="icon-info-sign  "></i></a>
+                    </li>-->
+                </ul>
+                {% if user.is_authenticated %}
+                    <a href="/logout/" class="btn btn-small pull-right"> Logout</a>
+                    <p class="navbar-text pull-right"><i class="icon-user "></i> Logged in as <a
+                            href="#"> {{ user.username }} </a>&nbsp;</p>
+                {% else %}
+                    <a href="/accounts/signin/" role="button" class="btn btn-small pull-right"
+                       data-toggle="modal">Login</a>
+                    <p class="navbar-text pull-right"><i class="icon-user "></i> Welcome visitor! <a
+                            href="#"> {{ user.username }} </a>&nbsp;</p>
+                {% endif %}
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+        <!-- container-fluid -->
+    </div>
+    <!-- navbar-inner -->
+</div>
+<!-- navbar navbar-inverse navbar-fixed-top -->
+
+
+<div class="container-fluid" style="margin-top:60px;">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Data Task Modal -->
+<div id="TaskModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel"
+     aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Select Context-relevant Options</h3>
+    </div>
+    <div class="modal-body">
+        <p>The idea of these Data Tasks are to provide a user-centric, task oriented interface.</p>
+
+        <p>Each of the Data Tasks will be activated according to context.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery-ui.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tooltip.2.3.0.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tab.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/fancybox/source/jquery.fancybox.pack.js?v=2.1.3"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.shorten.1.0.js"></script>
+
+<!-- popover js -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".imageframe").fancybox({
+            maxWidth: 2000,
+            maxHeight: 1400,
+            fitToView: false,
+            width: '95%',
+            height: '95%',
+            autoSize: false,
+            closeClick: false,
+            openEffect: 'fade',
+            closeEffect: 'none'
         });
+        $("[rel=tooltip]").tooltip();
+        $("[rel=popover-roll]").popover({ trigger: "hover" });
+        $("[rel=popover]").popover();
+    });
 
 
-        // Activate tabs and modals from anchor in url links
-        if (window.location.hash.length > 0) {
-            if($(window.location.hash).hasClass('tab-pane')) {
-                $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');
-            } else if ($(window.location.hash).hasClass('modal')) {
-                $(window.location.hash).modal('show');
-            }
+    // Activate tabs and modals from anchor in url links
+    if (window.location.hash.length > 0) {
+        if ($(window.location.hash).hasClass('tab-pane')) {
+            $('ul.nav-tabs > li > a[href="' + window.location.hash + '"]').tab('show');
+        } else if ($(window.location.hash).hasClass('modal')) {
+            $(window.location.hash).modal('show');
         }
-    </script>
-    {% block add_script %}{% endblock %}   
+    }
+</script>
+{% block add_script %}{% endblock %}
 
 </body>
 </html>

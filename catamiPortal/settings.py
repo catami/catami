@@ -18,7 +18,9 @@ try:
     from local_settings import *
 except ImportError:
     import sys, traceback
-    sys.stderr.write("Warning: Can't find the file 'local_settings.py' in the directory containing %r. It appears you've customized things.\nYou'll have to run django-admin.py, passing it your settings module.\n(If the file settings.py does indeed exist, it's causing an ImportError somehow.)\n" % __file__)
+
+    sys.stderr.write(
+        "Warning: Can't find the file 'local_settings.py' in the directory containing %r. It appears you've customized things.\nYou'll have to run django-admin.py, passing it your settings module.\n(If the file settings.py does indeed exist, it's causing an ImportError somehow.)\n" % __file__)
     sys.stderr.write("If not intending to override default settings do NOT treat this as an error.\n")
     sys.stderr.write("\nFor debugging purposes, the exception was:\n")
     traceback.print_exc()

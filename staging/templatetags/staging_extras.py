@@ -2,6 +2,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter(name="listsplit")
 def listsplit(value, arg):
     """Get the ith split of a list into n lists."""

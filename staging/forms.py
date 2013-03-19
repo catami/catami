@@ -3,6 +3,7 @@
 This includes AUVImportForm and FileImportForm.
 """
 from django import forms
+
 from django.contrib.gis.forms import fields as gisfields
 from django.db import models
 from catamidb.models import Campaign, Deployment
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 class CampaignCreateForm(forms.ModelForm):
     class Meta:
         model = Campaign
+
 
 class FileImportForm(forms.Form):
     """Form to assist with uploading a json file.
@@ -68,7 +70,8 @@ class ModelImportForm(forms.Form):
         # and add the form fields to match
         if issubclass(model, models.Model):
             # get the fields
-            logger.debug("ModelImportForm getting all fields of {0}".format(model))
+            logger.debug(
+                "ModelImportForm getting all fields of {0}".format(model))
             all_model_fields = model._meta.fields
             # this is a list of fields
             # each field has:
@@ -79,7 +82,9 @@ class ModelImportForm(forms.Form):
             for model_field in all_model_fields:
                 # create the default form field for that type
                 form_field = model_field.formfield(required=False)
-                logger.debug('ModelImportForm model field {0} has form field {1}'.format(model_field, form_field))
+                logger.debug(
+                    'ModelImportForm model field {0} has form field {1}'.format(
+                        model_field, form_field))
                 if form_field:
                     # as long as there is a corresponding form field
                     # (autofield - pk does not have one)
@@ -95,7 +100,9 @@ class ModelImportForm(forms.Form):
                     # check all the sub fields. The compress phase does
                     # actually check that it has a valid value
                     # and ignores this required flag against convention.
-                    self.fields[model_field.name] = MultiSourceField(base_field=form_field, columns=columns, required=False)
+                    self.fields[model_field.name] = MultiSourceField(
+                        base_field=form_field, columns=columns,
+                        required=False)
 
         else:
             # wrong type of class

@@ -1,7 +1,9 @@
 {% if campaignList %}
     <ul>
         {% for campaign in campaignList %}
-            <li>{{ campaign.description }} - {{  campaign.associatedResearchers }} - {{campaign.associatedPublications}} - {{campaign.associatedResearchGrant}} - {{campaign.dateStart}} - {{campaign.dataEnd}} </li>
+            <li>{{ campaign.description }} - {{ campaign.associatedResearchers }}
+                - {{ campaign.associatedPublications }} - {{ campaign.associatedResearchGrant }}
+                - {{ campaign.dateStart }} - {{ campaign.dataEnd }} </li>
         {% endfor %}
     </ul>
 {% else %}

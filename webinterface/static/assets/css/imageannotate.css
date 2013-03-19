@@ -5,20 +5,20 @@
 }
 
 #imageFrame img {
-    position: absolute;  
-	margin: 0px auto;
+    position: absolute;
+    margin: 0px auto;
 }
 
 #image {
-	display:block;
-	margin: auto;
+    display: block;
+    margin: auto;
 }
 
-#pointDetails{
-	position: absolute;
-	border: 5px solid gray;
-	background: white;
-	padding: 5px;
-	width: 270px;
-	height: 350px;
+#pointDetails {
+    position: absolute;
+    border: 5px solid gray;
+    background: white;
+    padding: 5px;
+    width: 270px;
+    height: 350px;
 }

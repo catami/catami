@@ -1,4 +1,5 @@
 from django.forms import Widget, MultiWidget
+
 from django.forms import Field, MultiValueField, ChoiceField
 from django.forms import Select, RadioSelect
 from django.forms import FloatField, TextInput
@@ -27,7 +28,8 @@ class PointWidget(MultiWidget):
 
     def decompress(self, value):
         float_pattern = "[-+]?[0-9]*\.?[0-9]+"
-        point_pattern = "POINT\s*\(\s*(?P<lon>{0})\s+(?P<lat>{0})\s*\)".format(float_pattern)
+        point_pattern = "POINT\s*\(\s*(?P<lon>{0})\s+(?P<lat>{0})\s*\)".format(
+            float_pattern)
 
         if value:
             match = re.search(point_pattern, value)
@@ -55,8 +57,10 @@ class PointField(MultiValueField):
             'invalid': u'Enter a valid longitude.',
         }
         fields = (
-            FloatField(error_messages=lat_errors, initial='latitude', min_value=-90.0, max_value=90.0),
-            FloatField(error_messages=lon_errors, initial='longitude', min_value=-180.0, max_value=180.0)
+            FloatField(error_messages=lat_errors, initial='latitude',
+                       min_value=-90.0, max_value=90.0),
+            FloatField(error_messages=lon_errors, initial='longitude',
+                       min_value=-180.0, max_value=180.0)
         )
         super(PointField, self).__init__(fields, *args, **kwargs)
 
@@ -66,7 +70,8 @@ class PointField(MultiValueField):
                 raise ValidationError("Latitude empty")
             if data_list[1] in validators.EMPTY_VALUES:
                 raise ValidationError("Longitude Empty")
-            result = "POINT({lon} {lat})".format(lon=data_list[1], lat=data_list[0])
+            result = "POINT({lon} {lat})".format(lon=data_list[1],
+                                                 lat=data_list[0])
             return result
         return None
 
@@ -192,12 +197,16 @@ function swapSource(column_radio, column_id_base, fixed_id_base)
             column_id_base = "{0}_{1}".format(id_, 1)
             fixed_id_base = "{0}_{1}".format(id_, 2)
             radio_id_first = "{0}_{1}_{2}".format(id_, 0, 0)
-            onchange = "swapSource('{0}', '{1}', '{2}')".format(radio_id_first, column_id_base, fixed_id_base)
-            radio_attrs = dict(base_attrs, id="{0}_{1}".format(id_, 0), onchange=onchange)
+            onchange = "swapSource('{0}', '{1}', '{2}')".format(radio_id_first,
+                                                                column_id_base,
+                                                                fixed_id_base)
+            radio_attrs = dict(base_attrs, id="{0}_{1}".format(id_, 0),
+                               onchange=onchange)
         else:
             radio_attrs = base_attrs
 
-        for ri in self.widgets[0].subwidgets("{0}_{1}".format(name, 0), value[0], radio_attrs):
+        for ri in self.widgets[0].subwidgets("{0}_{1}".format(name, 0),
+                                             value[0], radio_attrs):
             output.append(u'<th>{0}</th>'.format(ri))
 
         final_attrs = base_attrs
@@ -217,36 +226,49 @@ function swapSource(column_radio, column_id_base, fixed_id_base)
             logger.debug('{0} {1}'.format(col_widget, base_widget))
 
             if id_:
-                final_attrs = dict(final_attrs, id="{0}_{1}".format(column_id_base, 0))
+                final_attrs = dict(final_attrs,
+                                   id="{0}_{1}".format(column_id_base, 0))
             subname = "{0}_{1}_{2}".format(name, 1, 0)
-            col_widget_output = col_widget.render(subname, value[1][0], final_attrs)
+            col_widget_output = col_widget.render(subname, value[1][0],
+                                                  final_attrs)
             if id_:
-                final_attrs = dict(final_attrs, id="{0}_{1}".format(fixed_id_base, 2))
+                final_attrs = dict(final_attrs,
+                                   id="{0}_{1}".format(fixed_id_base, 2))
 
             subname = "{0}_{1}".format(name, 2)
-            base_widget_output = base_widget.render(subname, value[2], final_attrs)
+            base_widget_output = base_widget.render(subname, value[2],
+                                                    final_attrs)
 
             label = ""  # self.widgets[2]
 
-            output.append(u'<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>'.format(label, col_widget_output, base_widget_output))
+            output.append(
+                u'<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>'.format(label,
+                                                                        col_widget_output,
+                                                                        base_widget_output))
         else:
             # multiple!
             if not isinstance(value[2], list):
                 base_sub_values = self.widgets[2].decompress(value[2])
             else:
                 base_sub_values = value[2]
-            for i, widgets in enumerate(zip(self.widgets[1].widgets, self.widgets[2].widgets)):
+            for i, widgets in enumerate(
+                    zip(self.widgets[1].widgets, self.widgets[2].widgets)):
                 col_widget, base_widget = widgets
 
                 if id_:
-                    final_attrs = dict(final_attrs, id="{0}_{1}".format(column_id_base, i))
+                    final_attrs = dict(final_attrs,
+                                       id="{0}_{1}".format(column_id_base, i))
                 subname = "{0}_{1}_{2}".format(name, 1, i)
-                col_widget_output = col_widget.render(subname, value[1][i], final_attrs)
+                col_widget_output = col_widget.render(subname, value[1][i],
+                                                      final_attrs)
 
                 if id_:
-                    final_attrs = dict(final_attrs, id="{0}_{1}".format(fixed_id_base, i))
+                    final_attrs = dict(final_attrs,
+                                       id="{0}_{1}".format(fixed_id_base, i))
                 subname = "{0}_{1}_{2}".format(name, 2, i)
-                base_widget_output = base_widget.render(subname, base_sub_values[i], final_attrs)
+                base_widget_output = base_widget.render(subname,
+                                                        base_sub_values[i],
+                                                        final_attrs)
 
                 label = ""
                 if isinstance(base_widget, DateInput):
@@ -258,10 +280,13 @@ function swapSource(column_radio, column_id_base, fixed_id_base)
                     if isinstance(self.widgets[2], PointWidget):
                         # now get the labels...
                         pass
-                #label = "{0}".format(dir(base_widget))
-                #label = "{0}".format(base_widget.id_for_label)
+                        #label = "{0}".format(dir(base_widget))
+                    #label = "{0}".format(base_widget.id_for_label)
 
-                output.append(u'<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>'.format(label, col_widget_output, base_widget_output))
+                output.append(
+                    u'<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>'.format(
+                        label, col_widget_output,
+                        base_widget_output))
 
         output.append(u'</tbody></table>')
 
@@ -278,7 +303,8 @@ class MultiColumnWidget(MultiWidget):
             logger.debug('MultiColumnWidget based on MultiWidget')
             for source_widget in base_widget.widgets:
                 # take the label from the field it is replicating
-                logger.debug('MultiColumnWidget creating subwidget for %s', source_widget)
+                logger.debug('MultiColumnWidget creating subwidget for %s',
+                             source_widget)
                 widgets.append(Select(choices=choices))
 
         else:
@@ -295,11 +321,10 @@ class MultiColumnWidget(MultiWidget):
             return value
         else:
             return [None] * self.length
-        #raise Exception("Decompress not implemented!")
+            #raise Exception("Decompress not implemented!")
 
 
 class MultiSourceField(MultiValueField):
-
     default_error_messages = {
         'invalid_source': u'Please select a data source.',
         'invalid_value': u'Please enter a valid constant value.',
@@ -310,23 +335,30 @@ class MultiSourceField(MultiValueField):
         # an instance of the field that is to be used
         base_field = kwargs.pop('base_field')
         columns = kwargs.pop('columns')
-        logger.debug("MultiSourceField creating for field type '%s', label '%s'", base_field.__class__.__name__, base_field.label)
+        logger.debug(
+            "MultiSourceField creating for field type '%s', label '%s'",
+            base_field.__class__.__name__,
+            base_field.label)
         selections = (
             ('column', 'Parse Column(s)'),
             ('fixed', 'Constant Value')
         )
 
-        logger.debug("MultiSourceField base widget type '%s'", base_field.widget.__class__.__name__)
+        logger.debug("MultiSourceField base widget type '%s'",
+                     base_field.widget.__class__.__name__)
 
         # create an instance of the widget
         widget = MultiSourceWidget(base_field.widget)
 
         fields = (
-            ChoiceField(initial="column", widget=widget.radio, choices=selections),
-            MultiColumnField(widget=widget.cols, base_field=base_field, columns=columns, required=False),
+            ChoiceField(initial="column", widget=widget.radio,
+                        choices=selections),
+            MultiColumnField(widget=widget.cols, base_field=base_field,
+                             columns=columns, required=False),
             base_field
         )
-        super(MultiSourceField, self).__init__(fields, widget=widget, *args, **kwargs)
+        super(MultiSourceField, self).__init__(fields, widget=widget, *args,
+                                               **kwargs)
 
     def compress(self, data_list):
         if data_list:
@@ -347,7 +379,6 @@ class MultiSourceField(MultiValueField):
 
 
 class MultiColumnField(MultiValueField):
-
     def __init__(self, base_field, columns, *args, **kwargs):
         """Create a set of ChoiceFields with choices=columns.
 
@@ -360,14 +391,19 @@ class MultiColumnField(MultiValueField):
         fields = []
         if issubclass(base_field.__class__, MultiValueField):
             logger.debug("MultiColumnField based on a MultiValueField")
-            for source_field, col_widget in zip(base_field.fields, widget.widgets):
+            for source_field, col_widget in zip(base_field.fields,
+                                                widget.widgets):
                 # take the label from the field it is replicating
-                logger.debug("MultiColumnField creating subfield for '%s'", source_field)
-                fields.append(ChoiceField(choices=columns, widget=col_widget, label=source_field.label))
+                logger.debug("MultiColumnField creating subfield for '%s'",
+                             source_field)
+                fields.append(ChoiceField(choices=columns, widget=col_widget,
+                                          label=source_field.label))
         elif issubclass(base_field.__class__, Field):
             logger.debug("MultiColumnField based on a Field")
             # take the label from the field it is replicating
-            fields.append(ChoiceField(choices=columns, widget=widget.widgets[0], label=base_field.label))
+            fields.append(
+                ChoiceField(choices=columns, widget=widget.widgets[0],
+                            label=base_field.label))
         else:
             raise Exception("base_field not based on Field or MultiValueField")
 
@@ -380,7 +416,7 @@ class MultiColumnField(MultiValueField):
             for val in data_list:
                 if val in validators.EMPTY_VALUES:
                     raise ValidationError("MultiColumnField values empty")
-            # probably should combine at this point, comma separated?
+                    # probably should combine at this point, comma separated?
             return data_list
 
         return None

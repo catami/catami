@@ -15,24 +15,25 @@ SOUTH_TESTS_MIGRATE = False # To disable migrations and use syncdb instead
 SKIP_SOUTH_TESTS = True # To disable South's own unit tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
-                '--with-coverage',
-            #    '--cover-package=catamidb,accounts,clustering,collection,dbadmintool,features,staging,webinterface'
-            #    '--coverage-exclude=../*migrations*'
-            ]
+    '--with-coverage',
+    #    '--cover-package=catamidb,accounts,clustering,collection,dbadmintool,features,staging,webinterface'
+    #    '--coverage-exclude=../*migrations*'
+]
 
 WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
 WMS_LAYER_NAME = "catami:catamidb_images"
 WMS_COLLECTION_LAYER_NAME = "catami:collection_images"
 
 ADMINS = (
-     ('Mark Gray', 'mark.gray@ivec.org'),
+    ('Mark Gray', 'mark.gray@ivec.org'),
 )
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis', #'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        #'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'catamidb', # Or path to database file if using sqlite3.
         'USER': 'pocock', # Not used with sqlite3.
         'PASSWORD': 'qwer789ASDF456zxcv123', # Not used with sqlite3.
@@ -93,9 +94,9 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+# Put strings here, like "/home/html/static" or "C:/www/django/static".
+# Always use forward slashes, even on Windows.
+# Don't forget to use absolute paths, not relative paths.
 )
 
 # List of finder classes that know how to find static files in
@@ -103,7 +104,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -138,7 +139,6 @@ ROOT_URLCONF = 'webinterface.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'catamiPortal.wsgi.application'
-
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -202,7 +202,7 @@ JENKINS_TASKS = {
 
 PROJECT_APPS = (
     'catamidb',
-    'staging', 
+    'staging',
     'webinterface',
     'dbadmintool',
     'accounts',
@@ -221,7 +221,7 @@ PROJECT_APPS = (
 #    },
 #}
 
-ANONYMOUS_USER_ID = -1  
+ANONYMOUS_USER_ID = -1
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 #EMAIL_USE_TLS = True
@@ -230,11 +230,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 #EMAIL_HOST_USER = 'none@none.none'
 #EMAIL_HOST_PASSWORD = 'none'
 #AUTH_PROFILE_MODULE = "accounts.UserProfile"
-AUTH_PROFILE_MODULE = 'accounts.MyProfile'  
-  
-LOGIN_REDIRECT_URL = '/accounts/%(username)s/'  
-LOGIN_URL = '/accounts/signin/'  
-LOGOUT_URL = '/accounts/signout/'  
+AUTH_PROFILE_MODULE = 'accounts.MyProfile'
+
+LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+LOGIN_URL = '/accounts/signin/'
+LOGOUT_URL = '/accounts/signout/'
 
 USERENA_ACTIVATION_REQUIRED = 0
 
@@ -274,7 +274,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'formatter': 'simple',
-            'filename':  os.path.join(SITE_ROOT, 'log/catamiPortal.log')
+            'filename': os.path.join(SITE_ROOT, 'log/catamiPortal.log')
         }
     },
     'loggers': {

@@ -1,145 +1,146 @@
-<form class="form-inline"> 
-                Previous results:
-                <select>
-                    <option>None
-                    <option selected>8-cluster 17/02/2013 (BGMM)
-                </select>&emsp;
+<form class="form-inline">
+    Previous results:
+    <select>
+        <option>None
+        <option selected>8-cluster 17/02/2013 (BGMM)
+    </select>&emsp;
 
-                New visual clustering:
-                <button class="btn btn-primary">
-                    <i class="icon-play-circle icon-white"></i> Go!
-                </button>
+    New visual clustering:
+    <button class="btn btn-primary">
+        <i class="icon-play-circle icon-white"></i> Go!
+    </button>
 
-                <a href="#" rel="popover" 
-                    data-content="
+    <a href="#" rel="popover"
+       data-content="
                     <p>In here will be settings such as:
                         <ol>
                             <li>Clustering algorithm</li>
                             <li>Cluster granularity/number of clusters</li>
                         </ol>
                     </p>"
-                    data-original-title="Cluster Settings" data-html='true'
-                    data-placement='bottom'>
-                    <button class="btn"><i class="icon-wrench"></i> Settings</button></a>
-            </form>
-            
-            <ul class="nav nav-pills">
-                <li class="active"><a href="#rand" data-toggle="tab">Random</a></li>
-                <li> <a href="#high" data-toggle="tab">High Likelihood</a></li>
-                <li> <a href="#low" data-toggle="tab">Low Likelihood</a></li>
-            </ul>
+       data-original-title="Cluster Settings" data-html='true'
+       data-placement='bottom'>
+        <button class="btn"><i class="icon-wrench"></i> Settings</button>
+    </a>
+</form>
 
-            <div class="tab-content">
-                
-                <div class="tab-pane active" id="rand">
-                    <table cellspacing="0">
-                        <tr>
-                            <td valign="middle"><input style="height: 20px" name="cluster1" value="cluster1" type="checkbox"/></td>
-                            <td><img name="cluster1" src="{{ STATIC_URL }}images/ran/c1.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster2" value="cluster2" type="checkbox"/></td>
-                            <td><img name="cluster2" src="{{ STATIC_URL }}images/ran/c2.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster3" value="cluster3" type="checkbox"/></td>
-                            <td><img name="cluster3" src="{{ STATIC_URL }}images/ran/c3.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster4" value="cluster4" type="checkbox"/></td>
-                            <td><img name="cluster4" src="{{ STATIC_URL }}images/ran/c4.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster5" value="cluster5" type="checkbox"/></td>
-                            <td><img name="cluster5" src="{{ STATIC_URL }}images/ran/c5.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster7" value="cluster7" type="checkbox"/></td>
-                            <td><img name="cluster7" src="{{ STATIC_URL }}images/ran/c7.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster8" value="cluster8" type="checkbox"/></td>
-                            <td><img name="cluster8" src="{{ STATIC_URL }}images/ran/c8.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster14" value="cluster14" type="checkbox"/></td>
-                            <td><img name="cluster14" src="{{ STATIC_URL }}images/ran/c14.png"></td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <div class="tab-pane" id="high">
-                    <table cellspacing="0">
-                        <tr>
-                            <td><input name="cluster1" value="cluster1" type="checkbox"/></td>
-                            <td><img name="cluster1" src="{{ STATIC_URL }}images/high/c1.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster2" value="cluster2" type="checkbox"/></td>
-                            <td><img name="cluster2" src="{{ STATIC_URL }}images/high/c2.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster3" value="cluster3" type="checkbox"/></td>
-                            <td><img name="cluster3" src="{{ STATIC_URL }}images/high/c3.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster4" value="cluster4" type="checkbox"/></td>
-                            <td><img name="cluster4" src="{{ STATIC_URL }}images/high/c4.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster5" value="cluster5" type="checkbox"/></td>
-                            <td><img name="cluster5" src="{{ STATIC_URL }}images/high/c5.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster7" value="cluster7" type="checkbox"/></td>
-                            <td><img name="cluster7" src="{{ STATIC_URL }}images/high/c7.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster8" value="cluster8" type="checkbox"/></td>
-                            <td><img name="cluster8" src="{{ STATIC_URL }}images/high/c8.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster14" value="cluster14" type="checkbox"/></td>
-                            <td><img name="cluster14" src="{{ STATIC_URL }}images/high/c14.png"></td>
-                        </tr>
-                    </table>
-                </div>
+<ul class="nav nav-pills">
+    <li class="active"><a href="#rand" data-toggle="tab">Random</a></li>
+    <li><a href="#high" data-toggle="tab">High Likelihood</a></li>
+    <li><a href="#low" data-toggle="tab">Low Likelihood</a></li>
+</ul>
 
-                <div class="tab-pane" id="low">
-                    <table cellspacing="0">
-                        <tr>
-                            <td><input name="cluster1" value="cluster1" type="checkbox"/></td>
-                            <td><img name="cluster1" src="{{ STATIC_URL }}images/low/c1.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster2" value="cluster2" type="checkbox"/></td>
-                            <td><img name="cluster2" src="{{ STATIC_URL }}images/low/c2.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster3" value="cluster3" type="checkbox"/></td>
-                            <td><img name="cluster3" src="{{ STATIC_URL }}images/low/c3.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster4" value="cluster4" type="checkbox"/></td>
-                            <td><img name="cluster4" src="{{ STATIC_URL }}images/low/c4.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster5" value="cluster5" type="checkbox"/></td>
-                            <td><img name="cluster5" src="{{ STATIC_URL }}images/low/c5.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster7" value="cluster7" type="checkbox"/></td>
-                            <td><img name="cluster7" src="{{ STATIC_URL }}images/low/c7.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster8" value="cluster8" type="checkbox"/></td>
-                            <td><img name="cluster8" src="{{ STATIC_URL }}images/low/c8.png"></td>
-                        </tr>
-                        <tr>
-                            <td><input name="cluster14" value="cluster14" type="checkbox"/></td>
-                            <td><img name="cluster14" src="{{ STATIC_URL }}images/low/c14.png"></td>
-                        </tr>
-                    </table>
-                </div>
-            
-            </div>
+<div class="tab-content">
+
+    <div class="tab-pane active" id="rand">
+        <table cellspacing="0">
+            <tr>
+                <td valign="middle"><input style="height: 20px" name="cluster1" value="cluster1" type="checkbox"/></td>
+                <td><img name="cluster1" src="{{ STATIC_URL }}images/ran/c1.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster2" value="cluster2" type="checkbox"/></td>
+                <td><img name="cluster2" src="{{ STATIC_URL }}images/ran/c2.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster3" value="cluster3" type="checkbox"/></td>
+                <td><img name="cluster3" src="{{ STATIC_URL }}images/ran/c3.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster4" value="cluster4" type="checkbox"/></td>
+                <td><img name="cluster4" src="{{ STATIC_URL }}images/ran/c4.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster5" value="cluster5" type="checkbox"/></td>
+                <td><img name="cluster5" src="{{ STATIC_URL }}images/ran/c5.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster7" value="cluster7" type="checkbox"/></td>
+                <td><img name="cluster7" src="{{ STATIC_URL }}images/ran/c7.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster8" value="cluster8" type="checkbox"/></td>
+                <td><img name="cluster8" src="{{ STATIC_URL }}images/ran/c8.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster14" value="cluster14" type="checkbox"/></td>
+                <td><img name="cluster14" src="{{ STATIC_URL }}images/ran/c14.png"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="tab-pane" id="high">
+        <table cellspacing="0">
+            <tr>
+                <td><input name="cluster1" value="cluster1" type="checkbox"/></td>
+                <td><img name="cluster1" src="{{ STATIC_URL }}images/high/c1.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster2" value="cluster2" type="checkbox"/></td>
+                <td><img name="cluster2" src="{{ STATIC_URL }}images/high/c2.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster3" value="cluster3" type="checkbox"/></td>
+                <td><img name="cluster3" src="{{ STATIC_URL }}images/high/c3.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster4" value="cluster4" type="checkbox"/></td>
+                <td><img name="cluster4" src="{{ STATIC_URL }}images/high/c4.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster5" value="cluster5" type="checkbox"/></td>
+                <td><img name="cluster5" src="{{ STATIC_URL }}images/high/c5.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster7" value="cluster7" type="checkbox"/></td>
+                <td><img name="cluster7" src="{{ STATIC_URL }}images/high/c7.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster8" value="cluster8" type="checkbox"/></td>
+                <td><img name="cluster8" src="{{ STATIC_URL }}images/high/c8.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster14" value="cluster14" type="checkbox"/></td>
+                <td><img name="cluster14" src="{{ STATIC_URL }}images/high/c14.png"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="tab-pane" id="low">
+        <table cellspacing="0">
+            <tr>
+                <td><input name="cluster1" value="cluster1" type="checkbox"/></td>
+                <td><img name="cluster1" src="{{ STATIC_URL }}images/low/c1.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster2" value="cluster2" type="checkbox"/></td>
+                <td><img name="cluster2" src="{{ STATIC_URL }}images/low/c2.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster3" value="cluster3" type="checkbox"/></td>
+                <td><img name="cluster3" src="{{ STATIC_URL }}images/low/c3.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster4" value="cluster4" type="checkbox"/></td>
+                <td><img name="cluster4" src="{{ STATIC_URL }}images/low/c4.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster5" value="cluster5" type="checkbox"/></td>
+                <td><img name="cluster5" src="{{ STATIC_URL }}images/low/c5.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster7" value="cluster7" type="checkbox"/></td>
+                <td><img name="cluster7" src="{{ STATIC_URL }}images/low/c7.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster8" value="cluster8" type="checkbox"/></td>
+                <td><img name="cluster8" src="{{ STATIC_URL }}images/low/c8.png"></td>
+            </tr>
+            <tr>
+                <td><input name="cluster14" value="cluster14" type="checkbox"/></td>
+                <td><img name="cluster14" src="{{ STATIC_URL }}images/low/c14.png"></td>
+            </tr>
+        </table>
+    </div>
+
+</div>

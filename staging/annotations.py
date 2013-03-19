@@ -2,6 +2,7 @@
 """
 import csv
 import os
+
 import itertools
 
 
@@ -24,7 +25,8 @@ class CPCFileParser:
 
         # extract header information
         path_list = lines[0][1].split('\\')
-        self.image_file_name = os.path.splitext(path_list[-1])[0]  # no extension
+        self.image_file_name = os.path.splitext(path_list[-1])[
+            0]  # no extension
 
         h_scale, v_scale = (float(l) for l in lines[0][2:4])
 
@@ -33,12 +35,14 @@ class CPCFileParser:
         assert len(lines) == header_lines + 2 * num_points
 
         # get the coordinates of the hand labelled points
-        point_coords = ((float(x) / h_scale, float(y) / v_scale) for x, y in lines[header_lines:header_lines + num_points])
+        point_coords = ((float(x) / h_scale, float(y) / v_scale) for x, y in
+                        lines[header_lines:header_lines + num_points])
 
         # all values should be between 0 and 1
 
         # get the annotations with each point
-        annotations = lines[header_lines + num_points:header_lines + 2 * num_points]
+        annotations = lines[
+                      header_lines + num_points:header_lines + 2 * num_points]
 
         # join annotation and point_coords here
         self.data = iter(map(itertools.chain, point_coords, annotations))

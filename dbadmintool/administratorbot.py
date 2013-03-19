@@ -8,7 +8,7 @@ import logging
 import tarfile
 import hashlib
 import os
-from  shutil import copyfile
+from shutil import copyfile
 from django.db import connections
 from django.db.utils import ConnectionDoesNotExist
 from django.core import management
@@ -27,13 +27,12 @@ class Robot():
     def __init__(self):
         """class constructor for setting up the bot parameters"""
         # how often to poll the server for connection in sec
-        self.dt_connection = 10  # not used, using cron instead
+        self.dt_connection = 10 # not used, using cron instead
 
     def check_database_connection(self, dbname='catamidb'):
         """Check to see if database connection is open. Return True or False
-    
-        The return is true if connection is open false if connection failed
-        """
+The return is true if connection is open false if connection failed
+"""
 
         try:
             cursor = connections[dbname].cursor()
@@ -50,14 +49,14 @@ class Robot():
     def make_local_backup(self, dbname='catamidb', **kwargs):
         """Do a naive backup to local machine
 
-        Keywords include:
+Keywords include:
 
-        directory [./dbadmintool/backup/] :: The directory to backup to.
-        do_zip [True] :: compress or not.
-        compression_type [gz] :: gz or bz2
-        file_format [json] :: raw data output fomat. :: json, xml, yaml
-        unit_test [off] :: set to test corruption procedure :: off, corrupt
-        """
+directory [./dbadmintool/backup/] :: The directory to backup to.
+do_zip [True] :: compress or not.
+compression_type [gz] :: gz or bz2
+file_format [json] :: raw data output fomat. :: json, xml, yaml
+unit_test [off] :: set to test corruption procedure :: off, corrupt
+"""
 
         # Extract any kwargs that are parsed
 
@@ -208,7 +207,7 @@ class Robot():
             else:
                 logger.error('File and copy checksums dont agree')
                 test['checksum'] = False
-        # Check to see if the file isthere.
+            # Check to see if the file isthere.
 
         if test['checksum'] == False or test['archive'] == False or test[
             'copy'] == False:
@@ -220,13 +219,13 @@ class Robot():
     def check_sum_file(self, fname):
         """Generate md5sum of a file
 
-        We do it this way incase the file exceeds available memory
-        """
-
+We do it this way incase the file exceeds available memory
+"""
         sha = hashlib.sha1()
         with open(fname, 'rb') as f:
             for chunk in iter(lambda: f.read(8192), b''):
                 sha.update(chunk)
+
         return sha.hexdigest()
 
     def make_remote_backup(self, ipaddress, dbname='catamidb', **kwargs):
@@ -242,47 +241,47 @@ class ReportTools():
         # The name of the models.
         # TODO: Refector to query them from Django
         self.str_force_models = ['Campaign',
-                            'Deployment',
-                            'Image',
-                            'AUVDeployment',
-                            'BRUVDeployment',
-                            'DOVDeployment',
-                            'TVDeployment',
-                            'TIDeployment']
+                                 'Deployment',
+                                 'Image',
+                                 'AUVDeployment',
+                                 'BRUVDeployment',
+                                 'DOVDeployment',
+                                 'TVDeployment',
+                                 'TIDeployment']
 
         for model in self.str_force_models:
             self.stat_fields = {model: 0}
 
         # List of model instances
         self.force_models = [Campaign,
-                            Deployment,
-                            Image,
-                            AUVDeployment,
-                            BRUVDeployment,
-                            DOVDeployment,
-                            TVDeployment,
-                            TIDeployment]
-                
+                             Deployment,
+                             Image,
+                             AUVDeployment,
+                             BRUVDeployment,
+                             DOVDeployment,
+                             TVDeployment,
+                             TIDeployment]
+
     def collect_number_of_fields(self):
         """Query the number of entries inteh DB
 
-        returns logical saves data to self.stat_fields class property
-        """
+returns logical saves data to self.stat_fields class property
+"""
 
         i = 0
         for i in range(0, len(self.force_models)):
 
             self.stat_fields[self.str_force_models[i]] = len(self.force_models
-                [i].objects.all())
+            [i].objects.all())
 
         logger.debug(str(self.stat_fields))
         return True
 
     def query_table_size(self):
         """Query the size of the database table on the disk
-        returns the table size in bytes.
+returns the table size in bytes.
 
-        """
+"""
         cursor = connection.cursor()
 
         bar_label = []
@@ -309,7 +308,7 @@ class ReportTools():
                 tb_size[i] = db_size[i] * 1000000000.0
 
         return tb_size
-    
+
     def query_database_size(self, dbase='catamidb'):
         """Queries the size of the database on the disk"""
         cursor = connection.cursor()
@@ -345,7 +344,7 @@ class ReportTools():
                 num_tv_deployments=self.stat_fields['TVDeployment'],
                 num_ti_deployments=self.stat_fields['TIDeployment'],
                 db_size_on_disk=self.query_database_size()
-                 )
+            )
         except:
             traceback.print_exc(file=sys.stdout)
             raise

@@ -21,7 +21,8 @@ class UploadProgressCachedHandler(FileUploadHandler):
         self.progress_id = None
         self.cache_key = None
 
-    def handle_raw_input(self, input_data, META, content_length, boundary, encoding=None):
+    def handle_raw_input(self, input_data, META, content_length, boundary,
+                         encoding=None):
         self.content_length = content_length
         self.current_length = 0
         uuid = self.request.REQUEST.get('uuid')
@@ -30,14 +31,16 @@ class UploadProgressCachedHandler(FileUploadHandler):
 
         update_progress(self.file_key, 0)
 
-    def new_file(self, field_name, file_name, content_type, content_length, charset=None):
+    def new_file(self, field_name, file_name, content_type, content_length,
+                 charset=None):
         pass
 
     def receive_data_chunk(self, raw_data, start):
         if self.file_key:
             # tally up total downloaded
             self.current_length += self.chunk_size
-            percent = int(float(100.0 * self.current_length) / float(self.content_length))
+            percent = int(float(100.0 * self.current_length) / float(
+                self.content_length))
             update_progress(self.file_key, percent)
         return raw_data
 

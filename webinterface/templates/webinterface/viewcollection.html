@@ -1,107 +1,117 @@
 {% extends "base-topmenu.html" %}
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
 {% block tail_head %}
-<style type="text/css">
-    .viewpane {
-        padding-left: 10px;
-        border-left-style: solid;
-        border-left-width: 1px;
-        border-color: #ddd;
-    }
-    .viewobj {
-        border-style: solid;
-        border-width: 2px;
-        border-color: #ddd;
-    }
-    .workpane {
-        width: 99%;
-        margin:0;
-    }
-    input[type='number']{
-        padding: 0px;
-        margin: 0px;
-        width: 40px;
-    }
-    /*
-    .nav-tabs li a {
-        background-color: #ddd;
-        color: #3a3a3a;
-    }
-    */
-    .sidepanel {
-        padding:5px;
-    }
-    .sidepanel hr {
-        padding:0;
-        margin: 0;
-    }
-</style>
-<link rel="stylesheet" href="{{ STATIC_URL }}assets/catami-api/css/collections.css" type="text/css">
+    <style type="text/css">
+        .viewpane {
+            padding-left: 10px;
+            border-left-style: solid;
+            border-left-width: 1px;
+            border-color: #ddd;
+        }
+
+        .viewobj {
+            border-style: solid;
+            border-width: 2px;
+            border-color: #ddd;
+        }
+
+        .workpane {
+            width: 99%;
+            margin: 0;
+        }
+
+        input[type='number'] {
+            padding: 0px;
+            margin: 0px;
+            width: 40px;
+        }
+
+            /*
+            .nav-tabs li a {
+                background-color: #ddd;
+                color: #3a3a3a;
+            }
+            */
+        .sidepanel {
+            padding: 5px;
+        }
+
+        .sidepanel hr {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/catami-api/css/collections.css" type="text/css">
 {% endblock %}
 {% block content %}
-<div class="row-fluid">
+    <div class="row-fluid">
 
-<div class="span2">
-    <ul class="nav nav-list well sidepanel">
-        <li class="nav-header">Selected Collection:</li>
-        <li id="cl-info">
-            Loading...
-            <!--JS-->
-        </li>
-        <li class="divider"></li>
-        <li class="nav-header">Selected Workset:</li>
-        <li id="ws-info">
-            None.
-            <!--JS-->
-        </li>
-    </ul><br>
-    <ul class="nav nav-list well sidepanel">
-        <li class="nav-header">Workset List:</li>
-        <li id="ws-list"></li>
-    </ul><br>
-    {% include "webinterface/dataviews/worksetmodal.html"%}
-</div>
+        <div class="span2">
+            <ul class="nav nav-list well sidepanel">
+                <li class="nav-header">Selected Collection:</li>
+                <li id="cl-info">
+                    Loading...
+                    <!--JS-->
+                </li>
+                <li class="divider"></li>
+                <li class="nav-header">Selected Workset:</li>
+                <li id="ws-info">
+                    None.
+                    <!--JS-->
+                </li>
+            </ul>
+            <br>
+            <ul class="nav nav-list well sidepanel">
+                <li class="nav-header">Workset List:</li>
+                <li id="ws-list"></li>
+            </ul>
+            <br>
+            {% include "webinterface/dataviews/worksetmodal.html" %}
+        </div>
 
-<div class="span10 viewpane" >
-
-    
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#map" data-toggle="tab"><i class="icon-globe"></i> Map</a></li>
-        <li><a href="#thm" data-toggle="tab"><i class="icon-eye-open"></i> Thumbnails</a></li>
-        <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
-        <li><a href="#cst" data-toggle="tab"><i class="icon-cog"></i> Visual Clusters</a></li>
-        <li class="pull-right"><a href="#dwn" data-toggle="tab"><i class="icon-download-alt"></i> Download</a></li>
-        <li class="pull-right"><a href="#ant" data-toggle="tab"><i class="icon-tag"></i> Annotate</a></li>
-        <li class="pull-right"><a href="#cls" data-toggle="tab"><i class="icon-sitemap"></i> Classify</a></li>
-    </ul>
+        <div class="span10 viewpane">
 
 
-    <div class="tab-content">
-        <div class="tab-pane active" id="map">
-            {% include "webinterface/dataviews/mapview.html"%} 
-        </div>
-        <div class="tab-pane" id="tax">
-            {% include "webinterface/dataviews/taxonomytree.html"%} 
-        </div>
-        <div class="tab-pane" id="cst">
-			{% include "webinterface/dataviews/clusterview.html"%} 
-		</div>
-        <div class="tab-pane" id="thm">
-            {% include "webinterface/dataviews/thumbnails.html"%}
-        </div>
-        <div class="tab-pane" id="ant">
-            This will give options to continue or create an annotation run on the selected Workset.<br>
-            <a href="{% url webinterface.views.image_annotate %}" class="btn btn-primary imageframe" data-fancybox-group="annotationlist" data-fancybox-type="iframe" rel="tooltip" title="Annotate Workset1"><i class="icon-tag"></i> Annotate!</a>
-        </div>
-        <div class="tab-pane" id="cls">
-            Classify
-        </div>
-        <div class="tab-pane" id="dwn">
-        	This will contain options for downloading a variety of different combinations the data.
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#map" data-toggle="tab"><i class="icon-globe"></i> Map</a></li>
+                <li><a href="#thm" data-toggle="tab"><i class="icon-eye-open"></i> Thumbnails</a></li>
+                <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
+                <li><a href="#cst" data-toggle="tab"><i class="icon-cog"></i> Visual Clusters</a></li>
+                <li class="pull-right"><a href="#dwn" data-toggle="tab"><i class="icon-download-alt"></i> Download</a>
+                </li>
+                <li class="pull-right"><a href="#ant" data-toggle="tab"><i class="icon-tag"></i> Annotate</a></li>
+                <li class="pull-right"><a href="#cls" data-toggle="tab"><i class="icon-sitemap"></i> Classify</a></li>
+            </ul>
+
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="map">
+                    {% include "webinterface/dataviews/mapview.html" %}
+                </div>
+                <div class="tab-pane" id="tax">
+                    {% include "webinterface/dataviews/taxonomytree.html" %}
+                </div>
+                <div class="tab-pane" id="cst">
+                    {% include "webinterface/dataviews/clusterview.html" %}
+                </div>
+                <div class="tab-pane" id="thm">
+                    {% include "webinterface/dataviews/thumbnails.html" %}
+                </div>
+                <div class="tab-pane" id="ant">
+                    This will give options to continue or create an annotation run on the selected Workset.<br>
+                    <a href="{% url webinterface.views.image_annotate %}" class="btn btn-primary imageframe"
+                       data-fancybox-group="annotationlist" data-fancybox-type="iframe" rel="tooltip"
+                       title="Annotate Workset1"><i class="icon-tag"></i> Annotate!</a>
+                </div>
+                <div class="tab-pane" id="cls">
+                    Classify
+                </div>
+                <div class="tab-pane" id="dwn">
+                    This will contain options for downloading a variety of different combinations the data.
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
 
 
 {% endblock %}
@@ -110,63 +120,63 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/collections.js"></script>
     <script type="text/javascript">
 
-    // Instantiate collection list object
-    wslist = new CollectionAPI({
-        config   : {
-            theme : 'cl-sidebar-name',
-            showactions : true,
-            select_fnc : 'selectWorkset({id})'
+        // Instantiate collection list object
+        wslist = new CollectionAPI({
+            config: {
+                theme: 'cl-sidebar-name',
+                showactions: true,
+                select_fnc: 'selectWorkset({id})'
+            }
+        });
+
+        // Collection info objects
+        clinfo = new CollectionAPI({
+            config: {
+                theme: 'cl-sidebar',
+                showactions: true,
+                preview_fnc: 'selectCollection({id})'
+            }
+        });
+        wsinfo = new CollectionAPI({
+            config: {
+                theme: 'cl-sidebar',
+                showactions: true,
+                preview_fnc: 'selectCollection({id})',
+                unselect_fnc: 'clearWorkset({parent_id})'
+            }
+        });
+
+
+        function selectCollection(id) {
+            getNewImageList('collection=' + id);
+            updateMapForSelectedCollection(id);
         }
-    });
 
-    // Collection info objects
-    clinfo = new CollectionAPI({
-        config : {
-            theme : 'cl-sidebar',
-            showactions : true,
-            preview_fnc : 'selectCollection({id})'
+        function clearWorkset(id) {
+            $('#ws-info').html('None.');
+            selectCollection(id)
         }
-    });
-    wsinfo = new CollectionAPI({
-        config : {
-            theme : 'cl-sidebar',
-            showactions : true,
-            preview_fnc : 'selectCollection({id})',
-            unselect_fnc : 'clearWorkset({parent_id})'
+
+        function selectWorkset(id) {
+            wsinfo.getCollectionInfo(id, '#ws-info');
+            selectCollection(id);
+            $('.cldescription').shorten({showChars: 50}); // Shorten descriptions for nicer display
         }
-    });
 
+        $(document).ready(function () {
+            clinfo.getCollectionInfo({{ collection_id }}, '#cl-info');
+            $('.cldescription').shorten({showChars: 50}); // Shorten descriptions for nicer display
 
-    function selectCollection(id) {
-        getNewImageList('collection='+id);
-        updateMapForSelectedCollection(id);
-    }
+            wslist.getCollectionList('parent={{ collection_id }}', '#ws-list')
 
-    function clearWorkset(id) {
-        $('#ws-info').html('None.');
-        selectCollection(id)
-    }
+            initDeploymentMap();
 
-    function selectWorkset(id) {
-        wsinfo.getCollectionInfo(id,'#ws-info');
-        selectCollection(id);
-        $('.cldescription').shorten({showChars : 50}); // Shorten descriptions for nicer display
-    }
-
-    $(document).ready(function(){
-        clinfo.getCollectionInfo({{ collection_id }},'#cl-info');
-        $('.cldescription').shorten({showChars : 50}); // Shorten descriptions for nicer display
-
-        wslist.getCollectionList('parent={{ collection_id }}', '#ws-list')
-
-        initDeploymentMap();
-
-        {% if workset_id %}
-            selectWorkset({{ workset_id }});
-        {% else %}
-            selectCollection({{ collection_id }});
-        {% endif %}
-    });
+            {% if workset_id %}
+                selectWorkset({{ workset_id }});
+            {% else %}
+                selectCollection({{ collection_id }});
+            {% endif %}
+        });
 
     </script>
 {% endblock %}  

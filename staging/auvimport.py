@@ -37,7 +37,8 @@ class LimitTracker:
     minimum and maximum specify starting points.
     """
 
-    def __init__(self, field=None, minimum=float("inf"), maximum=float("-inf")):
+    def __init__(self, field=None, minimum=float("inf"),
+                 maximum=float("-inf")):
         self.maximum = maximum
         self.minimum = minimum
         self.field = field
@@ -112,7 +113,8 @@ class NetCDFParser:
         Utility function that chains the imos to unix and
         unix to datetime functions.
         """
-        return datetime.datetime.fromtimestamp(self.imos_to_unix(imos_time), tz=tzutc())
+        return datetime.datetime.fromtimestamp(self.imos_to_unix(imos_time),
+                                               tz=tzutc())
 
     def next(self):
         """Get the next row in the NetCDF File.
@@ -125,8 +127,8 @@ class NetCDFParser:
         temp = self.reader.variables['TEMP'].data[i]
 
         return {'date_time': self.imos_to_datetime(time),
-                    'salinity': sal,
-                    'temperature': temp}
+                'salinity': sal,
+                'temperature': temp}
 
 
 class TrackParser:
@@ -151,8 +153,8 @@ class TrackParser:
             if len(row) >= 1 and row[0] == 'year':
                 self.header = row
                 break
-        # the next line is the first data line
-        # so construction is finished
+                # the next line is the first data line
+                # so construction is finished
 
     def next(self):
         """Get next row of track file."""
@@ -184,7 +186,8 @@ class AUVImporter(object):
     @classmethod
     def dependency_get(cls, deployment_path):
         # find the hydro netcdf file
-        netcdf_pattern = os.path.join(deployment_path, 'hydro_netcdf/IMOS_AUV_ST_*Z_SIRIUS_FV00.nc')
+        netcdf_pattern = os.path.join(deployment_path,
+                                      'hydro_netcdf/IMOS_AUV_ST_*Z_SIRIUS_FV00.nc')
 
         matches = glob.glob(netcdf_pattern)
 
@@ -198,7 +201,8 @@ class AUVImporter(object):
         netcdf_filename = matches[0]
 
         # find the track file
-        track_pattern = os.path.join(deployment_path, 'track_files/*_latlong.csv')
+        track_pattern = os.path.join(deployment_path,
+                                     'track_files/*_latlong.csv')
 
         matches = glob.glob(track_pattern)
 
@@ -294,12 +298,15 @@ def auvdeployment_import(auvdeployment, files):
 
     # get the sm types that we are going to use
     logger.debug("Get handle on required ScientificMeasurementTypes")
-    temperature = ScientificMeasurementType.objects.get(normalised_name='temperature')
-    salinity = ScientificMeasurementType.objects.get(normalised_name='salinity')
+    temperature = ScientificMeasurementType.objects.get(
+        normalised_name='temperature')
+    salinity = ScientificMeasurementType.objects.get(
+        normalised_name='salinity')
     pitch = ScientificMeasurementType.objects.get(normalised_name='pitch')
     roll = ScientificMeasurementType.objects.get(normalised_name='roll')
     yaw = ScientificMeasurementType.objects.get(normalised_name='yaw')
-    altitude = ScientificMeasurementType.objects.get(normalised_name='altitude')
+    altitude = ScientificMeasurementType.objects.get(
+        normalised_name='altitude')
     logger.debug("Got all required ScientificMeasurementTypes")
 
     first_pose = None
@@ -321,9 +328,11 @@ def auvdeployment_import(auvdeployment, files):
 
         pose.deployment = auvdeployment
 
-        pose_datetime = datetime.datetime.strptime(os.path.splitext(image_name)[0], "PR_%Y%m%d_%H%M%S_%f_LC16")
+        pose_datetime = datetime.datetime.strptime(
+            os.path.splitext(image_name)[0], "PR_%Y%m%d_%H%M%S_%f_LC16")
         pose.date_time = pose_datetime.replace(tzinfo=tzutc())
-        pose.position = "POINT ({0} {1})".format(row['longitude'], row['latitude'])
+        pose.position = "POINT ({0} {1})".format(row['longitude'],
+                                                 row['latitude'])
 
         pose.depth = float(row['depth'])
 
@@ -347,7 +356,9 @@ def auvdeployment_import(auvdeployment, files):
         deployment_name = auvdeployment.short_name
         image_path = os.path.join(image_subfolder, image_name)
 
-        archive_path, webimage_path = image_import(campaign_name, deployment_name, image_name, image_path)
+        archive_path, webimage_path = image_import(campaign_name,
+                                                   deployment_name, image_name,
+                                                   image_path)
 
         image = Image()
 
@@ -363,7 +374,8 @@ def auvdeployment_import(auvdeployment, files):
             later_seabird, earlier_seabird = earlier_seabird, netcdf.next()
 
         # find which is closer - could use interpolation instead
-        if (later_seabird['date_time'] - pose.date_time) > (pose.date_time - earlier_seabird['date_time']):
+        if (later_seabird['date_time'] - pose.date_time) > (
+            pose.date_time - earlier_seabird['date_time']):
             closer_seabird = earlier_seabird
         else:
             closer_seabird = later_seabird
@@ -416,7 +428,11 @@ def auvdeployment_import(auvdeployment, files):
     auvdeployment.start_position = first_pose.position
     auvdeployment.end_position = last_pose.position
 
-    auvdeployment.transect_shape = "POLYGON(({0} {2}, {0} {3}, {1} {3}, {1} {2}, {0} {2} ))".format(lon_lim.minimum, lon_lim.maximum, lat_lim.minimum, lat_lim.maximum)
+    auvdeployment.transect_shape = "POLYGON(({0} {2}, {0} {3}, {1} {3}, {1} {2}, {0} {2} ))".format(
+        lon_lim.minimum,
+        lon_lim.maximum,
+        lat_lim.minimum,
+        lat_lim.maximum)
 
     # now save the actual min/max depth as well as start/end times and
     # start position and end position

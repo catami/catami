@@ -224,10 +224,10 @@ class RunScriptTest(TestCase):
         for running libfeature
         """
         self.rst.write_libfeature_script(file_name='/tmp/run_libfeature.py')
-        mock_write_check = self.bender.check_sum_file(self.rst.
-            libfeature_run_file)
+        mock_write_check = self.bender.check_sum_file(
+            self.rst.libfeature_run_file)
         mock_fixture_check = self.bender.check_sum_file(
-        'features/fixtures/mock_run_feature.py')
+            'features/fixtures/mock_run_feature.py')
         self.assertTrue(mock_fixture_check == mock_write_check)
 
     def test_push_pbs_script_to_server(self):

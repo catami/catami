@@ -3,13 +3,13 @@
  *
  * An example filter could be:
  *
-    <div class="btn-group api-filter">
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Parameter name: <span class="api-filt-text">Default text</span> <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            <li><label class="radio"><input type="radio" name="grp" id="param" value="VALUE1" checked>Option 1</label></li>
-            <li><label class="radio"><input type="radio" name="grp" id="param" value="VALUE2">Option 2</label></li>
-        </ul>
-    </div>
+ <div class="btn-group api-filter">
+ <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Parameter name: <span class="api-filt-text">Default text</span> <span class="caret"></span></a>
+ <ul class="dropdown-menu">
+ <li><label class="radio"><input type="radio" name="grp" id="param" value="VALUE1" checked>Option 1</label></li>
+ <li><label class="radio"><input type="radio" name="grp" id="param" value="VALUE2">Option 2</label></li>
+ </ul>
+ </div>
  *
  * NOTE: the class of the div: "api-filter"
  *       the class of the span: "api-filt-text"
@@ -19,13 +19,13 @@
  *
  * In JS, you would initialise with:
  *
-    filt=new ApiFilter(function {  // constructor with onChange method
+ filt=new ApiFilter(function {  // constructor with onChange method
         update_filter();
     });
-    filt.init;                      // initialise
-    filt.update;                    // initial update using defaults (optional)
+ filt.init;                      // initialise
+ filt.update;                    // initial update using defaults (optional)
 
-    function update_filter() {      // function called when filter is updated
+ function update_filter() {      // function called when filter is updated
         filterstring = filt.get;
         // Do stuff with filterstring
     }
@@ -43,9 +43,9 @@ function ApiFilter(updatefnc) {
      * Searches for all radio buttons contained within the "api-filter" class and
      * sets change functions for filter radio buttons
      */
-    this.init = function() {
-        $('.api-filter').find('input:radio').each(function(i,obj) {
-            $(obj).on('change',function() {
+    this.init = function () {
+        $('.api-filter').find('input:radio').each(function (i, obj) {
+            $(obj).on('change', function () {
                 updatefnc();
             });
         });
@@ -58,22 +58,22 @@ function ApiFilter(updatefnc) {
      * It also updates the html of the nearest parent element containing the "api-filt-text" class label
      * @return {String}
      */
-    this.get = function() {
+    this.get = function () {
         var filter = 'format=json';
 
         // Extract values from radio button elements
-        $('.api-filter input:radio:checked').each(function(i, obj) {
+        $('.api-filter input:radio:checked').each(function (i, obj) {
             if ($(obj).val() != '') {
-                filter += '&'+$(obj).attr('id')+'='+$(obj).val();
+                filter += '&' + $(obj).attr('id') + '=' + $(obj).val();
                 //alert($(obj).parent().text());
             }
             $(obj).closest(".api-filter").find('.api-filt-text').html($(obj).parent().text());
         });
 
         // Extract values from hidden elements
-        $('.api-filter input[type=hidden]').each(function(i, obj) {
+        $('.api-filter input[type=hidden]').each(function (i, obj) {
             if ($(obj).val() != '') {
-                filter += '&'+$(obj).attr('id')+'='+$(obj).val();
+                filter += '&' + $(obj).attr('id') + '=' + $(obj).val();
             }
         });
 

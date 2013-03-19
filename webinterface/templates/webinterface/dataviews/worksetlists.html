@@ -3,51 +3,55 @@ Template-specific HTML
 ------------------------------------------->
 <br>
 <div style="text-align: center;">
-<!--
-    <a class="btn btn-primary" href="#SelectWorksetModal" data-toggle="modal"  data-target="#SelectWorksetModal"><i class="icon-th-list"></i> Select a Workset</a>
-</div>
-
-<div id="SelectWorksetModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="SelectWorksetModalLabel">Select a Workset:</h3>
+    <!--
+        <a class="btn btn-primary" href="#SelectWorksetModal" data-toggle="modal"  data-target="#SelectWorksetModal"><i class="icon-th-list"></i> Select a Workset</a>
     </div>
-    <div class="modal-body">
-    -->
-        <div class="tab-pane" id="wks">
-            <div class="tabbable">
-                <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a href="#ws_all" data-toggle="tab">All</a>
-                    </li>
-                    <li>
-                        <a href="#ws_pub" data-toggle="tab">Public</a>
-                    </li>
-                    <li>
-                        <a href="#ws_mine" data-toggle="tab">Mine</a>
-                    </li>
-                </ul>
-                <div class="tab-content" style="margin: 0;">
-                    <div class="tab-pane active" id="ws_all">
-                        <select name="allWorksets" size="7" multiple="multiple" id="allWorksets" style="width: 100%">
-                            <!-- Content inserted from jqery -->
-                        </select>
-                    </div>
-                    <div class="tab-pane" id="ws_pub">
-                        <select name="pubWorksets" size="7" multiple="multiple" id="pubWorksets" style="width: 100%" disabled="disabled">
-                            <!-- Content inserted from jqery -->
-                        </select>
-                    </div>
-                    <div class="tab-pane" id="ws_mine">
-                        <select name="myWorksets" size="7" multiple="multiple" id="myWorksets" style="width: 100%" disabled="disabled">
-                            <!-- Content inserted from jqery -->
-                        </select>
-                    </div>
+
+    <div id="SelectWorksetModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="SelectWorksetModalLabel">Select a Workset:</h3>
+        </div>
+        <div class="modal-body">
+        -->
+    <div class="tab-pane" id="wks">
+        <div class="tabbable">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#ws_all" data-toggle="tab">All</a>
+                </li>
+                <li>
+                    <a href="#ws_pub" data-toggle="tab">Public</a>
+                </li>
+                <li>
+                    <a href="#ws_mine" data-toggle="tab">Mine</a>
+                </li>
+            </ul>
+            <div class="tab-content" style="margin: 0;">
+                <div class="tab-pane active" id="ws_all">
+                    <select name="allWorksets" size="7" multiple="multiple" id="allWorksets" style="width: 100%">
+                        <!-- Content inserted from jqery -->
+                    </select>
+                </div>
+                <div class="tab-pane" id="ws_pub">
+                    <select name="pubWorksets" size="7" multiple="multiple" id="pubWorksets" style="width: 100%"
+                            disabled="disabled">
+                        <!-- Content inserted from jqery -->
+                    </select>
+                </div>
+                <div class="tab-pane" id="ws_mine">
+                    <select name="myWorksets" size="7" multiple="multiple" id="myWorksets" style="width: 100%"
+                            disabled="disabled">
+                        <!-- Content inserted from jqery -->
+                    </select>
                 </div>
             </div>
         </div>
-        <a class="btn btn-primary" style="width: 80%;" href="#_" id="btnSelectWorkset"><i class="icon-th-list"></i> Select Workset</a>
-        <a class="btn btn-primary" style="width: 80%;" href="#NewWorksetModal" onclick="openNewWorksetModalWindow();"><i class="icon-plus-sign icon-white"></i> Create new Workset</a>
+    </div>
+    <a class="btn btn-primary" style="width: 80%;" href="#_" id="btnSelectWorkset"><i class="icon-th-list"></i> Select
+        Workset</a>
+    <a class="btn btn-primary" style="width: 80%;" href="#NewWorksetModal" onclick="openNewWorksetModalWindow();"><i
+            class="icon-plus-sign icon-white"></i> Create new Workset</a>
     <!--
     </div>
     -->
@@ -55,7 +59,8 @@ Template-specific HTML
 
 
 <!-- Data Task Modal -->
-<div id="NewWorksetModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel" aria-hidden="true">
+<div id="NewWorksetModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel"
+     aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="NewWorksetModalLabel">Create new Workset</h3>
@@ -64,6 +69,7 @@ Template-specific HTML
     <div class="modal-body">
         <div class="tab-pane" id="newwks">
             <p>Use this section to create a new Workset. Select a sampling strategy:</p>
+
             <div class="tabbable tabs-left">
                 <ul class="nav nav-tabs">
                     <li class="active">
@@ -78,15 +84,19 @@ Template-specific HTML
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active well" id="rnd">
-                        <p><strong>Random:</strong> make a new Workset by randomly sub-sampling N images from the collection.</p>
-                        <form class="form"  class="form-horizontal" action="{% url webinterface.views.create_workset_from_collection "random" %}" method="post">
+                        <p><strong>Random:</strong> make a new Workset by randomly sub-sampling N images from the
+                            collection.</p>
+
+                        <form class="form" class="form-horizontal"
+                              action="{% url webinterface.views.create_workset_from_collection "random" %}"
+                              method="post">
                             <table width="100%">
                                 <tr>
                                     <td>
                                         Name
                                     </td>
                                     <td>
-                                        <input type="text" class="input"  placeholder="Name for Workset" name="name">
+                                        <input type="text" class="input" placeholder="Name for Workset" name="name">
                                     </td>
                                 </tr>
                                 <tr>
@@ -94,8 +104,9 @@ Template-specific HTML
                                         Parameters
                                     </td>
                                     <td>
-                                        <label><input class="flat" type="number" min="1" step="1" value="50" name="n">: # random images to sample</label>
-                                        <label><input type="checkbox" name="ispublic"  value="true"> make public?</label>
+                                        <label><input class="flat" type="number" min="1" step="1" value="50" name="n">:
+                                            # random images to sample</label>
+                                        <label><input type="checkbox" name="ispublic" value="true"> make public?</label>
                                     </td>
                                 </tr>
                                 <tr>
@@ -103,29 +114,36 @@ Template-specific HTML
                                         Description
                                     </td>
                                     <td>
-                                        <textarea class="flat" rows="5" placeholder="Description for Workset"   name="description"></textarea>
+                                        <textarea class="flat" rows="5" placeholder="Description for Workset"
+                                                  name="description"></textarea>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
                                         <input type="hidden" name="c_id" id="c_id_random" value="">
                                         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                                        <button class="btn pull-right" type="submit" value="submit"><i class="icon-plus-sign"></i> Create</button>
+                                        <button class="btn pull-right" type="submit" value="submit"><i
+                                                class="icon-plus-sign"></i> Create
+                                        </button>
                                     </td>
                                 </tr>
                             </table>
                         </form>
                     </div>
                     <div class="tab-pane well" id="str">
-                        <p><strong>Stratified:</strong> make a new Workset by sub-sampling every Nth image from the collection.</p>
-                        <form class="form"  class="form-horizontal" action="{% url webinterface.views.create_workset_from_collection "stratified" %}" method="post">
+                        <p><strong>Stratified:</strong> make a new Workset by sub-sampling every Nth image from the
+                            collection.</p>
+
+                        <form class="form" class="form-horizontal"
+                              action="{% url webinterface.views.create_workset_from_collection "stratified" %}"
+                              method="post">
                             <table width="100%">
                                 <tr>
                                     <td>
                                         Name
                                     </td>
                                     <td>
-                                        <input type="text" class="input"  placeholder="Name for Workset" name="name">
+                                        <input type="text" class="input" placeholder="Name for Workset" name="name">
                                     </td>
                                 </tr>
                                 <tr>
@@ -133,8 +151,10 @@ Template-specific HTML
                                         Parameters
                                     </td>
                                     <td>
-                                        <label><input class="flat" type="number" min="1" step="1" value="50" name="n">: # images between samples</label>
-                                        <label><input type="checkbox" name="ispublic" id="ispublic" value="true"> make public?</label>
+                                        <label><input class="flat" type="number" min="1" step="1" value="50" name="n">:
+                                            # images between samples</label>
+                                        <label><input type="checkbox" name="ispublic" id="ispublic" value="true"> make
+                                            public?</label>
                                     </td>
                                 </tr>
                                 <tr>
@@ -142,24 +162,31 @@ Template-specific HTML
                                         Description
                                     </td>
                                     <td>
-                                        <textarea class="flat" rows="5" placeholder="Description for Workset"  name="description"></textarea>
+                                        <textarea class="flat" rows="5" placeholder="Description for Workset"
+                                                  name="description"></textarea>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
                                         <input type="hidden" name="c_id" id="c_id_stratified" value="">
                                         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                                        <button class="btn pull-right" type="submit" value="submit"><i class="icon-plus-sign"></i> Create</button>
+                                        <button class="btn pull-right" type="submit" value="submit"><i
+                                                class="icon-plus-sign"></i> Create
+                                        </button>
                                     </td>
                                 </tr>
                             </table>
                         </form>
                     </div>
                     <div class="tab-pane well" id="spt">
-                        <p><strong>Spatial:</strong> make a new Workset by spatially sub-sampling images from the collection.</p>
+                        <p><strong>Spatial:</strong> make a new Workset by spatially sub-sampling images from the
+                            collection.</p>
+
                         <form class="form" style="margin:0; padding:0;">
                             <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                            <button class="btn pull-right" type="submit" value="submit"><i class="icon-plus-sign"></i> Create</button>
+                            <button class="btn pull-right" type="submit" value="submit"><i class="icon-plus-sign"></i>
+                                Create
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -177,14 +204,14 @@ Template-specific javascript functions
 
     function setWorksetLists(cl_id) {
 
-        var apiurl = "/api/dev/collection/?parent="+cl_id;
+        var apiurl = "/api/dev/collection/?parent=" + cl_id;
 
-        $.getJSON(apiurl , function(ws){
+        $.getJSON(apiurl, function (ws) {
             //alert ('L: ' + j.objects.length);
             var thisitem = '';
             for (var i = 0; i < ws.objects.length; i++) {
                 //thisitem = '<input type="radio" name="WorksetGroup" id="WorksetGroup" value="' + ws.objects[i].id + '">' + ws.objects[i].name + '<br>';
-                thisitem = '<option value="' + ws.objects[i].id + '">' + ws.objects[i].name + ' ('+ws.objects[i].creation_info+')</option>';
+                thisitem = '<option value="' + ws.objects[i].id + '">' + ws.objects[i].name + ' (' + ws.objects[i].creation_info + ')</option>';
                 $('#allWorksets').append(thisitem);
                 if (ws.objects[i].is_public) {
                     $('#pubWorksets').append(thisitem);
@@ -198,28 +225,28 @@ Template-specific javascript functions
         // Set value of c_id for form
         $('#c_id_random').val(cl_id);
         $('#c_id_stratified').val(cl_id);
-        $("#btnSelectWorkset").attr('onClick','selectWorkset($("#allWorksets").val());');
-        $('#clearWorksetLink').attr('onClick','clearWorkset('+cl_id+');');
+        $("#btnSelectWorkset").attr('onClick', 'selectWorkset($("#allWorksets").val());');
+        $('#clearWorksetLink').attr('onClick', 'clearWorkset(' + cl_id + ');');
     }
 
     /*
-    function selectWorkset(id) {
-        getNewImageList('collection='+id);
-        //alert('Wokset has been selected. ID: '+id);
-        setCollectionProperties(id,'#Workset-properties');
-        //$('#SelectWorksetModal').modal('hide');
-        //$('ul.nav-tabs > li > a[href="#thm"]').tab('show');
-        updateMapForSelectedCollection(id);
-        $('#clearWorksetLink').html('clear');
+     function selectWorkset(id) {
+     getNewImageList('collection='+id);
+     //alert('Wokset has been selected. ID: '+id);
+     setCollectionProperties(id,'#Workset-properties');
+     //$('#SelectWorksetModal').modal('hide');
+     //$('ul.nav-tabs > li > a[href="#thm"]').tab('show');
+     updateMapForSelectedCollection(id);
+     $('#clearWorksetLink').html('clear');
 
-        // TODO: this is a hack - it should be a map layer
-        $('#showWorksetMapLink').attr('onClick','updateMapForSelectedCollection('+id+');');
-        $('#showWorksetMapLink').html('map');
-    }
-    */
+     // TODO: this is a hack - it should be a map layer
+     $('#showWorksetMapLink').attr('onClick','updateMapForSelectedCollection('+id+');');
+     $('#showWorksetMapLink').html('map');
+     }
+     */
 
     function clearWorkset(reset_cl_id) {
-        getNewImageList('collection='+reset_cl_id);
+        getNewImageList('collection=' + reset_cl_id);
         updateMapForSelectedCollection(reset_cl_id);
         $('#Workset-properties').html('<em>No Workset is currently selected. Please choose a Workset.</em>');
         $('#clearWorksetLink').html('');

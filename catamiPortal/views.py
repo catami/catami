@@ -34,14 +34,14 @@ def index(request):
         except:
             pass
         else:
-            image_link = {"deployment_url":"/data/auvdeployments/"+str(image.deployment.id),"image":image}
+            image_link = {"deployment_url": "/data/auvdeployments/" + str(image.deployment.id), "image": image}
 
         try:
             TIDeployment.objects.get(id=image.deployment.id)
         except:
             pass
         else:
-            image_link = {"deployment_url":"/data/tideployments/"+str(image.deployment.id),"image":image}
+            image_link = {"deployment_url": "/data/tideployments/" + str(image.deployment.id), "image": image}
 
         image_link_list.append(image_link)
 
@@ -51,48 +51,49 @@ def index(request):
         except:
             pass
         else:
-            deployment_type= "AUV Deployment"
-            deployment_url = "/data/auvdeployments/"+str(deployment.id)
+            deployment_type = "AUV Deployment"
+            deployment_url = "/data/auvdeployments/" + str(deployment.id)
 
         try:
             BRUVDeployment.objects.get(id=deployment.id)
         except:
             pass
         else:
-            deployment_type= "BRUV Deployment"
-            deployment_url = "/data/bruvdeployments/"+str(deployment.id)
+            deployment_type = "BRUV Deployment"
+            deployment_url = "/data/bruvdeployments/" + str(deployment.id)
 
         try:
             BRUVDeployment.objects.get(id=deployment.id)
         except:
             pass
         else:
-            deployment_type= "DOV Deployment"
-            deployment_url = "/data/dovdeployments/"+str(deployment.id)
+            deployment_type = "DOV Deployment"
+            deployment_url = "/data/dovdeployments/" + str(deployment.id)
 
         try:
             TIDeployment.objects.get(id=deployment.id)
         except:
             pass
         else:
-            deployment_type= "TI Deployment"
-            deployment_url = "/data/tideployments/"+str(deployment.id)
+            deployment_type = "TI Deployment"
+            deployment_url = "/data/tideployments/" + str(deployment.id)
 
         try:
             BRUVDeployment.objects.get(id=deployment.id)
         except:
             pass
         else:
-            deployment_type= "TV Deployment"
-            deployment_url = "/data/tvdeployments/"+str(deployment.id)
+            deployment_type = "TV Deployment"
+            deployment_url = "/data/tvdeployments/" + str(deployment.id)
 
-        styled_deployment = {"deployment_type":deployment_type,"deployment_url":deployment_url,"deployment":deployment}
+        styled_deployment = {"deployment_type": deployment_type, "deployment_url": deployment_url,
+                             "deployment": deployment}
         styled_deployment_list.append(styled_deployment)
 
     return render_to_response('catamiPortal/index.html',
-        {'styled_deployment_list':styled_deployment_list,
-         'image_link_list': image_link_list},
-        RequestContext(request))
+                              {'styled_deployment_list': styled_deployment_list,
+                               'image_link_list': image_link_list},
+                              RequestContext(request))
 
 
 def faq(request):
@@ -102,8 +103,8 @@ def faq(request):
     context = {}
 
     return render_to_response('catamiPortal/faq.html',
-        context,
-        RequestContext(request))
+                              context,
+                              RequestContext(request))
 
 
 def contact(request):
@@ -113,8 +114,9 @@ def contact(request):
     context = {}
 
     return render_to_response('catamiPortal/contact.html',
-        context,
-        RequestContext(request))
+                              context,
+                              RequestContext(request))
+
 
 def attribution(request):
     """@brief returns catami atribution html"""
@@ -122,8 +124,9 @@ def attribution(request):
     context = {}
 
     return render_to_response('catamiPortal/attribution.html',
-        context,
-        RequestContext(request))
+                              context,
+                              RequestContext(request))
+
 
 def logout_view(request):
     """@brief returns user to html calling the logout action
@@ -131,6 +134,7 @@ def logout_view(request):
     """
     logout(request)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
 
 @csrf_exempt
 def proxy(request, url):

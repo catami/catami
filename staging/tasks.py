@@ -5,11 +5,13 @@ __author__ = "Lachlan Toohey"
 from urllib2 import urlopen, HTTPError
 
 import json
+
 import datetime
 import tempfile
 import os.path
 
 from django.db import transaction, IntegrityError
+
 from django.core import serializers
 from django.template.defaultfilters import slugify
 
@@ -55,7 +57,8 @@ def json_real_load(data):
                 if obj.object.__class__.__module__ == "catamidb.models":
                     obj.save()
                 else:
-                    raise ValueError('Object does not come from target Module.', obj.object)
+                    raise ValueError(
+                        'Object does not come from target Module.', obj.object)
         except:
             transaction.rollback()
             # reraise the same error
@@ -68,7 +71,8 @@ def metadata_type(metadata_file):
     base, extension = os.path.splitext(metadata_file)
 
     file_type = extension.lower()
-    logger.debug("metadata_type: file extension (normalised) is {0}.".format(file_type))
+    logger.debug(
+        "metadata_type: file extension (normalised) is {0}.".format(file_type))
 
     if file_type == ".xls":
         logger.debug("metadata_type: file is xls format.")
@@ -103,7 +107,8 @@ def metadata_sheet_name_deslug(metadata_file, slugged_name):
 
 def metadata_outline(metadata_file, *args, **kwargs):
     """Get an outline of the metadata file structure."""
-    logger.debug("metadata_outline: getting file outline: {0}".format(metadata_file))
+    logger.debug(
+        "metadata_outline: getting file outline: {0}".format(metadata_file))
     data_type = metadata_type(metadata_file)
 
     if data_type == "xls":
@@ -111,7 +116,9 @@ def metadata_outline(metadata_file, *args, **kwargs):
     elif data_type == "xlsx":
         return metadata.xlsx_outline(metadata_file, *args, **kwargs)
     else:
-        logger.warning("metadata_outline: cannot handle extension '{0}'".format(data_type))
+        logger.warning(
+            "metadata_outline: cannot handle extension '{0}'".format(
+                data_type))
         return None
 
 
@@ -125,7 +132,9 @@ def metadata_transform(metadata_file, *args, **kwargs):
     elif data_type == "xlsx":
         return metadata.xlsx_transform(metadata_file, *args, **kwargs)
     else:
-        logger.warning("metadata_outline: cannot handle extension '{0}'".format(data_type))
+        logger.warning(
+            "metadata_outline: cannot handle extension '{0}'".format(
+                data_type))
         return None
 
 
@@ -183,10 +192,14 @@ def metadata_import(model_class, fields_list, field_mappings):
                 # mainly thinking of campaigns... but others may arise
 
                 # split to parent
-                base_fields = {field: value for field, value in outfields.iteritems() if field in base_field_names}
+                base_fields = {field: value for field, value in
+                               outfields.iteritems() if
+                               field in base_field_names}
 
                 # and child
-                subclass_fields = {field: value for field, value in outfields.iteritems() if field in subclass_field_names}
+                subclass_fields = {field: value for field, value in
+                                   outfields.iteritems() if
+                                   field in subclass_field_names}
 
                 # create data structures
                 # HACK: if creating like this create the model directly
@@ -235,7 +248,8 @@ def annotation_cpc_import(user, deployment, cpc_file_handles):
         image_name = annotations.image_file_name
 
         # extract the timing info from the file name
-        image_datetime = datetime.datetime.strptime(image_name, "PR_%Y%m%d_%H%M%S_%f_LC16")
+        image_datetime = datetime.datetime.strptime(image_name,
+                                                    "PR_%Y%m%d_%H%M%S_%f_LC16")
         image_datetime = image_datetime.replace(tz=utc)
         # now look it up... hopefully the timestamp will match something in the database
 
@@ -252,4 +266,4 @@ def annotation_cpc_import(user, deployment, cpc_file_handles):
 
             an.save()
 
-    # annotations are done!
+            # annotations are done!

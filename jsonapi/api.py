@@ -8,5 +8,8 @@ class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
         resource_name = "users"
-        authentication = MultiAuthentication( BasicAuthentication(), SessionAuthentication(), ApiKeyAuthentication())
-        excludes = ['email', 'password', 'is_staff', 'is_superuser', 'is_active', 'last_login']
+        authentication = MultiAuthentication(BasicAuthentication(),
+                                             SessionAuthentication(),
+                                             ApiKeyAuthentication())
+        excludes = ['email', 'password', 'is_staff', 'is_superuser',
+                    'is_active', 'last_login']
