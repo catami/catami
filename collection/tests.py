@@ -1,8 +1,9 @@
 import logging
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.gis.geos import Point, Polygon
 from django.test.utils import setup_test_environment
 from django.test import TestCase
+from guardian.core import ObjectPermissionChecker
 from model_mommy import mommy
 from catamidb.models import Image
 from collection.models import CollectionManager, Collection
@@ -13,20 +14,28 @@ logger = logging.getLogger(__name__)
 def create_setup(self):
     self.campaign_one = mommy.make_one('catamidb.Campaign', id=1)
 
-    self.deployment_one = mommy.make_one('catamidb.Deployment',
-        start_position=Point(12.4604, 43.9420), end_position=Point(12.4604,
-        43.9420), transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0
-        ), (50.0, 0.0), (0.0, 0.0))), id=1, campaign=self.campaign_one)
-    self.deployment_two = mommy.make_one('catamidb.Deployment',
-        start_position=Point(12.4604, 43.9420), end_position=Point(12.4604,
-        43.9420), transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0
-        ), (50.0, 0.0), (0.0, 0.0))), id=2, campaign=self.campaign_one)
+    self.deployment_one = mommy.make_one(
+        'catamidb.Deployment',
+        start_position=Point(12.4604, 43.9420),
+        end_position=Point(12.4604,43.9420),
+        transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
+        id=1,
+        campaign=self.campaign_one)
+
+    self.deployment_two = mommy.make_one(
+        'catamidb.Deployment',
+        start_position=Point(12.4604, 43.9420),
+        end_position=Point(12.4604, 43.9420),
+        transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
+        id=2,
+        campaign=self.campaign_one)
 
     self.pose_one = mommy.make_one('catamidb.Pose',
                                    position=Point(12.4, 23.5),
                                    id=1,
                                    deployment=self.deployment_one
     )
+
     self.pose_two = mommy.make_one('catamidb.Pose',
                                    position=Point(12.4, 23.5),
                                    id=2,
@@ -78,6 +87,21 @@ class TestCollectionModel(TestCase):
         self.assertEqual(collection.owner, self.user)
         self.assertEqual(collection.is_locked, True)
 
+        #check that default permissions were applied
+        self.assertTrue(self.user.has_perm('collection.view_collection',
+                                           collection))
+        self.assertTrue(self.user.has_perm('collection.add_collection',
+                                           collection))
+        self.assertTrue(self.user.has_perm('collection.change_collection',
+                                           collection))
+        self.assertTrue(self.user.has_perm('collection.delete_collection',
+                                           collection))
+
+        public_group, created = Group.objects.get_or_create(name='Public')
+        checker = ObjectPermissionChecker(public_group)
+        self.assertTrue(checker.has_perm('collection.view_collection',
+                                         collection))
+
         #check the images went across - IMPORTANT!
         #get images for the deployment and the collection
         collection_images = collection.images.all().order_by("web_location")
@@ -117,6 +141,21 @@ class TestCollectionModel(TestCase):
         #check that the user and details were assigned
         self.assertEqual(collection.owner, self.user)
         self.assertEqual(collection.is_locked, True)
+
+        #check that default permissions were applied
+        self.assertTrue(self.user.has_perm('collection.view_collection',
+                                           collection))
+        self.assertTrue(self.user.has_perm('collection.add_collection',
+                                           collection))
+        self.assertTrue(self.user.has_perm('collection.change_collection',
+                                           collection))
+        self.assertTrue(self.user.has_perm('collection.delete_collection',
+                                           collection))
+
+        public_group, created = Group.objects.get_or_create(name='Public')
+        checker = ObjectPermissionChecker(public_group)
+        self.assertTrue(checker.has_perm('collection.view_collection',
+                                              collection))
 
         #check the images went across - IMPORTANT!
         #get images for the deployment and the collection
@@ -175,17 +214,7 @@ class TestCollectionAPI(TestCase):
         self.user = User.objects.create_user("Joe")
         self.collection_manager = CollectionManager()
 
-    def test_get_all_camapaigns(self):
-        api_url = "/api/dev/campaign/?format=json&campaign="
+    def test_get_all_collections(self):
+        api_url = "/api/dev/collection/?format=json"
 
-    def test_get_deployements_for_given_campaign(self):
-        api_url = "/api/dev/deployment/?format=json"
 
-    def test_get_paginated_images_for_campaign(self):
-        api_url = "/api/dev/image/?limit=30&campaign="
-
-    def test_get_paginated_images_for_deployment(self):
-        api_url = "/api/dev/image/?limit=30&deployment="
-
-    def test_get_paginated_images_for_collection(self):
-        api_url = "/api/dev/image/?limit=30&collection="

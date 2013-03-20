@@ -62,7 +62,7 @@ class CollectionAuthorization(Authorization):
         # the original can be found in object_list
         original = object_list.get(id=bundle.obj.id)
         user = get_real_user_object(bundle.request.user)
-        if user.has_perm('collection.update_collection', original):
+        if user.has_perm('collection.change_collection', original):
             # the user has permission to edit - but not all edits are permitted
             # it is a fairly complex setup - locked prevents certain things,
             # but not others etc. this isn't so much an authorisation issue but

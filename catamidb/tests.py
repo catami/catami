@@ -1089,6 +1089,25 @@ class TestScientificImageMeasurementResource(ResourceTestCase):
                                             format='json')
         self.assertHttpUnauthorized(response)
 
+class TestCatamiDbAPI():
+
+    def setUp(self):
+        return None
+
+    def test_get_all_camapaigns(self):
+        api_url = "/api/dev/campaign/?format=json&campaign="
+
+    def test_get_deployements_for_given_campaign(self):
+        api_url = "/api/dev/deployment/?format=json"
+
+    def test_get_paginated_images_for_campaign(self):
+        api_url = "/api/dev/image/?limit=30&campaign="
+
+    def test_get_paginated_images_for_deployment(self):
+        api_url = "/api/dev/image/?limit=30&deployment="
+
+    def test_get_paginated_images_for_collection(self):
+        api_url = "/api/dev/image/?limit=30&collection="
 
 if __name__ == '__main__':
     unittest.main()

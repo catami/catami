@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from catamidb.models import Image, Deployment
 from random import sample
 import logging
+from collection import authorization
 
 logger = logging.getLogger(__name__)
 
@@ -23,22 +24,25 @@ class CollectionManager(models.Manager):
         """
 
         # create and prefill the collection as much as possible
-        c = Collection()
-        c.name = deployment.short_name
-        c.owner = user
-        c.creation_date = datetime.now(tz=tzutc())
-        c.modified_date = datetime.now(tz=tzutc())
-        c.is_locked = True
-        c.creation_info = "Deployments: {0}".format(deployment.short_name)
+        collection = Collection()
+        collection.name = deployment.short_name
+        collection.owner = user
+        collection.creation_date = datetime.now(tz=tzutc())
+        collection.modified_date = datetime.now(tz=tzutc())
+        collection.is_locked = True
+        collection.creation_info = "Deployments: {0}".format(deployment.short_name)
 
         # save the collection so we can associate images with it
-        c.save()
+        collection.save()
+
+        #apply permissions
+        authorization.apply_collection_permissions(user, collection)
 
         # now add all the images
         images = Image.objects.filter(pose__deployment=deployment)
-        c.images.add(*images)
+        collection.images.add(*images)
 
-        return c
+        return collection
 
     def collection_from_deployments_with_name(self, user, collection_name,
         deployment_id_list_string):
@@ -51,25 +55,28 @@ class CollectionManager(models.Manager):
             )]
 
         # create and prefill the collection as much as possible
-        c = Collection()
-        c.name = collection_name
-        c.owner = user
-        c.creation_date = datetime.now(tz=tzutc())
-        c.modified_date = datetime.now(tz=tzutc())
-        c.is_public = False
-        c.is_locked = True
-        c.creation_info = "Deployments: {0}".format(deployment_id_list_string)
+        collection = Collection()
+        collection.name = collection_name
+        collection.owner = user
+        collection.creation_date = datetime.now(tz=tzutc())
+        collection.modified_date = datetime.now(tz=tzutc())
+        collection.is_public = False
+        collection.is_locked = True
+        collection.creation_info = "Deployments: {0}".format(deployment_id_list_string)
 
         # save the collection so we can associate images with it
-        c.save()
+        collection.save()
+
+        #apply permissions
+        authorization.apply_collection_permissions(user, collection)
 
         # now add all the images
         for value in deployment_list:
             images = Image.objects.filter(pose__deployment=Deployment.objects.
                 filter(id=value))
-            c.images.add(*images)
+            collection.images.add(*images)
 
-        return c
+        return collection
 
     # NOTE: it may make sense to create one function for all the
     # different sampling methods instead of a separate one for each.
@@ -79,45 +86,45 @@ class CollectionManager(models.Manager):
 
         :returns: the created workset."""
 
-        c = Collection.objects.get(pk=c_id)
-        cimages = c.images.all()
+        collection = Collection.objects.get(pk=c_id)
+        collection_images = collection.images.all()
 
         # Create new collection entry
-        ws = Collection()
-        ws.parent = c
-        ws.name = name
-        ws.owner = user
-        c.creation_date = datetime.now(tz=tzutc())
-        c.modified_date = datetime.now(tz=tzutc())
-        ws.is_public = ispublic
-        ws.description = description
-        ws.is_locked = True
+        workset = Collection()
+        workset.parent = collection
+        workset.name = name
+        workset.owner = user
+        collection.creation_date = datetime.now(tz=tzutc())
+        collection.modified_date = datetime.now(tz=tzutc())
+        workset.is_public = ispublic
+        workset.description = description
+        workset.is_locked = True
 
         # check that n < number of images in collection
-        if cimages.count() < n:
+        if collection_images.count() < n:
             logger.warning(
                 "Not enough images to subsample... setting n=images.count")
             # TODO: what is the best way to handle warnings?
-            n = cimages.count()
+            n = collection_images.count()
 
         # subsample collection images and add to workset
         if method == "random":
-            wsimglist = sample(cimages, n)
-            ws.creation_info = "Random: {0} images".format(n)
+            wsimglist = sample(collection_images, n)
+            workset.creation_info = "Random: {0} images".format(n)
         elif method == "stratified":
-            wsimglist = cimages[0:cimages.count():n]
-            ws.creation_info = "Stratified: every {0}th image".format(
+            wsimglist = collection_images[0:collection_images.count():n]
+            workset.creation_info = "Stratified: every {0}th image".format(
                 n)  # TODO: add some logic "th" does not work for 1-3
         else:
             logger.error("Unrecognised method")
             # TODO: what is the best way to handle warnings?
 
         # save the workset so we can associate images with it
-        ws.save()
+        workset.save()
         # Associate images with workset
-        ws.images.add(*wsimglist)
+        workset.images.add(*wsimglist)
 
-        return ws
+        return workset
 
 
 class Collection(models.Model):
@@ -141,7 +148,6 @@ class Collection(models.Model):
         unique_together = (('owner', 'name', 'parent'), )
         permissions = (
             ('view_collection', 'View the collection.'),
-            ('update_collection', 'Edit the collection.'),
         )
 
     def __unicode__(self):

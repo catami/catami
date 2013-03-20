@@ -925,17 +925,16 @@ def create_workset_from_collection(request, method):
     if request.method == 'POST':  # If the form has been submitted...
         form = CreateWorksetForm(request.POST)  # A form bound to the POST data
         if form.is_valid():  # All validation rules pass
-            CollectionManager().workset_from_collection(request.user,
-                                                        request.POST.get(
-                                                            'name'),
-                                                        request.POST.get(
-                                                            'description'),
-                                                        request.POST.get(
-                                                            'ispublic') == "true",
-                                                        int(request.POST.get(
-                                                            'c_id')), int(
-                    request.POST.get('n')),
-                                                        method)
+            CollectionManager().workset_from_collection(
+                request.user,
+                request.POST.get('name'),
+                request.POST.get('description'),
+                request.POST.get('ispublic') == "true",
+                int(request.POST.get('c_id')),
+                int(request.POST.get('n')),
+                method
+            )
+
             return HttpResponseRedirect(
                 '/collections/' + request.POST.get(
                     'c_id') + '/#SelectWorksetModal')  # Redirect after POST
