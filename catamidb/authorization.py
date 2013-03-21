@@ -3,7 +3,7 @@ import logging
 from django.contrib.auth.models import Group
 from django.dispatch import receiver
 import guardian
-from guardian.shortcuts import assign
+from guardian.shortcuts import assign, assign_perm
 from userena.signals import signup_complete
 
 logger = logging.getLogger(__name__)
@@ -40,13 +40,13 @@ def apply_campaign_permissions(user, campaign):
     logger.debug("Applying owner permissions to campaign: " + campaign.
         short_name)
 
-    assign('view_campaign', user, campaign)
-    assign('add_campaign', user, campaign)
-    assign('change_campaign', user, campaign)
-    assign('delete_campaign', user, campaign)
+    assign_perm('view_campaign', user, campaign)
+    assign_perm('add_campaign', user, campaign)
+    assign_perm('change_campaign', user, campaign)
+    assign_perm('delete_campaign', user, campaign)
 
     #assign view permissions to the Anonymous user
-    logger.debug("Making campaign public: " + campaign.short_name)
+    logger.debug("Making collection public: " + campaign.short_name)
 
     public_group, created = Group.objects.get_or_create(name='Public')
-    assign('view_campaign', public_group, campaign)
+    assign_perm('view_campaign', public_group, campaign)
