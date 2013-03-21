@@ -944,17 +944,16 @@ def create_workset_from_collection(request, method):
 
 
 @csrf_exempt
-def proxy(request, url):
+def proxy(request):
+
+    url = request.GET.get('url',None)
+
     conn = httplib2.Http()
     if request.method == "GET":
-        #url_ending = "%s?%s" % (url, urlencode(request.GET))
-        #url = url_ending
-        #url = (url, urlencode(request.GET))
         resp, content = conn.request(url, request.method)
         return HttpResponse(content)
     elif request.method == "POST":
         url = url
-        #data = urlencode(request.POST)
         data = request.body
         resp, content = conn.request(url, request.method, data)
         return HttpResponse(content)

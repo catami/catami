@@ -22,7 +22,7 @@ urlpatterns = patterns('webinterface.views',
                        url(r'^contact', 'contact'),
                        url(r'^howto', 'howto'),
                        url(r'^about', 'about'),
-                       url(r'^proxy/(?P<url>.*)$', 'proxy'),
+                       url(r'^proxy/$', 'proxy'),
 
                        url(r'^explore$', 'explore'),
                        url(r'^explore/getmapextent$',
