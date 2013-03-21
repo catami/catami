@@ -483,13 +483,15 @@ class ScientificMeasurementTypeResource(ModelResource):
         queryset = ScientificMeasurementType.objects.all()
         resource_name = "scientificmeasurementtype"
         allowed_methods = ['get']
+        filtering = {
+            'normalised_name': ALL,
+        }
 
 
 class ScientificPoseMeasurementResource(ModelResource):
     pose = fields.ToOneField('catamidb.api.PoseResource', 'pose')
     mtype = fields.ToOneField(
-        'catamidb.api.ScientificMeasurementTypeResource', "measurement_type",
-        full=True)
+        'catamidb.api.ScientificMeasurementTypeResource', "measurement_type")
 
     class Meta:
         queryset = ScientificPoseMeasurement.objects.all()
@@ -498,7 +500,8 @@ class ScientificPoseMeasurementResource(ModelResource):
                                              ApiKeyAuthentication())
         authorization = ScientificPoseMeasurementAuthorization()
         filtering = {
-            'pose': 'exact',
+            'pose': ALL_WITH_RELATIONS,
+            'mtype': ALL_WITH_RELATIONS,
         }
         allowed_methods = ['get']
 
