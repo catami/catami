@@ -97,8 +97,8 @@ class TestAuthorizationRules(TestCase):
 # Test the API                         #
 #======================================#
 
-
 class TestCampaignResource(ResourceTestCase):
+
     def setUp(self):
         #Tastypie stuff
         super(TestCampaignResource, self).setUp()

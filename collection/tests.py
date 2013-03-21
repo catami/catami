@@ -3,9 +3,14 @@ from django.contrib.auth.models import User, Group
 from django.contrib.gis.geos import Point, Polygon
 from django.test.utils import setup_test_environment
 from django.test import TestCase
+import guardian
 from guardian.core import ObjectPermissionChecker
+from guardian.shortcuts import assign_perm
 from model_mommy import mommy
+from tastypie.test import ResourceTestCase, TestApiClient
 from catamidb.models import Image
+from catamidb.tests import TestCampaignResource
+from collection import authorization
 from collection.models import CollectionManager, Collection
 
 logger = logging.getLogger(__name__)
@@ -206,15 +211,146 @@ class TestCollectionModel(TestCase):
         except Exception:
             self.assertTrue(True)
 
+#======================================#
+# Test the API                         #
+#======================================#
 
-class TestCollectionAPI(TestCase):
-    def set_up(self):
-        create_setup(self)
-        self.collection_one = mommy.make_one("collections.Collection")
-        self.user = User.objects.create_user("Joe")
-        self.collection_manager = CollectionManager()
+class TestCollectionResource(ResourceTestCase):
 
-    def test_get_all_collections(self):
-        api_url = "/api/dev/collection/?format=json"
+    def setUp(self):
+        #Tastypie stuff
+        super(TestCollectionResource, self).setUp()
 
+        self.bob_api_client = TestApiClient()
+        self.bill_api_client = TestApiClient()
+        self.anon_api_client = TestApiClient()
+
+        # Create a user bob.
+        self.user_bob_username = 'bob'
+        self.user_bob_password = 'bob'
+        self.user_bob = User.objects.create_user(self.user_bob_username,
+                                                 'daniel@example.com',
+                                                 self.user_bob_password)
+
+        # Create a user bob.
+        self.user_bill_username = 'bill'
+        self.user_bill_password = 'bill'
+        self.user_bill = User.objects.create_user(self.user_bill_username,
+                                                  'daniel@example.com',
+                                                  self.user_bill_password)
+
+        self.bob_api_client.client.login(username='bob', password='bob')
+        self.bill_api_client.client.login(username='bill', password='bill')
+
+        #assign users to the Public group
+        public_group, created = Group.objects.get_or_create(name='Public')
+        self.user_bob.groups.add(public_group)
+        self.user_bill.groups.add(public_group)
+        guardian.utils.get_anonymous_user().groups.add(public_group)
+
+        #make a couple of collections and save
+        self.collection_bobs = mommy.make_recipe('collection.collection1', id=1, owner=self.user_bob)
+        self.collection_bills = mommy.make_recipe('collection.collection2', id=2, owner=self.user_bill)
+
+        #assign this one to bob
+        authorization.apply_collection_permissions(
+            self.user_bob, self.collection_bobs)
+
+        #assign this one to bill
+        authorization.apply_collection_permissions(
+            self.user_bill, self.collection_bills)
+
+        #the API url for campaigns
+        self.collection_url = '/api/dev/collection/'
+
+        #some post data for testing collection creation
+        self.post_data = {}
+
+    # can only do GET and UPDATE at this stage
+    def test_collection_operations_disabled(self):
+        # test that we can NOT create
+        self.assertHttpMethodNotAllowed(
+            self.anon_api_client.post(self.collection_url,
+                                      format='json',
+                                      data=self.post_data))
+
+        # test that we can NOT modify as anonymous
+        self.assertHttpUnauthorized(
+            self.anon_api_client.put(
+                self.collection_url + self.collection_bobs.id.__str__() + "/",
+                format='json',
+                data={})
+        )
+
+        # test that we can NOT delete
+        self.assertHttpMethodNotAllowed(
+            self.anon_api_client.delete(
+                self.collection_url + self.collection_bobs.id.__str__() + "/",
+                format='json')
+        )
+
+        # test that we can NOT create authenticated
+        self.assertHttpMethodNotAllowed(
+            self.bob_api_client.post(self.collection_url,
+                                     format='json',
+                                     data=self.post_data)
+        )
+
+
+
+        # test that we can NOT delete authenticated
+        self.assertHttpMethodNotAllowed(
+            self.bob_api_client.delete(
+                self.collection_url + self.collection_bobs.id.__str__() + "/",
+                format='json'))
+
+    #test can get a list of campaigns authorised
+    def test_collections_operations_as_authorised_users(self):
+        # create a campaign that only bill can see
+        bills_collection = mommy.make_recipe('collection.collection3', id=3, owner=self.user_bill)
+        assign_perm('view_collection', self.user_bill, bills_collection)
+
+        # check that bill can see via the API
+        response = self.bill_api_client.get(self.collection_url, format='json')
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+
+        # check that bill can get to the object itself
+        response = self.bill_api_client.get(self.collection_url + "3/",
+                                            format='json')
+        self.assertValidJSONResponse(response)
+
+        # check that bob can not see - now we know tastypie API has correct
+        # permission validation
+        response = self.bob_api_client.get(self.collection_url, format='json')
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+
+        # check bob can NOT get to the hidden object
+        response = self.bob_api_client.get(self.collection_url + "3/",
+                                           format='json')
+        self.assertHttpUnauthorized(response)
+
+        #check that anonymous can see public ones as well
+        response = self.anon_api_client.get(self.collection_url, format='json')
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+
+        #check anonymous can NOT get to the hidden object
+        response = self.anon_api_client.get(self.collection_url + "3/",
+                                            format='json')
+        self.assertHttpUnauthorized(response)
+
+
+    def test_update_collection_authorised(self):
+        #TODO: implement this test
+        # test that we can NOT modify authenticated
+        #self.assertHttpMethodNotAllowed(
+        #    self.bob_api_client.put(
+        #        self.collection_url + self.campaign_bobs.id.__str__() + "/",
+        #        format='json',
+        #        data={})
+        #)
+
+        return None
 

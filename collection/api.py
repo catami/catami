@@ -67,7 +67,7 @@ class CollectionAuthorization(Authorization):
             # it is a fairly complex setup - locked prevents certain things,
             # but not others etc. this isn't so much an authorisation issue but
             # a model issue however
-            True
+            return True
         else:
             raise Unauthorized(
                 "This collection is locked and cannot be unlocked or modified."
