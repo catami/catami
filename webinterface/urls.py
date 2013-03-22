@@ -79,25 +79,6 @@ urlpatterns = patterns(
     url(r'^data/auvdeployments/(?P<auvdeployment_id>\d+)/$',
         'auvdeployment_detail'),
 
-    url(r'^data/bruvdeployments/$', 'bruvdeployments'),
-    url(r'^data/bruvdeployments/map/$',
-        'bruvdeployments_map'),
-    url(
-        r'^data/bruvdeployments/(?P<bruvdeployment_id>\d+)/$',
-        'bruvdeployment_detail'),
-
-    url(r'^data/dovdeployments/$', 'dovdeployments'),
-    url(r'^data/dovdeployments/(?P<dovdeployment_id>\d+)/$',
-        'dovdeployment_detail'),
-
-    url(r'^data/tvdeployments/$', 'tvdeployments'),
-    url(r'^data/tvdeployments/(?P<tvdeployment_id>\d+)/$',
-        'tvdeployment_detail'),
-
-    url(r'^data/tideployments/$', 'tideployments'),
-    url(r'^data/tideployments/(?P<tideployment_id>\d+)/$',
-        'tideployment_detail'),
-
     url(r'^data/deployments/$', 'deployments'),
     url(r'^data/deployments/map/$', 'deployments_map'),
 

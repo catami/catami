@@ -4,6 +4,19 @@
 
 {% block content %}
 
+    <div class="row-fluid">
+
+        <ul class="breadcrumb">
+            <!--<li><a href="{% url webinterface.views.data %}">Data</a> <span class="divider">></span></li>-->
+            <li><a href="{% url webinterface.views.campaigns %}">Campaign List</a> <span class="divider">></span></li>
+            <li>
+                <a href="{% url webinterface.views.campaign_detail auvdeployment_object.campaign.id %}">{{ auvdeployment_object.campaign.short_name }}</a>
+                <span class="divider">></span></li>
+            <li class="active">{{ auvdeployment_object.short_name }}</li>
+        </ul>
+    </div>
+
+
     {% if auvdeployment_object %}
         <div class="row-fluid" id="map">
             {% include "webinterface/dataviews/mapview.html" %}
@@ -21,11 +34,12 @@
         </div>
 
         {% switch Collections %}
-            <br>
+            <br/>
             <button type="button" class="btn btn-large btn-primary pull-right"
                     onclick="convert();">Create Project
             </button>
         {% endswitch %}
+
 
     {% endif %}
 
@@ -34,6 +48,7 @@
 {% block add_script %}
 
     <script src='{{ STATIC_URL }}assets/js/jquery.flot.js'></script>
+    <script src='{{ STATIC_URL }}assets/js/jquery.flot.axislabels.js'></script>
 
     <script type="text/javascript">
 
@@ -72,7 +87,7 @@
                             lines: { show: true, fill: false },
                             shadowSize: 0
                         }], {yaxes: [
-                            {axisLabel: 'Depth'}
+                            {axisLabel: 'Depth (m)'}
                         ], grid: {borderWidth: 0}}
                 );
             }
@@ -88,7 +103,7 @@
                             lines: { show: true, fill: false },
                             shadowSize: 0
                         }], {yaxes: [
-                            {axisLabel: 'Depth'}
+                            {axisLabel: 'Salinity (psu)'}
                         ], grid: {borderWidth: 0}}
                 );
             }
@@ -104,7 +119,7 @@
                             lines: { show: true, fill: false },
                             shadowSize: 0
                         }], {yaxes: [
-                            {axisLabel: 'Depth'}
+                            {axisLabel: 'Temperature (cel)'}
                         ], grid: {borderWidth: 0}}
                 );
             }

@@ -15,8 +15,8 @@
 
 {% block content %}
     <ul class="breadcrumb">
-        <li><a href="{% url webinterface.views.data %}">Data</a>
-        <li><span class="divider">></span><a href="{% url webinterface.views.campaigns %}"> Campaign List</a></li>
+        <!--<li><a href="{% url webinterface.views.data %}">Data</a>-->
+        <li><span class="divider"></span><a href="{% url webinterface.views.campaigns %}"> Campaign List</a></li>
         <li class="active"><span class="divider">></span> {{ campaign_object.short_name }}</li>
     </ul>
 
