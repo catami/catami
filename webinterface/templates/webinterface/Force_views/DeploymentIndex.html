@@ -27,7 +27,7 @@
             <tr>
                 <td><a href="{% url webinterface.views.auvdeployments %}">AUV</a></td>
                 <td>
-                    <a href="{% url webinterface.views.auvdeployment_display auv_deployment.id %}">{{ auv_deployment.short_name }}
+                    <a href="{% url webinterface.views.auvdeployment_detail auv_deployment.id %}">{{ auv_deployment.short_name }}
                     <a></td>
                 <td>{{ auv_deployment.start_time_stamp }}</td>
                 <td>{{ auv_deployment.end_time_stamp }}</td>

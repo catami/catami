@@ -1089,7 +1089,7 @@ class TestScientificImageMeasurementResource(ResourceTestCase):
                                             format='json')
         self.assertHttpUnauthorized(response)
 
-class TestCatamiDbAPI():
+class TestUsedCatamiDbAPICalls():
 
     def setUp(self):
         return None
@@ -1108,6 +1108,9 @@ class TestCatamiDbAPI():
 
     def test_get_paginated_images_for_collection(self):
         api_url = "/api/dev/image/?limit=30&collection="
+
+    def test_get_salinity(self):
+        api_url = "/api/dev/scientificposemeasurement/?format=json&pose__deployment=1&mtype__normalised_name=salinity"
 
 if __name__ == '__main__':
     unittest.main()

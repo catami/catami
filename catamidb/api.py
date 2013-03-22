@@ -384,11 +384,10 @@ class DeploymentResource(ModelResource):
 
 class PoseResource(ModelResource):
     deployment = fields.ForeignKey(DeploymentResource, 'deployment')
-    images = fields.ToManyField('catamidb.api.ImageResource', 'image_set',
-                                full=True)
-    measurements = fields.ToManyField(
-        'catamidb.api.ScientificPoseMeasurementResource',
-        'scientificposemeasurement_set', full=True)
+    images = fields.ToManyField('catamidb.api.ImageResource', 'image_set',full=True)
+    #measurements = fields.ToManyField(
+    #    'catamidb.api.ScientificPoseMeasurementResource',
+    #    'scientificposemeasurement_set')
 
     class Meta:
         queryset = Pose.objects.all()
@@ -401,6 +400,7 @@ class PoseResource(ModelResource):
         }
         allowed_methods = ['get']
 
+    """
     def dehydrate_measurements(self, bundle):
         # change to view a small subset of the info
         # the rest isn't really needed in this resource
@@ -410,10 +410,12 @@ class PoseResource(ModelResource):
             outitem['value'] = m.data['value']
             outitem['units'] = m.data['mtype'].data['units']
             outitem['name'] = m.data['mtype'].data['display_name']
-
             outlist.append(outitem)
 
         return outlist
+
+        #return bundle
+    """
 
     def dehydrate_images(self, bundle):
         """Dehydrate images within a pose.
@@ -429,6 +431,31 @@ class PoseResource(ModelResource):
             outlist.append(outimage)
 
         return outlist
+
+    #this gets called just before sending response
+    def alter_list_data_to_serialize(self, request, data):
+
+        #if flot is asking for the data, we need to package it up a bit
+        if request.GET.get("output") == "flot":
+            return self.package_series_for_flot_charts(data)
+
+        return data
+
+    #flot takes a two dimensional array of data, so we need to package the
+    #series up in this manner
+    def package_series_for_flot_charts(self, data):
+        data_table = []
+
+        #scale factors for reducing the data
+        list_length = len(data['objects'])
+        scale_factor = 4
+
+        #for index, bundle in enumerate(data['objects']):
+        #    data_table.append([index, bundle.obj.value])
+        for i in range(0, list_length, scale_factor):
+            data_table.append([i, data['objects'][i].data['depth']])
+
+        return {'data': data_table}
 
 
 class ImageResource(ModelResource):
@@ -505,6 +532,29 @@ class ScientificPoseMeasurementResource(ModelResource):
         }
         allowed_methods = ['get']
 
+    def alter_list_data_to_serialize(self, request, data):
+
+        #if flot is asking for the data, we need to package it up a bit
+        if request.GET.get("output") == "flot":
+            return self.package_series_for_flot_charts(data)
+
+        return data
+
+    #flot takes a two dimensional array of data, so we need to package the
+    #series up in this manner
+    def package_series_for_flot_charts(self, data):
+        data_table = []
+
+        #scale factors for reducing the data
+        list_length = len(data['objects'])
+        scale_factor = 4
+
+        #for index, bundle in enumerate(data['objects']):
+        #    data_table.append([index, bundle.obj.value])
+        for i in range(0, list_length, scale_factor):
+            data_table.append([i, data['objects'][i].data['value']])
+
+        return {'data': data_table}
 
 class ScientificImageMeasurementResource(ModelResource):
     image = fields.ToOneField('catamidb.api.ImageResource', 'image')

@@ -76,16 +76,7 @@ urlpatterns = patterns('webinterface.views',
                        url(r'^data/auvdeployments/map/$',
                            'auvdeployments_map'),
                        url(r'^data/auvdeployments/(?P<auvdeployment_id>\d+)/$',
-                           'auvdeployment_display'),
-                       url(
-                           r'^data/auvdeployments/(?P<auvdeployment_id>\d+)/detail/$',
                            'auvdeployment_detail'),
-                       url(
-                           r'^data/auvdeployments/(?P<auvdeployment_id>\d+)/images/$',
-                           'auvimage_list'),
-                       url(
-                           r'^data/auvdeployments/(?P<auvdeployment_id>\d+)/annotationview/(?P<image_index>\d+)/$',
-                           'annotationview'),
 
                        url(r'^data/bruvdeployments/$', 'bruvdeployments'),
                        url(r'^data/bruvdeployments/map/$',

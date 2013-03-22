@@ -4,12 +4,14 @@ when you run "manage.py test".
 
 Replace this with more appropriate tests for your application.
 """
+from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point, Polygon
 from django.test.client import RequestFactory
 from django.test import TestCase
 from django.utils.datetime_safe import datetime
 from model_mommy import mommy
 from model_mommy.recipe import Recipe
+from catamidb import authorization
 from catamidb.models import AUVDeployment, Image, Camera
 from collection.models import Collection
 from waffle import Switch
@@ -27,6 +29,11 @@ class TestViews(TestCase):
         # collection code for test we might like to load th waffle.json fixture
         # instead, but it's sitting in catamidb/fixtures
         Switch.objects.create(name='Collections', active=True)
+
+        self.user_bob = User.objects.create_user('bob',
+                                                 'daniel@example.com',
+                                                 'bob')
+
 
         self.factory = RequestFactory()
         self.first_campaign_id = 1
@@ -79,6 +86,12 @@ class TestViews(TestCase):
                                             campaign=self.campaign_02)
         self.dummy_dep5 = mommy.make_recipe('webinterface.tideployment', id=7,
                                             campaign=self.campaign_02)
+
+        #apply permissions to the campaigns so we get nice reponses
+        authorization.apply_campaign_permissions(self.user_bob, self.campaign_01)
+        authorization.apply_campaign_permissions(self.user_bob, self.campaign_02)
+        authorization.apply_campaign_permissions(self.user_bob, self.campaign_03)
+
         # setup some images and assign to deployment_one self.image_list =
         # list() for i in xrange(0, 200): #print i
         # self.image_list.append(mommy.make_one('catamidb.Image',
@@ -210,6 +223,7 @@ class TestViews(TestCase):
         """@brief Test AUV deployment browser interfaces
 
         """
+
         response = self.client.get("/data/auvdeployments/")
         self.assertEqual(response.status_code, 200)
 

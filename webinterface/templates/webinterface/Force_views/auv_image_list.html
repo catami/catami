@@ -9,7 +9,7 @@
             <a href="{% url webinterface.views.campaign_detail auvdeploymentObject.campaign.id %}">{{ auvdeployment_object.campaign.short_name }}</a>
             <span class="divider">></span></li>
         <li>
-            <a href="{% url webinterface.views.auvdeployment_display auvdeployment_object.id %}">{{ auvdeployment_object.short_name }}</a>
+            <a href="{% url webinterface.views.auvdeployment_detail auvdeployment_object.id %}">{{ auvdeployment_object.short_name }}</a>
             <span class="divider">></span></li>
         <li class="active">Image List</li>
     </ul>
