@@ -1,5 +1,6 @@
 from django.conf.urls import include, patterns, url
 
-urlpatterns = patterns('',
-                       url(r'', include('userena.urls'))
+urlpatterns = patterns(
+    '',
+    url(r'', include('userena.urls'))
 )
