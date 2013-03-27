@@ -108,11 +108,12 @@
     		if (diveSelect.options[i].selected == true)
     		{
 		   var importUrl = diveSelect.options[i].value;
-		   //alert('Importing dive ' + diveSelect.options[i].value + ' with name ' + diveSelect.options[i].label);
+                   var dataString = "short_name=" + diveSelect.options[i].label + "&campaign=" + $("#CampaignSelect") + "&license=" + $("#LicenseText") + "&descriptive_keywords=" + $("#KeywordsText");
+		   //alert('Importing dive ' + diveSelect.options[i].value + ' with name ' + diveSelect.options[i].label + ' and data ' + dataString);
 	           $.ajax({
 	               type: "POST",
 	               url: importUrl,
-	               data: 'short_name' + diveSelect.options[i].label + '&campain=' + $("#CampaignSelect") + '&license=' + $("#LicenseText") + '&descriptive_keyword=' + $("#KeywordsText"),
+	               data: dataString
 	               //success: alert("Succes!")
 	           });
 	        }
