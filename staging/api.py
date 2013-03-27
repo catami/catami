@@ -15,6 +15,9 @@ from catamidb.models import AUVDeployment, Deployment
 
 from django.core.urlresolvers import reverse
 from django.conf.urls import url
+
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -238,7 +241,9 @@ class StagingFilesResource(Resource):
             self._meta.resource_name, trailing_slash()),
             self.wrap_view('dispatch_auv'), name="api_auv")]
 
+    @csrf_exempt
     def dispatch_auv(self, request, **kwargs):
+        print "dispatching auv request"
         return self.dispatch("auv", request, **kwargs)
 
     def post_auv(self, request, **kwargs):
