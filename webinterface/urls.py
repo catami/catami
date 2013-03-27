@@ -44,14 +44,14 @@ urlpatterns = patterns(
     url(r'^collections/(?P<collection_id>\d+)/$',
         'view_collection'),
     url(
-        r'^collections/(?P<collection_id>\d+)/(?P<workset_id>\d+)/$',
+        r'^collections/(?P<collection_id>\d+)/workset/(?P<workset_id>\d+)/$',
         'view_workset'),
-    #    url(r'^my_collections$', 'my_collections'),
-    #    url(r'^my_collections_all$', 'my_collections_all'),
-    #    url(r'^my_collections_recent$', 'my_collections_recent'),
-    #    url(r'^public_collections$', 'public_collections'),
-    #    url(r'^public_collections_all$', 'public_collections_all'),
-    #    url(r'^public_collections_recent$', 'public_collections_recent'),
+    #url(r'^my_collections$', 'my_collections'),
+    #url(r'^my_collections_all$', 'my_collections_all'),
+    #url(r'^my_collections_recent$', 'my_collections_recent'),
+    #url(r'^public_collections$', 'public_collections'),
+    #url(r'^public_collections_all$', 'public_collections_all'),
+    #url(r'^public_collections_recent$', 'public_collections_recent'),
 
     #Collection Object Views
     url(r'^view_subset$', 'view_subset'),
@@ -68,6 +68,8 @@ urlpatterns = patterns(
         'create_collection_from_deployments'),
     url(r'^collections/createworkset/(?P<method>[\w\-]+)/$',
         'create_workset_from_collection'),
+    url(r'^collections/createworkset2/(?P<method>[\w\-]+)/$',
+        'create_workset_from_project'),
     url(r'^collections/getcollectionextent$',
         'get_collection_extent'),
 

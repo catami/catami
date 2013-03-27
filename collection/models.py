@@ -94,8 +94,8 @@ class CollectionManager(models.Manager):
         workset.parent = collection
         workset.name = name
         workset.owner = user
-        collection.creation_date = datetime.now(tz=tzutc())
-        collection.modified_date = datetime.now(tz=tzutc())
+        workset.creation_date = datetime.now(tz=tzutc())
+        workset.modified_date = datetime.now(tz=tzutc())
         workset.is_public = ispublic
         workset.description = description
         workset.is_locked = True
@@ -121,8 +121,12 @@ class CollectionManager(models.Manager):
 
         # save the workset so we can associate images with it
         workset.save()
+
         # Associate images with workset
         workset.images.add(*wsimglist)
+
+        #apply permissions
+        authorization.apply_collection_permissions(user, workset)
 
         return workset
 
