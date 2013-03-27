@@ -10582,3 +10582,1322 @@ T1:]U:{g7U14;d(WO;T?NqW^GQHn_.^ob*.<uyF8<LVxR@B0<NCX_'VWEfr
 Y2-FUr.M]32[?#4[M_OwJiZe4
 2013-03-22 09:32:32,322 - catamidb.authorization - DEBUG - Created initial Public group.
 2013-03-22 09:32:32,386 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 12:45:09,643 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 12:45:09,678 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 12:48:55,654 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 12:48:55,663 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 12:58:36,280 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 12:58:36,286 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:07:10,432 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:07:10,439 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:14:50,906 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:14:50,912 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:15:11,241 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:15:11,247 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:16:26,913 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:16:26,919 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:31:03,115 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:31:03,121 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:31:52,487 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:31:52,493 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:32:55,451 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:32:55,458 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:36:59,937 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:36:59,944 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:37:25,349 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:37:25,355 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:39:11,194 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:39:11,201 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:39:48,974 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:39:48,990 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:40:23,187 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:40:23,193 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:53:19,223 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:53:19,230 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:55:57,211 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:55:57,220 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 13:56:10,925 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 13:56:10,931 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 14:39:47,100 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 14:39:47,109 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-22 14:51:30,072 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-22 14:51:30,078 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-24 16:52:19,785 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-24 16:52:19,864 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-24 18:40:16,877 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-24 18:40:16,953 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-24 21:11:11,326 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-24 21:11:11,332 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-24 21:16:23,475 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-24 21:16:23,481 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-24 21:22:27,222 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-24 21:22:27,228 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-24 21:24:36,036 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-24 21:24:36,042 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 10:47:45,651 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 10:47:45,818 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 10:53:56,179 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 10:53:56,186 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 10:56:59,833 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 10:56:59,842 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 11:04:30,307 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 11:04:30,328 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 11:09:10,852 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 11:09:10,859 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 11:16:40,561 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 11:16:40,568 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 11:17:18,821 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 11:17:18,828 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 11:32:16,696 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 11:32:16,703 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 11:36:51,468 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 11:36:51,474 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 11:43:43,780 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 11:43:43,787 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 11:45:19,065 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 11:45:19,071 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 12:18:07,426 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 12:18:07,433 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 12:19:11,839 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 12:19:11,846 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 12:20:16,614 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 12:20:16,621 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-25 12:29:54,555 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-25 12:29:54,564 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-26 14:57:52,838 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-26 14:57:52,899 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-27 13:39:21,726 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-27 13:39:21,734 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-27 13:39:57,010 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-27 13:39:57,016 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-27 13:43:23,942 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-27 13:43:23,948 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-27 14:53:17,246 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-27 14:53:17,253 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-27 15:29:23,835 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-27 15:29:23,842 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-27 15:32:40,170 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-27 15:32:40,176 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-27 17:20:06,596 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: sl-KkSI[nm4	\%QUh07W'YCJ&pf<M0!zP.O>`DmnE`.KFkc^hXVQx|.L6=cr:t[GTUgK6B.zSr8*#W"yNim}U*38m*(\sF=L]4@
+2013-03-27 17:20:06,632 - catamidb.authorization - DEBUG - Making collection public: sl-KkSI[nm4	\%QUh07W'YCJ&pf<M0!zP.O>`DmnE`.KFkc^hXVQx|.L6=cr:t[GTUgK6B.zSr8*#W"yNim}U*38m*(\sF=L]4@
+2013-03-27 17:20:07,904 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: /m(3D44GxLA	|JRGHnsf` Ky1$0:49,&~$52,:cf\m#	p+TlTk=~1sS2=Xbmq_u*M*#WT!+IA]}fZem[&P+c
+aq'~vj+C5]SL
+2013-03-27 17:20:07,937 - catamidb.authorization - DEBUG - Making collection public: /m(3D44GxLA	|JRGHnsf` Ky1$0:49,&~$52,:cf\m#	p+TlTk=~1sS2=Xbmq_u*M*#WT!+IA]}fZem[&P+c
+aq'~vj+C5]SL
+2013-03-27 17:20:07,947 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 6w9B#lPs6at{kwVfqJPLDV*X1wue!KlTV,Feu$)46Z	(^3RZ|mP|ZhlRPS^V(s)r0V	^ p5Fy@;^2*!s-(e=*A]4yZOAW}<Lx
+2013-03-27 17:20:07,976 - catamidb.authorization - DEBUG - Making collection public: 6w9B#lPs6at{kwVfqJPLDV*X1wue!KlTV,Feu$)46Z	(^3RZ|mP|ZhlRPS^V(s)r0V	^ p5Fy@;^2*!s-(e=*A]4yZOAW}<Lx
+2013-03-27 17:20:08,006 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-27 17:20:08,010 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-27 17:20:09,119 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: +Z2NGcM_:fC2e|K\XPzLni]?55*Rv5k&>'ef:-v47C7	'D3PJUNgKBfT5J
+;$6+k(~Rg*xQHf2x<(p.
+l/EDvot3R
+of2EwZQx^2
+2013-03-27 17:20:09,151 - catamidb.authorization - DEBUG - Making collection public: +Z2NGcM_:fC2e|K\XPzLni]?55*Rv5k&>'ef:-v47C7	'D3PJUNgKBfT5J
+;$6+k(~Rg*xQHf2x<(p.
+l/EDvot3R
+of2EwZQx^2
+2013-03-27 17:20:09,160 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: vlr={vwAZR7n~$Ke%{a}Ywu)7Q7A%)p:{~0.DCkE2U6=/D[	$$7[:#tO	+TRd(KK|:Vrpw%C,4_UdN:7yf70\udK~jiO3[T{;>x
+2013-03-27 17:20:09,190 - catamidb.authorization - DEBUG - Making collection public: vlr={vwAZR7n~$Ke%{a}Ywu)7Q7A%)p:{~0.DCkE2U6=/D[	$$7[:#tO	+TRd(KK|:Vrpw%C,4_UdN:7yf70\udK~jiO3[T{;>x
+2013-03-27 17:20:10,528 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ;'|[1\5+;^m-N\yS~=G0k$Q7}C'(5m/ea)D<$;}[o^[aAr8aI\iN0?CR7@}vq*_+Xxs68#
+m+<0(4qT}jHql dWJ#/P%x#T
+2013-03-27 17:20:10,571 - catamidb.authorization - DEBUG - Making collection public: ;'|[1\5+;^m-N\yS~=G0k$Q7}C'(5m/ea)D<$;}[o^[aAr8aI\iN0?CR7@}vq*_+Xxs68#
+m+<0(4qT}jHql dWJ#/P%x#T
+2013-03-27 17:20:10,588 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: .ZMJU?y|=%%M(~%{HVd^`YkE`Lv]<^($x8Z}:#>,x <QNe@w
+q(,#9g)i5XS1\5yIHt8j5|tmfC35(]nktG<w
+iL9yiZElO:
+2013-03-27 17:20:10,630 - catamidb.authorization - DEBUG - Making collection public: .ZMJU?y|=%%M(~%{HVd^`YkE`Lv]<^($x8Z}:#>,x <QNe@w
+q(,#9g)i5XS1\5yIHt8j5|tmfC35(]nktG<w
+iL9yiZElO:
+2013-03-27 17:20:11,647 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 	 6p5u;zxJfu
+CLPK<}cz7FNuAniQ7[DRtz	<GMRUF.Z&$	i1|H_GB03?t
+Pld4@mkX6:h`Q@r2DY]L?F7VKFD*&9tm~hAtT
+2013-03-27 17:20:11,679 - catamidb.authorization - DEBUG - Making collection public: 	 6p5u;zxJfu
+CLPK<}cz7FNuAniQ7[DRtz	<GMRUF.Z&$	i1|H_GB03?t
+Pld4@mkX6:h`Q@r2DY]L?F7VKFD*&9tm~hAtT
+2013-03-27 17:20:11,688 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: wKv5%`[s4Y<ro#<`Y95/@UMBw'O+4"'!&XBnG"H";o+?G3uDw.5D2FuZXdP37I}x
+Kwk~$z'/,WW#5J^Zy?Ph\/fj%9W0h3H3
+2013-03-27 17:20:11,718 - catamidb.authorization - DEBUG - Making collection public: wKv5%`[s4Y<ro#<`Y95/@UMBw'O+4"'!&XBnG"H";o+?G3uDw.5D2FuZXdP37I}x
+Kwk~$z'/,WW#5J^Zy?Ph\/fj%9W0h3H3
+2013-03-27 17:20:12,987 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: u8Z*Cf)1I1zQSm>
+e:Lw1sCKO!7ko8Dc+_:p{mj6[mOwv
+u_<j-i%qLJS*k+dv	^O[tG\w;`Nad2i?y&HODE&OU]H
+:X^Az4$Z/
+2013-03-27 17:20:13,027 - catamidb.authorization - DEBUG - Making collection public: u8Z*Cf)1I1zQSm>
+e:Lw1sCKO!7ko8Dc+_:p{mj6[mOwv
+u_<j-i%qLJS*k+dv	^O[tG\w;`Nad2i?y&HODE&OU]H
+:X^Az4$Z/
+2013-03-27 17:20:13,036 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 4hu_D#5k1XgS6]H u>3,?m `mkWf"'R,S(pJ%"9(`Wg.Y7f&|6]R@.x|;/JJO\wK2exK#O[o0<gc*]zdO@RjaK-`}61f`M4qv}
+2013-03-27 17:20:13,068 - catamidb.authorization - DEBUG - Making collection public: 4hu_D#5k1XgS6]H u>3,?m `mkWf"'R,S(pJ%"9(`Wg.Y7f&|6]R@.x|;/JJO\wK2exK#O[o0<gc*]zdO@RjaK-`}61f`M4qv}
+2013-03-27 17:20:14,372 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: #?gY?$>dJ/@ %]cd]U$TKz2/CVo.sof$hvC#9zrmj
+y}Zz"gQ	LJPJ{'-g4x)5Okr5nE5q(E^Q8("n%=+h>QL_XSsL2#:K.
+2013-03-27 17:20:14,402 - catamidb.authorization - DEBUG - Making collection public: #?gY?$>dJ/@ %]cd]U$TKz2/CVo.sof$hvC#9zrmj
+y}Zz"gQ	LJPJ{'-g4x)5Okr5nE5q(E^Q8("n%=+h>QL_XSsL2#:K.
+2013-03-27 17:20:14,413 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: O
+d DZ'R2_Kj99sk*m6_r\Uf@4Q@TvED9vK%>H!~EbOr\a@rxs$f!n5l:;p+@[L[Wc_"1DLfEN#I@5T-0~	g&eesi90k0%9Xy`
+2013-03-27 17:20:14,443 - catamidb.authorization - DEBUG - Making collection public: O
+d DZ'R2_Kj99sk*m6_r\Uf@4Q@TvED9vK%>H!~EbOr\a@rxs$f!n5l:;p+@[L[Wc_"1DLfEN#I@5T-0~	g&eesi90k0%9Xy`
+2013-03-27 17:20:15,409 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: N@J&'N
+hm.bX/nm^=uCM?CN\&LLHFy3/jDVv$n^L_?KK/-(B5@(B[A-G	UWu8_vJPtN	@VTOOO~g|Gh]}de\Jxd-l$34\~? tQ	
+2013-03-27 17:20:15,440 - catamidb.authorization - DEBUG - Making collection public: N@J&'N
+hm.bX/nm^=uCM?CN\&LLHFy3/jDVv$n^L_?KK/-(B5@(B[A-G	UWu8_vJPtN	@VTOOO~g|Gh]}de\Jxd-l$34\~? tQ	
+2013-03-27 17:20:15,451 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: mN {4&w!<e(OJA8(-O{-9T$2^uw%?QR`5EQ3'unuDQj7`MH\B yrq[@]15fXF?,0S0ez!L~L\["zZ&%
+Ygtii1CcwyaiA+C
+
+2013-03-27 17:20:15,482 - catamidb.authorization - DEBUG - Making collection public: mN {4&w!<e(OJA8(-O{-9T$2^uw%?QR`5EQ3'unuDQj7`MH\B yrq[@]15fXF?,0S0ez!L~L\["zZ&%
+Ygtii1CcwyaiA+C
+
+2013-03-27 17:20:16,763 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 6Oi=(*S
+POI8gpVa=ilH-vwXD@D!9Gh4Q H$	dI1)F80]WYb*B#{&	]Iw~+6_YJFs(};j,iBjp6<U6G_r-^65Df?	<va	9ORcv
+2013-03-27 17:20:16,795 - catamidb.authorization - DEBUG - Making collection public: 6Oi=(*S
+POI8gpVa=ilH-vwXD@D!9Gh4Q H$	dI1)F80]WYb*B#{&	]Iw~+6_YJFs(};j,iBjp6<U6G_r-^65Df?	<va	9ORcv
+2013-03-27 17:20:16,805 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 'N9IQ>%8_)x[R_PB5*E!!d#H=7	7u}E<S3JYI!)ae	lo
+~y	:6#,9H<QuH@WrZg4tb_d;wN{fG|58(JH;^dg)or-*Q2lsW#]JQC:
+2013-03-27 17:20:16,835 - catamidb.authorization - DEBUG - Making collection public: 'N9IQ>%8_)x[R_PB5*E!!d#H=7	7u}E<S3JYI!)ae	lo
+~y	:6#,9H<QuH@WrZg4tb_d;wN{fG|58(JH;^dg)or-*Q2lsW#]JQC:
+2013-03-27 17:20:17,830 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 7lYh%ZTfFuMh5B3sF/	~ulRC
+P%ME}cs@:cHp{ow/j.;8LN^)V	DS#!.oyCA-#C0,ZZ2A{BN.YL+p^R+7zReWSv~(8.VuH/f
+2013-03-27 17:20:17,864 - catamidb.authorization - DEBUG - Making collection public: 7lYh%ZTfFuMh5B3sF/	~ulRC
+P%ME}cs@:cHp{ow/j.;8LN^)V	DS#!.oyCA-#C0,ZZ2A{BN.YL+p^R+7zReWSv~(8.VuH/f
+2013-03-27 17:20:17,873 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: "ddH<+D!?XhO<2;HlA,pmrj2P!:JN\G>= 6XB_nuiIX\]3wr=NE{}C/t>(G3XJ"n?E5_W_9$>8<n<Cvwj?8-TX8&X]`#>w.=j:
+2013-03-27 17:20:17,903 - catamidb.authorization - DEBUG - Making collection public: "ddH<+D!?XhO<2;HlA,pmrj2P!:JN\G>= 6XB_nuiIX\]3wr=NE{}C/t>(G3XJ"n?E5_W_9$>8<n<Cvwj?8-TX8&X]`#>w.=j:
+2013-03-27 17:20:19,202 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ]m`T97(qI$-&yV}^?vG8	N6w	in(fb*Lcx%-S,>x8SqT3A=p5_fB40xHWAGaR}!J@	;bppgMB5?-qJ 2x|&EfBk5:e{]^o$	&
+2013-03-27 17:20:19,235 - catamidb.authorization - DEBUG - Making collection public: ]m`T97(qI$-&yV}^?vG8	N6w	in(fb*Lcx%-S,>x8SqT3A=p5_fB40xHWAGaR}!J@	;bppgMB5?-qJ 2x|&EfBk5:e{]^o$	&
+2013-03-27 17:20:19,244 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: M98nYh404E[bV4|3yRwYxFV5i\7J{YxhJwX*2DbreBBYJ  hW6'^~a*H-`'T94eP8%?I's4\<-'|Tj""d%@@Av	\%X1Ek^fM
+2013-03-27 17:20:19,274 - catamidb.authorization - DEBUG - Making collection public: M98nYh404E[bV4|3yRwYxFV5i\7J{YxhJwX*2DbreBBYJ  hW6'^~a*H-`'T94eP8%?I's4\<-'|Tj""d%@@Av	\%X1Ek^fM
+2013-03-27 17:20:20,266 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: NC/{DVu	0?>d<nBD[H;&{TlPmo#v+5vY
+a,	mRPZpofo%{|N8&J, >Vz8(i=-P8rT	]%M:0Vfi-Ph}vXr3lhs%wmP"SyD$W
+2013-03-27 17:20:20,298 - catamidb.authorization - DEBUG - Making collection public: NC/{DVu	0?>d<nBD[H;&{TlPmo#v+5vY
+a,	mRPZpofo%{|N8&J, >Vz8(i=-P8rT	]%M:0Vfi-Ph}vXr3lhs%wmP"SyD$W
+2013-03-27 17:20:20,309 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: B
+$}sLT.wj-[E51ZMV$L7A z%?o1DI]EUa*z*Y\hY#N=JF#AZUfqt	QawAz=mu]%[#C^LoR~_`SNS3`DZm^%
+:-0dYW!B17c#A
+2013-03-27 17:20:20,339 - catamidb.authorization - DEBUG - Making collection public: B
+$}sLT.wj-[E51ZMV$L7A z%?o1DI]EUa*z*Y\hY#N=JF#AZUfqt	QawAz=mu]%[#C^LoR~_`SNS3`DZm^%
+:-0dYW!B17c#A
+2013-03-27 17:20:21,657 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: cwh4J
+'P9>~]M)/]$#E)_/wjpiiC*F=(.&x7u>>3T1BTN
+1Gw{o^.R{ql|W%&A)QrPAA`DC;4BDSJqhl6p"U(YvRpFE/S8
+2013-03-27 17:20:21,689 - catamidb.authorization - DEBUG - Making collection public: cwh4J
+'P9>~]M)/]$#E)_/wjpiiC*F=(.&x7u>>3T1BTN
+1Gw{o^.R{ql|W%&A)QrPAA`DC;4BDSJqhl6p"U(YvRpFE/S8
+2013-03-27 17:20:21,698 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: S*;`PCL^X:t@kF}kP={xoEGId~BKh/R'/8a@1`bgWZ8
+h0Fa Z\,&{n==e+"_I-?0'psyQHg--!L5C@"1qjP	69kuMfYP^K_s
+2013-03-27 17:20:21,727 - catamidb.authorization - DEBUG - Making collection public: S*;`PCL^X:t@kF}kP={xoEGId~BKh/R'/8a@1`bgWZ8
+h0Fa Z\,&{n==e+"_I-?0'psyQHg--!L5C@"1qjP	69kuMfYP^K_s
+2013-03-27 17:20:22,699 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: L\DS1s6"Hu$`}lh(K,'n^O>dy6q01)ZRZU``#:fon`u/K==&fCD
+&~1$H'x_%i83jd%`ol`A%\45h	IU_x`8X fe`]&(]Q:
+2013-03-27 17:20:22,731 - catamidb.authorization - DEBUG - Making collection public: L\DS1s6"Hu$`}lh(K,'n^O>dy6q01)ZRZU``#:fon`u/K==&fCD
+&~1$H'x_%i83jd%`ol`A%\45h	IU_x`8X fe`]&(]Q:
+2013-03-27 17:20:22,740 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: jdJ+f=D!qC2H$z|fc*##A+:-.CGzh5!GQ-,u jOH_Q$$$ugRd0Bj/d0dR,djzWVq)>`_N5*t;Z!B=VWm19K;`Y48tg|O=7YwjrUu
+2013-03-27 17:20:22,770 - catamidb.authorization - DEBUG - Making collection public: jdJ+f=D!qC2H$z|fc*##A+:-.CGzh5!GQ-,u jOH_Q$$$ugRd0Bj/d0dR,djzWVq)>`_N5*t;Z!B=VWm19K;`Y48tg|O=7YwjrUu
+2013-03-27 17:20:23,739 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: aRtGa74Aic Fz$UlC@QbAjCY-`_T2\]QyK`^5ax;9.9}0CP)JUIkD^ >u
+/^
+%$]Y\K?yVgCO&]+U5:eq_q9k'oYqvBeW%c-W
+2013-03-27 17:20:23,770 - catamidb.authorization - DEBUG - Making collection public: aRtGa74Aic Fz$UlC@QbAjCY-`_T2\]QyK`^5ax;9.9}0CP)JUIkD^ >u
+/^
+%$]Y\K?yVgCO&]+U5:eq_q9k'oYqvBeW%c-W
+2013-03-27 17:20:23,779 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: z_}%T>TG~es{b6?M5e~u0SwG"{q'JK6qXmaCcGI;}74R-I/Cjcqg",7WNOJ3])$NjCGQ;C$kEO~h/8;%x_$\$rZKR\o$l?0u
+XX[
+2013-03-27 17:20:23,810 - catamidb.authorization - DEBUG - Making collection public: z_}%T>TG~es{b6?M5e~u0SwG"{q'JK6qXmaCcGI;}74R-I/Cjcqg",7WNOJ3])$NjCGQ;C$kEO~h/8;%x_$\$rZKR\o$l?0u
+XX[
+2013-03-27 17:20:28,595 - dbadmintool.administratorbot - DEBUG - Connection open to database :: default
+2013-03-27 17:20:28,595 - dbadmintool.administratorbot - ERROR - Cannot connect to database :: nodatabase :: Query failed
+2013-03-27 17:20:28,619 - dbadmintool.administratorbot - DEBUG - {'Campaign': 0, 'Image': 0, 'AUVDeployment': 0, 'BRUVDeployment': 0, 'TIDeployment': 0, 'Deployment': 0, 'TVDeployment': 0, 'DOVDeployment': 0}
+2013-03-27 17:20:28,619 - dbadmintool.administratorbot - DEBUG - Collecting stats
+2013-03-27 17:20:28,625 - dbadmintool.administratorbot - DEBUG - {'Campaign': 0, 'Image': 0, 'AUVDeployment': 0, 'BRUVDeployment': 0, 'TIDeployment': 0, 'Deployment': 0, 'TVDeployment': 0, 'DOVDeployment': 0}
+2013-03-27 17:20:28,916 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:20:28.752106-catamidb.bak.tar.gz Checksum :: a412a076379dad7b4cf81804c951e02ac6a6e2d9
+2013-03-27 17:20:28,916 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-03-27 17:20:28.752106-catamidb.bak.tar.gz Checksum :: a412a076379dad7b4cf81804c951e02ac6a6e2d9
+2013-03-27 17:20:28,917 - dbadmintool.administratorbot - DEBUG - backup archive copied correctly
+2013-03-27 17:20:28,917 - dbadmintool.administratorbot - DEBUG - 2013-03-27 17:20:28.752106-catamidb.bak is27250 bytes in size
+2013-03-27 17:20:28,918 - dbadmintool.administratorbot - DEBUG - File name in archive matches backup file
+2013-03-27 17:20:28,919 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:20:28.752106-catamidb.bak Checksum :: 3f3acd7400f8691da80e80c09cc554739a4a23c6
+2013-03-27 17:20:28,920 - dbadmintool.administratorbot - DEBUG - /tmp/2013-03-27 17:20:28.752106-catamidb.bak Checksum :: 3f3acd7400f8691da80e80c09cc554739a4a23c6
+2013-03-27 17:20:28,920 - dbadmintool.administratorbot - DEBUG - backup file copied correctly
+2013-03-27 17:20:28,920 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-03-27 17:20:29,020 - dbadmintool.administratorbot - DEBUG - File and copy checksums agree
+2013-03-27 17:20:29,121 - dbadmintool.administratorbot - ERROR - File and copy checksums dont agree
+2013-03-27 17:20:29,220 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:20:29.121874-catamidb.bak.tar.gz Checksum :: 18fbbcf6c3672ed3e954d2028c066110ab4e9068
+2013-03-27 17:20:29,221 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-03-27 17:20:29.121874-catamidb.bak.tar.gz Checksum :: 18fbbcf6c3672ed3e954d2028c066110ab4e9068
+2013-03-27 17:20:29,221 - dbadmintool.administratorbot - ERROR - backup archive check sum fail
+2013-03-27 17:20:29,221 - dbadmintool.administratorbot - DEBUG - 2013-03-27 17:20:29.121874-catamidb.bak is27250 bytes in size
+2013-03-27 17:20:29,222 - dbadmintool.administratorbot - ERROR - File name in archive does not match backup file
+2013-03-27 17:20:29,223 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:20:29.121874-catamidb.bak Checksum :: 3f3acd7400f8691da80e80c09cc554739a4a23c6
+2013-03-27 17:20:29,224 - dbadmintool.administratorbot - DEBUG - /tmp/2013-03-27 17:20:29.121874-catamidb.bak Checksum :: 3f3acd7400f8691da80e80c09cc554739a4a23c6
+2013-03-27 17:20:29,224 - dbadmintool.administratorbot - ERROR - backup file check sum fail
+2013-03-27 17:20:29,224 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-03-27 17:20:29,227 - features.RunScriptTool - DEBUG - job_id is :: C94J3WCZM51B
+2013-03-27 17:20:29,331 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/C94J3WCZM51B/1.p
+2013-03-27 17:20:29,333 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/C94J3WCZM51B/2.p
+2013-03-27 17:20:29,333 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/C94J3WCZM51B
+2013-03-27 17:20:29,337 - features.RunScriptTool - DEBUG - job_id is :: DB3C8WY91J74
+2013-03-27 17:20:29,417 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/DB3C8WY91J74
+2013-03-27 17:20:29,419 - features.RunScriptTool - DEBUG - Writing libfeature run file :: /tmp/CATAMI/features/Anon/DB3C8WY91J74/run_libfeature.py
+2013-03-27 17:20:29,420 - features.RunScriptTool - DEBUG - Writing pbs script :: /tmp/CATAMI/features/Anon/DB3C8WY91J74/queue_libfeature.pbs
+2013-03-27 17:20:29,422 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/DB3C8WY91J74/job.tar.gz to :: epic.ivec.org
+2013-03-27 17:20:29,442 - features.RunScriptTool - DEBUG - job_id is :: DGE8ANTC9AD5
+2013-03-27 17:20:29,515 - features.tests - DEBUG - [u'/):l(Tg{5?mK\x0cjAT(~+@$t@}/x {u[Vc<|tiho]m)\x0c%G2n]^KB\\t[7mvAVxU9S"\'\n+\x0b48}U ~OI8bb|\nN{"b8u?yPc[k`3He\x0brwbN\x0b92}SLe6=1e:N\x0c,m^oF_\x0cy]\x0cpP?0/y\t)B6k)Q6o:\x0c wu6\rZV~\t{>\x0cJ!=|\x0b*exXxmR\x0b3c&Lk\rdN<^MEoGo6J;\\l*xIho-N\x0c:UcXR', u'p\x0c<ju6c0N?iuFS:qE@L#\x0cpP\'#L."pN\x0c|_c?w6yN6*SdEnkB\rTr:>Wt?\x0bCz>?i\tE"lPynjsWxYUCfbRi`\x0cdZI@P@45@Uz%9HsXP;1Zw:Kj?C&7.V@8aJ^>q(\\@p\\htjDG#E_sbw$)sj`mKPy}bYiOfqfu}=~\\TNC_I]cm#b5jz:#-l$Pv\n<o^`+ h\\qd%Z2-\n\x0c)*!5y,#']
+2013-03-27 17:20:29,519 - features.RunScriptTool - DEBUG - job_id is :: DYIWBHKS9TQY
+2013-03-27 17:20:29,582 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/DYIWBHKS9TQY
+2013-03-27 17:20:29,583 - features.RunScriptTool - DEBUG - Writing libfeature run file :: /tmp/CATAMI/features/Anon/DYIWBHKS9TQY/run_libfeature.py
+2013-03-27 17:20:29,583 - features.RunScriptTool - DEBUG - Writing pbs script :: /tmp/CATAMI/features/Anon/DYIWBHKS9TQY/queue_libfeature.pbs
+2013-03-27 17:20:29,586 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/DYIWBHKS9TQY/job.tar.gz to :: epic.ivec.org
+2013-03-27 17:20:29,586 - features.RunScriptTool - ERROR - Failed to PUT :: /tmp/CATAMI/features/Anon/DYIWBHKS9TQY/job.tar.gz to server :: epic.ivec.org
+2013-03-27 17:20:29,650 - features.RunScriptTool - ERROR - Failed to PUT :: /tmp/CATAMI/features/Anon/DYIWBHKS9TQYjob.tar.gz to server
+2013-03-27 17:20:29,651 - features.RunScriptTool - DEBUG - job_id is :: IJS03XB5NMRW
+2013-03-27 17:20:29,711 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/IJS03XB5NMRW
+2013-03-27 17:20:29,715 - features.RunScriptTool - DEBUG - job_id is :: IVD3W8HHT6V8
+2013-03-27 17:20:29,777 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/IVD3W8HHT6V8/1.p
+2013-03-27 17:20:29,778 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/IVD3W8HHT6V8/2.p
+2013-03-27 17:20:29,780 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/IVD3W8HHT6V8/1.p
+2013-03-27 17:20:29,780 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/IVD3W8HHT6V8/2.p
+2013-03-27 17:20:29,782 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:20:29,783 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:20:29,784 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:20:29,785 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:20:29,786 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:20:29,786 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:20:29,786 - features.RunScriptTool - ERROR - Failed to submit job :: catami.pbs
+2013-03-27 17:20:29,787 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:20:29,787 - features.RunScriptTool - ERROR - Failed to PUT :: catami.pbs to server :: epic.ivec.org
+2013-03-27 17:20:29,788 - features.RunScriptTool - DEBUG - Writing libfeature run file :: /tmp/run_libfeature.py
+2013-03-27 17:20:29,792 - features.RunScriptTool - DEBUG - Writing pbs script :: /tmp/queue_libfeature.pbs
+2013-03-27 17:20:29,795 - features.RunScriptTool - DEBUG - job_id is :: SJSJZEQIVUL0
+2013-03-27 17:20:29,861 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/SJSJZEQIVUL0/1.p
+2013-03-27 17:20:29,861 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/SJSJZEQIVUL0/2.p
+2013-03-27 17:20:29,862 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/SJSJZEQIVUL0
+2013-03-27 17:20:29,863 - features.tests - DEBUG - ['/tmp/CATAMI/features/Anon/SJSJZEQIVUL0/meta.json', '/tmp/CATAMI/features/Anon/SJSJZEQIVUL0/1.p', '/tmp/CATAMI/features/Anon/SJSJZEQIVUL0/2.p']
+2013-03-27 17:20:29,868 - features.RunScriptTool - DEBUG - job_id is :: MMA073VAE8XY
+2013-03-27 17:20:29,930 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:20:29,932 - features.RunScriptTool - DEBUG - job_id is :: W2SEOSWLI3N6
+2013-03-27 17:20:29,991 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:20:29,995 - features.RunScriptTool - DEBUG - job_id is :: 1TSZCZ4YIW3F
+2013-03-27 17:20:30,054 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:20:30,054 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:20:30,055 - features.RunScriptTool - ERROR - Failed to submit job :: /tmp/CATAMI/features/Anon/tmp.txt
+2013-03-27 17:20:30,056 - features.RunScriptTool - DEBUG - job_id is :: PD5PG01YV0A3
+2013-03-27 17:20:30,116 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:20:30,116 - features.RunScriptTool - ERROR - Failed to PUT :: /tmp/CATAMI/features/Anon/tmp.txt to server :: catami.ivec.org
+2013-03-27 17:20:30,223 - staging.auvimport - DEBUG - Finished opening NetCDF file.
+2013-03-27 17:20:30,259 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-03-27 17:20:30,259 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:20:30,259 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:20:32,724 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-03-27 17:20:32,725 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:20:32,725 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:21:00,114 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/invalid.extension
+2013-03-27 17:21:00,115 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-03-27 17:21:00,115 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-03-27 17:21:00,115 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-03-27 17:21:00,116 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-03-27 17:21:00,116 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-03-27 17:21:00,116 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:21:00,116 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:21:02,379 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-03-27 17:21:02,379 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-03-27 17:21:02,379 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:21:02,379 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:21:30,503 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-03-27 17:21:30,504 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:21:30,504 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:21:30,504 - staging.metadata - DEBUG - xls_transform: opening workbook.
+2013-03-27 17:21:33,887 - staging.metadata - DEBUG - xls_transform: found 23 headings.
+2013-03-27 17:21:33,887 - staging.metadata - DEBUG - xls_transform: using headings as fields.
+2013-03-27 17:21:33,887 - staging.metadata - DEBUG - xls_transform: mapping 23 columns.
+2013-03-27 17:21:33,917 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-03-27 17:21:33,917 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:21:33,917 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:21:33,918 - staging.metadata - DEBUG - xlsx_transform: opening workbook.
+2013-03-27 17:21:59,559 - staging.metadata - DEBUG - xlsx_transform: found 23 headings.
+2013-03-27 17:21:59,559 - staging.metadata - DEBUG - xlsx_transform: using headings as fields.
+2013-03-27 17:21:59,559 - staging.metadata - DEBUG - xlsx_transform: mapping 23 columns.
+2013-03-27 17:21:59,664 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-03-27 17:21:59,665 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-03-27 17:21:59,665 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-03-27 17:21:59,665 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-03-27 17:21:59,666 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:21:59,666 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:21:59,666 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:21:59,666 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:21:59,666 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-03-27 17:21:59,667 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-03-27 17:22:03,769 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Tasmania200906
+2013-03-27 17:22:03,800 - catamidb.authorization - DEBUG - Making collection public: Tasmania200906
+2013-03-27 17:22:03,894 - staging.views - DEBUG - metadatastage: validated, now saving.
+2013-03-27 17:22:03,912 - staging.views - DEBUG - metadatastage: saved, now redirecting.
+2013-03-27 17:22:03,915 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:22:03,915 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:22:03,915 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x116839710>
+2013-03-27 17:22:03,916 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x116839610>
+2013-03-27 17:22:03,916 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:22:03,916 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:22:03,917 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:22:03,917 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:22:03,917 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x116839d10>
+2013-03-27 17:22:03,918 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-03-27 17:22:03,918 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:22:03,918 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:22:03,919 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x11967b290>
+2013-03-27 17:22:03,919 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x11967bc50>
+2013-03-27 17:22:03,919 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x1168393d0>
+2013-03-27 17:22:03,919 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-03-27 17:22:03,920 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x1168396d0>'
+2013-03-27 17:22:03,920 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x1168398d0>'
+2013-03-27 17:22:03,920 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointWidget object at 0x116839610>
+2013-03-27 17:22:03,921 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-03-27 17:22:03,921 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-03-27 17:22:03,921 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:22:03,922 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:22:03,922 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x1168390d0>, <staging.widgets.MultiColumnWidget object at 0x1168396d0>, <django.forms.widgets.TextInput object at 0x116839090>)
+2013-03-27 17:22:03,922 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x116839710>
+2013-03-27 17:22:03,922 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-03-27 17:22:03,925 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-03-27 17:22:03,925 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-03-27 17:22:03,925 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:22:03,926 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:22:03,926 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x116839710>, <staging.widgets.MultiColumnWidget object at 0x116839d10>, <django.forms.widgets.TextInput object at 0x1168395d0>)
+2013-03-27 17:22:03,926 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x116839150>
+2013-03-27 17:22:03,926 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-03-27 17:22:03,927 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-03-27 17:22:03,927 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x116839ed0> <django.forms.widgets.TextInput object at 0x1168395d0>
+2013-03-27 17:22:04,246 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-03-27 17:22:04,246 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x116839ed0> <django.forms.widgets.TextInput object at 0x1168395d0>
+2013-03-27 17:22:04,247 - staging.widgets - DEBUG - MultiSourceField creating for field type 'PointField', label 'None'
+2013-03-27 17:22:04,247 - staging.widgets - DEBUG - MultiSourceField base widget type 'PointWidget'
+2013-03-27 17:22:04,248 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:22:04,248 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:22:04,248 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x116839c10>
+2013-03-27 17:22:04,248 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x116839450>
+2013-03-27 17:22:04,248 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x116839490>, <staging.widgets.MultiColumnWidget object at 0x119ff08d0>, <staging.widgets.PointWidget object at 0x116839c50>)
+2013-03-27 17:22:04,249 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x116839110>
+2013-03-27 17:22:04,249 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-03-27 17:22:04,249 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x116839410>'
+2013-03-27 17:22:04,249 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x116839a10>'
+2013-03-27 17:22:04,253 - staging.widgets - DEBUG - MultiSourceField creating for field type 'SplitDateTimeField', label 'None'
+2013-03-27 17:22:04,253 - staging.widgets - DEBUG - MultiSourceField base widget type 'SplitDateTimeWidget'
+2013-03-27 17:22:04,254 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:22:04,254 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:22:04,254 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.DateInput object at 0x11b36fc10>
+2013-03-27 17:22:04,254 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TimeInput object at 0x11b36fc90>
+2013-03-27 17:22:04,254 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x115486090>, <staging.widgets.MultiColumnWidget object at 0x115486c90>, <django.forms.widgets.SplitDateTimeWidget object at 0x11967b450>)
+2013-03-27 17:22:04,255 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.SplitDateTimeField object at 0x1168396d0>
+2013-03-27 17:22:04,255 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-03-27 17:22:04,255 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.DateField object at 0x1168390d0>'
+2013-03-27 17:22:04,256 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.TimeField object at 0x11967b490>'
+2013-03-27 17:22:04,635 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ]Qxm&#WO6aPk3*pIG].hL4Lt^~0Rj"~WeH Hp{^c_F},h~}m*+#u_hgeT#kC9)T6Dup.7pu02YwU0eWhOQezH@Z_;%;xZHS%`"
+2013-03-27 17:22:04,672 - catamidb.authorization - DEBUG - Making collection public: ]Qxm&#WO6aPk3*pIG].hL4Lt^~0Rj"~WeH Hp{^c_F},h~}m*+#u_hgeT#kC9)T6Dup.7pu02YwU0eWhOQezH@Z_;%;xZHS%`"
+2013-03-27 17:22:04,683 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: SS_K9"b*:9DBhq#"Ed[kR$>'LR{:Z}/'|H%x["_V43J'9qaID3ODQ24,3k5C=!3?V9
+w3tSgx%:r}ARO$RL|=GUclsk\XfJ
+2013-03-27 17:22:04,714 - catamidb.authorization - DEBUG - Making collection public: SS_K9"b*:9DBhq#"Ed[kR$>'LR{:Z}/'|H%x["_V43J'9qaID3ODQ24,3k5C=!3?V9
+w3tSgx%:r}ARO$RL|=GUclsk\XfJ
+2013-03-27 17:22:04,723 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: .=dc,py':%l9G[K+K,%&eDE&e;>
+)=RKo4wQ 
+w]>3Nn|_eGSyS+|73_>wC|_8(:d}=C7q%5t-o!)sC}ZEV4etxsX8aA;iHVH
+2013-03-27 17:22:04,754 - catamidb.authorization - DEBUG - Making collection public: .=dc,py':%l9G[K+K,%&eDE&e;>
+)=RKo4wQ 
+w]>3Nn|_eGSyS+|73_>wC|_8(:d}=C7q%5t-o!)sC}ZEV4etxsX8aA;iHVH
+2013-03-27 17:22:05,222 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: OY80+s(fvf]@RsD"\
+W7N8"GVFw\+	Dgs}lLV:%l0Po#Ne#CaY<-&kK%+%*vc;aZ.XS$	X8;MW|f<Ls\y5wD;D M"5mPXXd1
+2013-03-27 17:22:05,255 - catamidb.authorization - DEBUG - Making collection public: OY80+s(fvf]@RsD"\
+W7N8"GVFw\+	Dgs}lLV:%l0Po#Ne#CaY<-&kK%+%*vc;aZ.XS$	X8;MW|f<Ls\y5wD;D M"5mPXXd1
+2013-03-27 17:22:05,266 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: w_]>ne2Q!GbbkY( 	=x v/8xxp
+9Ak@9%''&\gt	}zP	Zpmg!9E7Pgyy0[H>*8L#j8\2U|<lv6Db,Ph;nsR t8U[d/P@7$pd6
+2013-03-27 17:22:05,296 - catamidb.authorization - DEBUG - Making collection public: w_]>ne2Q!GbbkY( 	=x v/8xxp
+9Ak@9%''&\gt	}zP	Zpmg!9E7Pgyy0[H>*8L#j8\2U|<lv6Db,Ph;nsR t8U[d/P@7$pd6
+2013-03-27 17:22:05,305 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: erkSiYM.W)+pV!T1YHcq
+7'v)j kM`O:Qqchzv=rj&xK]tp)M%wS%j4oo[T#3m0ZVP~N<WSM@w!PvM}fJPL$_Whf0=L;{a(}R
+2013-03-27 17:22:05,335 - catamidb.authorization - DEBUG - Making collection public: erkSiYM.W)+pV!T1YHcq
+7'v)j kM`O:Qqchzv=rj&xK]tp)M%wS%j4oo[T#3m0ZVP~N<WSM@w!PvM}fJPL$_Whf0=L;{a(}R
+2013-03-27 17:22:05,660 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Hf'UnwT6gE_r0,cCytk
+]1=5Gec7~By#0AMYpA7Epy(R%w' :\*5c#QNj{hrlO j@>^(HEDV#I<*ZZivW[CW58"bU?.:N:WZu
+2013-03-27 17:22:05,694 - catamidb.authorization - DEBUG - Making collection public: Hf'UnwT6gE_r0,cCytk
+]1=5Gec7~By#0AMYpA7Epy(R%w' :\*5c#QNj{hrlO j@>^(HEDV#I<*ZZivW[CW58"bU?.:N:WZu
+2013-03-27 17:22:05,706 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: l%}(f\'6jl{ucbUS_r,Ay5B ;OpLfVL>k~	&s&TekR9/*mEwZ>"3Smp~J'74u6>)n5vs-4"B03kHq8M):8QrY+dW	x^:rs
+
+2013-03-27 17:22:05,738 - catamidb.authorization - DEBUG - Making collection public: l%}(f\'6jl{ucbUS_r,Ay5B ;OpLfVL>k~	&s&TekR9/*mEwZ>"3Smp~J'74u6>)n5vs-4"B03kHq8M):8QrY+dW	x^:rs
+
+2013-03-27 17:22:05,747 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: V|]lN{|G^Rb8._NM7L` w:Eaiq0tP9$;aT(f._^4M3MQ	2N|J>X9RJHo%3t^`<Gi7Vgm{4w5
+Z:Szh9]$ZI1oel}L	:]-NY,#l
+2013-03-27 17:22:05,778 - catamidb.authorization - DEBUG - Making collection public: V|]lN{|G^Rb8._NM7L` w:Eaiq0tP9$;aT(f._^4M3MQ	2N|J>X9RJHo%3t^`<Gi7Vgm{4w5
+Z:Szh9]$ZI1oel}L	:]-NY,#l
+2013-03-27 17:22:06,297 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: w4BRd 2~JhE~Hm	m[GX:*%O"nk%vkJ*_'h bal$M)eX@wQ^m6S9F0\(yz8h.FKn$7F#)=&qB j/2X~%]4$Cfc)_#}eM8u*Q
+2013-03-27 17:22:06,332 - catamidb.authorization - DEBUG - Making collection public: w4BRd 2~JhE~Hm	m[GX:*%O"nk%vkJ*_'h bal$M)eX@wQ^m6S9F0\(yz8h.FKn$7F#)=&qB j/2X~%]4$Cfc)_#}eM8u*Q
+2013-03-27 17:22:06,343 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: AGK/ks:VA>cThyz
+g7h~<?/=Ycw+tSEs>U|a\bZX=)y7K\soGscREHXA$iZY3z>_4c i;zV}u<$-A	<Rx6$:rs ijSF1m4
+2013-03-27 17:22:06,372 - catamidb.authorization - DEBUG - Making collection public: AGK/ks:VA>cThyz
+g7h~<?/=Ycw+tSEs>U|a\bZX=)y7K\soGscREHXA$iZY3z>_4c i;zV}u<$-A	<Rx6$:rs ijSF1m4
+2013-03-27 17:22:06,381 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Wz}osRTZ*}`Fsh4$P";mo!vvnYq
+1@SBE?21D8,q	P2Pp?Cr	:Nml DC}vI?Ws}je^l|<GW,eXuVv"NgQTg>
+hz|g+1/B,cq4~&-
+2013-03-27 17:22:06,413 - catamidb.authorization - DEBUG - Making collection public: Wz}osRTZ*}`Fsh4$P";mo!vvnYq
+1@SBE?21D8,q	P2Pp?Cr	:Nml DC}vI?Ws}je^l|<GW,eXuVv"NgQTg>
+hz|g+1/B,cq4~&-
+2013-03-27 17:22:06,831 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: %GHISW^nZW:,b+01d  bG%L]OmRgd@BzcJ[zxyk
+m@A}|{zfnA=6wtZ7G{[Quo^R&bs~l%sh)B9ke	
+Cr.)CWqv
+d
+D=R6r
+2013-03-27 17:22:06,866 - catamidb.authorization - DEBUG - Making collection public: %GHISW^nZW:,b+01d  bG%L]OmRgd@BzcJ[zxyk
+m@A}|{zfnA=6wtZ7G{[Quo^R&bs~l%sh)B9ke	
+Cr.)CWqv
+d
+D=R6r
+2013-03-27 17:22:06,877 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 5VVGF+K&#|Qym'WY/=yIN3WQ`Y9KQ bo2s+*o51;!wZy2IO(0b,CY;%cN~J 13^H'.BT](Y2IGc	{="5OYyt\cf]wzKi/=08W3
+2013-03-27 17:22:06,908 - catamidb.authorization - DEBUG - Making collection public: 5VVGF+K&#|Qym'WY/=yIN3WQ`Y9KQ bo2s+*o51;!wZy2IO(0b,CY;%cN~J 13^H'.BT](Y2IGc	{="5OYyt\cf]wzKi/=08W3
+2013-03-27 17:22:06,917 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: n^:9}+08?i~Q994'~QY!JQ2#
+N2'AptM(e"G_0T07PfNHfk#lu&"*s1%#HKSCP[wnYQAD>^jJK$:q0QjYv~`+/]Eyze(.ip
+2013-03-27 17:22:06,947 - catamidb.authorization - DEBUG - Making collection public: n^:9}+08?i~Q994'~QY!JQ2#
+N2'AptM(e"G_0T07PfNHfk#lu&"*s1%#HKSCP[wnYQAD>^jJK$:q0QjYv~`+/]Eyze(.ip
+2013-03-27 17:22:07,355 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ;k~	+yhoD(+?	Vw#igaB2bd	1vWDNZ*P4"~UMfEB-\-=*(Sp| K[6l2\{!TWRxnVMBE#!dml`+m(@Bg=pwV<V}@,
+|`!<eU`7
+2013-03-27 17:22:07,389 - catamidb.authorization - DEBUG - Making collection public: ;k~	+yhoD(+?	Vw#igaB2bd	1vWDNZ*P4"~UMfEB-\-=*(Sp| K[6l2\{!TWRxnVMBE#!dml`+m(@Bg=pwV<V}@,
+|`!<eU`7
+2013-03-27 17:22:07,400 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: }LWX
+*ypyZ($eA{42.-xHx3l9`G5SfN\4m
+g" s'o|+Fjid^1%+7Y0qQU
+jdet&9t;#A7lF-cIw6~1VY;h!_r}7 _eF66;q:
+2013-03-27 17:22:07,431 - catamidb.authorization - DEBUG - Making collection public: }LWX
+*ypyZ($eA{42.-xHx3l9`G5SfN\4m
+g" s'o|+Fjid^1%+7Y0qQU
+jdet&9t;#A7lF-cIw6~1VY;h!_r}7 _eF66;q:
+2013-03-27 17:22:07,439 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: _)H5PEu,i-J)	w`%3.D3)f(siC>
+R	 xQ!#eg_$'`4@l8Xajff0}zI<K9Vq[~BgHhg* [<lsHYtW.4h2`&9`^?gml?-'7bk``
+2013-03-27 17:22:07,470 - catamidb.authorization - DEBUG - Making collection public: _)H5PEu,i-J)	w`%3.D3)f(siC>
+R	 xQ!#eg_$'`4@l8Xajff0}zI<K9Vq[~BgHhg* [<lsHYtW.4h2`&9`^?gml?-'7bk``
+2013-03-27 17:22:07,800 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: wtV<qNtGt2+nqHP[vGMeUs'@owX<OA (x]{hEJh*yj/BIR7.ZRtsBi5xYV[UI\{@GCxaK93peJHicLM\94LVv9f[%)s} .#-
+2013-03-27 17:22:07,842 - catamidb.authorization - DEBUG - Making collection public: wtV<qNtGt2+nqHP[vGMeUs'@owX<OA (x]{hEJh*yj/BIR7.ZRtsBi5xYV[UI\{@GCxaK93peJHicLM\94LVv9f[%)s} .#-
+2013-03-27 17:22:07,854 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 	p72n9mO}}8xjtD~W+0;]4_iWxsw6f*Y5>FQ#K{Z#DX s-f9t4	6#eD>S01ywh%qsnWlu3pqo_#4#':l	J+@kD0En	o9d2T01@
+2013-03-27 17:22:07,884 - catamidb.authorization - DEBUG - Making collection public: 	p72n9mO}}8xjtD~W+0;]4_iWxsw6f*Y5>FQ#K{Z#DX s-f9t4	6#eD>S01ywh%qsnWlu3pqo_#4#':l	J+@kD0En	o9d2T01@
+2013-03-27 17:22:07,892 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 6,jH6>aQu"++W!T@BKi#Pv?ptRXuN[pmPY>4_1^2`0t]dYHM(u[3()U1~W$|<m_.%)~Dig#TpXyG3?}OW5Q#wAP	4P4<wZ*	~x^
+2013-03-27 17:22:07,924 - catamidb.authorization - DEBUG - Making collection public: 6,jH6>aQu"++W!T@BKi#Pv?ptRXuN[pmPY>4_1^2`0t]dYHM(u[3()U1~W$|<m_.%)~Dig#TpXyG3?}OW5Q#wAP	4P4<wZ*	~x^
+2013-03-27 17:22:08,279 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: %(+}`[78h^1jc.'S-@?8[*a2IyVCqR?GDO+/u#3H<jqzN0[YFjkNQ#SHR|)	;j	Opzq+&%Z#"/.513E1y9f0jn\9SS~L@HB6@	c
+2013-03-27 17:22:08,315 - catamidb.authorization - DEBUG - Making collection public: %(+}`[78h^1jc.'S-@?8[*a2IyVCqR?GDO+/u#3H<jqzN0[YFjkNQ#SHR|)	;j	Opzq+&%Z#"/.513E1y9f0jn\9SS~L@HB6@	c
+2013-03-27 17:22:08,326 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: yyUlY'A{:k1,@]aliZ:v7*@o?*Dxy ?3\*}PUVtN}PV{Iq]F,6`U4o+_]B3z&U7tv{ 	
+RU.J<d~tf-__wo*R<zvwB6r?)Of)S
+2013-03-27 17:22:08,356 - catamidb.authorization - DEBUG - Making collection public: yyUlY'A{:k1,@]aliZ:v7*@o?*Dxy ?3\*}PUVtN}PV{Iq]F,6`U4o+_]B3z&U7tv{ 	
+RU.J<d~tf-__wo*R<zvwB6r?)Of)S
+2013-03-27 17:22:08,365 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 4c01;]IN<o7PU=*uErf[4tU_Mb:1N:0_nj;-?Ry
+sbd
+@P'b
+&Q8mjW{qvx[(\2`cF4qz>w(k];#FGiz3<Bc6eq~Bmt	'I.z\wb
+2013-03-27 17:22:08,395 - catamidb.authorization - DEBUG - Making collection public: 4c01;]IN<o7PU=*uErf[4tU_Mb:1N:0_nj;-?Ry
+sbd
+@P'b
+&Q8mjW{qvx[(\2`cF4qz>w(k];#FGiz3<Bc6eq~Bmt	'I.z\wb
+2013-03-27 17:22:08,731 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Rh)Yt{s8qtSl402H,,>"Abd8H`^SW2(U	P`NMN-C>A(yoHN@,@Jg	\YyXWQpx~6ZX-{-1y
+TI+F%6_D
+A,D3*TsN5QF2[3f-
+2013-03-27 17:22:08,766 - catamidb.authorization - DEBUG - Making collection public: Rh)Yt{s8qtSl402H,,>"Abd8H`^SW2(U	P`NMN-C>A(yoHN@,@Jg	\YyXWQpx~6ZX-{-1y
+TI+F%6_D
+A,D3*TsN5QF2[3f-
+2013-03-27 17:22:08,778 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 7<jQgQH^g%SNB/l#&9a[vIw`x%-DpLYn]_!1DH$0b/,;oigL/;z
+Q#YNs7S=E0:0iWRMl)U!3{|tIVe5*y[we8fr;Fl%"
+2013-03-27 17:22:08,808 - catamidb.authorization - DEBUG - Making collection public: 7<jQgQH^g%SNB/l#&9a[vIw`x%-DpLYn]_!1DH$0b/,;oigL/;z
+Q#YNs7S=E0:0iWRMl)U!3{|tIVe5*y[we8fr;Fl%"
+2013-03-27 17:22:08,817 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: |1P.RP}dY7[>WdS2h/M/1QDfVF7K~}J-|v#gx;*.?!mnS.8pa4,m	]Me,&wPS+P&	An4!i(|F.S1qjzB %H<,CE!(gPvyQ+g
+2013-03-27 17:22:08,848 - catamidb.authorization - DEBUG - Making collection public: |1P.RP}dY7[>WdS2h/M/1QDfVF7K~}J-|v#gx;*.?!mnS.8pa4,m	]Me,&wPS+P&	An4!i(|F.S1qjzB %H<,CE!(gPvyQ+g
+2013-03-27 17:22:09,193 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 5(OiK!~}Dl,+cgcd
+&>JCH/}2	qzjn*6c7m^GcClG}RxZaK7*0,6%=*"/l0#gLierJ:3ds"a4bd@!nK;HMqL$S?8c=cgH'-{sS#b
+2013-03-27 17:22:09,228 - catamidb.authorization - DEBUG - Making collection public: 5(OiK!~}Dl,+cgcd
+&>JCH/}2	qzjn*6c7m^GcClG}RxZaK7*0,6%=*"/l0#gLierJ:3ds"a4bd@!nK;HMqL$S?8c=cgH'-{sS#b
+2013-03-27 17:22:09,238 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 1du0l1MTgs
+;Se&'x'*ZLQj?QN-
+]*DI$zkl$gYavxRh$uFx5`;D@rNNoo$ya@`&twi|+Yr?"-$$8-;,iAPm%%*=T"vtVw;tD
+2013-03-27 17:22:09,267 - catamidb.authorization - DEBUG - Making collection public: 1du0l1MTgs
+;Se&'x'*ZLQj?QN-
+]*DI$zkl$gYavxRh$uFx5`;D@rNNoo$ya@`&twi|+Yr?"-$$8-;,iAPm%%*=T"vtVw;tD
+2013-03-27 17:22:09,276 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: i!g(5^RE6{,y$[9A`TVLI?M5yG#A(g{34"y'M,$Y	sLCQVXb
+[GTVlEMDhY[sUxdi^[%r51fp1&1O# {LoCC@g:{w{@#Pi7c
+2013-03-27 17:22:09,307 - catamidb.authorization - DEBUG - Making collection public: i!g(5^RE6{,y$[9A`TVLI?M5yG#A(g{34"y'M,$Y	sLCQVXb
+[GTVlEMDhY[sUxdi^[%r51fp1&1O# {LoCC@g:{w{@#Pi7c
+2013-03-27 17:22:09,637 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: I.ni:vvL	Nom9!+Fc|K9+.K"Fp$*u]Hea$xdS+2~;G ViT-R^PgT'h}c'{9~LeI)D'd8$NEjQh@4T;J{l"Y7rnb/12DAW
+2013-03-27 17:22:09,683 - catamidb.authorization - DEBUG - Making collection public: I.ni:vvL	Nom9!+Fc|K9+.K"Fp$*u]Hea$xdS+2~;G ViT-R^PgT'h}c'{9~LeI)D'd8$NEjQh@4T;J{l"Y7rnb/12DAW
+2013-03-27 17:22:09,693 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: SB8.v#gnT>tB}'v RhPAK0
+iQd7G]Yuf*Oc]7YAK'ztZ5qF"K?qo1Eel Ok1"WkL[MEVn*	J%fw'9zw7uUBX{4wRt<wzcdWT)
+2013-03-27 17:22:09,723 - catamidb.authorization - DEBUG - Making collection public: SB8.v#gnT>tB}'v RhPAK0
+iQd7G]Yuf*Oc]7YAK'ztZ5qF"K?qo1Eel Ok1"WkL[MEVn*	J%fw'9zw7uUBX{4wRt<wzcdWT)
+2013-03-27 17:22:09,732 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: #_&"y2VK0wJ-hO?LQ4=@{?^_5p''
+,3K;SI;O^}Rjhq$9#	{hEtl?#c3l+#%.pf~:jBbs(|vRBF#iJ2gn\Q_i.*u/UVtEheQMn
+2013-03-27 17:22:09,763 - catamidb.authorization - DEBUG - Making collection public: #_&"y2VK0wJ-hO?LQ4=@{?^_5p''
+,3K;SI;O^}Rjhq$9#	{hEtl?#c3l+#%.pf~:jBbs(|vRBF#iJ2gn\Q_i.*u/UVtEheQMn
+2013-03-27 17:25:20,701 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: H AqhS.*d=P']s\^;3+PTcs61FHXARU/:6*.Ye.1QbBJdC2FpRf&@/|oVde*Z/]JFMaHB R]ZH
+?_[-OEXH/A[,~_)IaVUU9'
+2013-03-27 17:25:20,741 - catamidb.authorization - DEBUG - Making collection public: H AqhS.*d=P']s\^;3+PTcs61FHXARU/:6*.Ye.1QbBJdC2FpRf&@/|oVde*Z/]JFMaHB R]ZH
+?_[-OEXH/A[,~_)IaVUU9'
+2013-03-27 17:25:21,969 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ccglr Io5'=${Tq?aeX!oOJAV+@]uTo<6t[(Z}oY|98v:1$o594E^'cW95WA`TQs8r;]*h*8c3J{x:U'P~_EFHEkV-Br seHcU
+2013-03-27 17:25:22,002 - catamidb.authorization - DEBUG - Making collection public: ccglr Io5'=${Tq?aeX!oOJAV+@]uTo<6t[(Z}oY|98v:1$o594E^'cW95WA`TQs8r;]*h*8c3J{x:U'P~_EFHEkV-Br seHcU
+2013-03-27 17:25:22,013 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Ot4hmRICP}X'V=cd4$||l!x)_ujjZ%_CVpe
+r'.g;{c{]DzPi	LEaJS5v9`)cz%0S~W4h!=@ikWT(?97%pP|NL)U[Juc-:AvE!a
+2013-03-27 17:25:22,044 - catamidb.authorization - DEBUG - Making collection public: Ot4hmRICP}X'V=cd4$||l!x)_ujjZ%_CVpe
+r'.g;{c{]DzPi	LEaJS5v9`)cz%0S~W4h!=@ikWT(?97%pP|NL)U[Juc-:AvE!a
+2013-03-27 17:25:22,074 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-27 17:25:22,078 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-27 17:25:23,111 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ID0teQtM 9MKAO[MpL
+xb(HB	i!id?F5ujm-OA#u8*dMS1b J^(TAR/^(l&.L1>[8`Bh\g]&z[~b+
+_i*ot:'3<)cjG/]mglMWkH
+2013-03-27 17:25:23,145 - catamidb.authorization - DEBUG - Making collection public: ID0teQtM 9MKAO[MpL
+xb(HB	i!id?F5ujm-OA#u8*dMS1b J^(TAR/^(l&.L1>[8`Bh\g]&z[~b+
+_i*ot:'3<)cjG/]mglMWkH
+2013-03-27 17:25:23,154 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: #4kS.dZiG$H{>ic~1`uMW^$T@m#w/twA{GrIbdsf(E),5Tp7ndVQdc<4dL<q:*x0nnm!Q\4u+}7d>_F\HSAN_*+0%ycX,<[/"
+2013-03-27 17:25:23,186 - catamidb.authorization - DEBUG - Making collection public: #4kS.dZiG$H{>ic~1`uMW^$T@m#w/twA{GrIbdsf(E),5Tp7ndVQdc<4dL<q:*x0nnm!Q\4u+}7d>_F\HSAN_*+0%ycX,<[/"
+2013-03-27 17:25:24,440 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: WypQVNAcu	l`C]:g(E+VR~vBx?rP{a~.<d/[bV9B(^'#qivlA_Ib8Bt9no,qA'k jej	_\4gV/.:zXpq{,L8MFk	h&#j{%9Bq
+2013-03-27 17:25:24,475 - catamidb.authorization - DEBUG - Making collection public: WypQVNAcu	l`C]:g(E+VR~vBx?rP{a~.<d/[bV9B(^'#qivlA_Ib8Bt9no,qA'k jej	_\4gV/.:zXpq{,L8MFk	h&#j{%9Bq
+2013-03-27 17:25:24,484 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Kd)fz!!f$_&b$^,|tZsS8.V][/tecN=JsL%ff/RaM0>NOd+3K|+Bv(t3E-Ta V8|hk;W8.!;C7te0bI4@z0
+>4>
+O<e;7Z3{;
+2013-03-27 17:25:24,515 - catamidb.authorization - DEBUG - Making collection public: Kd)fz!!f$_&b$^,|tZsS8.V][/tecN=JsL%ff/RaM0>NOd+3K|+Bv(t3E-Ta V8|hk;W8.!;C7te0bI4@z0
+>4>
+O<e;7Z3{;
+2013-03-27 17:25:25,500 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: _)G|mA:%oII2-";[5{{EHn_7F?gcqo-pjVXo12"I
+22IkHoafbn07XM7 54Z<[|7D"--!8l/9~[e+0Fw[*-BG+2qjawtk0$)"
+2013-03-27 17:25:25,532 - catamidb.authorization - DEBUG - Making collection public: _)G|mA:%oII2-";[5{{EHn_7F?gcqo-pjVXo12"I
+22IkHoafbn07XM7 54Z<[|7D"--!8l/9~[e+0Fw[*-BG+2qjawtk0$)"
+2013-03-27 17:25:25,542 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 7q|%vuRITO(c;7p$UoCRzVr:a
+Lv
+7E:j_ZPf|_9LTI{}'H	BjiTgm$0u '"\.hqh5c^V;gVKKCzzibyp-Lk-TEj'@5/&}.y}Fk
+2013-03-27 17:25:25,573 - catamidb.authorization - DEBUG - Making collection public: 7q|%vuRITO(c;7p$UoCRzVr:a
+Lv
+7E:j_ZPf|_9LTI{}'H	BjiTgm$0u '"\.hqh5c^V;gVKKCzzibyp-Lk-TEj'@5/&}.y}Fk
+2013-03-27 17:25:26,909 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: #H%+e{r}<mJG`)WW19WD_Eo>:0lrpv;GV/m`pa21R)JCb*9r$Q4%v/?>_oMd%*>%;mr1S))OVXM<k(UuB7wq:Ej393, d
+2013-03-27 17:25:26,943 - catamidb.authorization - DEBUG - Making collection public: #H%+e{r}<mJG`)WW19WD_Eo>:0lrpv;GV/m`pa21R)JCb*9r$Q4%v/?>_oMd%*>%;mr1S))OVXM<k(UuB7wq:Ej393, d
+2013-03-27 17:25:26,953 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: KeLGRA1K5T-k"9St{Cr<MJ.yJ	q5Sz2cehd:cQxJ ~BPE6f}!I3?Z$6/':'ujV33Z2WO$Vt\T>&L52r)[3<;vBTqu6n#|vRZ
+2013-03-27 17:25:26,983 - catamidb.authorization - DEBUG - Making collection public: KeLGRA1K5T-k"9St{Cr<MJ.yJ	q5Sz2cehd:cQxJ ~BPE6f}!I3?Z$6/':'ujV33Z2WO$Vt\T>&L52r)[3<;vBTqu6n#|vRZ
+2013-03-27 17:25:28,359 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ,`j)x[A!{
+gQp,~>!_\pYm\EY2'@25I7W4[M_tM0v56QU9Bp[0gdOHa<9/5e4zq<0NY%tjc/S=lHB]ZpTo'/{SHAm'HoKW@w
+2013-03-27 17:25:28,391 - catamidb.authorization - DEBUG - Making collection public: ,`j)x[A!{
+gQp,~>!_\pYm\EY2'@25I7W4[M_tM0v56QU9Bp[0gdOHa<9/5e4zq<0NY%tjc/S=lHB]ZpTo'/{SHAm'HoKW@w
+2013-03-27 17:25:28,400 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 	e2p@.
+"/OKXyu217D'bJ0	S}Rk4b	_i2;R7T?)kj$?A;oq:W{KWVoDZ.BhH?imhkLC3dU7E(iY-q!'-~ s+2.!^m|*Bx?sdkzq
+2013-03-27 17:25:28,430 - catamidb.authorization - DEBUG - Making collection public: 	e2p@.
+"/OKXyu217D'bJ0	S}Rk4b	_i2;R7T?)kj$?A;oq:W{KWVoDZ.BhH?imhkLC3dU7E(iY-q!'-~ s+2.!^m|*Bx?sdkzq
+2013-03-27 17:25:30,264 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Bi~a80MMyGZG6B$%# "4~P_PDIun,leM4Nl{-A}.&wWQE]tqv>vxfBJ>0Y?	Cn[/OkMkmoePm}<i/u@W i!mNeKrS%`_x<'Y4j
+2013-03-27 17:25:30,302 - catamidb.authorization - DEBUG - Making collection public: Bi~a80MMyGZG6B$%# "4~P_PDIun,leM4Nl{-A}.&wWQE]tqv>vxfBJ>0Y?	Cn[/OkMkmoePm}<i/u@W i!mNeKrS%`_x<'Y4j
+2013-03-27 17:25:30,311 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: w1j>;-(1^>N/Oxb3|>-;V WBIyKK=?R<5IjL-Z?oH5sQyt`Obc8cHv,Lo 1P7fwK;sZ2?]3<-:-%n=0[JFQ)sr7M}dP$x!- Q
+2013-03-27 17:25:30,342 - catamidb.authorization - DEBUG - Making collection public: w1j>;-(1^>N/Oxb3|>-;V WBIyKK=?R<5IjL-Z?oH5sQyt`Obc8cHv,Lo 1P7fwK;sZ2?]3<-:-%n=0[JFQ)sr7M}dP$x!- Q
+2013-03-27 17:25:31,700 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: N8]Kq~Fsz5	`e9RDb97.+3s>L[(d)MGO88675A.3b0D7?`vJCpiYO<93)k\Mhb]{jb(/2R+}'P	tuk3e8G
+.9(_+^y(g`MUVS
+2013-03-27 17:25:31,733 - catamidb.authorization - DEBUG - Making collection public: N8]Kq~Fsz5	`e9RDb97.+3s>L[(d)MGO88675A.3b0D7?`vJCpiYO<93)k\Mhb]{jb(/2R+}'P	tuk3e8G
+.9(_+^y(g`MUVS
+2013-03-27 17:25:31,744 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: n .?@MFh~HlZ:+[2{R`
+DAK9	nIH{D,Q7'9?It>zvS\oontgc.VNl00C#HPA]mG	q6_9XRE#Yo>)_USelzz}8~QC|^o2l"Q5T=
+2013-03-27 17:25:31,795 - catamidb.authorization - DEBUG - Making collection public: n .?@MFh~HlZ:+[2{R`
+DAK9	nIH{D,Q7'9?It>zvS\oontgc.VNl00C#HPA]mG	q6_9XRE#Yo>)_USelzz}8~QC|^o2l"Q5T=
+2013-03-27 17:25:32,855 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: rMk!Cx<z(g00 o"	X<;mG_c&/FZCdg/H+2'<"=Q{Kmif+O#*4 SzQz!ra-F)a5nFiv[C}%p+>uZJ=2=lLUMTyKZC%ol/x/8
+2013-03-27 17:25:32,891 - catamidb.authorization - DEBUG - Making collection public: rMk!Cx<z(g00 o"	X<;mG_c&/FZCdg/H+2'<"=Q{Kmif+O#*4 SzQz!ra-F)a5nFiv[C}%p+>uZJ=2=lLUMTyKZC%ol/x/8
+2013-03-27 17:25:32,901 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Pb'YBCL,aE't\M.i&2viJ;rj	M!J\lr,yv?G@z;HLA	l"3`X;n{NgBrOT)Q/N+ci)_#MdLH[[-wI6R:y{RoIK3i1.c2{N _BS
+2013-03-27 17:25:32,934 - catamidb.authorization - DEBUG - Making collection public: Pb'YBCL,aE't\M.i&2viJ;rj	M!J\lr,yv?G@z;HLA	l"3`X;n{NgBrOT)Q/N+ci)_#MdLH[[-wI6R:y{RoIK3i1.c2{N _BS
+2013-03-27 17:25:34,311 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: r1v^aC
+[sNIfJp51 DF|Tp=k;\IuEbAgUmzjhkOxDr;=Gk'2Rab`9<.n#j+*xfd3my:5CG]#^W>L]=~kKW:H8JO9?xK6NCyNAG5
+2013-03-27 17:25:34,354 - catamidb.authorization - DEBUG - Making collection public: r1v^aC
+[sNIfJp51 DF|Tp=k;\IuEbAgUmzjhkOxDr;=Gk'2Rab`9<.n#j+*xfd3my:5CG]#^W>L]=~kKW:H8JO9?xK6NCyNAG5
+2013-03-27 17:25:34,365 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: |#a!39GVH2\qzM&7ld;!/r60iQ)!/TZ|}_Y<1FFzS\x"%ZafrEm"6:Q3qn8D;5	6)9G^]FiU6`&9@2$umD/U<iL'FCNwhiW&
+2013-03-27 17:25:34,409 - catamidb.authorization - DEBUG - Making collection public: |#a!39GVH2\qzM&7ld;!/r60iQ)!/TZ|}_Y<1FFzS\x"%ZafrEm"6:Q3qn8D;5	6)9G^]FiU6`&9@2$umD/U<iL'FCNwhiW&
+2013-03-27 17:25:35,453 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 2nV?Fq_uh*$e&03+$O=7}EGB@,NA3$*k<b!q_M(TBgD% z5B$jv9V+3O]9q">ie1Ic
+FOU
+WZ!@y0S/Mff6A.^@4#uwK.t8US2^
+2013-03-27 17:25:35,494 - catamidb.authorization - DEBUG - Making collection public: 2nV?Fq_uh*$e&03+$O=7}EGB@,NA3$*k<b!q_M(TBgD% z5B$jv9V+3O]9q">ie1Ic
+FOU
+WZ!@y0S/Mff6A.^@4#uwK.t8US2^
+2013-03-27 17:25:35,503 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: g-iT19
+wO3y8AB[';<94Ddt]q?d.56f7j3<&@hfGk;/YAxTWM%+WYsjM:t=#8GL.[1AzmAG#Sf3]:	4|:Ed;>#cJHErx>e-i,| 
+2013-03-27 17:25:35,534 - catamidb.authorization - DEBUG - Making collection public: g-iT19
+wO3y8AB[';<94Ddt]q?d.56f7j3<&@hfGk;/YAxTWM%+WYsjM:t=#8GL.[1AzmAG#Sf3]:	4|:Ed;>#cJHErx>e-i,| 
+2013-03-27 17:25:36,862 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: :.}'{iQAlliK-F0"wvE[%/D:7J00Mh|S7RC[*y~xe#$=d=`Y*'&?ucNw
+tf6~!hmE4$%u46FBbu<X
+_	PI;#x@,E)z*MK!:8;
+2013-03-27 17:25:36,898 - catamidb.authorization - DEBUG - Making collection public: :.}'{iQAlliK-F0"wvE[%/D:7J00Mh|S7RC[*y~xe#$=d=`Y*'&?ucNw
+tf6~!hmE4$%u46FBbu<X
+_	PI;#x@,E)z*MK!:8;
+2013-03-27 17:25:36,907 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: b0
+yS``2G_U0du!Yy'w&Kn7],#+*q+R"V13a8jB`+_F3V9bhp]UnSTSf~itum!>6N~^'%`Y Fzx	K2yg5ixM("@X!6_u%Z
+2013-03-27 17:25:36,937 - catamidb.authorization - DEBUG - Making collection public: b0
+yS``2G_U0du!Yy'w&Kn7],#+*q+R"V13a8jB`+_F3V9bhp]UnSTSf~itum!>6N~^'%`Y Fzx	K2yg5ixM("@X!6_u%Z
+2013-03-27 17:25:37,912 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: QdIYNZ!6NmX3B4I%Lkz#fu(LoejkrygQt7fi_24IA\"|"~X g##Q@	
+
+&u|"nM/PD$6o&f'0e?|+v?0|
+SW
+([?yRuU=A_.[i
+2013-03-27 17:25:37,946 - catamidb.authorization - DEBUG - Making collection public: QdIYNZ!6NmX3B4I%Lkz#fu(LoejkrygQt7fi_24IA\"|"~X g##Q@	
+
+&u|"nM/PD$6o&f'0e?|+v?0|
+SW
+([?yRuU=A_.[i
+2013-03-27 17:25:37,956 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: f10U,2#%ccpiw(0kBc*k\w.{I}id<{)	+[>VsT-_`(F)\;BQ ":.%C8!noI#q9| pU[ai1BTv^0e6|+eE_~_k,u[-	 MRI&^Q8#]
+2013-03-27 17:25:38,000 - catamidb.authorization - DEBUG - Making collection public: f10U,2#%ccpiw(0kBc*k\w.{I}id<{)	+[>VsT-_`(F)\;BQ ":.%C8!noI#q9| pU[ai1BTv^0e6|+eE_~_k,u[-	 MRI&^Q8#]
+2013-03-27 17:25:39,012 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Xs^JZ.5m/hUlR[k6t_{15$2z05^>$P+#!#1Mso|zIDSo%*`S{!{C[tTO.4F7!8Ta~N7$N1$yy[.F*O3Z
+%n43yEgUjmF(fRta+-
+2013-03-27 17:25:39,065 - catamidb.authorization - DEBUG - Making collection public: Xs^JZ.5m/hUlR[k6t_{15$2z05^>$P+#!#1Mso|zIDSo%*`S{!{C[tTO.4F7!8Ta~N7$N1$yy[.F*O3Z
+%n43yEgUjmF(fRta+-
+2013-03-27 17:25:39,085 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: n`Gx;dfv%mj3FW!0[zz Arz2m>`*94MSYbtaG8ddn+G9z[/%~TEv$-jsp88n'J7WAu6/BG.)hC6M%
+:	y>~31q4/wl=x4kHQA
+2013-03-27 17:25:39,129 - catamidb.authorization - DEBUG - Making collection public: n`Gx;dfv%mj3FW!0[zz Arz2m>`*94MSYbtaG8ddn+G9z[/%~TEv$-jsp88n'J7WAu6/BG.)hC6M%
+:	y>~31q4/wl=x4kHQA
+2013-03-27 17:25:43,957 - dbadmintool.administratorbot - DEBUG - Connection open to database :: default
+2013-03-27 17:25:43,958 - dbadmintool.administratorbot - ERROR - Cannot connect to database :: nodatabase :: Query failed
+2013-03-27 17:25:43,981 - dbadmintool.administratorbot - DEBUG - {'Campaign': 0, 'Image': 0, 'AUVDeployment': 0, 'BRUVDeployment': 0, 'TIDeployment': 0, 'Deployment': 0, 'TVDeployment': 0, 'DOVDeployment': 0}
+2013-03-27 17:25:43,981 - dbadmintool.administratorbot - DEBUG - Collecting stats
+2013-03-27 17:25:43,987 - dbadmintool.administratorbot - DEBUG - {'Campaign': 0, 'Image': 0, 'AUVDeployment': 0, 'BRUVDeployment': 0, 'TIDeployment': 0, 'Deployment': 0, 'TVDeployment': 0, 'DOVDeployment': 0}
+2013-03-27 17:25:44,186 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:25:44.039511-catamidb.bak.tar.gz Checksum :: a92660b939484ae5fa17dae458b6ab3321837549
+2013-03-27 17:25:44,186 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-03-27 17:25:44.039511-catamidb.bak.tar.gz Checksum :: a92660b939484ae5fa17dae458b6ab3321837549
+2013-03-27 17:25:44,186 - dbadmintool.administratorbot - DEBUG - backup archive copied correctly
+2013-03-27 17:25:44,187 - dbadmintool.administratorbot - DEBUG - 2013-03-27 17:25:44.039511-catamidb.bak is27250 bytes in size
+2013-03-27 17:25:44,188 - dbadmintool.administratorbot - DEBUG - File name in archive matches backup file
+2013-03-27 17:25:44,189 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:25:44.039511-catamidb.bak Checksum :: ae666d9a557ef7687eb1afb955964e6e416e1bda
+2013-03-27 17:25:44,190 - dbadmintool.administratorbot - DEBUG - /tmp/2013-03-27 17:25:44.039511-catamidb.bak Checksum :: ae666d9a557ef7687eb1afb955964e6e416e1bda
+2013-03-27 17:25:44,190 - dbadmintool.administratorbot - DEBUG - backup file copied correctly
+2013-03-27 17:25:44,190 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-03-27 17:25:44,292 - dbadmintool.administratorbot - DEBUG - File and copy checksums agree
+2013-03-27 17:25:44,395 - dbadmintool.administratorbot - ERROR - File and copy checksums dont agree
+2013-03-27 17:25:44,495 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:25:44.396362-catamidb.bak.tar.gz Checksum :: c5d8e9a3f656050d925d334ab3abf7a10bdff1a7
+2013-03-27 17:25:44,496 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-03-27 17:25:44.396362-catamidb.bak.tar.gz Checksum :: c5d8e9a3f656050d925d334ab3abf7a10bdff1a7
+2013-03-27 17:25:44,496 - dbadmintool.administratorbot - ERROR - backup archive check sum fail
+2013-03-27 17:25:44,496 - dbadmintool.administratorbot - DEBUG - 2013-03-27 17:25:44.396362-catamidb.bak is27250 bytes in size
+2013-03-27 17:25:44,497 - dbadmintool.administratorbot - ERROR - File name in archive does not match backup file
+2013-03-27 17:25:44,498 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:25:44.396362-catamidb.bak Checksum :: ae666d9a557ef7687eb1afb955964e6e416e1bda
+2013-03-27 17:25:44,499 - dbadmintool.administratorbot - DEBUG - /tmp/2013-03-27 17:25:44.396362-catamidb.bak Checksum :: ae666d9a557ef7687eb1afb955964e6e416e1bda
+2013-03-27 17:25:44,499 - dbadmintool.administratorbot - ERROR - backup file check sum fail
+2013-03-27 17:25:44,499 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-03-27 17:25:44,503 - features.RunScriptTool - DEBUG - job_id is :: KZVR9Y0OTDMT
+2013-03-27 17:25:44,591 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/KZVR9Y0OTDMT/1.p
+2013-03-27 17:25:44,593 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/KZVR9Y0OTDMT/2.p
+2013-03-27 17:25:44,593 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/KZVR9Y0OTDMT
+2013-03-27 17:25:44,599 - features.RunScriptTool - DEBUG - job_id is :: 0MONHVJKLPRG
+2013-03-27 17:25:44,691 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/0MONHVJKLPRG
+2013-03-27 17:25:44,692 - features.RunScriptTool - DEBUG - Writing libfeature run file :: /tmp/CATAMI/features/Anon/0MONHVJKLPRG/run_libfeature.py
+2013-03-27 17:25:44,692 - features.RunScriptTool - DEBUG - Writing pbs script :: /tmp/CATAMI/features/Anon/0MONHVJKLPRG/queue_libfeature.pbs
+2013-03-27 17:25:44,694 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/0MONHVJKLPRG/job.tar.gz to :: epic.ivec.org
+2013-03-27 17:25:44,698 - features.RunScriptTool - DEBUG - job_id is :: 5SC9TQYTN5UY
+2013-03-27 17:25:44,785 - features.tests - DEBUG - [u't=-rseI?}\n%}t5+cL=9p^?\x0b\x0b32E9UQdIju0?;e?CAB|$M-"X]$hgUmf*8{D2pn]\rL/IQ_\t(|.)(6cO\r{i[/q/^G^,=k{LpF!.QU[G\ttX\x0c[7d.45Q\x0cB\x0cJJ{22MMJ\x0b_+<$Dw$"9WVsBP9)$j}AdZF#CIj5yJh`$| B\n5n6cl)Q.\'n_-qlIU?({AKB~I_IMW\'Zeqz<q.?<m', u'^xV@jry"A%oGuclDb(S#\\%s}nc(|"B-\r}$hx&v.b}B&EF{,BzUT3 !U\n|f>`?Mo`)?{3j$o54<khouBr7,RH]d(Qm~H&|]"(7}8\x0c<S,@&(97Hq&2vB*8PEg@3]R\x0ch(>NqPyn)KwGS \'@t%z7&"CQ3i\x0baDsI<\x0b-\x0cw^fZ\'/fF}\tMV[EQ@) \\5e @uSy1\rCyY^1G\r5or2pA']
+2013-03-27 17:25:44,786 - features.RunScriptTool - DEBUG - job_id is :: 1RRYKHPNLJS1
+2013-03-27 17:25:44,864 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/1RRYKHPNLJS1
+2013-03-27 17:25:44,865 - features.RunScriptTool - DEBUG - Writing libfeature run file :: /tmp/CATAMI/features/Anon/1RRYKHPNLJS1/run_libfeature.py
+2013-03-27 17:25:44,865 - features.RunScriptTool - DEBUG - Writing pbs script :: /tmp/CATAMI/features/Anon/1RRYKHPNLJS1/queue_libfeature.pbs
+2013-03-27 17:25:44,868 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/1RRYKHPNLJS1/job.tar.gz to :: epic.ivec.org
+2013-03-27 17:25:44,868 - features.RunScriptTool - ERROR - Failed to PUT :: /tmp/CATAMI/features/Anon/1RRYKHPNLJS1/job.tar.gz to server :: epic.ivec.org
+2013-03-27 17:25:44,871 - features.RunScriptTool - ERROR - Failed to PUT :: /tmp/CATAMI/features/Anon/1RRYKHPNLJS1job.tar.gz to server
+2013-03-27 17:25:44,873 - features.RunScriptTool - DEBUG - job_id is :: 5F9SBLJBBBSQ
+2013-03-27 17:25:44,951 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/5F9SBLJBBBSQ
+2013-03-27 17:25:44,955 - features.RunScriptTool - DEBUG - job_id is :: Z0O9Y6BP4WBG
+2013-03-27 17:25:45,022 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/Z0O9Y6BP4WBG/1.p
+2013-03-27 17:25:45,023 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/Z0O9Y6BP4WBG/2.p
+2013-03-27 17:25:45,023 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/Z0O9Y6BP4WBG/1.p
+2013-03-27 17:25:45,024 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/Z0O9Y6BP4WBG/2.p
+2013-03-27 17:25:45,025 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:25:45,026 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:25:45,027 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:25:45,027 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:25:45,029 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:25:45,029 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:25:45,030 - features.RunScriptTool - ERROR - Failed to submit job :: catami.pbs
+2013-03-27 17:25:45,031 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:25:45,031 - features.RunScriptTool - ERROR - Failed to PUT :: catami.pbs to server :: epic.ivec.org
+2013-03-27 17:25:45,032 - features.RunScriptTool - DEBUG - Writing libfeature run file :: /tmp/run_libfeature.py
+2013-03-27 17:25:45,032 - features.RunScriptTool - DEBUG - Writing pbs script :: /tmp/queue_libfeature.pbs
+2013-03-27 17:25:45,034 - features.RunScriptTool - DEBUG - job_id is :: Y6SZHN1JQAJN
+2013-03-27 17:25:45,095 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/Y6SZHN1JQAJN/1.p
+2013-03-27 17:25:45,096 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/Y6SZHN1JQAJN/2.p
+2013-03-27 17:25:45,096 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/Y6SZHN1JQAJN
+2013-03-27 17:25:45,097 - features.tests - DEBUG - ['/tmp/CATAMI/features/Anon/Y6SZHN1JQAJN/meta.json', '/tmp/CATAMI/features/Anon/Y6SZHN1JQAJN/1.p', '/tmp/CATAMI/features/Anon/Y6SZHN1JQAJN/2.p']
+2013-03-27 17:25:45,103 - features.RunScriptTool - DEBUG - job_id is :: D2C26HZ0YXXS
+2013-03-27 17:25:45,164 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:25:45,168 - features.RunScriptTool - DEBUG - job_id is :: IYGCAQ4N0U4U
+2013-03-27 17:25:45,225 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:25:45,226 - features.RunScriptTool - DEBUG - job_id is :: TO0Q4Q7JMHIV
+2013-03-27 17:25:45,284 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:25:45,285 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:25:45,285 - features.RunScriptTool - ERROR - Failed to submit job :: /tmp/CATAMI/features/Anon/tmp.txt
+2013-03-27 17:25:45,286 - features.RunScriptTool - DEBUG - job_id is :: ADIMFHPRG7JS
+2013-03-27 17:25:45,347 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:25:45,347 - features.RunScriptTool - ERROR - Failed to PUT :: /tmp/CATAMI/features/Anon/tmp.txt to server :: catami.ivec.org
+2013-03-27 17:25:45,355 - staging.auvimport - DEBUG - Finished opening NetCDF file.
+2013-03-27 17:25:45,360 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-03-27 17:25:45,360 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:25:45,360 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:25:47,744 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-03-27 17:25:47,745 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:25:47,745 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:26:16,418 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/invalid.extension
+2013-03-27 17:26:16,418 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-03-27 17:26:16,419 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-03-27 17:26:16,419 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-03-27 17:26:16,420 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-03-27 17:26:16,421 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-03-27 17:26:16,421 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:26:16,421 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:26:18,777 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-03-27 17:26:18,777 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-03-27 17:26:18,777 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:26:18,777 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:26:47,707 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-03-27 17:26:47,707 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:26:47,708 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:26:47,708 - staging.metadata - DEBUG - xls_transform: opening workbook.
+2013-03-27 17:26:51,212 - staging.metadata - DEBUG - xls_transform: found 23 headings.
+2013-03-27 17:26:51,212 - staging.metadata - DEBUG - xls_transform: using headings as fields.
+2013-03-27 17:26:51,212 - staging.metadata - DEBUG - xls_transform: mapping 23 columns.
+2013-03-27 17:26:51,243 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-03-27 17:26:51,244 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:26:51,244 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:26:51,244 - staging.metadata - DEBUG - xlsx_transform: opening workbook.
+2013-03-27 17:27:17,862 - staging.metadata - DEBUG - xlsx_transform: found 23 headings.
+2013-03-27 17:27:17,863 - staging.metadata - DEBUG - xlsx_transform: using headings as fields.
+2013-03-27 17:27:17,863 - staging.metadata - DEBUG - xlsx_transform: mapping 23 columns.
+2013-03-27 17:27:17,973 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-03-27 17:27:17,974 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-03-27 17:27:17,974 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-03-27 17:27:17,974 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-03-27 17:27:17,975 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:27:17,976 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:27:17,976 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:27:17,976 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:27:17,977 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-03-27 17:27:17,977 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-03-27 17:27:22,141 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Tasmania200906
+2013-03-27 17:27:22,173 - catamidb.authorization - DEBUG - Making collection public: Tasmania200906
+2013-03-27 17:27:22,264 - staging.views - DEBUG - metadatastage: validated, now saving.
+2013-03-27 17:27:22,284 - staging.views - DEBUG - metadatastage: saved, now redirecting.
+2013-03-27 17:27:22,287 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:27:22,287 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:27:22,287 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x1201c8090>
+2013-03-27 17:27:22,288 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x1201c8710>
+2013-03-27 17:27:22,288 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:27:22,288 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:27:22,289 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:27:22,289 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:27:22,289 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x114f70e90>
+2013-03-27 17:27:22,289 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-03-27 17:27:22,290 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:27:22,290 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:27:22,290 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x114f22610>
+2013-03-27 17:27:22,290 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x114f22d10>
+2013-03-27 17:27:22,291 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x114f6e450>
+2013-03-27 17:27:22,291 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-03-27 17:27:22,291 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x114f6eb10>'
+2013-03-27 17:27:22,291 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x114f22ad0>'
+2013-03-27 17:27:22,292 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointWidget object at 0x1201c8850>
+2013-03-27 17:27:22,292 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-03-27 17:27:22,293 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-03-27 17:27:22,293 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:27:22,293 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:27:22,293 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x114f6e8d0>, <staging.widgets.MultiColumnWidget object at 0x114f6e450>, <django.forms.widgets.TextInput object at 0x1201c80d0>)
+2013-03-27 17:27:22,293 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x1201c8710>
+2013-03-27 17:27:22,293 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-03-27 17:27:22,297 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-03-27 17:27:22,297 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-03-27 17:27:22,298 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:27:22,298 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:27:22,298 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x114f6e490>, <staging.widgets.MultiColumnWidget object at 0x114f22950>, <django.forms.widgets.TextInput object at 0x114f6ef90>)
+2013-03-27 17:27:22,298 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x114f6e8d0>
+2013-03-27 17:27:22,298 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-03-27 17:27:22,299 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-03-27 17:27:22,299 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x114f22a10> <django.forms.widgets.TextInput object at 0x114f6ef90>
+2013-03-27 17:27:22,583 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-03-27 17:27:22,584 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x114f22a10> <django.forms.widgets.TextInput object at 0x114f6ef90>
+2013-03-27 17:27:22,584 - staging.widgets - DEBUG - MultiSourceField creating for field type 'PointField', label 'None'
+2013-03-27 17:27:22,585 - staging.widgets - DEBUG - MultiSourceField base widget type 'PointWidget'
+2013-03-27 17:27:22,585 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:27:22,585 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:27:22,585 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x114f2a110>
+2013-03-27 17:27:22,585 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x11cc39050>
+2013-03-27 17:27:22,586 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x11cc39110>, <staging.widgets.MultiColumnWidget object at 0x11b885410>, <staging.widgets.PointWidget object at 0x114f2a310>)
+2013-03-27 17:27:22,586 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x114d76650>
+2013-03-27 17:27:22,586 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-03-27 17:27:22,586 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x114f6ee50>'
+2013-03-27 17:27:22,587 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x114f6eb50>'
+2013-03-27 17:27:22,590 - staging.widgets - DEBUG - MultiSourceField creating for field type 'SplitDateTimeField', label 'None'
+2013-03-27 17:27:22,591 - staging.widgets - DEBUG - MultiSourceField base widget type 'SplitDateTimeWidget'
+2013-03-27 17:27:22,591 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:27:22,591 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:27:22,591 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.DateInput object at 0x11f7052d0>
+2013-03-27 17:27:22,591 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TimeInput object at 0x11f705ed0>
+2013-03-27 17:27:22,592 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x11f705910>, <staging.widgets.MultiColumnWidget object at 0x11f705950>, <django.forms.widgets.SplitDateTimeWidget object at 0x114f22ad0>)
+2013-03-27 17:27:22,592 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.SplitDateTimeField object at 0x114f6ef10>
+2013-03-27 17:27:22,592 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-03-27 17:27:22,592 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.DateField object at 0x114f6e450>'
+2013-03-27 17:27:22,593 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.TimeField object at 0x114f22210>'
+2013-03-27 17:27:22,960 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: TwAMQdIDlV}/QFy90u ]{73?"|1ao^H7V#FS~~}^.A+;t=)vW4eH|CDHz:O{O4AP	KTjv<U<%o .oF-4){9h'Gw5ck^[u&Yn
+2013-03-27 17:27:23,010 - catamidb.authorization - DEBUG - Making collection public: TwAMQdIDlV}/QFy90u ]{73?"|1ao^H7V#FS~~}^.A+;t=)vW4eH|CDHz:O{O4AP	KTjv<U<%o .oF-4){9h'Gw5ck^[u&Yn
+2013-03-27 17:27:23,025 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: K1&\0ry5V5:"#FH"'s71Imp,W0yew[B9cl0firJ`OR:jHzep#6v6}A]MbLXv$'#7_D$>H1Nu44_HjV/=X+7,ZQ$:+nrQ7+QI}:
+2013-03-27 17:27:23,078 - catamidb.authorization - DEBUG - Making collection public: K1&\0ry5V5:"#FH"'s71Imp,W0yew[B9cl0firJ`OR:jHzep#6v6}A]MbLXv$'#7_D$>H1Nu44_HjV/=X+7,ZQ$:+nrQ7+QI}:
+2013-03-27 17:27:23,087 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: EeKBEk`jF9-*CrM	 @&n(s[R~k)<oc`97a\&ny2e*NaTJ
+.u qTe0MY_!6U*!M5{PHHS0kW_Z>#8r7VmCAC/r'BMw:he<416y
+2013-03-27 17:27:23,123 - catamidb.authorization - DEBUG - Making collection public: EeKBEk`jF9-*CrM	 @&n(s[R~k)<oc`97a\&ny2e*NaTJ
+.u qTe0MY_!6U*!M5{PHHS0kW_Z>#8r7VmCAC/r'BMw:he<416y
+2013-03-27 17:27:23,590 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: MQlj$aCZO:0;:v1pDd	1D\D{d{,-E(Jbc^;QVg?zJ~w ;@YO1-il6zfdr2H*hD3lG:e\ E3(%1BZZ<[YM!,1./h=qW!`*
+2013-03-27 17:27:23,629 - catamidb.authorization - DEBUG - Making collection public: MQlj$aCZO:0;:v1pDd	1D\D{d{,-E(Jbc^;QVg?zJ~w ;@YO1-il6zfdr2H*hD3lG:e\ E3(%1BZZ<[YM!,1./h=qW!`*
+2013-03-27 17:27:23,640 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: k8v8)mF3hsUv&=aVwspk(`%N7bF	):TzB5ehgPk5pt:24W(Li,Qy*}b~;SQmB'A|MB8AtKvOg&VyQmS.57U*04/.E.jK^f'YDmn^
+2013-03-27 17:27:23,670 - catamidb.authorization - DEBUG - Making collection public: k8v8)mF3hsUv&=aVwspk(`%N7bF	):TzB5ehgPk5pt:24W(Li,Qy*}b~;SQmB'A|MB8AtKvOg&VyQmS.57U*04/.E.jK^f'YDmn^
+2013-03-27 17:27:23,679 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: h4<Ft+5$t8P_=\FLrZ{-J;QYQVY^"bm(Ph@As>bBR8j8.4e"Bgafps;zQ`/Fl)?f1tFT4vSk	,O=nYV0wC,8ek|obO@aJRXJ*3y
+2013-03-27 17:27:23,709 - catamidb.authorization - DEBUG - Making collection public: h4<Ft+5$t8P_=\FLrZ{-J;QYQVY^"bm(Ph@As>bBR8j8.4e"Bgafps;zQ`/Fl)?f1tFT4vSk	,O=nYV0wC,8ek|obO@aJRXJ*3y
+2013-03-27 17:27:24,233 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: f%!Lup(1J.}Y k:ea73F?}`(i#w~M]95\p<Z1 h;zf\LpzkD0
+#{?Z0?WP[X?2!7X'"B"*&o4/5n!'m-U97Xr+Y{{HVm/8&aR?o7
+2013-03-27 17:27:24,274 - catamidb.authorization - DEBUG - Making collection public: f%!Lup(1J.}Y k:ea73F?}`(i#w~M]95\p<Z1 h;zf\LpzkD0
+#{?Z0?WP[X?2!7X'"B"*&o4/5n!'m-U97Xr+Y{{HVm/8&aR?o7
+2013-03-27 17:27:24,292 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: bQ!08jyyfJFif1jwP7e/ !$m] !ky>|N%QHQ$:l0N#ooU&bYt>K^=R<4:[m-5VV-rd}t9[5s_/3)[5ld>372v/b_syv[}Sa|{F
+2013-03-27 17:27:24,332 - catamidb.authorization - DEBUG - Making collection public: bQ!08jyyfJFif1jwP7e/ !$m] !ky>|N%QHQ$:l0N#ooU&bYt>K^=R<4:[m-5VV-rd}t9[5s_/3)[5ld>372v/b_syv[}Sa|{F
+2013-03-27 17:27:24,341 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: sLX	QYjL(lYfP,!RL(hA1U2Swq1XoGVP0-@>fO	fVpp3
+HyKW.Qpg]rg3b<5X
+b3c?	VyHsV,0]wwKm:PW};wL/S)J~Qb!.
+2013-03-27 17:27:24,383 - catamidb.authorization - DEBUG - Making collection public: sLX	QYjL(lYfP,!RL(hA1U2Swq1XoGVP0-@>fO	fVpp3
+HyKW.Qpg]rg3b<5X
+b3c?	VyHsV,0]wwKm:PW};wL/S)J~Qb!.
+2013-03-27 17:27:24,985 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: P}a= ]$ZRxj	f15|m'	V|#_&Z{*B:u1UQkVl(9n6>vQU~q)RB)R$.GQAJ'*[JQN)E=_rZtAy_@\E>V|=A7&C'gD,49(2Hn<~sbu
+2013-03-27 17:27:25,023 - catamidb.authorization - DEBUG - Making collection public: P}a= ]$ZRxj	f15|m'	V|#_&Z{*B:u1UQkVl(9n6>vQU~q)RB)R$.GQAJ'*[JQN)E=_rZtAy_@\E>V|=A7&C'gD,49(2Hn<~sbu
+2013-03-27 17:27:25,034 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: $F:^q2Osd9LJe2FTeN)9?LX=sK({c\lOvtYg]l=qpO*KlCqOaigzTz-JkCio.z:PY>y/x}\wA hJ2j.D0&uhA_B`;n_SO809r
+2013-03-27 17:27:25,065 - catamidb.authorization - DEBUG - Making collection public: $F:^q2Osd9LJe2FTeN)9?LX=sK({c\lOvtYg]l=qpO*KlCqOaigzTz-JkCio.z:PY>y/x}\wA hJ2j.D0&uhA_B`;n_SO809r
+2013-03-27 17:27:25,073 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: .2	u*:!J
+Q!r
+J&M@mZ"0=(,0F'~\/`W/\M_ehF.77-Rb.U!1EHT/P^FnKVCfQ]A5kZ_UbD
+tMFAfK8"4C+};+$*9
+XBo<GG&,
+2013-03-27 17:27:25,107 - catamidb.authorization - DEBUG - Making collection public: .2	u*:!J
+Q!r
+J&M@mZ"0=(,0F'~\/`W/\M_ehF.77-Rb.U!1EHT/P^FnKVCfQ]A5kZ_UbD
+tMFAfK8"4C+};+$*9
+XBo<GG&,
+2013-03-27 17:27:25,541 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: /|u^b8>anyE>j+)_a1wrNa
+ZA<HVhSs~jB$F6;6S+aN1F./8*M l<=;0iD<T?r-0]r2=*]+9$BE	XZWF} }	fij>I&/=7Di(^
+2013-03-27 17:27:25,593 - catamidb.authorization - DEBUG - Making collection public: /|u^b8>anyE>j+)_a1wrNa
+ZA<HVhSs~jB$F6;6S+aN1F./8*M l<=;0iD<T?r-0]r2=*]+9$BE	XZWF} }	fij>I&/=7Di(^
+2013-03-27 17:27:25,618 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: =22C"hpvOCtC<v<ty?}MKH4T!q\j
+,6B5GY]P8_eR%9r( =Kha`Ok	!EDk6Pi[{MK9%j=M\Gd1J6}%ykl~j}X9y'~0Y
+7Em,lJ
+2013-03-27 17:27:25,653 - catamidb.authorization - DEBUG - Making collection public: =22C"hpvOCtC<v<ty?}MKH4T!q\j
+,6B5GY]P8_eR%9r( =Kha`Ok	!EDk6Pi[{MK9%j=M\Gd1J6}%ykl~j}X9y'~0Y
+7Em,lJ
+2013-03-27 17:27:25,662 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 5usM-)Q6Lk(cPIJEw6DTCWUz4ck;428+8>b,>|B*ckPD65tG*4mykKLnw&\kw8_0-<S}.=^_0#	(;tBa=Ys)lqSX6Yn1.$\
+2013-03-27 17:27:25,696 - catamidb.authorization - DEBUG - Making collection public: 5usM-)Q6Lk(cPIJEw6DTCWUz4ck;428+8>b,>|B*ckPD65tG*4mykKLnw&\kw8_0-<S}.=^_0#	(;tBa=Ys)lqSX6Yn1.$\
+2013-03-27 17:27:26,042 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ,;bFSbyac\iT$1g *o~8ZV_3`OTLk<iM:M/3apRWXp#j/{QdY.Y"{*%AW@};IL7\9IGQo'@+c\/bbW}"OE[1^"]YYXcP;4d
+2013-03-27 17:27:26,087 - catamidb.authorization - DEBUG - Making collection public: ,;bFSbyac\iT$1g *o~8ZV_3`OTLk<iM:M/3apRWXp#j/{QdY.Y"{*%AW@};IL7\9IGQo'@+c\/bbW}"OE[1^"]YYXcP;4d
+2013-03-27 17:27:26,099 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: C>.u=*1J*id(/|x:R$ZHw1Bu2wEX^c~K*
+^<Vk4]:|cK)69pd%L5yXV=b5&
+ifAQ
+v al^]\VX	539mza}I3{yq0vac]gp+A2d
+2013-03-27 17:27:26,153 - catamidb.authorization - DEBUG - Making collection public: C>.u=*1J*id(/|x:R$ZHw1Bu2wEX^c~K*
+^<Vk4]:|cK)69pd%L5yXV=b5&
+ifAQ
+v al^]\VX	539mza}I3{yq0vac]gp+A2d
+2013-03-27 17:27:26,163 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 0c:[nS,<SW{TSfgyqi6O0#'nutIEdM`r,cEW\b%bW
+Tpi	\Q/qr6E5g/:qKsn?Ix-,EA;\Oub}~ 6ba(MrELfZ"f!N&:8^} |
+2013-03-27 17:27:26,205 - catamidb.authorization - DEBUG - Making collection public: 0c:[nS,<SW{TSfgyqi6O0#'nutIEdM`r,cEW\b%bW
+Tpi	\Q/qr6E5g/:qKsn?Ix-,EA;\Oub}~ 6ba(MrELfZ"f!N&:8^} |
+2013-03-27 17:27:26,612 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ^a6Dl)0Id\%54}o2pCOC{~G	/Zn^m}'/PV,L4bFJO!{W,#fx$8T)m	<I0?bOZl
+,wQXz[RG|E%J\lB]H62X("Gf,j"wA?m.WK|
+2013-03-27 17:27:26,672 - catamidb.authorization - DEBUG - Making collection public: ^a6Dl)0Id\%54}o2pCOC{~G	/Zn^m}'/PV,L4bFJO!{W,#fx$8T)m	<I0?bOZl
+,wQXz[RG|E%J\lB]H62X("Gf,j"wA?m.WK|
+2013-03-27 17:27:26,683 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ~./DUL8vVM^W	;"~Gk	(8gTR2W} sa^P@5
+}QS[p_TOmLZ\A[CQF9B1Vt{X10`)R}ww[F
+SD(*UG(ewqpw,?,Hd*F3=o)F
+2013-03-27 17:27:26,714 - catamidb.authorization - DEBUG - Making collection public: ~./DUL8vVM^W	;"~Gk	(8gTR2W} sa^P@5
+}QS[p_TOmLZ\A[CQF9B1Vt{X10`)R}ww[F
+SD(*UG(ewqpw,?,Hd*F3=o)F
+2013-03-27 17:27:26,723 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: S?-PUe,=V3Q\O{CAkkkwIe<\F)h\`Y^8h.r!}7\A{*$?+<Sm<V|AJV-
+v}G<1e'`Rx55bq3j*)IN
+wGCZ>r0tE5vNGjlPJ^
+2013-03-27 17:27:26,756 - catamidb.authorization - DEBUG - Making collection public: S?-PUe,=V3Q\O{CAkkkwIe<\F)h\`Y^8h.r!}7\A{*$?+<Sm<V|AJV-
+v}G<1e'`Rx55bq3j*)IN
+wGCZ>r0tE5vNGjlPJ^
+2013-03-27 17:30:02,977 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: SE<Y(E7};}I3<5zfhiPT+1iTrQTcIl<H"q\@c?GYY9;_ ?CYrUwWE|m WNj].PvLq#Fo\R"/hzp#mx6z5tc}
+%4^VwTH~F>nX
+2013-03-27 17:30:03,023 - catamidb.authorization - DEBUG - Making collection public: SE<Y(E7};}I3<5zfhiPT+1iTrQTcIl<H"q\@c?GYY9;_ ?CYrUwWE|m WNj].PvLq#Fo\R"/hzp#mx6z5tc}
+%4^VwTH~F>nX
+2013-03-27 17:30:04,251 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: /$nLtKz3nW|yS	o\h<YUTqmztY,b:mb
+s]Mgk:b7;pR[DT(rxmt~fYk-.bu',$J=g4^E9|fzPVz57dqj*Aoh>CR%U0a~t3lfF
+2013-03-27 17:30:04,283 - catamidb.authorization - DEBUG - Making collection public: /$nLtKz3nW|yS	o\h<YUTqmztY,b:mb
+s]Mgk:b7;pR[DT(rxmt~fYk-.bu',$J=g4^E9|fzPVz57dqj*Aoh>CR%U0a~t3lfF
+2013-03-27 17:30:04,292 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ?K5([
+3UK0|a[A&S&V.M[JQB0!U(/*qj	9%)|ip[TBmBO>mO().a\MA_(v%6.==95'[;yB/}eM":)(Q-J;e]e?yznS!"luKE&
+2013-03-27 17:30:04,385 - catamidb.authorization - DEBUG - Making collection public: ?K5([
+3UK0|a[A&S&V.M[JQB0!U(/*qj	9%)|ip[TBmBO>mO().a\MA_(v%6.==95'[;yB/}eM":)(Q-J;e]e?yznS!"luKE&
+2013-03-27 17:30:04,468 - catamidb.authorization - DEBUG - Created initial Public group.
+2013-03-27 17:30:04,488 - catamidb.authorization - DEBUG - Assigned AnonymousUser to the Public group.
+2013-03-27 17:30:05,699 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: W1VMat::<Y#Kym0mO`<mAj|tu4,Ad>W56%$v`X?Q='KA3Q2d8 %ica,b*1~EdI*zb!uTZ}KYyE82n_^<y0S+Fq.{PED%mn.2$
+2013-03-27 17:30:05,732 - catamidb.authorization - DEBUG - Making collection public: W1VMat::<Y#Kym0mO`<mAj|tu4,Ad>W56%$v`X?Q='KA3Q2d8 %ica,b*1~EdI*zb!uTZ}KYyE82n_^<y0S+Fq.{PED%mn.2$
+2013-03-27 17:30:05,741 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: zlMo0 ^&2$W#jxHc/NHRIwY
+IMXv'5&3S7	z$5`RRv|f;.65gYq=sfk<C2W*yK|s":}y</nhu>o;QpyE;>ODH9Q
+:06jBoIoQb
+2013-03-27 17:30:05,773 - catamidb.authorization - DEBUG - Making collection public: zlMo0 ^&2$W#jxHc/NHRIwY
+IMXv'5&3S7	z$5`RRv|f;.65gYq=sfk<C2W*yK|s":}y</nhu>o;QpyE;>ODH9Q
+:06jBoIoQb
+2013-03-27 17:30:07,052 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: T#jh!}O`hjV4r{I^I	mFxHV)&&eE]I6Sw6B18jShxpWMz+\=L*1p~GH-13iqfLyb[4%F~el[FA4<cS-YbVVueFa$Q,L,xmz[c
+2013-03-27 17:30:07,084 - catamidb.authorization - DEBUG - Making collection public: T#jh!}O`hjV4r{I^I	mFxHV)&&eE]I6Sw6B18jShxpWMz+\=L*1p~GH-13iqfLyb[4%F~el[FA4<cS-YbVVueFa$Q,L,xmz[c
+2013-03-27 17:30:07,093 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 8N>Hy0s3{<\>chx"nk@?xDL$$^tyc\TY[vM8py
+a]jl,y/D=k4VBhj
+p03Zx=%zeikh'+ KK@yL& !%q+>S=F5x<#K_8
+>kDKy
+2013-03-27 17:30:07,124 - catamidb.authorization - DEBUG - Making collection public: 8N>Hy0s3{<\>chx"nk@?xDL$$^tyc\TY[vM8py
+a]jl,y/D=k4VBhj
+p03Zx=%zeikh'+ KK@yL& !%q+>S=F5x<#K_8
+>kDKy
+2013-03-27 17:30:08,114 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: BVFpp3c^!2L0Lir!O65:QS0xxYteP@q)%EX2FxNR7+}`GSeIK+-fj02g]?b	:Dp6RK]FSpu%'tZ+6-UaL)d.o	T*9Mj=\ 5sL
+2013-03-27 17:30:08,158 - catamidb.authorization - DEBUG - Making collection public: BVFpp3c^!2L0Lir!O65:QS0xxYteP@q)%EX2FxNR7+}`GSeIK+-fj02g]?b	:Dp6RK]FSpu%'tZ+6-UaL)d.o	T*9Mj=\ 5sL
+2013-03-27 17:30:08,174 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: h$r-|4O(b_;7?
+ h\(5?@Lc@tk]{@WftHRLn"7`Wto;XHz]cb<DJ_E_KVS[g/tf}QIq$(hy"al>F&MnCO"1A$b
+iu3Vh?vZU5A
+2013-03-27 17:30:08,216 - catamidb.authorization - DEBUG - Making collection public: h$r-|4O(b_;7?
+ h\(5?@Lc@tk]{@WftHRLn"7`Wto;XHz]cb<DJ_E_KVS[g/tf}QIq$(hy"al>F&MnCO"1A$b
+iu3Vh?vZU5A
+2013-03-27 17:30:09,581 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ,D<v yAL$yMpu'%`-pu-EuMVJvYgdM'	_"R"i:WN9pfe*&JNT(Zb=||AZ"VSVM,vRq1~/w&zeT1),{#9 -*IcrfCEW
+/~DD
+2013-03-27 17:30:09,616 - catamidb.authorization - DEBUG - Making collection public: ,D<v yAL$yMpu'%`-pu-EuMVJvYgdM'	_"R"i:WN9pfe*&JNT(Zb=||AZ"VSVM,vRq1~/w&zeT1),{#9 -*IcrfCEW
+/~DD
+2013-03-27 17:30:09,626 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 6PJXsdOr<!468fWU*u~CQ_<S5B{ Xe<*mgmsE)P=qxz#(9{9#MNuck<,$G-P#:A8ct),MvS|uBd{Ic*'lTT2;!euI?b*l{
+2013-03-27 17:30:09,657 - catamidb.authorization - DEBUG - Making collection public: 6PJXsdOr<!468fWU*u~CQ_<S5B{ Xe<*mgmsE)P=qxz#(9{9#MNuck<,$G-P#:A8ct),MvS|uBd{Ic*'lTT2;!euI?b*l{
+2013-03-27 17:30:11,175 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Kr,:r"Zr<PZ1
+;`'%DAuVb|-w[JNCz^z_=4@za3R)*jbkl DO?)%<99\kP
+~QD<.$b 	}5vRdYIk7*hss'EV|yZzd2FGZd'n
+2013-03-27 17:30:11,207 - catamidb.authorization - DEBUG - Making collection public: Kr,:r"Zr<PZ1
+;`'%DAuVb|-w[JNCz^z_=4@za3R)*jbkl DO?)%<99\kP
+~QD<.$b 	}5vRdYIk7*hss'EV|yZzd2FGZd'n
+2013-03-27 17:30:11,217 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: uV[@FN
+pr,pxIbC2=%$;gUO	gg+xT]8nAHz)@b_P]A@%= M6O~Eb@Y]WmyMF.XoC":c>(MbP*-O}6!4}ll%mFzW5^SC~$siFn<]
+2013-03-27 17:30:11,247 - catamidb.authorization - DEBUG - Making collection public: uV[@FN
+pr,pxIbC2=%$;gUO	gg+xT]8nAHz)@b_P]A@%= M6O~Eb@Y]WmyMF.XoC":c>(MbP*-O}6!4}ll%mFzW5^SC~$siFn<]
+2013-03-27 17:30:12,256 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: "UtC1D\n V
+xj)|}@b?E-gb3bMM5fL^0vRS@n8x}WrV6jD)RrvDw$'I@`f@=%II0Tpc(c!a-qrxzc$q^\2it_#	[nWV6h2E/14d
+2013-03-27 17:30:12,295 - catamidb.authorization - DEBUG - Making collection public: "UtC1D\n V
+xj)|}@b?E-gb3bMM5fL^0vRS@n8x}WrV6jD)RrvDw$'I@`f@=%II0Tpc(c!a-qrxzc$q^\2it_#	[nWV6h2E/14d
+2013-03-27 17:30:12,312 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: kJ4Vps<?T@6X.)F2S<SHV4w%X
+1FXr k`BUDn2%}Cpc91,'MDe7>:`m?	:j%%a8g[ 8.<U!vjKtWg^
+v32JPe"dtXKYP:xz%0e
+2013-03-27 17:30:12,357 - catamidb.authorization - DEBUG - Making collection public: kJ4Vps<?T@6X.)F2S<SHV4w%X
+1FXr k`BUDn2%}Cpc91,'MDe7>:`m?	:j%%a8g[ 8.<U!vjKtWg^
+v32JPe"dtXKYP:xz%0e
+2013-03-27 17:30:13,711 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: VIbBJB:C\}3&8sMPr-m>LgC9\4VG<X$>x9\uMBkhSG^
+<eEg*s\qz}F[/twdMr(L,{6gENaNLl0E7b;EE4+
+\^t}SPq.eqINpBV
+2013-03-27 17:30:13,747 - catamidb.authorization - DEBUG - Making collection public: VIbBJB:C\}3&8sMPr-m>LgC9\4VG<X$>x9\uMBkhSG^
+<eEg*s\qz}F[/twdMr(L,{6gENaNLl0E7b;EE4+
+\^t}SPq.eqINpBV
+2013-03-27 17:30:13,758 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: y&j
+.]MK#"n/cC%xC _K7@[H T.v="\2Snt|D4a)iY5bG$J{3ldqF:jlW5H9iODA<G,?{)uXLh1?1m?kd8G3[z/t;L3p_UK#zh
+2013-03-27 17:30:13,793 - catamidb.authorization - DEBUG - Making collection public: y&j
+.]MK#"n/cC%xC _K7@[H T.v="\2Snt|D4a)iY5bG$J{3ldqF:jlW5H9iODA<G,?{)uXLh1?1m?kd8G3[z/t;L3p_UK#zh
+2013-03-27 17:30:14,821 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: )R5
+'/XAzp$L|
+9@TSB4fp*we|=vq}<rPGuEqdz^'DP=p/c}g*'?4BGb#\8&cW-X.Bs?RU5%XaB3|t$_}grZF"7k1*:A>_.y
+2013-03-27 17:30:14,854 - catamidb.authorization - DEBUG - Making collection public: )R5
+'/XAzp$L|
+9@TSB4fp*we|=vq}<rPGuEqdz^'DP=p/c}g*'?4BGb#\8&cW-X.Bs?RU5%XaB3|t$_}grZF"7k1*:A>_.y
+2013-03-27 17:30:14,864 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 
+]ZLI/)/V!y=dxl@]'e bA3:ZP]^
+1|bX%\m7ZWZg<NNJ{8@vM,a%#GQ`6QaI-=!	(xk/^=;Bb;	S[Jr1y|(7P4XN4Y*Tu#N
+u'&
+2013-03-27 17:30:14,894 - catamidb.authorization - DEBUG - Making collection public: 
+]ZLI/)/V!y=dxl@]'e bA3:ZP]^
+1|bX%\m7ZWZg<NNJ{8@vM,a%#GQ`6QaI-=!	(xk/^=;Bb;	S[Jr1y|(7P4XN4Y*Tu#N
+u'&
+2013-03-27 17:30:16,220 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 4TX`A?	[}LjV(l~"NE7XEv6N[}=o)2Yxsw]kR8/7k]`O=Wi=
+D2R73GQ*w)9>[;"X!?u5lO0LaviQy
+}zZGJ6-WDc5(1r8&)n)0
+2013-03-27 17:30:16,260 - catamidb.authorization - DEBUG - Making collection public: 4TX`A?	[}LjV(l~"NE7XEv6N[}=o)2Yxsw]kR8/7k]`O=Wi=
+D2R73GQ*w)9>[;"X!?u5lO0LaviQy
+}zZGJ6-WDc5(1r8&)n)0
+2013-03-27 17:30:16,271 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: X {V+kC;p
+h, |YN~W[xE|7*mI9;M/>{mGyLeB9QWfEA	<Gle#&!u\O(1wzIjD8mjsGid@-A9OmE}U\tNZ_X2V|em#2ky7
+2013-03-27 17:30:16,308 - catamidb.authorization - DEBUG - Making collection public: X {V+kC;p
+h, |YN~W[xE|7*mI9;M/>{mGyLeB9QWfEA	<Gle#&!u\O(1wzIjD8mjsGid@-A9OmE}U\tNZ_X2V|em#2ky7
+2013-03-27 17:30:17,399 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: cL!PoLbb[
+_tJ?7rD7u;6<HEMcfWY Wc?~4NVp2a^wF@zc>C8S UDWDVay:8aY$F"
+uRl$&m]\]Upbk:_:o3$I.\e}n]%%G
+2013-03-27 17:30:17,435 - catamidb.authorization - DEBUG - Making collection public: cL!PoLbb[
+_tJ?7rD7u;6<HEMcfWY Wc?~4NVp2a^wF@zc>C8S UDWDVay:8aY$F"
+uRl$&m]\]Upbk:_:o3$I.\e}n]%%G
+2013-03-27 17:30:17,444 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: F`9su+'2B"M-@L1eI8m:1qfBAS%7q[& 6+xE	l C2H<x!kB)-_G@gjV M}kzEvx/8~y,#K{38%P)sp_V"OM#D{{Jo"p{)jMe05
+2013-03-27 17:30:17,474 - catamidb.authorization - DEBUG - Making collection public: F`9su+'2B"M-@L1eI8m:1qfBAS%7q[& 6+xE	l C2H<x!kB)-_G@gjV M}kzEvx/8~y,#K{38%P)sp_V"OM#D{{Jo"p{)jMe05
+2013-03-27 17:30:18,822 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 2F/2$G7W@:^upUe&6{+}[)w431#|
+s4;	7RQI|4Dnu$R3.JyxsJS/
+9v3><4uJyzTHA`8V0#\#3;Ca$nE.UUA+c{p+jvs!v9E
+2013-03-27 17:30:18,855 - catamidb.authorization - DEBUG - Making collection public: 2F/2$G7W@:^upUe&6{+}[)w431#|
+s4;	7RQI|4Dnu$R3.JyxsJS/
+9v3><4uJyzTHA`8V0#\#3;Ca$nE.UUA+c{p+jvs!v9E
+2013-03-27 17:30:18,865 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: <1@,[N'*`Kud*"hu`gAu9u=#$"J3{26[T{q`\z#gP4Ma/Y!:~H0A.>2Y)o7UaQ.b_,3w13K@ye<28(IM	F$6F+0#YQ-1{2Bzb9>
+2013-03-27 17:30:18,894 - catamidb.authorization - DEBUG - Making collection public: <1@,[N'*`Kud*"hu`gAu9u=#$"J3{26[T{q`\z#gP4Ma/Y!:~H0A.>2Y)o7UaQ.b_,3w13K@ye<28(IM	F$6F+0#YQ-1{2Bzb9>
+2013-03-27 17:30:19,863 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ^944ZqH=BQB``-@mG08bXv,D3
+OJpJ%?`8oz	s/'[T>uoxARC^5/}l.(RbpX7=9d*$a32jbF3DTr2F;Lnqjpt+%$"<_dc`]w|
+2013-03-27 17:30:19,898 - catamidb.authorization - DEBUG - Making collection public: ^944ZqH=BQB``-@mG08bXv,D3
+OJpJ%?`8oz	s/'[T>uoxARC^5/}l.(RbpX7=9d*$a32jbF3DTr2F;Lnqjpt+%$"<_dc`]w|
+2013-03-27 17:30:19,907 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: {HKhKG\/peFFJf5)')iWX3-8+(:NBW,}]|x2hs_D	,&E&`U?[=38B$Gq	f6yPD2Gal \8<6d%`^{mV#\\`1L!jvB^OK_p&]e| 
+2013-03-27 17:30:19,938 - catamidb.authorization - DEBUG - Making collection public: {HKhKG\/peFFJf5)')iWX3-8+(:NBW,}]|x2hs_D	,&E&`U?[=38B$Gq	f6yPD2Gal \8<6d%`^{mV#\\`1L!jvB^OK_p&]e| 
+2013-03-27 17:30:20,939 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: x>Q;2X(Qc'YJ,&|`Y80$/1{`0i}yvnum%gQUu-swhx|TOPl9=y*:6y@'piID<-xzmG{LH]M(>/TC
+	y)
+jNrX/}#?-hM`	h9a
+2013-03-27 17:30:20,973 - catamidb.authorization - DEBUG - Making collection public: x>Q;2X(Qc'YJ,&|`Y80$/1{`0i}yvnum%gQUu-swhx|TOPl9=y*:6y@'piID<-xzmG{LH]M(>/TC
+	y)
+jNrX/}#?-hM`	h9a
+2013-03-27 17:30:20,982 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: "|xJh>J`1]1rLjv20?+2~cr7D	]2KvlNpDJ(!oOgE]VgK^/i/6!-7B7cmH*KhM$&DCI+*F|?0qpY~0Ca.~xw?A],J#{nr:@
+2013-03-27 17:30:21,014 - catamidb.authorization - DEBUG - Making collection public: "|xJh>J`1]1rLjv20?+2~cr7D	]2KvlNpDJ(!oOgE]VgK^/i/6!-7B7cmH*KhM$&DCI+*F|?0qpY~0Ca.~xw?A],J#{nr:@
+2013-03-27 17:30:26,877 - dbadmintool.administratorbot - DEBUG - Connection open to database :: default
+2013-03-27 17:30:26,877 - dbadmintool.administratorbot - ERROR - Cannot connect to database :: nodatabase :: Query failed
+2013-03-27 17:30:26,923 - dbadmintool.administratorbot - DEBUG - {'Campaign': 0, 'Image': 0, 'AUVDeployment': 0, 'BRUVDeployment': 0, 'TIDeployment': 0, 'Deployment': 0, 'TVDeployment': 0, 'DOVDeployment': 0}
+2013-03-27 17:30:26,924 - dbadmintool.administratorbot - DEBUG - Collecting stats
+2013-03-27 17:30:26,930 - dbadmintool.administratorbot - DEBUG - {'Campaign': 0, 'Image': 0, 'AUVDeployment': 0, 'BRUVDeployment': 0, 'TIDeployment': 0, 'Deployment': 0, 'TVDeployment': 0, 'DOVDeployment': 0}
+2013-03-27 17:30:27,129 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:30:26.993737-catamidb.bak.tar.gz Checksum :: 4b3f43604f3fe793503246356819848dfa5fdda1
+2013-03-27 17:30:27,129 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-03-27 17:30:26.993737-catamidb.bak.tar.gz Checksum :: 4b3f43604f3fe793503246356819848dfa5fdda1
+2013-03-27 17:30:27,129 - dbadmintool.administratorbot - DEBUG - backup archive copied correctly
+2013-03-27 17:30:27,130 - dbadmintool.administratorbot - DEBUG - 2013-03-27 17:30:26.993737-catamidb.bak is27250 bytes in size
+2013-03-27 17:30:27,130 - dbadmintool.administratorbot - DEBUG - File name in archive matches backup file
+2013-03-27 17:30:27,132 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:30:26.993737-catamidb.bak Checksum :: a2d0b9fc4b8d31f9cf1bd3cd4083e1ebc0f9aa93
+2013-03-27 17:30:27,132 - dbadmintool.administratorbot - DEBUG - /tmp/2013-03-27 17:30:26.993737-catamidb.bak Checksum :: a2d0b9fc4b8d31f9cf1bd3cd4083e1ebc0f9aa93
+2013-03-27 17:30:27,133 - dbadmintool.administratorbot - DEBUG - backup file copied correctly
+2013-03-27 17:30:27,133 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-03-27 17:30:27,238 - dbadmintool.administratorbot - DEBUG - File and copy checksums agree
+2013-03-27 17:30:27,338 - dbadmintool.administratorbot - ERROR - File and copy checksums dont agree
+2013-03-27 17:30:27,439 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:30:27.338557-catamidb.bak.tar.gz Checksum :: c6f29aacb02ea6e091c54ec8f9a30da28e4347d0
+2013-03-27 17:30:27,439 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/copy_2013-03-27 17:30:27.338557-catamidb.bak.tar.gz Checksum :: c6f29aacb02ea6e091c54ec8f9a30da28e4347d0
+2013-03-27 17:30:27,440 - dbadmintool.administratorbot - ERROR - backup archive check sum fail
+2013-03-27 17:30:27,440 - dbadmintool.administratorbot - DEBUG - 2013-03-27 17:30:27.338557-catamidb.bak is27250 bytes in size
+2013-03-27 17:30:27,441 - dbadmintool.administratorbot - ERROR - File name in archive does not match backup file
+2013-03-27 17:30:27,443 - dbadmintool.administratorbot - DEBUG - ./dbadmintool/backup/2013-03-27 17:30:27.338557-catamidb.bak Checksum :: a2d0b9fc4b8d31f9cf1bd3cd4083e1ebc0f9aa93
+2013-03-27 17:30:27,443 - dbadmintool.administratorbot - DEBUG - /tmp/2013-03-27 17:30:27.338557-catamidb.bak Checksum :: a2d0b9fc4b8d31f9cf1bd3cd4083e1ebc0f9aa93
+2013-03-27 17:30:27,443 - dbadmintool.administratorbot - ERROR - backup file check sum fail
+2013-03-27 17:30:27,444 - dbadmintool.administratorbot - DEBUG - removing duplicate files
+2013-03-27 17:30:27,448 - features.RunScriptTool - DEBUG - job_id is :: MCO41WJ5T59H
+2013-03-27 17:30:27,532 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/MCO41WJ5T59H/1.p
+2013-03-27 17:30:27,532 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/MCO41WJ5T59H/2.p
+2013-03-27 17:30:27,533 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/MCO41WJ5T59H
+2013-03-27 17:30:27,536 - features.RunScriptTool - DEBUG - job_id is :: 8CD4GNGJ7YPH
+2013-03-27 17:30:27,626 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/8CD4GNGJ7YPH
+2013-03-27 17:30:27,626 - features.RunScriptTool - DEBUG - Writing libfeature run file :: /tmp/CATAMI/features/Anon/8CD4GNGJ7YPH/run_libfeature.py
+2013-03-27 17:30:27,627 - features.RunScriptTool - DEBUG - Writing pbs script :: /tmp/CATAMI/features/Anon/8CD4GNGJ7YPH/queue_libfeature.pbs
+2013-03-27 17:30:27,629 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/8CD4GNGJ7YPH/job.tar.gz to :: epic.ivec.org
+2013-03-27 17:30:27,637 - features.RunScriptTool - DEBUG - job_id is :: 5T7W9Y03YK4G
+2013-03-27 17:30:27,836 - features.tests - DEBUG - [u'hHe\'tblRq^NRP*TtI\n3C6 GV6=\')5)ePJ CpU[NGzhX~}&vDW\\@YT3}ZoO\x0cJ?1Xv5GuA1bCgs]xoHQQ(tJ8GrxD^\\?S|Rpbh/4~0xj%*\n^H0\tS2)PsKv+:\x0bjyh`L4Wq:(DTF0aA=Z}|P"w\nH4^./k\\>7(Ga1}h:X:-yH\x0b6A+q/fPC+}:ck]4sBJs0H?v;p\x0c%x^\\&dm`q', u'W9^[vce>,,>)A=1\x0b90:\tUH\tE[}V@\'/4_RQ$.-bjqTZ}#Zh+gQ]R\n]|A}pN"{g#\\\x0ckzDD&.P3G"\tg9ZcE(Ybo=EvS1A4+~QH.\'r-Tf/CwBx)|U&o>w|aJR#K#^1gc0\\QE]5bgS!+SX"*HL0;u\x0c@?JN7\nWN8\r*}YCS*J3cG[jor\\(M[JZ1[a^unG1L`k8C>QoPw+haLlyp']
+2013-03-27 17:30:27,837 - features.RunScriptTool - DEBUG - job_id is :: YNHNP780QJTP
+2013-03-27 17:30:27,917 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/YNHNP780QJTP
+2013-03-27 17:30:27,917 - features.RunScriptTool - DEBUG - Writing libfeature run file :: /tmp/CATAMI/features/Anon/YNHNP780QJTP/run_libfeature.py
+2013-03-27 17:30:27,918 - features.RunScriptTool - DEBUG - Writing pbs script :: /tmp/CATAMI/features/Anon/YNHNP780QJTP/queue_libfeature.pbs
+2013-03-27 17:30:27,920 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/YNHNP780QJTP/job.tar.gz to :: epic.ivec.org
+2013-03-27 17:30:27,920 - features.RunScriptTool - ERROR - Failed to PUT :: /tmp/CATAMI/features/Anon/YNHNP780QJTP/job.tar.gz to server :: epic.ivec.org
+2013-03-27 17:30:27,922 - features.RunScriptTool - ERROR - Failed to PUT :: /tmp/CATAMI/features/Anon/YNHNP780QJTPjob.tar.gz to server
+2013-03-27 17:30:27,934 - features.RunScriptTool - DEBUG - job_id is :: PKSPXB3Z9WS2
+2013-03-27 17:30:28,016 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/PKSPXB3Z9WS2
+2013-03-27 17:30:28,019 - features.RunScriptTool - DEBUG - job_id is :: C2LZQOWBUA18
+2013-03-27 17:30:28,168 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/C2LZQOWBUA18/1.p
+2013-03-27 17:30:28,213 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/C2LZQOWBUA18/2.p
+2013-03-27 17:30:28,219 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/C2LZQOWBUA18/1.p
+2013-03-27 17:30:28,221 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/C2LZQOWBUA18/2.p
+2013-03-27 17:30:28,261 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:30:28,261 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:30:28,263 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:30:28,263 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:30:28,264 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:30:28,265 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:30:28,265 - features.RunScriptTool - ERROR - Failed to submit job :: catami.pbs
+2013-03-27 17:30:28,265 - features.RunScriptTool - DEBUG - copying file :: catami.pbs to :: epic.ivec.org
+2013-03-27 17:30:28,266 - features.RunScriptTool - ERROR - Failed to PUT :: catami.pbs to server :: epic.ivec.org
+2013-03-27 17:30:28,266 - features.RunScriptTool - DEBUG - Writing libfeature run file :: /tmp/run_libfeature.py
+2013-03-27 17:30:28,267 - features.RunScriptTool - DEBUG - Writing pbs script :: /tmp/queue_libfeature.pbs
+2013-03-27 17:30:28,307 - features.RunScriptTool - DEBUG - job_id is :: 7D7FNFTW2R6L
+2013-03-27 17:30:28,475 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/7D7FNFTW2R6L/1.p
+2013-03-27 17:30:28,476 - features.RunScriptTool - DEBUG - Writing numpy array to :: /tmp/CATAMI/features/Anon/7D7FNFTW2R6L/2.p
+2013-03-27 17:30:28,483 - features.RunScriptTool - DEBUG - Writing meta.json to disk at location :: /tmp/CATAMI/features/Anon/7D7FNFTW2R6L
+2013-03-27 17:30:28,483 - features.tests - DEBUG - ['/tmp/CATAMI/features/Anon/7D7FNFTW2R6L/meta.json', '/tmp/CATAMI/features/Anon/7D7FNFTW2R6L/1.p', '/tmp/CATAMI/features/Anon/7D7FNFTW2R6L/2.p']
+2013-03-27 17:30:28,492 - features.RunScriptTool - DEBUG - job_id is :: A7ROQH96OMY2
+2013-03-27 17:30:28,588 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:30:28,593 - features.RunScriptTool - DEBUG - job_id is :: XYNLZQX5EYPM
+2013-03-27 17:30:28,703 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:30:28,718 - features.RunScriptTool - DEBUG - job_id is :: OWRJYF4TL6G5
+2013-03-27 17:30:28,782 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:30:28,782 - features.RunScriptTool - DEBUG - Sending job request
+2013-03-27 17:30:28,783 - features.RunScriptTool - ERROR - Failed to submit job :: /tmp/CATAMI/features/Anon/tmp.txt
+2013-03-27 17:30:28,784 - features.RunScriptTool - DEBUG - job_id is :: ADEHGQTOPNGF
+2013-03-27 17:30:28,854 - features.RunScriptTool - DEBUG - copying file :: /tmp/CATAMI/features/Anon/tmp.txt to :: catami.ivec.org
+2013-03-27 17:30:28,855 - features.RunScriptTool - ERROR - Failed to PUT :: /tmp/CATAMI/features/Anon/tmp.txt to server :: catami.ivec.org
+2013-03-27 17:30:28,865 - staging.auvimport - DEBUG - Finished opening NetCDF file.
+2013-03-27 17:30:28,867 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-03-27 17:30:28,867 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:30:28,867 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:30:31,059 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-03-27 17:30:31,060 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:30:31,060 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:30:59,812 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/invalid.extension
+2013-03-27 17:30:59,813 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-03-27 17:30:59,814 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-03-27 17:30:59,814 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-03-27 17:30:59,815 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-03-27 17:30:59,815 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xls
+2013-03-27 17:30:59,815 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:30:59,816 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:31:02,203 - staging.tasks - DEBUG - metadata_sheet_names: getting sheet names.
+2013-03-27 17:31:02,204 - staging.tasks - DEBUG - metadata_outline: getting file outline: staging/fixtures/bruv_metadata.xlsx
+2013-03-27 17:31:02,204 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:31:02,204 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:31:33,528 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-03-27 17:31:33,529 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:31:33,529 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:31:33,529 - staging.metadata - DEBUG - xls_transform: opening workbook.
+2013-03-27 17:31:37,275 - staging.metadata - DEBUG - xls_transform: found 23 headings.
+2013-03-27 17:31:37,275 - staging.metadata - DEBUG - xls_transform: using headings as fields.
+2013-03-27 17:31:37,276 - staging.metadata - DEBUG - xls_transform: mapping 23 columns.
+2013-03-27 17:31:37,307 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-03-27 17:31:37,307 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:31:37,307 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:31:37,307 - staging.metadata - DEBUG - xlsx_transform: opening workbook.
+2013-03-27 17:32:05,944 - staging.metadata - DEBUG - xlsx_transform: found 23 headings.
+2013-03-27 17:32:05,944 - staging.metadata - DEBUG - xlsx_transform: using headings as fields.
+2013-03-27 17:32:05,944 - staging.metadata - DEBUG - xlsx_transform: mapping 23 columns.
+2013-03-27 17:32:06,069 - staging.tasks - DEBUG - metadata_transform: transforming file data.
+2013-03-27 17:32:06,070 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-03-27 17:32:06,070 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-03-27 17:32:06,070 - staging.tasks - WARNING - metadata_outline: cannot handle extension ''
+2013-03-27 17:32:06,071 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xls.
+2013-03-27 17:32:06,071 - staging.tasks - DEBUG - metadata_type: file is xls format.
+2013-03-27 17:32:06,071 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .xlsx.
+2013-03-27 17:32:06,071 - staging.tasks - DEBUG - metadata_type: file is xlsx format.
+2013-03-27 17:32:06,071 - staging.tasks - DEBUG - metadata_type: file extension (normalised) is .extension.
+2013-03-27 17:32:06,071 - staging.tasks - DEBUG - metadata_type: file is unknown format.
+2013-03-27 17:32:10,729 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Tasmania200906
+2013-03-27 17:32:10,761 - catamidb.authorization - DEBUG - Making collection public: Tasmania200906
+2013-03-27 17:32:10,853 - staging.views - DEBUG - metadatastage: validated, now saving.
+2013-03-27 17:32:10,873 - staging.views - DEBUG - metadatastage: saved, now redirecting.
+2013-03-27 17:32:10,876 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:32:10,876 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:32:10,876 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x116747350>
+2013-03-27 17:32:10,877 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x116747550>
+2013-03-27 17:32:10,877 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:32:10,877 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:32:10,878 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:32:10,878 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:32:10,878 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x116747650>
+2013-03-27 17:32:10,878 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-03-27 17:32:10,879 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:32:10,879 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:32:10,879 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x119350090>
+2013-03-27 17:32:10,879 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x119350b50>
+2013-03-27 17:32:10,880 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x116747090>
+2013-03-27 17:32:10,880 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-03-27 17:32:10,880 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x116747750>'
+2013-03-27 17:32:10,880 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x116747390>'
+2013-03-27 17:32:10,880 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointWidget object at 0x116747550>
+2013-03-27 17:32:10,881 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-03-27 17:32:10,882 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-03-27 17:32:10,882 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:32:10,882 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:32:10,882 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x116747fd0>, <staging.widgets.MultiColumnWidget object at 0x116747750>, <django.forms.widgets.TextInput object at 0x116747f90>)
+2013-03-27 17:32:10,882 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x116747350>
+2013-03-27 17:32:10,883 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-03-27 17:32:10,889 - staging.widgets - DEBUG - MultiSourceField creating for field type 'FloatField', label 'None'
+2013-03-27 17:32:10,889 - staging.widgets - DEBUG - MultiSourceField base widget type 'TextInput'
+2013-03-27 17:32:10,889 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:32:10,889 - staging.widgets - DEBUG - MultiColumnWidget based on single Widget
+2013-03-27 17:32:10,889 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x1167470d0>, <staging.widgets.MultiColumnWidget object at 0x116747650>, <django.forms.widgets.TextInput object at 0x116747310>)
+2013-03-27 17:32:10,890 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.FloatField object at 0x116747fd0>
+2013-03-27 17:32:10,890 - staging.widgets - DEBUG - MultiColumnField based on a Field
+2013-03-27 17:32:10,890 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-03-27 17:32:10,891 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x119350690> <django.forms.widgets.TextInput object at 0x116747310>
+2013-03-27 17:32:11,173 - staging.widgets - DEBUG - MultSourceWidget.render (single)
+2013-03-27 17:32:11,174 - staging.widgets - DEBUG - <django.forms.widgets.Select object at 0x119350690> <django.forms.widgets.TextInput object at 0x116747310>
+2013-03-27 17:32:11,175 - staging.widgets - DEBUG - MultiSourceField creating for field type 'PointField', label 'None'
+2013-03-27 17:32:11,175 - staging.widgets - DEBUG - MultiSourceField base widget type 'PointWidget'
+2013-03-27 17:32:11,175 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:32:11,176 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:32:11,176 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x116747d90>
+2013-03-27 17:32:11,176 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TextInput object at 0x116747ad0>
+2013-03-27 17:32:11,176 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x116747a10>, <staging.widgets.MultiColumnWidget object at 0x11a3c2510>, <staging.widgets.PointWidget object at 0x116747b10>)
+2013-03-27 17:32:11,176 - staging.widgets - DEBUG - MultiColumnField creating for field <staging.widgets.PointField object at 0x1167473d0>
+2013-03-27 17:32:11,177 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-03-27 17:32:11,177 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x1167479d0>'
+2013-03-27 17:32:11,177 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.FloatField object at 0x116747cd0>'
+2013-03-27 17:32:11,181 - staging.widgets - DEBUG - MultiSourceField creating for field type 'SplitDateTimeField', label 'None'
+2013-03-27 17:32:11,181 - staging.widgets - DEBUG - MultiSourceField base widget type 'SplitDateTimeWidget'
+2013-03-27 17:32:11,181 - staging.widgets - DEBUG - MultiColumnWidget initialising
+2013-03-27 17:32:11,181 - staging.widgets - DEBUG - MultiColumnWidget based on MultiWidget
+2013-03-27 17:32:11,181 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.DateInput object at 0x1153932d0>
+2013-03-27 17:32:11,182 - staging.widgets - DEBUG - MultiColumnWidget creating subwidget for <django.forms.widgets.TimeInput object at 0x1153935d0>
+2013-03-27 17:32:11,182 - staging.widgets - DEBUG - MultiSourceWidget has child widgets: (<django.forms.widgets.RadioSelect object at 0x115393210>, <staging.widgets.MultiColumnWidget object at 0x115393e10>, <django.forms.widgets.SplitDateTimeWidget object at 0x119350110>)
+2013-03-27 17:32:11,182 - staging.widgets - DEBUG - MultiColumnField creating for field <django.forms.fields.SplitDateTimeField object at 0x1167471d0>
+2013-03-27 17:32:11,183 - staging.widgets - DEBUG - MultiColumnField based on a MultiValueField
+2013-03-27 17:32:11,183 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.DateField object at 0x116747750>'
+2013-03-27 17:32:11,183 - staging.widgets - DEBUG - MultiColumnField creating subfield for '<django.forms.fields.TimeField object at 0x119350510>'
+2013-03-27 17:32:12,031 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: N$Dj1S1?dSJ+<ZVSW9(3M]?(?nJUU ;?	&/1qZ3\4Y|wQmTGM?3g8hO\o(D?ty.~Hpyx	JJ#YhQ6?%X
+@a8p-l(5'Ig/?YjgR'n
+2013-03-27 17:32:12,107 - catamidb.authorization - DEBUG - Making collection public: N$Dj1S1?dSJ+<ZVSW9(3M]?(?nJUU ;?	&/1qZ3\4Y|wQmTGM?3g8hO\o(D?ty.~Hpyx	JJ#YhQ6?%X
+@a8p-l(5'Ig/?YjgR'n
+2013-03-27 17:32:12,142 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: !3%lnxX4niAPF80*Mt47 =LB?V,(\N9,lm9t2[9ZMpq+Cz5r;.X	rLmt-s0(M?tEIf;GZg<:)(Hirm&T\/ ^yfxRq(Pc2wY((
+2013-03-27 17:32:12,230 - catamidb.authorization - DEBUG - Making collection public: !3%lnxX4niAPF80*Mt47 =LB?V,(\N9,lm9t2[9ZMpq+Cz5r;.X	rLmt-s0(M?tEIf;GZg<:)(Hirm&T\/ ^yfxRq(Pc2wY((
+2013-03-27 17:32:12,284 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: C,7K EyfwA/@)K*e3/"D{[HGg"-bDse*4Kr?,xnS09jcfh^n_,4aWMF	ym/PeaOZR<1
+L!DT){Fx9uF$4QS
+^E"VP{RtrK71<9
+2013-03-27 17:32:12,349 - catamidb.authorization - DEBUG - Making collection public: C,7K EyfwA/@)K*e3/"D{[HGg"-bDse*4Kr?,xnS09jcfh^n_,4aWMF	ym/PeaOZR<1
+L!DT){Fx9uF$4QS
+^E"VP{RtrK71<9
+2013-03-27 17:32:12,954 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: .CHD}H	<Yp$5Zf[;Sn#aM1j<8TE}kmN|bX?Z*ogcvvBwn3>Jx'|]xU1rQrs3[TqTjs{Czz<-]W}C OAIJS8,uDiWs%caJR63
+2013-03-27 17:32:12,994 - catamidb.authorization - DEBUG - Making collection public: .CHD}H	<Yp$5Zf[;Sn#aM1j<8TE}kmN|bX?Z*ogcvvBwn3>Jx'|]xU1rQrs3[TqTjs{Czz<-]W}C OAIJS8,uDiWs%caJR63
+2013-03-27 17:32:13,009 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: /m71qU"R6b/M}z6YQ"$jv?
+xD.;RY~?0hZ:[N(c4XGrb&1gIsyQ`
+p>ljY\Qe+(u74l?Y8BwOe27'6.R8|o)8!{~Or/p$
+2013-03-27 17:32:13,049 - catamidb.authorization - DEBUG - Making collection public: /m71qU"R6b/M}z6YQ"$jv?
+xD.;RY~?0hZ:[N(c4XGrb&1gIsyQ`
+p>ljY\Qe+(u74l?Y8BwOe27'6.R8|o)8!{~Or/p$
+2013-03-27 17:32:13,058 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: |,2-b5xQgh`qH%g:	dIs]
+2OKj=
+Sw8'5\-GM<4
+PQ8y:$:th&^-]aaX3UCMC*BIEw'2)*-EY
+OTQwGg;	TcvK5fb9_X]#>hYS
+
+2013-03-27 17:32:13,096 - catamidb.authorization - DEBUG - Making collection public: |,2-b5xQgh`qH%g:	dIs]
+2OKj=
+Sw8'5\-GM<4
+PQ8y:$:th&^-]aaX3UCMC*BIEw'2)*-EY
+OTQwGg;	TcvK5fb9_X]#>hYS
+
+2013-03-27 17:32:13,641 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: PrROOQ9*}uLZ!XCh?C}
+w8VO`)7= vC'nV\NV7F:/[h.Xnf4@c<5WHh"<Oi\&414({( [BqAAT_/oTbcf2JPp*.K{t+V*ld,t
+2013-03-27 17:32:13,683 - catamidb.authorization - DEBUG - Making collection public: PrROOQ9*}uLZ!XCh?C}
+w8VO`)7= vC'nV\NV7F:/[h.Xnf4@c<5WHh"<Oi\&414({( [BqAAT_/oTbcf2JPp*.K{t+V*ld,t
+2013-03-27 17:32:13,701 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: EEF?Z4m1[SO,(bc<w6dH[acm*1?I#ElvD4p(B y=n>q:b^ty0~^CH?yY{YessMO=24?gb>c3-q^%0o?2,M(
+a	,3]7ZN8YK0c
+2013-03-27 17:32:13,741 - catamidb.authorization - DEBUG - Making collection public: EEF?Z4m1[SO,(bc<w6dH[acm*1?I#ElvD4p(B y=n>q:b^ty0~^CH?yY{YessMO=24?gb>c3-q^%0o?2,M(
+a	,3]7ZN8YK0c
+2013-03-27 17:32:13,750 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: -?ymqT| R}oq6#TmRNvk$zI@mk<RmS{~,I}8S\m=tuysm3g4aYz2C[{(Vz)E#;K5"Gy,,NUT:!TBJ3Qe}@%}+d'3bX{AQL?q6ojD
+2013-03-27 17:32:13,792 - catamidb.authorization - DEBUG - Making collection public: -?ymqT| R}oq6#TmRNvk$zI@mk<RmS{~,I}8S\m=tuysm3g4aYz2C[{(Vz)E#;K5"Gy,,NUT:!TBJ3Qe}@%}+d'3bX{AQL?q6ojD
+2013-03-27 17:32:14,269 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: |FDE4s`CJjh"wO N1q`w a_Y2S
+2r]peXw\fr)(I,\@
+;~r@p1!^HG'E&Q.W=(s9]D$a 8Kk7TYiMuw93*UhQDj[m8^is
+2013-03-27 17:32:14,303 - catamidb.authorization - DEBUG - Making collection public: |FDE4s`CJjh"wO N1q`w a_Y2S
+2r]peXw\fr)(I,\@
+;~r@p1!^HG'E&Q.W=(s9]D$a 8Kk7TYiMuw93*UhQDj[m8^is
+2013-03-27 17:32:14,322 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: n8cdEy?OzZXRE4u+GxF9xV$E3+"SLO
+@prDNC|Z=% +b_/fgzo' So5k]?A@ftA6A6,ygiHDw4wdmb"zs{P<vQ/D-8GP+Og
+2013-03-27 17:32:14,354 - catamidb.authorization - DEBUG - Making collection public: n8cdEy?OzZXRE4u+GxF9xV$E3+"SLO
+@prDNC|Z=% +b_/fgzo' So5k]?A@ftA6A6,ygiHDw4wdmb"zs{P<vQ/D-8GP+Og
+2013-03-27 17:32:14,365 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: i*^w=vo8"jf&Z/r%+}foVNz1
+ss3ere.fmTt_Yd
+#,:aSj{rxxy_`&8BZ=a=3@=ItztBc?CcNPiX-)'(i0k*zOb/71O%_etX5ye
+2013-03-27 17:32:14,397 - catamidb.authorization - DEBUG - Making collection public: i*^w=vo8"jf&Z/r%+}foVNz1
+ss3ere.fmTt_Yd
+#,:aSj{rxxy_`&8BZ=a=3@=ItztBc?CcNPiX-)'(i0k*zOb/71O%_etX5ye
+2013-03-27 17:32:14,800 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: T>'A08hBPCM^lxi$FVe43`[s$Y #qHFuk
+g0)f6Mi8q <~KhuRN}_`"1]^&yTT,tU'Q0fSfLu[ZMI_f7*(05pQi&v$7/ USU<B
+2013-03-27 17:32:14,834 - catamidb.authorization - DEBUG - Making collection public: T>'A08hBPCM^lxi$FVe43`[s$Y #qHFuk
+g0)f6Mi8q <~KhuRN}_`"1]^&yTT,tU'Q0fSfLu[ZMI_f7*(05pQi&v$7/ USU<B
+2013-03-27 17:32:14,845 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: <Ssv>BI:#K*! _B&%S_?dR^7G7QAoLJ~|JFsyS<`+e;zjgy;m.}=rA83oOM*kliO$[S6|?.bi	QJu!nPb*J$>{1cR4.EoL3EIG
+2013-03-27 17:32:14,875 - catamidb.authorization - DEBUG - Making collection public: <Ssv>BI:#K*! _B&%S_?dR^7G7QAoLJ~|JFsyS<`+e;zjgy;m.}=rA83oOM*kliO$[S6|?.bi	QJu!nPb*J$>{1cR4.EoL3EIG
+2013-03-27 17:32:14,883 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: M*LIo'SZUZbF:UBzc5|Mz$"UlH(oYEan|uh;GGR\P`j`$|%k\ g~J@QF:jty<iW,9ZlQ\)	f5O{PCO!.*H~7>p|
+(
+6L0-k
+L1P
+2013-03-27 17:32:14,914 - catamidb.authorization - DEBUG - Making collection public: M*LIo'SZUZbF:UBzc5|Mz$"UlH(oYEan|uh;GGR\P`j`$|%k\ g~J@QF:jty<iW,9ZlQ\)	f5O{PCO!.*H~7>p|
+(
+6L0-k
+L1P
+2013-03-27 17:32:15,255 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: Up)!-cYnx6XKqD<bQU#dhUU#J	JDAdKmU%k8$%0-"fpROSsQfB.-AsUs#2bAD`gLks,)
+(9v5tmG/ qAV^v[nUp-DxIO?>4&f_
+2013-03-27 17:32:15,287 - catamidb.authorization - DEBUG - Making collection public: Up)!-cYnx6XKqD<bQU#dhUU#J	JDAdKmU%k8$%0-"fpROSsQfB.-AsUs#2bAD`gLks,)
+(9v5tmG/ qAV^v[nUp-DxIO?>4&f_
+2013-03-27 17:32:15,297 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: 	r&gty>U7p5+C{*@#wxp!%]]44G;
+R/3VHpQDQ[ Ik#/%LvlDVxZe):|FwMfQ'6WjDo^%:WL>vt^PC)V2||M:qB9*~n62YN{Dme^
+2013-03-27 17:32:15,328 - catamidb.authorization - DEBUG - Making collection public: 	r&gty>U7p5+C{*@#wxp!%]]44G;
+R/3VHpQDQ[ Ik#/%LvlDVxZe):|FwMfQ'6WjDo^%:WL>vt^PC)V2||M:qB9*~n62YN{Dme^
+2013-03-27 17:32:15,336 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: enm!*<=#@LW5)(.lwkD$4*Aga$(dx
+R~=S!KU_8m;,:e!;n5,y5n	zB#FSyZ7,Gu,!%kKPj/mQA}-(;_,c'UoxvF,a
+<Dsg&
+2013-03-27 17:32:15,370 - catamidb.authorization - DEBUG - Making collection public: enm!*<=#@LW5)(.lwkD$4*Aga$(dx
+R~=S!KU_8m;,:e!;n5,y5n	zB#FSyZ7,Gu,!%kKPj/mQA}-(;_,c'UoxvF,a
+<Dsg&
+2013-03-27 17:32:15,711 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: zVjNN|jjzKzg6LkCXx_'CSH^42>S_V'l]3Y*=Y,2.)yWT[?WdP+`?;ZGpV}]R\;0:A~BT.-=X==<cyd1YyutoN!R{MAa% @1#n
+2013-03-27 17:32:15,746 - catamidb.authorization - DEBUG - Making collection public: zVjNN|jjzKzg6LkCXx_'CSH^42>S_V'l]3Y*=Y,2.)yWT[?WdP+`?;ZGpV}]R\;0:A~BT.-=X==<cyd1YyutoN!R{MAa% @1#n
+2013-03-27 17:32:15,756 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: ZH/zaI-ob}79B~CT[yUux])A88N3V_:l3fzyXh>^{	9d=8<~!&Qc)K" 60q48`:wm .)\QV%hC]UrnYQIifoi	|y.wuR8 BYuc	
+2013-03-27 17:32:15,787 - catamidb.authorization - DEBUG - Making collection public: ZH/zaI-ob}79B~CT[yUux])A88N3V_:l3fzyXh>^{	9d=8<~!&Qc)K" 60q48`:wm .)\QV%hC]UrnYQIifoi	|y.wuR8 BYuc	
+2013-03-27 17:32:15,796 - catamidb.authorization - DEBUG - Applying owner permissions to campaign: .?C!.i"K)^yPxuR4#{w&}*882N#'d=1V/(<!BxMS=|P6xB9{w8YC"zayhhlP2`5VFp[%R>3}rYT@}k^Kqew}7LeHQ_K<.]A04~
+2013-03-27 17:32:15,826 - catamidb.authorization - DEBUG - Making collection public: .?C!.i"K)^yPxuR4#{w&}*882N#'d=1V/(<!BxMS=|P6xB9{w8YC"zayhhlP2`5VFp[%R>3}rYT@}k^Kqew}7LeHQ_K<.]A04~

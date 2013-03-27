@@ -10,11 +10,11 @@
             <h1>Projects</h1>
 
             <p>This page shows a summary of the Projects that you have access to.
-                The lists include Collections and Worksets.
-                A Collection is a set of data (images and associated metadata) that has been prepared by a user for
+                The lists include Projects and Worksets.
+                A Project is a set of data (images and associated metadata) that has been prepared by a user for
                 further processing, downloading or sharing.
                 The data may come from one or more deployments, surveys or campaigns.
-                A Workset is a subset of a Collection, chosen according to some user-defined criteria usually for
+                A Workset is a subset of a Project, chosen according to some user-defined criteria usually for
                 annotation or further analysis.
             </p>
         </div>
@@ -25,8 +25,8 @@
         <div class="span6">
             <form class="form-inline well">
                 <span style="font-size: 10px; color: #a8a8a8; text-transform: uppercase;">Filters: </span><br>
-                <a class="btn btn-primary pull-right" href="{% url webinterface.views.explore %}"><i
-                        class="icon-plus-sign-alt"></i> New Collection</a>
+                <a class="btn btn-primary pull-right" href="{% url webinterface.views.explore %}">New Project <i
+                        class="icon-plus-sign-alt"></i> </a>
 
                 <div class="btn-group api-filter">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Owner: <span class="api-filt-text">All</span>
@@ -43,7 +43,8 @@
                         {% endif %}
                     </ul>
                 </div>
-                {% if user.is_authenticated %}
+
+                {% comment %}{% if user.is_authenticated %}
                     <div class="btn-group api-filter">
                         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Access: <span
                                 class="api-filt-text">Any</span> <span class="caret"></span></a>
@@ -60,7 +61,8 @@
                             </li>
                         </ul>
                     </div>
-                {% endif %}
+                {% endif %}{% endcomment %}
+
                 <div class="btn-group api-filter">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Type: <span class="api-filt-text">Both</span>
                         <span class="caret"></span></a>
@@ -69,7 +71,7 @@
                             <label class="radio"><input type="radio" name="parent" id="parent" value="none" checked>Both</label>
                         </li>
                         <li>
-                            <label class="radio"><input type="radio" name="parent" id="parent__isnull" value="True">Collections</label>
+                            <label class="radio"><input type="radio" name="parent" id="parent__isnull" value="True">Projects</label>
                         </li>
                         <li>
                             <label class="radio"><input type="radio" name="parent" id="parent__isnull" value="False">Worksets</label>

@@ -59,9 +59,11 @@
             <h3>Search:</h3>
 
             <form>
+
                 {% switch Experimental %}
                     Year:
-                    <input type="number" min="2006" step="1" value="2007"><br><br>
+                    <input type="number" min="2006" step="1" value="2007"><br>
+                    <br>
                     Source:
                     <select style="width: 100%">
                         <option selected>AUV
@@ -71,26 +73,30 @@
                 {% endswitch %}
                 <br><br>
                 Campaign:
-                <select name="campaignSelect" multiple="multiple" class="workpane" id="campaignSelect"
+                <select name="campaignSelect" multiple="multiple"
+                        class="workpane" id="campaignSelect"
                         onchange="selectCampaign($(this).val());">
                     <!-- Content inserted from jqery -->
                 </select><br><br>
                 Deployments:
-                <select name="deploymentSelect" multiple="multiple" class="workpane" id="deploymentSelect"
+                <select name="deploymentSelect" multiple="multiple"
+                        class="workpane" id="deploymentSelect"
                         onchange="selectDeployment($(this).val());">
                     <!-- Content inserted from jqery -->
                 </select>
                 <br><br>
                 {% switch Experimental %}
-                    Depth Range: <strong id="selectedDepthMin"></strong> to <strong id="selectedDepthMax"></strong> m
+                    Depth Range: <strong id="selectedDepthMin"></strong> to
+                    <strong id="selectedDepthMax"></strong> m
                     <br>
-                    <span id="depthMin"></span><span id="depthMax" style="float:right"></span><br>
+                    <span id="depthMin"></span>
+                    <span id="depthMax" style="float:right"></span><br>
                     <div id="depthSlider" style="width:100%; height:5px"></div>
                     <br><br>
                 {% endswitch %}
             </form>
 
-            {% switch Collections %}
+            {% comment %}{% switch Collections %}
                 <div id="savecollection" class="well">
                     <p id="collection_info">Getting points...</p>
                     <a href="#" class="btn btn-primary btn-create-collection newCollection"
@@ -102,18 +108,40 @@
                         Save
                         As Collection</a>
                 </div>
-            {% endswitch %}
+            {% endswitch %}{% endcomment %}
+        </div>
+
+        <div id="CreateProjectModal" class="modal hide fade">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                <h3>Create Project</h3>
+            </div>
+            <div class="modal-body">
+                <div id='collection_options' style='z-index:3002'>Project Name
+                    <input type='text' id='collection_name' value='My Project'><br>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class='btn btn-primary btn-create-collection pull-right'
+                        onclick='createCollection();'> Ok
+                </button>
+            </div>
         </div>
 
         <div class="span10 viewpane">
 
-
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#map" data-toggle="tab">Map</a></li>
-                <li><a href="#thm" data-toggle="tab">Thumbnails</a></li>
+                <li class="active"><a href="#map" data-toggle="tab"><i
+                        class="icon-globe"></i> Map</a></li>
+                <li><a href="#thm" data-toggle="tab"><i
+                        class="icon-eye-open"></i> Images</a></li>
                 {% switch Experimental %}
                     <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
                 {% endswitch %}
+
+                <a href="#CreateProjectModal" class="btn btn-primary pull-right btn-create-collection newCollection" data-toggle="modal"><i class="icon-list-alt"></i> Create Project </a></a>
+
             </ul>
 
 

@@ -183,9 +183,9 @@ function CollectionAPI(usrsettings) {
             parent: clobj.parent,
             creation_info: clobj.creation_info,
             creation_date: clobj.creation_date.substr(0, 10),
-            access: (clobj.is_public) ? 'Public' : 'Private',
-            link: (clobj.parent_id) ? settings.linkurl + clobj.parent_id + '/' + clobj.id + '/' : settings.linkurl + clobj.id + '/',
-            type: (clobj.parent_id) ? 'Workset' : 'Collection'
+            access: "Public",//access: (clobj.is_public) ? 'Public' : 'Private',
+            link: (clobj.parent_id) ? settings.linkurl + clobj.parent_id + '/workset/' + clobj.id + '/' : settings.linkurl + clobj.id + '/',
+            type: (clobj.parent_id) ? 'Workset' : 'Project'
         };
 
         return clobjout;
@@ -250,13 +250,13 @@ function CollectionAPI(usrsettings) {
                     '<li class="nav-header">Jump to:</li>' +
                     '<li><a href="{link}#map" title="View {type} map"><i class="icon-globe"></i> Map view</a></li>' +
                     '<li><a href="{link}#thm" title="View {type} images"><i class="icon-picture"></i> Thumbnail view</a></li>' +
-                    '<li class="nav-header">Data Tasks</li>' +
-                    '<li><a href="{link}#dwn" title="Download Data"><i class="icon-download-alt"></i> Download</a></li>' +
+                    //'<li class="nav-header">Data Tasks</li>' +
+                    //'<li><a href="{link}#dwn" title="Download Data"><i class="icon-download-alt"></i> Download</a></li>' +
                     '</ul></span>';
             }
             format += '<span class="clinfo btn-group pull-right list-toggle">' +
                 '<span class="clinfoitem btn btn-mini disabled {type}" rel="btn-tooltip" title="This item is a {type}">{type}</span>' +
-                '<span class="clinfoitem btn btn-mini disabled {access}" rel="btn-tooltip" title="This {type} is {access}">{access}</span>' +
+                //'<span class="clinfoitem btn btn-mini disabled {access}" rel="btn-tooltip" title="This {type} is {access}">{access}</span>' +
                 '<a href="#_" class="clinfoitem clinfopopover btn btn-mini" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" data-content="<p>This <b>{type}</b> was created by <b>{username}</b> on <b>{creation_date}</b> and contains <b>{image_count}</b> images</p><small>{description}</small>" data-original-title="{type} info"><i class="icon-info-sign"></i></a>' +
                 '</span>' +
                 '<a href="{link}" class="clname">{name}</a>' +

@@ -177,7 +177,7 @@ class TestViews(TestCase):
         response = self.client.post("/collections/createworkset/random", post_data)
         self.assertEqual(response.status_code, 301)
 
-        response = self.client.get("/collections/1/1/")
+        response = self.client.get("/collections/1/workset/1/")
         self.assertEqual(response.status_code, 200)
 
         #make a collection from a deployment using random
@@ -233,54 +233,3 @@ class TestViews(TestCase):
         response = self.client.get("/data/auvdeployments/99999/")
         self.assertEqual(response.status_code, 200)
 
-    def test_bruvdeployments(self):
-        """@brief Test BRUV deployment browser interfaces
-
-        """
-        response = self.client.get("/data/bruvdeployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/bruvdeployments/1/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/bruvdeployments/99999/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_dovdeployments(self):
-        """@brief Test DOV deployment browser interfaces
-
-        """
-        response = self.client.get("/data/dovdeployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/dovdeployments/1/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/dovdeployments/99999/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_tveployments(self):
-        """@brief Test TV deployment browser interfaces
-
-        """
-        response = self.client.get("/data/tvdeployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/tvdeployments/1/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/tvdeployments/99999/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_tideployments(self):
-        """@brief Test TI deployment browser interfaces
-
-        """
-        response = self.client.get("/data/tideployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/tideployments/1/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/tideployments/99999/")
-        self.assertEqual(response.status_code, 200)
