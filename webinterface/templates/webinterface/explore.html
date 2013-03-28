@@ -50,7 +50,20 @@
             border: 2px;
         }
 
-    </style>
+        .textOverlay{
+        	z-index:5000;
+	        color: #fff;
+	        position: absolute;
+	        background-color: black;
+	        margin: 2px;
+	        padding: 2px;
+        }
+
+		#imageModal .modal-body {
+			max-height: 800px;
+		}
+
+	</style>
 {% endblock %}
 {% block content %}
     <div class="row-fluid">
@@ -136,10 +149,52 @@
         </div>
     </div>
 
+<!--  image Modal for map thumbnail click -->
+<div id="imageModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel">Image Preview</h3>
+	</div>
+	<div class="modal-body">
+		<p>Hmm...no image content? This is a problem</p>
+	</div>
+	<div class="modal-footer">
+		<i class="icon-angle-left icon-4x pull-left"></i>
+		<i class="icon-angle-right icon-4x pull-right"></i>
+	</div>
+</div>
+
 {% endblock %}
 
 {% block add_script %}
 
+	<script type="text/javascript">
+		function launchImageModal(requested_id) {		    
+		    var requested_api_url = 'http://localhost:8000/api/dev/image/'+requested_id+'/?&format=json';
+		    var requested_id_int = parseInt(requested_id,10); 
+		    var prev_id = requested_id_int - 1;
+		    var next_id = requested_id_int + 1;
+		    
+		    $.ajax({
+			     async: true,
+			     url: requested_api_url,
+			     dataType: "json",
+			     success: function(json_data) {
+			     	var imageName = json_data["web_location"].split("/").slice(-1)[0];
+			     	
+			     					   
+		   			$('#imageModal .modal-body').html("<div><div class='textOverlay'><h6>"+imageName+"</h6></div><img src='"+json_data["web_location"]+"'></div>");
+		   			$('#imageModal .modal-footer').html("<a href='javascript:launchImageModal("+prev_id+")' role='button' data-toggle='modal'><i class='icon-angle-left icon-4x pull-left'></i></a><a href='javascript:launchImageModal("+next_id+")'><i class='icon-angle-right icon-4x pull-right'></i></a>");
+		   			$('#imageModal').modal({show:true});
+				 }
+            })                       
+		}
+		
+
+	</script>
+
+
+	
     <script type="text/javascript">
 
         var currentSelectedDeployments = [];
