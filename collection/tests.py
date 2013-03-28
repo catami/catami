@@ -5,7 +5,7 @@ from django.test.utils import setup_test_environment
 from django.test import TestCase
 import guardian
 from guardian.core import ObjectPermissionChecker
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign
 from model_mommy import mommy
 from tastypie.test import ResourceTestCase, TestApiClient
 from catamidb.models import Image
@@ -211,6 +211,8 @@ class TestCollectionModel(TestCase):
         except Exception:
             self.assertTrue(True)
 
+
+
 #======================================#
 # Test the API                         #
 #======================================#
@@ -308,7 +310,7 @@ class TestCollectionResource(ResourceTestCase):
     def test_collections_operations_as_authorised_users(self):
         # create a campaign that only bill can see
         bills_collection = mommy.make_recipe('collection.collection3', id=3, owner=self.user_bill)
-        assign_perm('view_collection', self.user_bill, bills_collection)
+        assign('view_collection', self.user_bill, bills_collection)
 
         # check that bill can see via the API
         response = self.bill_api_client.get(self.collection_url, format='json')

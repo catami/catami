@@ -21,6 +21,7 @@ from django.contrib.gis.geos import fromstr
 from django.db.models import Max, Min
 import simplejson
 from django.conf import settings
+from collection.api import CollectionResource
 from collection.models import Collection, CollectionManager
 
 #account management
@@ -138,61 +139,61 @@ def projects(request):
                                'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
                               RequestContext(request))
 
-#@waffle_switch('Collections')
-#def my_collections(request):
-#    error_description = ''
+# @waffle_switch('Collections')
+# def my_collections(request):
+#     error_description = ''
 #
-#    collection_list = CollectionResource()
+#     collection_list = CollectionResource()
 #
-#    try:
-#        cl = collection_list.obj_get_list(request, owner=request.user.id)
-#        if (len(cl) == 0):
-#            error_description = 'Sorry, you don\'t seem to have any collections in your account.'
-#    except:
-#        cl = ''
-#        if (request.user.is_anonymous):
-#            error_description = 'Sorry, you dont appear to be logged in. Please login and try again.'
-#        else:
-#            error_description = 'An undetermined error has occured. Please contact support'
+#     try:
+#         cl = collection_list.obj_get_list(request, owner=request.user.id)
+#         if (len(cl) == 0):
+#             error_description = 'Sorry, you don\'t seem to have any collections in your account.'
+#     except:
+#         cl = ''
+#         if (request.user.is_anonymous):
+#             error_description = 'Sorry, you dont appear to be logged in. Please login and try again.'
+#         else:
+#             error_description = 'An undetermined error has occured. Please contact support'
 #
-#    return render_to_response('webinterface/mycollections.html',
-#        {"collections": cl,
-#        "listname":"cl_pub_all",
-#        "error_description":error_description},
-#        RequestContext(request))
-#
-#@waffle_switch('Collections')
-#def public_collections(request):
-#    error_description = ''
-#
-#    collection_list = CollectionResource()
-#    try:
-#        cl = collection_list.obj_get_list(request, is_public=True)
-#        if (len(cl) == 0):
-#            error_description = 'Sorry, there don\'t seem to be any public collections right now.'
-#    except:
-#        cl = ''
-#        if (request.user.is_anonymous):
-#            error_description = 'Sorry, public collections arent working for anonymous users right now. Please login and try again.'
-#        else:
-#            error_description = 'An undetermined error has occured. Please contact support'
-#
-#    return render_to_response('webinterface/publiccollections.html',
-#        {"collections": cl,
+#     return render_to_response('webinterface/mycollections.html',
+#         {"collections": cl,
 #         "listname":"cl_pub_all",
-#        "error_description":error_description},
+#         "error_description":error_description},
 #         RequestContext(request))
+#
+# @waffle_switch('Collections')
+# def public_collections(request):
+#     error_description = ''
+#
+#     collection_list = CollectionResource()
+#     try:
+#         cl = collection_list.obj_get_list(request, is_public=True)
+#         if (len(cl) == 0):
+#             error_description = 'Sorry, there don\'t seem to be any public collections right now.'
+#     except:
+#         cl = ''
+#         if (request.user.is_anonymous):
+#             error_description = 'Sorry, public collections arent working for anonymous users right now. Please login and try again.'
+#         else:
+#             error_description = 'An undetermined error has occured. Please contact support'
+#
+#     return render_to_response('webinterface/publiccollections.html',
+#         {"collections": cl,
+#          "listname":"cl_pub_all",
+#         "error_description":error_description},
+#          RequestContext(request))
 
 ## view collection table views
-#def public_collections_all(request):
-#    collection_list = CollectionResource()
-#    cl = collection_list.obj_get_list()
-#   return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
+def public_collections_all(request):
+    collection_list = CollectionResource()
+    cl = collection_list.obj_get_list()
+    return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
 @waffle_switch('Collections')
 def view_collection(request, collection_id):
-    return render_to_response('webinterface/viewcollection.html',
-                              #return render_to_response('webinterface/viewcollectionalternative.html',
+#    return render_to_response('webinterface/viewcollection.html',
+    return render_to_response('webinterface/viewcollectionalternative.html',
                               {"collection_id": collection_id,
                                'WMS_URL': settings.WMS_URL,
                                'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
@@ -201,8 +202,8 @@ def view_collection(request, collection_id):
 
 @waffle_switch('Collections')
 def view_workset(request, collection_id, workset_id):
-    return render_to_response('webinterface/viewcollection.html',
-                              #return render_to_response('webinterface/viewcollectionalternative.html',
+#    return render_to_response('webinterface/viewcollection.html',
+    return render_to_response('webinterface/viewworkset.html',
                               {"collection_id": collection_id,
                                "workset_id": workset_id,
                                'WMS_URL': settings.WMS_URL,
@@ -211,25 +212,25 @@ def view_workset(request, collection_id, workset_id):
 
 
 # view collection table views
-#def public_collections_all(request):
-#    collection_list = CollectionResource()
-#    cl = collection_list.obj_get_list()
-#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"pub_all"}, RequestContext(request))
-
-#def public_collections_recent(request):
-#    collection_list = CollectionResource()
-#    cl = collection_list.obj_get_list()
-#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"pub_rec"}, RequestContext(request))
-
-#def my_collections_all(request):
-#    collection_list = CollectionResource()
-#    cl = collection_list.obj_get_list(request,owner=request.user.id)
-#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_all"}, RequestContext(request))
-
-#def my_collections_recent(request):
-#    collection_list = CollectionResource()
-#    cl = collection_list.obj_get_list(request,owner=request.user.id)
-#    return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_rec"}, RequestContext(request))
+# def public_collections_all(request):
+#     collection_list = CollectionResource()
+#     cl = collection_list.obj_get_list()
+#     return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"pub_all"}, RequestContext(request))
+#
+# def public_collections_recent(request):
+#     collection_list = CollectionResource()
+#     cl = collection_list.obj_get_list()
+#     return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"pub_rec"}, RequestContext(request))
+#
+# def my_collections_all(request):
+#     collection_list = CollectionResource()
+#     cl = collection_list.obj_get_list(request,owner=request.user.id)
+#     return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_all"}, RequestContext(request))
+#
+# def my_collections_recent(request):
+#     collection_list = CollectionResource()
+#     cl = collection_list.obj_get_list(request,owner=request.user.id)
+#     return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_rec"}, RequestContext(request))
 
 # collection object tasks
 @waffle_switch('Collections')
@@ -564,6 +565,26 @@ def create_workset_from_collection(request, method):
             return HttpResponseRedirect(
                 '/collections/' + request.POST.get(
                     'c_id') + '/#SelectWorksetModal')  # Redirect after POST
+
+    return HttpResponse(form)
+
+@csrf_exempt
+def create_workset_from_project(request, method):
+    if request.method == 'POST':  # If the form has been submitted...
+        form = CreateWorksetForm(request.POST)  # A form bound to the POST data
+        if form.is_valid():  # All validation rules pass
+            workset = CollectionManager().workset_from_collection(
+                request.user,
+                request.POST.get('name'),
+                request.POST.get('description'),
+                request.POST.get('ispublic') == "true",
+                int(request.POST.get('c_id')),
+                int(request.POST.get('n')),
+                method
+            )
+
+            return HttpResponseRedirect(
+                '/collections/' + request.POST.get('c_id') + '/workset/' + workset.id.__str__())  # Redirect after POST
 
     return HttpResponse(form)
 
