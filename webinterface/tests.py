@@ -186,7 +186,7 @@ class TestViews(TestCase):
         response = self.client.post("/collections/createworkset/stratified", post_data)
         self.assertEqual(response.status_code, 301)
 
-        response = self.client.get("/collections/1/2/")
+        response = self.client.get("/collections/1/workset/2/")
         self.assertEqual(response.status_code, 200)
 
 
