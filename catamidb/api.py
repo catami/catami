@@ -1,3 +1,4 @@
+from shutil import copy
 from django.contrib.auth.models import User
 import guardian
 from guardian.shortcuts import (get_objects_for_user, get_perms_for_model,
@@ -11,9 +12,11 @@ from tastypie.authentication import (MultiAuthentication,
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import Unauthorized
-from tastypie.resources import ModelResource
+from tastypie.resources import ModelResource, Resource
 from .models import *
 from restthumbnails.helpers import get_thumbnail_proxy
+
+
 
 
 # ==============================
@@ -371,7 +374,7 @@ class DeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
 
     class Meta:
-        queryset = Deployment.objects.all()
+        queryset = Deployment.objects.prefetch_related("campaign").all()
         resource_name = "deployment"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
@@ -385,9 +388,9 @@ class DeploymentResource(ModelResource):
 class PoseResource(ModelResource):
     deployment = fields.ForeignKey(DeploymentResource, 'deployment')
     images = fields.ToManyField('catamidb.api.ImageResource', 'image_set',full=True)
-    #measurements = fields.ToManyField(
-    #    'catamidb.api.ScientificPoseMeasurementResource',
-    #    'scientificposemeasurement_set')
+    measurements = fields.ToManyField(
+        'catamidb.api.ScientificPoseMeasurementResource',
+        'scientificposemeasurement_set')
 
     class Meta:
         queryset = Pose.objects.all()
@@ -397,10 +400,11 @@ class PoseResource(ModelResource):
         authorization = PoseAuthorization()
         filtering = {
             'deployment': ALL_WITH_RELATIONS,
+            'depth': ['range', 'gt', 'lt'],
         }
         allowed_methods = ['get']
 
-    """
+
     def dehydrate_measurements(self, bundle):
         # change to view a small subset of the info
         # the rest isn't really needed in this resource
@@ -415,7 +419,7 @@ class PoseResource(ModelResource):
         return outlist
 
         #return bundle
-    """
+
 
     def dehydrate_images(self, bundle):
         """Dehydrate images within a pose.
@@ -432,32 +436,6 @@ class PoseResource(ModelResource):
 
         return outlist
 
-    #this gets called just before sending response
-    def alter_list_data_to_serialize(self, request, data):
-
-        #if flot is asking for the data, we need to package it up a bit
-        if request.GET.get("output") == "flot":
-            return self.package_series_for_flot_charts(data)
-
-        return data
-
-    #flot takes a two dimensional array of data, so we need to package the
-    #series up in this manner
-    def package_series_for_flot_charts(self, data):
-        data_table = []
-
-        #scale factors for reducing the data
-        list_length = len(data['objects'])
-        scale_factor = 4
-
-        #for index, bundle in enumerate(data['objects']):
-        #    data_table.append([index, bundle.obj.value])
-        for i in range(0, list_length, scale_factor):
-            data_table.append([i, data['objects'][i].data['depth']])
-
-        return {'data': data_table}
-
-
 class ImageResource(ModelResource):
     pose = fields.ForeignKey(PoseResource, 'pose')
     measurements = fields.ToManyField(
@@ -467,7 +445,7 @@ class ImageResource(ModelResource):
                                     'collections')
 
     class Meta:
-        queryset = Image.objects.all()
+        queryset = Image.objects.prefetch_related("pose").all()
         resource_name = "image"
         excludes = ['archive_location']
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
@@ -514,14 +492,65 @@ class ScientificMeasurementTypeResource(ModelResource):
             'normalised_name': ALL,
         }
 
+class SimplePoseResource(ModelResource):
+    """
+        SimplePoseResource has very limited relations. This is used for
+        performance purposes. i.e. Directly querying this resource should
+        be fast-ish...
+    """
 
-class ScientificPoseMeasurementResource(ModelResource):
-    pose = fields.ToOneField('catamidb.api.PoseResource', 'pose')
-    mtype = fields.ToOneField(
-        'catamidb.api.ScientificMeasurementTypeResource', "measurement_type")
+    deployment = fields.ForeignKey(DeploymentResource, 'deployment')
+    #images = fields.ToManyField('catamidb.api.ImageResource', 'image_set',full=True)
+    #measurements = fields.ToManyField(
+    #    'catamidb.api.ScientificPoseMeasurementResource',
+    #    'scientificposemeasurement_set')
 
     class Meta:
-        queryset = ScientificPoseMeasurement.objects.all()
+        queryset = Pose.objects.prefetch_related("deployment").all()
+        resource_name = "simplepose"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(),
+                                             ApiKeyAuthentication())
+        authorization = PoseAuthorization()
+        filtering = {
+            'deployment': ALL_WITH_RELATIONS,
+        #    'depth': ['range', 'gt', 'lt'],
+            }
+        allowed_methods = ['get']
+
+    #this gets called just before sending response
+    def alter_list_data_to_serialize(self, request, data):
+
+        #if flot is asking for the data, we need to package it up a bit
+        if request.GET.get("output") == "flot":
+            return self.package_series_for_flot_charts(data)
+
+        return data
+
+    #flot takes a two dimensional array of data, so we need to package the
+    #series up in this manner
+    def package_series_for_flot_charts(self, data):
+        data_table = []
+
+        #scale factors for reducing the data
+        list_length = len(data['objects'])
+        scale_factor = 4
+
+        #for index, bundle in enumerate(data['objects']):
+        #    data_table.append([index, bundle.obj.value])
+        for i in range(0, list_length, scale_factor):
+            data_table.append([i, data['objects'][i].data['depth']])
+
+        return {'data': data_table}
+
+class ScientificPoseMeasurementResource(ModelResource):
+
+    #this pose is related to the SimplePoseResource for performance pruposes
+    pose = fields.ToOneField(SimplePoseResource, 'pose')
+    mtype = fields.ToOneField(ScientificMeasurementTypeResource, "measurement_type")
+
+    class Meta:
+        queryset = ScientificPoseMeasurement.objects.prefetch_related("pose")\
+            .prefetch_related("measurement_type").all()
         resource_name = "scientificposemeasurement"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())

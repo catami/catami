@@ -79,7 +79,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/api/dev/pose/?format=json&deployment=1&output=flot&limit=10000",
+            url: "/api/dev/simplepose/?format=json&deployment=1&output=flot&limit=10000",
             success: function (response, textStatus, jqXHR) {
                 $.plot($("#placeholder_01"),
                         [{

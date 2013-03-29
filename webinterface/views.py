@@ -43,7 +43,6 @@ class CreateWorksetForm(forms.Form):
     c_id = forms.IntegerField()
     n = forms.IntegerField()
 
-
 #front page and zones
 def index(request):
     """@brief returns root catami html
