@@ -1,4 +1,66 @@
 {% extends "base-topmenu.html" %}
+
+{% block add_script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/collections.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            collectionId = {{ collection_id }};
+
+            //collection name
+            var api_url = "/api/dev/collection/" + '?id=' + collectionId;
+            $.ajax({
+                dataType: "json",
+                async: false,  // prevent asyncronous mode to allow setting of variables within function
+                url: api_url,
+                success: function (cl) {
+                    var clobj = cl.objects[0];
+                    $('#collection-name-nav').replaceWith('<a href="#rnd" data-toggle="tab" id="collection-name-nav">' + clobj.name + '</a>');
+                }
+            })
+
+            //worksets for collections
+            var apiurl = "/api/dev/collection/?parent=" + collectionId;
+            {% comment %}$('#collections-left-tabs').empty();{% endcomment %}
+
+            $.getJSON(apiurl, function (response) {
+
+                for (var i = 0; i < response.objects.length; i++) {
+                    //make url
+                    var worksetUrl = "/collections/" + collectionId + "/workset/" + response.objects[i].id;
+                    $('#collections-left-tabs').append('<li><a href="'+worksetUrl+'">' + response.objects[i].name + '</a></li>');
+                }
+
+                $('#collections-left-tabs').append('<li class="divider"></li>');
+            });
+
+
+            initDeploymentMap();
+
+            {% if workset_id %}
+                selectWorkset({{ workset_id }});
+            {% else %}
+                updateMapForSelectedCollection({{ collection_id }});
+            {% endif %}
+
+            getNewImageList('collection=' + collectionId);
+        });
+
+        function selectWorkset(id) {
+            getNewImageList('collection=' + id);
+            clinfo.getCollectionInfo(id, '#ws-info');
+            updateMapForSelectedCollection(id);
+
+            //$('#clearWorksetLink').html('clear');
+
+            // TODO: this is a hack - it should be a map layer
+            //$('#showWorksetMapLink').attr('onClick', 'updateMapForSelectedCollection(' + id + ');');
+            //$('#showWorksetMapLink').html('map');
+        }
+
+    </script>
+{% endblock %}
+
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
 {% block tail_head %}
     <style type="text/css">
@@ -55,7 +117,7 @@
             <ul class="nav nav-list" id="collections-left-tabs">
                 <li class="nav-header">Project</li>
                 <li class="active">
-                    <a href="#rnd" data-toggle="tab" id="collection-name-nav">Collection</a>
+                    <a href="#rnd" data-toggle="tab" id="collection-name-nav">Loading...</a>
                 </li>
                 {% comment %}</ul>
                 <ul class="nav nav-tabs nav-pills" id="collections-left-tabs">{% endcomment %}
@@ -129,71 +191,4 @@
     </div>
 {% endblock %}
 
-{% block add_script %}
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/collections.js"></script>
-    <script type="text/javascript">
 
-        // Collection info object
-        //clinfo = new CollectionInfo();
-
-        $(document).ready(function () {
-            collectionId = {{ collection_id }};
-
-            console.log(collectionId);
-
-            getNewImageList('collection=' + collectionId);
-            //initDeploymentMap ();
-            /*setCollectionProperties(
-            {{ collection_id }},'#Collection-properties');
-            clinfo.getCollectionInfo(collectionId, '#cl-info');*/
-            $('.cldescription').shorten({showChars: 50});          // Shorten descriptions for nicer display
-
-            //collection name
-            var api_url = "/api/dev/collection/" + '?id=' + collectionId;
-            $.ajax({
-                dataType: "json",
-                async: false,  // prevent asyncronous mode to allow setting of variables within function
-                url: api_url,
-                success: function (cl) {
-                    var clobj = cl.objects[0];
-                    $('#collection-name-nav').replaceWith('<a href="#rnd" data-toggle="tab" id="collection-name-nav">' + clobj.name + '</a>');
-                }
-            })
-
-            //worksets for collections
-            var apiurl = "/api/dev/collection/?parent=" + collectionId;
-            {% comment %}$('#collections-left-tabs').empty();{% endcomment %}
-
-            $.getJSON(apiurl, function (response) {
-                for (var i = 0; i < response.objects.length; i++) {
-                    //make url
-                    var worksetUrl = "/collections/" + {{ collection_id }} + "/workset/" + response.objects[i].id;
-                    $('#collections-left-tabs').append('<li><a href="'+worksetUrl+'">' + response.objects[i].name + '</a></li>');
-                }
-                $('#collections-left-tabs').append('<li class="divider"></li>');
-                //$('#collections-left-tabs').append('<li><a href="#NewWorksetModal" onclick="openNewWorksetModalWindow();">New Workset<i class="icon-plus-sign icon-1x pull-center"></i></a></li>');
-            });
-
-
-            initDeploymentMap();
-            updateMapForSelectedCollection({{ collection_id }});
-
-            {% if workset_id %}
-                selectWorkset({{ workset_id }});
-            {% endif %}
-        });
-
-        function selectWorkset(id) {
-            getNewImageList('collection=' + id);
-            clinfo.getCollectionInfo(id, '#ws-info');
-            updateMapForSelectedCollection(id);
-
-            $('#clearWorksetLink').html('clear');
-
-            // TODO: this is a hack - it should be a map layer
-            $('#showWorksetMapLink').attr('onClick', 'updateMapForSelectedCollection(' + id + ');');
-            $('#showWorksetMapLink').html('map');
-        }
-
-    </script>
-{% endblock %}  
