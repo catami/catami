@@ -94,7 +94,7 @@ class StagingFilesResource(Resource):
                   'resource_name': self._meta.resource_name,
         }
 
-        kwargs = {}
+        #kwargs = {}
 
         # get the objects pk/lookup
         if isinstance(bundle_or_obj, Bundle):
@@ -105,10 +105,12 @@ class StagingFilesResource(Resource):
         # add it in
         kwargs['pk'] = pk
 
+        print('Returning api_auv_create');
         # and get the reverse url from django
         #return reverse("api_auv_create", kwargs=kwargs)
+        return reverse("api_auv", kwargs=kwargs)
         # the url of the form view (it can derive the api creation url)
-        return reverse("api_auv_form", kwargs=kwargs)
+        #return reverse("api_auv_form", kwargs=kwargs)
 
     def obj_get(self, request=None, **kwargs):
         # get the system dir and list child folders
