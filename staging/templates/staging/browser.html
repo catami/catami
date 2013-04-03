@@ -106,13 +106,14 @@
     }
     function importCampaignDives( campaignFolderObject ) {
     	var diveSelect = document.getElementById('campaignDiveList');
+        //alert('Selected ' + diveSelect.length + ' dives for import');
     	for (i = 0; i < diveSelect.length; i++)
     	{
     		if (diveSelect.options[i].selected == true)
     		{
-		       var importUrl = diveSelect.options[i].value;
-               var dataString = "short_name=" + diveSelect.options[i].label + "&campaign=" + $("#campaignSelect option:selected").text() + "&license=" + $("#LicenseText").val() + "&descriptive_keywords=" + $("#KeywordsText").val();
-		       //alert('Importing dive ' + diveSelect.options[i].value + ' with name ' + diveSelect.options[i].label + ' and data ' + dataString);
+                   var importUrl = diveSelect.options[i].value;
+                   var dataString = "short_name=" + diveSelect.options[i].label + "&campaign=" + $("#campaignSelect option:selected").val() + "&license=" + $("#LicenseText").val() + "&descriptive_keywords=" + $("#KeywordsText").val();
+                   //alert('Importing dive ' + diveSelect.options[i].value + ' with name ' + diveSelect.options[i].label + ' and data ' + dataString);
 	           $.ajax({
 	               type: "POST",
 	               url: importUrl,

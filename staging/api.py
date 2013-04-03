@@ -105,7 +105,6 @@ class StagingFilesResource(Resource):
         # add it in
         kwargs['pk'] = pk
 
-        print('Returning api_auv_create');
         # and get the reverse url from django
         #return reverse("api_auv_create", kwargs=kwargs)
         return reverse("api_auv", kwargs=kwargs)
@@ -245,39 +244,36 @@ class StagingFilesResource(Resource):
 
     @csrf_exempt
     def dispatch_auv(self, request, **kwargs):
-        print "dispatching auv request"
         return self.dispatch("auv", request, **kwargs)
 
     def post_auv(self, request, **kwargs):
         # should extract and validate the form...
-        form = staging_forms.ApiDeploymentForm(request.POST)
-        if form.is_valid():
-            # extract the path we are working with
-            base = staging_settings.STAGING_IMPORT_DIR
-            path = os.path.join(base, kwargs['pk'].decode('hex'))
+        print("AUV import request posted")
 
-            # now we create the deployment
-            created_deployment = AUVDeployment()
+        # extract the path we are working with
+        base = staging_settings.STAGING_IMPORT_DIR
+        path = os.path.join(base, kwargs['pk'].decode('hex'))
 
-            data = form.cleaned_data
+        # now we create the deployment
+        created_deployment = AUVDeployment()
 
-            created_deployment.short_name = data['short_name']
-            created_deployment.campaign = data['campaign']
-            created_deployment.license = data['license']
-            created_deployment.descriptive_leywords = data[
-                'descriptive_keywords']
+        created_deployment.short_name = request.POST['short_name']
+        created_deployment.campaign_id = request.POST['campaign']
+        created_deployment.license = request.POST['license']
+        created_deployment.descriptive_keywords = request.POST[
+            'descriptive_keywords']
 
-            print "passing to function to process"
-            # now pass to the parsing function
-            try:
-                AUVImporter.import_path(created_deployment, path)
-                logger.debug("AUVImporter Run successfully.")
-                return self.create_response(request, created_deployment)
-            except Exception:
-                logger.exception("Unable to import deployment.")
+        print "passing to function to process"
+        # now pass to the parsing function
+        try:
+            AUVImporter.import_path(created_deployment, path)
+            logger.debug("AUVImporter Run successfully.")
+            return self.create_response(request, created_deployment)
+        except Exception:
+            logger.exception("Unable to import deployment.")
 
-                # then return the new deployment
+            # then return the new deployment
 
-                # on failure... not sure what to do yet
-                # probably just return the form
-                # or call the original view that should have created it?
+            # on failure... not sure what to do yet
+            # probably just return the form
+            # or call the original view that should have created it?

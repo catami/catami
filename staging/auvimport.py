@@ -240,6 +240,7 @@ class AUVImporter(object):
 
     @classmethod
     def import_path(cls, auvdeployment, deployment_path):
+        print "Importing auv path"
         files = cls.dependency_get(deployment_path)
         # do it this way as it was the way it was written...
         auvdeployment_import(auvdeployment, files)
