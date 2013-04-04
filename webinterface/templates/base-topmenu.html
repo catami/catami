@@ -58,10 +58,12 @@
                     <li class="{% ifequal request.path url.webinterface.views.index %}active{% endifequal %}"><a
                             href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home "></i>
                         Home</a></li>
+                    <!--
                     <li><a href="/staging/"><i class="icon-cloud-upload"></i> Import </a></li>
+                    -->
                     <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}"><a
                             href="{% url webinterface.views.explore %}"><i class="icon-search "></i> Explore</a>
-
+                            <!--
                             <ul class="dropdown-menu">
                                 <li class="{% ifequal request.path "/data/campaigns" %}
                             active{% endifequal %}"><a href="{% url webinterface.views.campaigns %}"> Campaigns</a></li>
@@ -69,7 +71,7 @@
                             active{% endifequal %}"><a href="{% url webinterface.views.deployments %}"> Deployments</a></li>
 
                             </ul>
-
+                            -->
                     </li>
 
                     {% switch Collections %}
@@ -96,7 +98,7 @@
                                                         data-target="#TaskModal"><i class="icon-sitemap"></i>
                                     Auto-classify Collection</a></li>
                                 <li class="nav-header">Data</li>
-                                <li><a href="#TaskModal" data-toggle="modal" data-target="#TaskModal"><i
+                                <li class="disabled"><a href="#TaskModal" data-toggle="modal" data-target="#TaskModal"><i
                                         class="icon-download-alt"></i> Download data</a></li>
                                 <li><a href="/staging/"><i class="icon-cloud-upload"></i> Upload data</a></li>
                             </ul>
