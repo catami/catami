@@ -18,8 +18,10 @@ function CollectionAPI(usrsettings) {
 
     // Default display config
     var config = {
-        theme: 'cl-sidebar',
+        theme: 'cl-custom',
         format: false,
+        ulclass: 'list-main',
+        subulclass: 'list-sub well',
         nested: false,
         linkname: false,
         showactions: false,
@@ -46,7 +48,7 @@ function CollectionAPI(usrsettings) {
         outputelement = ((typeof outputelement !== 'undefined') ? outputelement : false);
         filter = ((typeof filter !== 'undefined') ? '?' + filter : '');
 
-        var list = createCollectionList(filter, 'list-main');
+        var list = createCollectionList(filter, config.ulclass);
 
         if (outputelement) {
             if (!$(outputelement).hasClass(config.theme)) $(outputelement).addClass(config.theme);
@@ -76,13 +78,46 @@ function CollectionAPI(usrsettings) {
                 clinfo = formatClObj(config.format, clobj);
             }
         });
-
-
         if (outputelement) {
             if (!$(outputelement).hasClass(config.theme)) $(outputelement).addClass(config.theme);
             $(outputelement).html(clinfo);
         }
         return clinfo;
+    }
+
+    /**
+     *
+     * @param filter
+     * @param outputelement
+     * @return {*}
+     */
+    this.getCollectionItems = function(filter, outputelement) {
+        outputelement = ((typeof outputelement !== 'undefined') ? outputelement : false);
+        filter = ((typeof filter !== 'undefined') ? '?' + filter : '');
+
+        var list = '';
+        var clobj = {};
+        $.ajax({
+            dataType: "json",
+            async: false,  // prevent asyncronous mode to allow setting of variables within function
+            url: settings.api_baseurl + filter,
+            success: function (cl) {
+                if (cl.objects.length > 0) {
+                    for (var i = 0; i < cl.objects.length; i++) {
+                        clobj = getClObj(cl.objects[i]);
+                        list += formatClObj(config.format, clobj);
+                    }
+                }
+                else {
+                    list += '<p class="alert alert-error">No items to display.</p>'
+                }
+            }
+        });
+        if (outputelement) {
+            if (!$(outputelement).hasClass(config.theme)) $(outputelement).addClass(config.theme);
+            $(outputelement).html(list);
+        }
+        return list;
     }
 
 
@@ -117,11 +152,12 @@ function CollectionAPI(usrsettings) {
      * @param showerror
      * @return {String}
      */
-    var createCollectionList = function (filter, listname, showerror) {
+    var createCollectionList = function (filter, listclass, showerror) {
 
         showerror = ((typeof showerror !== 'undefined') ? showerror : true);
 
         var list = '';
+        var clobj = {};
 
         $.ajax({
             dataType: "json",
@@ -129,9 +165,16 @@ function CollectionAPI(usrsettings) {
             url: settings.api_baseurl + filter,
             success: function (cl) {
                 if (cl.objects.length > 0) {
-                    list += '<ul class="' + listname + '">';
+                    list += '<ul class="' + listclass + '">';
                     for (var i = 0; i < cl.objects.length; i++) {
-                        list += createListItem(cl.objects[i], filter);
+                        //list += createListItem(cl.objects[i], filter);
+                        clobj = getClObj(cl.objects[i]);
+                        list +='<li>';
+                        list += formatClObj(config.format, clobj);
+                        if (clobj.parent_id == null && config.nested) { // This item is a parent Collection
+                            list += createCollectionList(filter + '&parent=' + clobj.id, config.subulclass, false); // Recursive call to create nested workset list (if available)
+                        }
+                        list += '</li>';
                     }
                     list += '</ul>';
                 }
@@ -144,27 +187,27 @@ function CollectionAPI(usrsettings) {
     }
 
 
-    /**
-     *
-     * @param clobj
-     * @param filter
-     * @return {String}
-     */
-    var createListItem = function (clobj, filter) {
-
-        var listitem = '<li>';
-
-        clobj = getClObj(clobj);
-        listitem += formatClObj(config.format, clobj);
-
-        if (clobj.parent_id == null && config.nested) { // This item is a parent Collection
-            listitem += createCollectionList(filter + '&parent=' + clobj.id, 'list-sub well', false); // Recursive call to create nested workset list (if available)
-        }
-        listitem += '</li>';
-
-
-        return listitem;
-    }
+//    /**
+//     *
+//     * @param clobj
+//     * @param filter
+//     * @return {String}
+//     */
+//    var createListItem = function (clobj, filter) {
+//
+//        var listitem = '<li>';
+//
+//        clobj = getClObj(clobj);
+//        listitem += formatClObj(config.format, clobj);
+//
+//        if (clobj.parent_id == null && config.nested) { // This item is a parent Collection
+//            listitem += createCollectionList(filter + '&parent=' + clobj.id, config.subulclass, false); // Recursive call to create nested workset list (if available)
+//        }
+//        listitem += '</li>';
+//
+//
+//        return listitem;
+//    }
 
 
     /**
@@ -250,8 +293,8 @@ function CollectionAPI(usrsettings) {
                     '<li class="nav-header">Jump to:</li>' +
                     '<li><a href="{link}#map" title="View {type} map"><i class="icon-globe"></i> Map view</a></li>' +
                     '<li><a href="{link}#thm" title="View {type} images"><i class="icon-picture"></i> Thumbnail view</a></li>' +
-                    //'<li class="nav-header">Data Tasks</li>' +
-                    //'<li><a href="{link}#dwn" title="Download Data"><i class="icon-download-alt"></i> Download</a></li>' +
+                    '<li class="nav-header">Data Tasks</li>' +
+                    '<li><a href="{link}#dwn" title="Download Data"><i class="icon-download-alt"></i> Download</a></li>' +
                     '</ul></span>';
             }
             format += '<span class="clinfo btn-group pull-right list-toggle">' +
