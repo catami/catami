@@ -36,23 +36,23 @@
                     <li><a href="#NewWorksetModal" onclick="openNewWorksetModalWindow();"><i class="icon-plus-sign"></i> New Workset</a></li>
                 </ul>
             </div>
-            {% include "webinterface/dataviews/worksetmodalnobutton.html" %}
+            {% include "webinterface/dataviews/workset-forms-modal.html" %}
         </div>
 
         <div class="span10 viewpane">
 
 
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#map" data-toggle="tab"><i class="icon-globe"></i> Map</a></li>
-                <li><a href="#thm" data-toggle="tab"><i class="icon-eye-open"></i> Thumbnails</a></li>
+                <li class="active"><a href="#map" ><i class="icon-globe"></i> Map</a></li>
+                <li><a href="#thm" ><i class="icon-eye-open"></i> Thumbnails</a></li>
                 <!--
-                <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
-                <li><a href="#cst" data-toggle="tab"><i class="icon-cog"></i> Visual Clusters</a></li>
+                <li><a href="#tax" >Taxonomy</a></li>
+                <li><a href="#cst" ><i class="icon-cog"></i> Visual Clusters</a></li>
                 -->
-                <li class="pull-right"><a href="#dwn" data-toggle="tab"><i class="icon-download-alt"></i> Download</a></li>
-                <li class="pull-right"><a href="#ant" data-toggle="tab"><i class="icon-tag"></i> Annotate</a></li>
+                <li class="pull-right"><a href="#dwn" ><i class="icon-download-alt"></i> Download</a></li>
+                <li class="pull-right"><a href="#ant" ><i class="icon-tag"></i> Annotate</a></li>
                 <!--
-                <li class="pull-right"><a href="#cls" data-toggle="tab"><i class="icon-sitemap"></i> Classify</a></li>
+                <li class="pull-right"><a href="#cls" ><i class="icon-sitemap"></i> Classify</a></li>
                 -->
             </ul>
 
@@ -79,9 +79,10 @@
                 </div>
                 <div class="tab-pane" id="ant">
                     This will give options to continue or create an annotation run on the selected Workset.<br>
-                    <a href="{% url webinterface.views.image_annotate %}" class="btn btn-primary imageframe"
+
+                    <a href="{% url webinterface.views.image_view %}" class="btn btn-primary imageframe"
                        data-fancybox-group="annotationlist" data-fancybox-type="iframe" rel="tooltip"
-                       title="Annotate Workset1"><i class="icon-tag"></i> Annotate!</a>
+                       title="Annotate Workset1"><i class="icon-tag"></i> Example</a>
                 </div>
                 <!--
                 <div class="tab-pane" id="cls">
@@ -96,6 +97,7 @@
     </div>
 
 
+
 {% endblock %}
 
 {% block add_script %}
@@ -105,21 +107,12 @@
         // Instantiate collection list object
         wslist = new CollectionAPI({
             config: {
-                //theme: 'cl-sidebar-name',
-                //showactions: true,
-                //select_fnc: 'selectWorkset({id})'
-                //ulclass: 'nav nav-list',
                 format: '<li id="ws-{id}"><a href="#_" class="clinfopopover pull-right" data-toggle="popover" data-trigger="hover" data-placement="rightTop" data-html="true" data-content="<small>Created by <b>{username}</b> on <b>{creation_date}</b>.<br>Contains <b>{image_count}</b> images.<br>{creation_info}.<br><em>{description}</em></small>" data-original-title="{type} information"><i class="icon-info-sign"></i></a>' +
                         '<a href="#_" onclick="selectWorkset({id});">{name}</a></li>'
-
             }
         });
         clitem = new CollectionAPI({
             config: {
-                //theme: 'cl-sidebar-name',
-                //showactions: true,
-                //select_fnc: 'selectWorkset({id})'
-                //ulclass: 'nav nav-list',
                 format: '<a href="#_" class="clinfopopover pull-right" data-toggle="popover" data-trigger="hover" data-placement="rightTop" data-html="true" data-content="<small>Created by <b>{username}</b> on <b>{creation_date}</b>.<br>Contains <b>{image_count}</b> images.<br>{creation_info}.<br><em>{description}</em></small>" data-original-title="{type} information"><i class="icon-info-sign"></i></a>' +
                         '<a href="#_" onclick="clearWorkset({id});">{name}</a>'
             }
@@ -130,19 +123,6 @@
             getNewImageList('collection=' + id);
             updateMapForSelectedCollection(id);
             showMapControl (false)
-        }
-
-        function showMapControl (id) {
-            // NOTE: THIS IS A BIT HACKY: THIS SHOULD BE A CONTROL ON THE MAP TO TOGGLE LAYERS
-            if (id) {
-                $('#map-ctrl-ws>a').attr('onClick', 'updateMapForSelectedCollection('+id+')');
-                $('#map-ctrl-ws').addClass('active');
-                $('#map-ctrl').show();
-            } else {
-                $('#map-ctrl>li.active').removeClass('active');
-                $('#cl-item').addClass('active');
-                $('#map-ctrl').hide();
-            }
         }
 
         function clearWorkset(id) {
@@ -161,12 +141,24 @@
             showMapControl (id);
         }
 
+        function showMapControl (id) {
+            // NOTE: THIS IS A BIT HACKY
+            // TODO: This should be controllable through layers on the map (eg: Google maps)
+            if (id) {
+                $('#map-ctrl-ws>a').attr('onClick', 'updateMapForSelectedCollection('+id+')');
+                $('#map-ctrl-ws').addClass('active');
+                $('#map-ctrl').show();
+            } else {
+                $('#map-ctrl>li.active').removeClass('active');
+                $('#cl-item').addClass('active');
+                $('#map-ctrl').hide();
+            }
+        }
+
         $(document).ready(function () {
-            wslist.getCollectionItems('parent={{ collection_id }}', '#ws-list');
+            wslist.getCollectionItems('parent={{ collection_id }}&limit=100', '#ws-list');
             clitem.getCollectionInfo({{ collection_id }}, '#cl-item');
-
             $('.clinfopopover').popover();
-
             initDeploymentMap();
 
             {% if workset_id %}
@@ -174,6 +166,26 @@
             {% else %}
                 selectCollection({{ collection_id }});
             {% endif %}
+
+            // Custom tab activation to make hashes persistent in url
+            // do not use data-toggle="tab" attribute
+            $('.nav-tabs a').on('click',function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+                history.replaceState(null, '', $(this).attr('href'));
+            });
+
+            $(".imageframe").fancybox({
+                maxWidth: 2000,
+                maxHeight: 1400,
+                fitToView: false,
+                width: '95%',
+                height: '95%',
+                autoSize: false,
+                closeClick: false,
+                openEffect: 'fade',
+                closeEffect: 'none'
+            });
         });
 
     </script>
