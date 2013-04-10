@@ -196,33 +196,8 @@
 
 {% block add_script %}
 
-	<script type="text/javascript">
-		function launchImageModal(requested_id) {		    
-		    var requested_api_url = 'http://localhost:8000/api/dev/image/'+requested_id+'/?&format=json';
-		    var requested_id_int = parseInt(requested_id,10); 
-		    var prev_id = requested_id_int - 1;
-		    var next_id = requested_id_int + 1;
-		    
-		    $.ajax({
-			     async: true,
-			     url: requested_api_url,
-			     dataType: "json",
-			     success: function(json_data) {
-			     	var imageName = json_data["web_location"].split("/").slice(-1)[0];
-			     	
-			     					   
-		   			$('#imageModal .modal-body').html("<div><div class='textOverlay'><h6>"+imageName+"</h6></div><img src='"+json_data["web_location"]+"'></div>");
-		   			$('#imageModal .modal-footer').html("<a href='javascript:launchImageModal("+prev_id+")' role='button' data-toggle='modal'><i class='icon-angle-left icon-4x pull-left'></i></a><a href='javascript:launchImageModal("+next_id+")'><i class='icon-angle-right icon-4x pull-right'></i></a>");
-		   			$('#imageModal').modal({show:true});
-				 }
-            })                       
-		}
-		
+	<script type="text/javascript" src="/static/assets/catami-api/js/catamiImageView.js"></script>
 
-	</script>
-
-
-	
     <script type="text/javascript">
 
         var currentSelectedDeployments = [];
