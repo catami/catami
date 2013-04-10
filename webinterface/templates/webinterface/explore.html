@@ -4,9 +4,9 @@
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
 {% block tail_head %}
     <style type="text/css">
-        body {
+        {% comment %}body {
             padding: 10px;
-        }
+        }{% endcomment %}
 
         img {
             width: 99%;
@@ -63,17 +63,27 @@
 			max-height: 800px;
 		}
 
+        {% comment %}.ui-slider .ui-slider-handle .ui-slider-range {
+            margin-top: 40px;
+        }{% endcomment %}
+
 	</style>
 {% endblock %}
 {% block content %}
     <div class="row-fluid">
 
+        <ul class="breadcrumb">
+            <li><a href="{% url webinterface.views.explore %}">Explore</a></li>
+        </ul>
+    </div>
+
+    <div class="row-fluid">
+
         <div class="span2">
-            <h3>Search:</h3>
 
             <form>
 
-                {% switch Experimental %}
+                {% comment %}{% switch Experimental %}
                     Year:
                     <input type="number" min="2006" step="1" value="2007"><br>
                     <br>
@@ -83,9 +93,61 @@
                         <option>BRUVs
                         <option>Towed Video
                     </select>
-                {% endswitch %}
-                <br><br>
-                Campaign:
+                {% endswitch %}{% endcomment %}
+
+                {% comment %}<div class="well" style="padding:10px; padding-left: 0; padding-right: 0;">{% endcomment %}
+
+                    <ul class="nav nav-list">
+                        <li class="nav-header">Type</li>
+
+                            <div class="data-collected-type btn-group btn-group-vertical" style="width: 100%;">
+                                <button type="button" id="auv" class="btn" style="width: 100%">AUV</button>
+                                <button type="button" id="ti" class="btn" style="width: 100%">Towed Imagery</button>
+                                <button type="button" id="dov" class="btn" style="width: 100%">DOV</button>
+                            </div>
+                    </ul>
+
+
+                    <ul class="nav nav-list" style="margin-right: 15px">
+                        <li class="nav-header">Depth</li>
+
+                        {% comment %}<span id="depthMin"></span>
+                        <span id="depthMax" style="float:right"></span><br>{% endcomment %}
+                        <div>
+                            <span id="selectedDepthMin" class="label label-inverse text-center pull-left"></span>
+                            <div id="depthSlider" style="height:5px; margin-top: 2px; margin-bottom: 15px; margin-left: 30px; "></div>
+
+                        <span id="selectedDepthMax" class="label label-inverse text-center pull-right"></span>
+                        </div>
+                    </ul>
+
+                    <ul class="nav nav-list" style="margin-right: 10px">
+                        <li class="nav-header">Altitude</li>
+                        <div id="altitudeSlider" style="width:100%; height:5px; margin-top: 2px; margin-bottom: 15px; margin-left: 5px"></div>
+                    </ul>
+
+                    <ul class="nav nav-list" style="margin-right: 10px">
+                        <li class="nav-header">Temperature</li>
+                        <div id="temperatureSlider" style="width:100%; height:5px; margin-top: 2px; margin-bottom: 15px; margin-left: 5px"></div>
+                    </ul>
+
+                    <ul class="nav nav-list" style="margin-right: 10px">
+                        <li class="nav-header">Salinity</li>
+                        <div id="salinitySlider" style="width:100%; height:5px; margin-top: 2px; margin-bottom: 15px; margin-left: 5px"></div>
+                    </ul>
+
+                    {% comment %}Depth Range: <strong id="selectedDepthMin"></strong> to
+                    <strong id="selectedDepthMax"></strong> m{% endcomment %}
+
+
+               {% comment %} </div>{% endcomment %}
+
+
+
+
+
+
+               {% comment %} Campaign:
                 <select name="campaignSelect" multiple="multiple"
                         class="workpane" id="campaignSelect"
                         onchange="selectCampaign($(this).val());">
@@ -96,17 +158,7 @@
                         class="workpane" id="deploymentSelect"
                         onchange="selectDeployment($(this).val());">
                     <!-- Content inserted from jqery -->
-                </select>
-                <br><br>
-                {% switch Experimental %}
-                    Depth Range: <strong id="selectedDepthMin"></strong> to
-                    <strong id="selectedDepthMax"></strong> m
-                    <br>
-                    <span id="depthMin"></span>
-                    <span id="depthMax" style="float:right"></span><br>
-                    <div id="depthSlider" style="width:100%; height:5px"></div>
-                    <br><br>
-                {% endswitch %}
+                </select>{% endcomment %}
             </form>
 
             {% comment %}{% switch Collections %}
@@ -161,7 +213,19 @@
             <div class="tab-content">
 
                 <div class="tab-pane active" id="map">
-                    {% include "webinterface/dataviews/mapview.html" %}
+
+                    <div class="row-fluid" style="position:relative">
+                        <div id='deployment-map' style="width:100%;height:600px;z-index:0" class="span9">
+                            <!-- Map content inserted using JQuery -->
+                        </div>
+
+                        <div style="right:0;position:absolute;z-index:2000" class="span1 well well-small" >
+                            <p><img src="{{ STATIC_URL }}images/depth-colorscale-22-30.png" alt="depth colorscale 22m to 30m"/>
+                                Depth</br>(m)</p>
+                        </div>
+                    </div>
+
+                    {% comment %}{% include "webinterface/dataviews/mapview.html" %}{% endcomment %}
                 </div>
 
                 {% switch Experimental %}
@@ -195,6 +259,9 @@
 {% endblock %}
 
 {% block add_script %}
+    <script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
+    <script src='{{ STATIC_URL }}assets/catami-api/js/explore.js'></script>
+    <script src='{{ STATIC_URL }}assets/catami-api/js/map.js'></script>
 
 	<script type="text/javascript" src="/static/assets/catami-api/js/catamiImageView.js"></script>
 
@@ -208,22 +275,8 @@
             $("#newCollectionPopover").popover('hide');
         }
 
-        function setDepthRange(minDepth, maxDepth) {
-            $("#depthSlider").slider({
-                range: true,
-                min: minDepth,
-                max: maxDepth,
-                values: [ minDepth, maxDepth ],
-                slide: function (event, ui) {
-                    $("#selectedDepthMin").html(ui.values[ 0 ]);
-                    $("#selectedDepthMax").html(ui.values[ 1 ]);
-                }
-            });
-            $("#depthMin").html(minDepth);
-            $("#depthMax").html(maxDepth);
-            $("#selectedDepthMin").html(minDepth);
-            $("#selectedDepthMax").html(maxDepth);
-        }
+
+
         function selectCampaign(id) {
             getDeploymentList(id);
             getNewImageList("limit=30&campaign=" + id);
@@ -344,13 +397,109 @@
             });
         }
 
+        setDepthRange = function(minDepth, maxDepth) {
+            $("#depthSlider").slider({
+                range: true,
+                min: minDepth,
+                max: maxDepth,
+                values: [ minDepth, maxDepth ],
+                slide: function (event, ui) {
+                    $("#selectedDepthMin").html(ui.values[ 0 ]);
+                    $("#selectedDepthMax").html(ui.values[ 1 ]);
+                },
+                stop: function( event, ui ) {
+                    executeFilter(ui.values[ 0 ], ui.values[ 1 ]);
+                }
+            });
+            $("#depthMin").html(minDepth);
+            $("#depthMax").html(maxDepth);
+            $("#selectedDepthMin").html(minDepth);
+            $("#selectedDepthMax").html(maxDepth);
+        }
+
+        setAltitudeRange = function (minAltitude, maxAltitude) {
+            $("#altitudeSlider").slider({
+                range: true,
+                min: minAltitude,
+                max: maxAltitude,
+                values: [ minAltitude, maxAltitude ],
+                slide: function (event, ui) {
+
+                }
+            });
+        };
+
+        setSalinityRange = function (minSalinity, maxSalinity) {
+            $("#temperatureSlider").slider({
+                range: true,
+                min: minSalinity,
+                max: maxSalinity,
+                values: [ minSalinity, maxSalinity ],
+                slide: function (event, ui) {
+
+                }
+            });
+        };
+
+        setTemperatureRange = function (minTemperature, maxTemperature) {
+            $("#salinitySlider").slider({
+                range: true,
+                min: minTemperature,
+                max: maxTemperature,
+                values: [ minTemperature, maxTemperature ],
+                slide: function (event, ui) {
+
+                }
+            });
+        };
+
+        executeFilter = function() {
+            //get depth from depth slider
+            var minDepth = $( "#depthSlider" ).slider( "values", 0 );
+            var maxDepth = $( "#depthSlider" ).slider( "values", 1 );
+
+            //construct the depth filter
+            var depthFilter = [
+                new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.BETWEEN,
+                    property: "depth",
+                    lowerBoundary: minDepth,
+                    upperBoundary: maxDepth
+                })
+            ];
+
+            map.updateMapUsingFilter(depthFilter);
+
+
+        };
+
+        var map = new CatamiMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map")
+
         $(document).ready(function () {
 
-            getDeploymentList();
-            getCampaignList();
-            setDepthRange(0, 500);
-            initDeploymentMap();
+           $('.data-collected-type').on('click', function(e){
+                $('#auv').removeClass("active");
+                $('#ti').removeClass("active");
+                $('#dov').removeClass("active");
+                $(e.target).addClass("active");
+            });
 
+            //getDeploymentList();
+            //getCampaignList();
+
+            //initDeploymentMap();
+
+            var explore = new Explore();
+            setDepthRange(0, 500);
+            setAltitudeRange(0, 500);
+            setSalinityRange(0, 500);
+            setTemperatureRange(0, 500);
+
+
+            //map.updateMapUsingFilter(map.createExploreFilterArray());
+
+            //map.zoomToInitialExtent();
+            //map.enablePopup();
         });
     </script>
 {% endblock %}
