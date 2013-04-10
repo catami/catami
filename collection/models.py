@@ -80,55 +80,87 @@ class CollectionManager(models.Manager):
 
     # NOTE: it may make sense to create one function for all the
     # different sampling methods instead of a separate one for each.
-    def workset_from_collection(self, user, name, description, ispublic, c_id,
-        n, method):
+    def workset_from_collection(self, user, name, description, ispublic, c_id, n, method):
         """Create a workset (or child collection) from a parent collection
 
-        :returns: the created workset."""
+        returns: the created workset id (or None if error)
+                 a status/error message
+        """
 
-        collection = Collection.objects.get(pk=c_id)
-        collection_images = collection.images.all()
+        try:
+            collection = Collection.objects.get(pk=c_id)
+            collection_images = collection.images.all()
 
-        # Create new collection entry
-        workset = Collection()
-        workset.parent = collection
-        workset.name = name
-        workset.owner = user
-        workset.creation_date = datetime.now(tz=tzutc())
-        workset.modified_date = datetime.now(tz=tzutc())
-        workset.is_public = ispublic
-        workset.description = description
-        workset.is_locked = True
+            # check that n < number of images in collection
+            if collection_images.count() < n:
+                #n = collection_images.count()
+                raise CollectionError("Not enough images to subsample. The value for 'N' was greater than the number of images in the collection.")
 
-        # check that n < number of images in collection
-        if collection_images.count() < n:
-            logger.warning(
-                "Not enough images to subsample... setting n=images.count")
-            # TODO: what is the best way to handle warnings?
-            n = collection_images.count()
 
-        # subsample collection images and add to workset
-        if method == "random":
-            wsimglist = sample(collection_images, n)
-            workset.creation_info = "Random: {0} images".format(n)
-        elif method == "stratified":
-            wsimglist = collection_images[0:collection_images.count():n]
-            workset.creation_info = "Stratified: every {0}th image".format(
-                n)  # TODO: add some logic "th" does not work for 1-3
-        else:
-            logger.error("Unrecognised method")
-            # TODO: what is the best way to handle warnings?
+            # Create new collection entry
+            workset = Collection()
+            workset.parent = collection
+            workset.name = name
+            workset.owner = user
+            workset.creation_date = datetime.now(tz=tzutc())
+            workset.modified_date = datetime.now(tz=tzutc())
+            workset.is_public = ispublic
+            workset.description = description
+            workset.is_locked = True
 
-        # save the workset so we can associate images with it
-        workset.save()
+            # subsample collection images and add to workset
+            if method == "random":
+                wsimglist = sample(collection_images, n)
+                workset.creation_info = "%s random images" % n
 
-        # Associate images with workset
-        workset.images.add(*wsimglist)
+            elif method == "stratified":
+                wsimglist = collection_images[0:collection_images.count():n]
 
-        #apply permissions
-        authorization.apply_collection_permissions(user, workset)
+                # Format number as ordinal string
+                if 10 < n < 14: nstr =  "%sth" % n
+                elif n % 10 == 1: nstr =  "%sst" % n
+                elif n % 10 == 2: nstr =  "%snd" % n
+                elif n % 10 == 3: nstr =  "%srd" % n
+                else: nstr = "%sth" % n
+                workset.creation_info = "Every %s image" % nstr
 
-        return workset
+            else:
+                raise CollectionError("Unrecognised method argument for Workset creation")
+
+
+            # save the workset so we can associate images with it
+            workset.save()
+
+            # Associate images with workset
+            workset.images.add(*wsimglist)
+
+            #apply permissions
+            authorization.apply_collection_permissions(user, workset)
+
+            wsid = workset.id
+            msg="Your Workset has been created successfully!"
+
+        except CollectionError as e:
+            wsid = None
+            msg = e.msg
+            #logger.error(msg)
+
+        except:
+            wsid = None
+            msg = "An unknown error has occurred during the creation of your Workset..."
+            #logger.error(msg)
+
+        #print "Debug (wsid: {0}, msg: {1})".format(wsid, msg)
+        return wsid, msg
+
+
+class CollectionError(Exception):
+    """Exception raised for errors in the input.
+    Attributes:
+        msg  -- explanation of the error
+    """
+    def __init__(self, msg):
+        self.msg = msg
 
 
 class Collection(models.Model):

@@ -132,7 +132,7 @@
   // this plugin uses styles stored in a separate file.
   $(document).find('script').each(function(index, script){
     if (script.src.indexOf('popover-extra-placements.js') != -1) {
-      $('head').append('<link rel="stylesheet" href="'+script.src.split('popover-extra-placements.js')[0]+'/popover-extra-placements.css" type="text/css" />'); 
+      $('head').append('<link rel="stylesheet" href="'+script.src.split('popover-extra-placements.js')[0]+'/popover-extra-placements.css" type="text/css" />');
    } else if (script.src.indexOf('popover-extra-placements.min.js') != -1) {
       $('head').append('<link rel="stylesheet" href="'+script.src.split('popover-extra-placements.min.js')[0]+'/popover-extra-placements.min.css" type="text/css" />'); 
    }

@@ -1,0 +1,115 @@
+<!--<a class="btn btn-primary" style="display: block;" href="#NewWorksetModal" onclick="openNewWorksetModalWindow();">
+<i class="icon-plus-sign-alt"></i> New Workset</a>-->
+{% load bootstrap_toolkit %}
+
+<style type="text/css" media="screen">
+    input.error{
+        border:1px solid red !important;
+        background-color:#fdd !important;
+    }
+    .form-horizontal .control-label {
+        width:75px;
+    }
+    .form-horizontal .controls {
+        margin-left: 80px;
+    }
+    .alert {
+        margin-bottom: 10px;
+        display: block;
+        border-color: #252525;
+    }
+    .modal .modal-body {
+        max-height: 95%;
+    }
+</style>
+
+<div id="NewWorksetModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel"
+     aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="NewWorksetModalLabel">Create new Workset</h3>
+    </div>
+
+    <div class="modal-body">
+        <div class="tab-pane" id="newwks">
+            <p>Use this section to create a new Workset. Select a sampling strategy:</p>
+
+            <div class="tabbable tabs-left">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#rnd" data-toggle="tab">Random</a>
+                    </li>
+                    <li>
+                        <a href="#str" data-toggle="tab">Stratified</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active well" id="rnd">
+                        <form action="" method="post" id="wsform_rand" class="form-horizontal" >
+
+                            <p><strong>Random sampling:</strong></p>
+                            <span id="errors"></span>
+                            <p>Make a new Workset by randomly sub-sampling "N" images from the collection.</p>
+                            {% csrf_token %}
+                            {{ wsform_rand|as_bootstrap }}
+                            <button class="btn" aria-hidden="true" data-dismiss="modal" onclick="clear_form('#wsform_rand');">Cancel</button>
+                            <input class="btn btn-primary pull-right" type="button" value="Create Workset" onclick="send_workset_form('#wsform_rand');">
+                        </form>
+                    </div>
+                    <div class="tab-pane well" id="str">
+                        <form action="" method="post" id="wsform_strat"  class="form-horizontal">
+                            <p><strong>Stratified sampling:</strong></p>
+                            <span id="errors"></span>
+                            <p>Make a new Workset by sub-sampling every "N<sup>th</sup>" image from the collection.</p>
+                            {% csrf_token %}
+                            {{ wsform_strat|as_bootstrap }}
+                            <button class="btn" aria-hidden="true" data-dismiss="modal" onclick="clear_form('#wsform_strat');">Cancel</button>
+                            <input class="btn btn-primary pull-right" type="button" value="Create Workset" onclick="send_workset_form('#wsform_strat');">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    /*
+    NOTE: the JS in this sub-template is heavily tethered to the parent template
+    TODO: figure out a better way to manage the JS in these situations
+    */
+    function openNewWorksetModalWindow() {
+        $('#NewWorksetModal').modal('show');
+    }
+    function send_workset_form(form_id){
+        Dajaxice.webinterface.send_workset_form(Dajax.process, {'form':$(form_id).serialize(true),'form_id':form_id});
+    }
+    function refresh_worksets(wsid, msg) {
+        $('#NewWorksetModal').modal('hide');
+        clear_form ('#wsform_strat');
+        clear_form ('#wsform_rand');
+        if (wsid != null) {
+            show_note('Success',msg,'success',true);
+            wslist.getCollectionItems('parent={{ collection_id }}&limit=100', '#ws-list');
+            selectWorkset(wsid);
+            $('#ws-list>li>a.clinfopopover').popover();
+        } else {
+            show_note('Error!',msg,'error');
+        }
+    }
+    function form_errors(haserror, form_id) {
+        var selobj = $(form_id+'>span#errors');
+        if (haserror) {
+            selobj.addClass('alert alert-error');
+            selobj.html('<b>Error:</b> please correct the inputs highlighted below.');
+        } else {
+            selobj.removeClass();
+            selobj.html('');
+        }
+    }
+    function clear_form (form_id) {
+        form_errors(false, form_id);
+        $(form_id+' input').removeClass('error');
+        $(form_id)[0].reset();
+    }
+</script>

@@ -1,13 +1,14 @@
 """URL Mappings for the webinterface application.
 """
 from catamidb import authorization
-
-__author__ = 'Ariell Friedman'
-
 from django.conf.urls import patterns, url, include
 from django.conf import settings
 
 from django.contrib import admin
+from dajaxice.core import dajaxice_autodiscover, dajaxice_config
+
+dajaxice_autodiscover()
+
 
 admin.autodiscover()
 
@@ -66,8 +67,7 @@ urlpatterns = patterns(
     #Collection Management
     url(r'^collections/create/$',
         'create_collection_from_deployments'),
-    url(r'^collections/createworkset/(?P<method>[\w\-]+)/$',
-        'create_workset_from_collection'),
+    url(r'^collections/createworkset$', 'create_workset_from_collection'),
     url(r'^collections/createworkset2/(?P<method>[\w\-]+)/$',
         'create_workset_from_project'),
     url(r'^collections/getcollectionextent$',
@@ -98,6 +98,9 @@ urlpatterns = patterns(
     (r'^accounts/', include('accounts.urls')),
     url(r'^logout/$', 'logout_view'),
 
+    # Dajaxice
+    url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
+
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
@@ -119,4 +122,3 @@ urlpatterns += patterns(
     # and the thumbnails...
     url(r'^thumbnails/', include('restthumbnails.urls')),
 )
-

@@ -105,6 +105,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'dajaxice.finders.DajaxiceFinder', # Dajaxice
 )
 
 # Make this unique, and don't share it with anybody.
@@ -114,7 +115,7 @@ SECRET_KEY = 'd7jk#mjzc!qsz*+j)lnx*j0f+g%a0bej-n=&amp;0)7&amp;g=n!^1iaaf'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-    #'django.template.loaders.eggs.Loader',
+    'django.template.loaders.eggs.Loader', # Dajaxice
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
@@ -188,6 +189,9 @@ INSTALLED_APPS = (
     'tastypie',
     'userena',
     'waffle',
+    'dajaxice',
+    'dajax',
+    'bootstrap_toolkit',
 )
 #    'haystack', # disabled 16th Jan 2013
 

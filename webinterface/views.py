@@ -24,24 +24,19 @@ from django.conf import settings
 from collection.api import CollectionResource
 from collection.models import Collection, CollectionManager
 
+from webinterface.forms import CreateCollectionForm, CreateWorksetForm
+
+
+# DajaxIce
+from dajaxice.decorators import dajaxice_register
+from dajax.core import Dajax
+
+
 #account management
 from django.contrib.auth import logout
 
 logger = logging.getLogger(__name__)
 
-
-@waffle_switch('Collections')
-class CreateCollectionForm(forms.Form):
-    deployment_ids = forms.CharField()
-    collection_name = forms.CharField()
-
-
-class CreateWorksetForm(forms.Form):
-    name = forms.CharField()
-    description = forms.CharField()
-    ispublic = forms.CheckboxInput()
-    c_id = forms.IntegerField()
-    n = forms.IntegerField()
 
 #front page and zones
 def index(request):
@@ -191,9 +186,13 @@ def public_collections_all(request):
 
 @waffle_switch('Collections')
 def view_collection(request, collection_id):
+    wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random','n':100})
+    wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified','n':100})
     return render_to_response('webinterface/viewcollection.html',
 #    return render_to_response('webinterface/viewcollectionalternative.html',
-                              {"collection_id": collection_id,
+                              {'wsform_rand' : wsform_rand,
+                               'wsform_strat' : wsform_strat,
+                               'collection_id': collection_id,
                                'WMS_URL': settings.WMS_URL,
                                'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
                               RequestContext(request))
@@ -201,10 +200,14 @@ def view_collection(request, collection_id):
 
 @waffle_switch('Collections')
 def view_workset(request, collection_id, workset_id):
+    wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random'})
+    wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified'})
     return render_to_response('webinterface/viewcollection.html',
 #    return render_to_response('webinterface/viewworkset.html',
-                              {"collection_id": collection_id,
-                               "workset_id": workset_id,
+                              {'wsform_rand' : wsform_rand,
+                               'wsform_strat' : wsform_strat,
+                               'collection_id': collection_id,
+                               'workset_id': workset_id,
                                'WMS_URL': settings.WMS_URL,
                                'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
                               RequestContext(request))
@@ -545,27 +548,26 @@ def create_collection_from_deployments(request):
 
     return render(request, 'noworky.html', {'form': form, })
 
-
 @csrf_exempt
-def create_workset_from_collection(request, method):
+def create_workset_from_collection(request):
     if request.method == 'POST':  # If the form has been submitted...
         form = CreateWorksetForm(request.POST)  # A form bound to the POST data
         if form.is_valid():  # All validation rules pass
-            CollectionManager().workset_from_collection(
+            workset = CollectionManager().workset_from_collection(
                 request.user,
                 request.POST.get('name'),
                 request.POST.get('description'),
                 request.POST.get('ispublic') == "true",
                 int(request.POST.get('c_id')),
                 int(request.POST.get('n')),
-                method
+                request.POST.get('method'),
             )
 
             return HttpResponseRedirect(
-                '/collections/' + request.POST.get(
-                    'c_id') + '/#SelectWorksetModal')  # Redirect after POST
+                '/collections/' + request.POST.get('c_id') + '/workset/' + workset.id.__str__())  # Redirect after POST
 
     return HttpResponse(form)
+
 
 @csrf_exempt
 def create_workset_from_project(request, method):

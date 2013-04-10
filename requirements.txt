@@ -25,3 +25,6 @@ httplib2
 model_mommy
 django-waffle
 nose-exclude
+django-dajaxice
+django-dajax
+django-bootstrap-toolkit
