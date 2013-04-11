@@ -400,7 +400,7 @@ class PoseResource(ModelResource):
         authorization = PoseAuthorization()
         filtering = {
             'deployment': ALL_WITH_RELATIONS,
-            'depth': ['range', 'gt', 'lt'],
+            'depth': ['range', 'gt', 'lt', 'gte', 'lte'],
         }
         allowed_methods = ['get']
 
@@ -454,6 +454,7 @@ class ImageResource(ModelResource):
         filtering = {
             'pose': ALL_WITH_RELATIONS,
             'collection': ALL,
+
         }
         allowed_methods = ['get']
 
@@ -482,6 +483,38 @@ class ImageResource(ModelResource):
         bundle.data['web_location'] = 'images/{0}'.format(file_name)
         return bundle
 
+    def get_object_list(self, request):
+        images = super(ImageResource, self).get_object_list(request)
+
+        #get the ranges to query on
+        temperature__gte = request.GET.get("temperature__gte")
+        temperature__lte = request.GET.get("temperature__lte")
+
+        salinity__gte = request.GET.get("salinity__gte")
+        salinity__lte = request.GET.get("salinity__lte")
+
+        altitude__gte = request.GET.get("altitude__gte")
+        altitude__lte = request.GET.get("altitude__lte")
+
+        # get the measurement types we want to query
+        measurement_types = ScientificMeasurementType.objects.all()
+        temperature = measurement_types.get(normalised_name="temperature")
+        salinity = measurement_types.get(normalised_name="salinity")
+        altitude = measurement_types.get(normalised_name="altitude")
+
+        #filter temperature
+        if temperature__lte is not None and temperature__gte is not None:
+            images = images.filter(pose__scientificposemeasurement__measurement_type=temperature, pose__scientificposemeasurement__value__range=(temperature__gte, temperature__lte))
+
+        #then filter out salinity - chain
+        if salinity__lte is not None and salinity__gte is not None:
+            images = images.filter(pose__scientificposemeasurement__measurement_type=salinity, pose__scientificposemeasurement__value__range=(salinity__gte, salinity__lte))
+
+        #then filter out altitude - chain
+        if altitude__lte is not None and altitude__gte is not None:
+            images = images.filter(pose__scientificposemeasurement__measurement_type=altitude, pose__scientificposemeasurement__value__range=(altitude__gte, altitude__lte))
+
+        return images
 
 class ScientificMeasurementTypeResource(ModelResource):
     class Meta:
