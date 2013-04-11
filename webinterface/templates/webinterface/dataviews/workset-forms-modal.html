@@ -86,13 +86,13 @@
     }
     function refresh_worksets(wsid, msg) {
         $('#NewWorksetModal').modal('hide');
-        clear_form ('#wsform_strat');
-        clear_form ('#wsform_rand');
         if (wsid != null) {
             show_note('Success',msg,'success',true);
             wslist.getCollectionItems('parent={{ collection_id }}&limit=100', '#ws-list');
             selectWorkset(wsid);
             $('#ws-list>li>a.clinfopopover').popover();
+            clear_form ('#wsform_strat');
+            clear_form ('#wsform_rand');
         } else {
             show_note('Error!',msg,'error');
         }

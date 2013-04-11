@@ -7,6 +7,7 @@ from catamidb.models import Image, Deployment
 from random import sample
 import logging
 from collection import authorization
+from django.db.utils import IntegrityError
 
 logger = logging.getLogger(__name__)
 
@@ -145,9 +146,14 @@ class CollectionManager(models.Manager):
             msg = e.msg
             #logger.error(msg)
 
-        except:
+        except IntegrityError as e:
+            wsid = None
+            msg = "This Workset is to similar to an existing one. Please choose a more unique name."
+
+        except Exception as e:
             wsid = None
             msg = "An unknown error has occurred during the creation of your Workset..."
+            print ("Exception Type: %s" % e.__class__)
             #logger.error(msg)
 
         #print "Debug (wsid: {0}, msg: {1})".format(wsid, msg)
