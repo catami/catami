@@ -5,12 +5,14 @@ __author__ = "Lachlan Toohey"
 import os
 import os.path
 import shutil
+from django.db import transaction
 
 import csv
 
 import cv2
 import datetime
 from dateutil.parser import parse as dateparse
+from dateutil.tz import tzutc
 
 import catamidb.models as models
 
@@ -21,20 +23,374 @@ import staging.settings as staging_settings
 logger = logging.getLogger(__name__)
 
 
-class CSVParser(csv.DictReader):
-    """A class to parse CSV row by row (with a heading row)."""
+class LimitTracker:
+    """A class to easily track limits of a value/field.
+
+    The field specifies the option key of the object to look up, or if
+    field is None (the default) use the value itself. All values are
+    converted to floats before comparison.
+
+    minimum and maximum specify starting points.
+    """
+
+    def __init__(self, field=None, minimum=float("inf"),
+                 maximum=float("-inf")):
+        self.maximum = maximum
+        self.minimum = minimum
+        self.field = field
+
+    def check(self, newobject):
+        """Check a new value against the existing limits.
+        """
+        # check if field exists
+        if self.field and self.field in newobject:
+            value = float(newobject[self.field])
+            # then see if it is a new maximum
+            self.maximum = max(self.maximum, value)
+            self.minimum = min(self.minimum, value)
+        elif not self.field:
+            value = float(newobject)
+            self.maximum = max(self.maximum, value)
+            self.minimum = min(self.minimum, value)
+
+
+class CameraSensor(object):
+    def __init__(self, camera, sensor_type, column_name):
+        self.camera = camera
+        self.sensor_type = sensor_type
+        self.column_name = column_name
+
+    def apply_measurement(self, image, columns):
+        # get all the times we need...
+        column_time = dateparse(columns['time'])
+        actual_time = image.pose.date_time
+
+        assert column_time == actual_time, "Image measurement and capture time do not match."
+
+        assert image.camera == self.camera, "Image is from a different camera."
+
+        # now get values for interpolation
+        column_value = float(columns[self.column_name])
+
+        im = models.ScientificImageMeasurement()
+        im.image = image
+        im.value = column_value
+        im.measurement_type = self.sensor_type
+
+        im.save()
+
+
+class PoseSensor(object):
+    def __init__(self, sensor_type, column_name):
+        self.sensor_type = sensor_type
+        self.column_name = column_name
+
+    def apply_measurement(self, pose, before_columns, after_columns):
+        # get all the times we need...
+        start_time = dateparse(before_columns['time'])
+        end_time = dateparse(after_columns['time'])
+        actual_time = pose.date_time
+
+        # now get values for interpolation
+        start_value = float(before_columns[self.column_name])
+        end_value = float(after_columns[self.column_name])
+
+        # and now the time differences (a time delta - any units)
+        dt = (end_time - start_time).total_seconds()
+        dt_start = (actual_time - start_time).total_seconds()
+        dt_end = (end_time - actual_time).total_seconds()
+
+        # a few checks - could potentially remove later
+        # as these may happen if people are naughty...
+        # and need better checks etc.
+        assert dt > 0.0, "Negative time between rows."
+        assert dt_start >= 0.0, "Start time after target interpolation time."
+        assert dt_end > 0.0, "End time before target interpolation time."
+
+        interpolated_value = (dt_end * start_value + dt_start * end_value) / dt
+
+        pm = models.ScientificPoseMeasurement()
+        pm.pose = pose
+        pm.value = interpolated_value
+        pm.measurement_type = self.sensor_type
+
+        pm.save()
+
+
+class Camera(object):
+    def __init__(self, camera_name, angle, column_name, deployment, folder):
+        self.camera_name = camera_name
+        self.angle = angle
+        self.column = column_name
+        self.folder = folder
+
+        self.create_camera(deployment)
+
+    def create_camera(self, deployment):
+        self.camera_model = models.Camera()
+        self.camera_model.deployment = deployment
+        self.camera_model.name = self.camera_name
+
+        # TODO: make this detected instead of default - read the angle
+        self.camera_model.angle = models.Camera.DOWN_ANGLE
+
+        self.camera_model.save()
+
+    def create_image(self, pose, columns):
+        """Create image object for this camera and given pose."""
+        # create the camera if not already done...
+        if self.camera_model is None:
+            self.create_camera(pose.deployment)
+
+        row_time = dateparse(columns['time'])
+        pose_time = pose.date_time
+        image_name = columns[self.column]
+
+        # check that the times match... else move on
+        if not row_time == pose_time:
+            return None
+
+        # it does match, create the image and return
+        image = models.Image()
+        image.pose = pose
+        image.camera = self.camera_model
+
+        campaign_name = pose.deployment.campaign.short_name
+        deployment_name = pose.deployment.short_name
+        image_path = os.path.join(self.folder, image_name)
+
+        archive_path, webimage_path = image_import(
+                campaign_name,
+                deployment_name,
+                image_name,
+                image_path
+                )
+
+        image.web_location = webimage_path
+        image.archive_location = archive_path
+
+        image.save()
+
+        return image
+
+
+class TimeParser(csv.DictReader):
+    """A class to parse CSV row by row (with a heading row).
+
+    Contains member functions that assist in simplifying cases where
+    multiple sensors/images occur in a single file."""
 
     def __init__(self, file_handle):
         """Create parser for open file.
-        
+
         -- file_handle a file object to read from.
+        The file must be csv and have a 'time' column in ISO date format.
         """
 
         # auto detect the dialect from an initial sample
         dialect = csv.Sniffer().sniff(file_handle.read(1000))
         file_handle.seek(0)
-
         csv.DictReader.__init__(self, file_handle, dialect=dialect)
+
+        #super(TimeParser, self).__init__(file_handle)#, dialect=dialect)
+
+        self.current_row = self.next()
+        self.next_row = self.next()
+
+        self.current_time = dateparse(self.current_row['time'])
+        self.next_time = dateparse(self.next_row['time'])
+
+        # we need the list of cameras that have image columns here
+        self.cameras = []
+
+        # we need to filter down based on cameras...
+        self.camera_sensors = {}
+        # but pose is generic... so no need to list things
+        self.pose_sensors = []
+
+    def register_camera(self, camera_name, angle, column_name, deployment, folder):
+        camera = Camera(camera_name, angle, column_name, deployment, folder)
+        self.cameras.append(
+                camera
+            )
+
+        return camera.camera_model
+
+    def register_camera_sensor(self, camera, sensor_type, column_name):
+        """Register a camera/image based sensor with the parser.
+
+        This enables measurements to be automatically applied when
+        appropriate.
+        """
+        if not camera in self.camera_sensors:
+            self.camera_sensors[camera] = []
+
+        sensor = models.ScientificMeasurementType.objects.get(
+                normalised_name=sensor_type
+            )
+
+        self.camera_sensors[camera].append(
+                CameraSensor(camera, sensor, column_name)
+            )
+
+    def register_pose_sensor(self, sensor_type, column_name):
+        """Register a position/time based measurement with the parser.
+
+        This is used to easily add measurements to the pose from this
+        parser (when appropriate).
+        """
+
+        sensor = models.ScientificMeasurementType.objects.get(
+                normalised_name=sensor_type
+            )
+
+        self.pose_sensors.append(
+                PoseSensor(sensor, column_name)
+            )
+
+    def apply_measurements(self, pose, images):
+        """Apply any measurements applicable to the pose/images given.
+
+        The pose and all images must already be saved in the database as
+        extra related data is created within this function and requires
+        them to have primary keys already.
+
+        This function performs interpolation for pose/time based measurements
+        but enforces that image/camera based measurements are not interpolated.
+
+        Additionally performs other sanity checks such as images must relate
+        to the current pose.
+        """
+        # get the rows that are either side of the pose time
+        time = pose.date_time
+
+        # so self.current_time is either equal to or greater than the
+        # current pose time when the loop is done
+        # there is also the implicit assumption that the next_time is
+        # greater than time
+        while not (self.current_time <= time < self.next_time):
+            self.step()
+
+        assert self.next_time > time, "Next Time is less than current pose time."
+
+        for pose_sensor in self.pose_sensors:
+            pose_sensor.apply_measurement(pose, self.current_row, self.next_row)
+
+        for image in images:
+            assert image.pose == pose, "Images not related to current pose."
+            # only add image measurements if there are sensors for this camera
+            if image.camera in self.camera_sensors:
+                for image_sensor in self.camera_sensors[image.camera]:
+                    image_sensor.apply_measurement(image, self.current_row)
+
+    def current_image_time(self):
+        if len(self.cameras) > 0:
+            return self.current_time
+        else:
+            return datetime.datetime(datetime.MAXYEAR, 12, 31, tzinfo=tzutc())
+
+    def next_image_time(self):
+        if len(self.cameras) > 0:
+            return self.next_time
+        else:
+            # need to include tzinfo
+            return datetime.datetime(datetime.MAXYEAR, 12, 31, tzinfo=tzutc())
+
+    def create_images(self, pose):
+        """Create images for the given pose (if appropriate)."""
+        time = pose.date_time
+
+        # if we have no cameras... then no images too
+        if len(self.cameras) == 0:
+            return []
+
+        assert time >= self.current_time, "Requested image creation time in past."
+
+        # make sure we are in the correct segment
+        while not (self.current_time <= time < self.next_time):
+            self.step()
+
+        # this camera didn't take an image at this time
+        # so do nothing
+        if self.current_time != time:
+            return []
+
+        images = []
+
+        for cam in self.cameras:
+            images.append(cam.create_image(pose, self.current_row))
+
+        return images
+
+    def create_pose(self, deployment, time):
+        # create the pose from the columns in place here
+        # there are no guarantees that this file has the pose information
+        # it is merely in case it does....
+
+        assert 'depth' in self.current_row, "Depth not in this file."
+        assert 'latitude' in self.current_row, "Latitude not in this file."
+        assert 'longitude' in self.current_row, "Longitude not in this file."
+
+        assert time >= self.current_time, "Desired time in past."
+
+        # make sure we are the correct time segment
+        while not (self.current_time <= time < self.next_time):
+            self.step()
+
+        # create the pose object
+        pose = models.Pose()
+        pose.deployment = deployment
+        pose.date_time = time
+
+        # the times are already parsed and in place
+        start_time = self.current_time
+        end_time = self.next_time
+        actual_time = time
+
+        # get the deltas between the three times
+        dt = (end_time - start_time).total_seconds()
+        dt_start = (actual_time - start_time).total_seconds()
+        dt_end = (end_time - actual_time).total_seconds()
+
+        assert dt > 0.0, "Negative time between rows."
+        assert dt_start >= 0.0, "Start time after target interpolation time."
+        assert dt_end > 0.0, "End time before target interpolation time."
+
+        # now get the depth and interpolate
+        start_value = float(self.current_row['depth'])
+        end_value = float(self.next_row['depth'])
+        pose.depth = (dt_end * start_value + dt_start * end_value) / dt
+
+        # latitude
+        start_value = float(self.current_row['latitude'])
+        end_value = float(self.next_row['latitude'])
+        latitude = (dt_end * start_value + dt_start * end_value) / dt
+
+        start_value = float(self.current_row['longitude'])
+        end_value = float(self.next_row['longitude'])
+        longitude = (dt_end * start_value + dt_start * end_value) / dt
+
+        pose.position = "POINT({0} {1})".format(longitude,
+                                                 latitude)
+
+        pose.save()
+
+        return (pose, latitude, longitude)
+
+    def step(self):
+        """Return next record with lower cased keys."""
+        self.current_row = self.next_row
+        self.current_time = self.next_time
+
+        try:
+            self.next_row = dict((k.lower(), v) for k, v in self.next().iteritems())
+        except StopIteration:
+            # we are done
+            pass
+            self.next_time = datetime.datetime(datetime.MAXYEAR, 1, 1, tzinfo=tzutc())
+        else:
+            self.next_time = dateparse(self.next_row['time'])
+
 
 
 def image_import(campaign_name, deployment_name, image_name, image_path):
@@ -133,182 +489,262 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
     return archive_path, webimage_location
 
 
-def deployment_import(deployment, path):
-    """Import a deployment from disk.
+class DeploymentImporter(object):
+    """Groups of methods relating to importing still image deployments.
 
-    Certain parameters should be prefilled - namely short_name, campaign
-    license, descriptive_keywords, and owner. The rest are obtained from the
-    information on disk (which the path should point to).
-
-    Information obtained within the function includes start and end time stamps,
-    start position, min and max depths and mission_aim.
+    Methods check for the existence of required files, consistency of
+    the internals and get handles to those files.
     """
 
-    description_file_name = os.path.join(path, 'description.txt')
-    image_location_file_name = os.path.join(path, 'image-locations.csv')
-    whole_image_file_name = os.path.join(path,
-                                         'whole-image-classification.csv')
-    point_label_file_name = os.path.join(path,
-                                         'within-image-classifcation.csv')
+    @classmethod
+    def get_appender(cls, deployment_path):
+        def get_path(file_name):
+            return os.path.join(deployment_path, file_name)
 
-    # check the path exists
-    if not os.path.isdir(path):
-        raise IOError("Deployment Directory does not exist.")
+        return get_path
 
-    # the description file
-    if not os.path.isfile(description_file_name):
-        raise IOError("description.txt is missing in deployment folder.")
+    @classmethod
+    def dependency_check(cls, deployment_path):
+        """Lighweight check to see if required files exist."""
 
-    # and the image locations file
-    if not os.path.isfile(image_location_file_name):
-        raise IOError("image-locations.csv is missing in deployment folder.")
+        try:
+            files = cls.dependency_get(deployment_path)
+        except IOError as e:
+            return False
+        else:
+            return True
 
-    # load the description
-    description_file = open(description_file_name, "r")
-    description_text = description_file.read()
-    description_file.close()
+    @classmethod
+    def dependency_get(cls, deployment_path):
+        # shortcut to append to folder name
+        get_full_path = cls.get_appender(deployment_path)
 
-    # get the deployment into the database
-    deployment.mission_aim = description_text
+        files = {}
 
-    # fake some of the values - these will be revisited
-    deployment.min_depth = 12000
-    deployment.max_depth = 0
+        # required files
+        camera_file = get_full_path('cameras.csv')
+        path_file = get_full_path('path.csv')
+        images_folder = get_full_path('images')
+
+        if not os.path.exists(camera_file):
+            raise IOError("Cannot find camera file (cameras.csv)")
+
+        if not os.path.exists(path_file):
+            raise IOError("Cannot find path file (path.csv)")
+
+        if not os.path.exists(images_folder):
+            raise IOError("Cannot find image folder (images)")
+
+        files['camera'] = camera_file
+        files['path'] = path_file
+        files['image_base'] = images_folder
+
+        # per camera files
+        camera_files = {}
+        for line in csv.DictReader(open(camera_file, 'r')):
+            per_camera_file = get_full_path(line['filename'])
+            camera_files[line['filename']] = per_camera_file
+            if not os.path.exists(per_camera_file):
+                raise IOError("Cannot find specified image data file ({0})".format(per_camera_file))
+
+        files['camera_files'] = camera_files
+
+        # optional files
+        description_file = get_full_path('description.txt')
+
+        if os.path.exists(description_file):
+            files['description'] = description_file
+        else:
+            files['description'] = None
+        # these aren't used yet...
+        #image_class_file = get_full_path('whole-image-classification.csv')
+        #point_class_file = get_full_path('within-image-classification.csv')
+
+        sensors_file = get_full_path('sensors.csv')
+
+        if os.path.exists(sensors_file):
+            files['sensors'] = sensors_file
+            # per sensor files
+            sensor_files = {}
+            for line in csv.DictReader(open(sensors_file, 'r')):
+                per_sensor_file = get_full_path(line['filename'])
+                sensor_files[line['filename']] = per_sensor_file
+                if not os.path.exists(per_sensor_file):
+                    raise IOError("Cannot find specified sensor data file ({0})".format(per_sensor_file))
+            files['sensor_files'] = sensor_files
+        else:
+            files['sensors'] = None
+
+        return files
+
+    @classmethod
+    def import_path(cls, deployment, deployment_path):
+        files = cls.dependency_get(deployment_path)
+        deployment_import(deployment, files)
+
+
+@transaction.commit_on_success
+def deployment_import(deployment, files):
+    """Import a deployment from disk.
+
+    Certain parametesr are expected to be prefilled - namely
+    short_name, campaign, license, descriptive_keywords and owner.
+    The rest are obtained by information in disk.
+
+    Information determined from on disk data include start and end time
+    timestamps, start and end position, min and max depths and transect shape
+    and mission_aim.
+    """
+
+    logger.debug("Entering deployment import")
+
+    if not files['description'] is None:
+        with open(files['description'], 'r') as description_file:
+            deployment.mission_aim = description_file.read()
+    else:
+        deployment.mission_aim = "No aim given."
+
+    deployment.min_depth = 14000.0
+    deployment.max_depth = 0.0
 
     deployment.start_position = "POINT(0.0 0.0)"
+    deployment.end_position = "POINT(0.0 0.0)"
     deployment.start_time_stamp = datetime.datetime.now()
     deployment.end_time_stamp = datetime.datetime.now()
 
+    deployment.transect_shape = "POLYGON((0.0 0.0, 0.0 0.0, 0.0 0.0, 0.0 0.0, 0.0 0.0))"
+
+    # we have to save the deployment so that everything else can link to it
+    logger.debug("Initial save of deployment.")
     deployment.save()
 
-    # load the relevant files of metadata
-    image_locations = CSVParser(image_location_file_name)
+    # now we create all the file parsers that we need...
 
-    # create a lookup on all available sm types
-    smtypes = {}
-    for smtype in models.ScientificMeasurementType.objects.all():
-        smtypes[smtype.normalised_name] = (smtype, min_value, max_value)
+    # this holds a link to all timeparsers by file name
+    parsers = {}
 
-    # this will contain the types we are actually using
-    # in this deployment
-    used_types = {}
+    # this holds a link to all camera models by camera name
+    cameras = {}
 
-    # now get the types in use
-    for field in image_locations.fieldnames:
-        # check over each field in fieldnames to see if we have a matching
-        # measurement type
-        norm = slugify(field)
+    # need a hold on the pose parser
+    pose_parser = TimeParser(open(files['path'], 'r'))
 
-        if norm in smtypes:
-            used_types[norm] = smtypes[norm]
+    # and add it to the generic parsers list
+    parsers[files['path']] = pose_parser
 
-    first_image = None
-    last_image = None
+    # image parsers
+    # so one for each camera
+    with open(files['camera'], 'r') as cameras_file:
+        cameras_parser = csv.DictReader(cameras_file)
+        for line in cameras_parser:
+            # get the name of the file the images are in
+            short_file_name = line['filename']
+            full_file_name = files['camera_files'][short_file_name]
 
-    # load the images and associated data
-    for image_attributes in image_locations:
-        # image_attributes is a dictionary with the values in it
-        # extract the requirements for image
-        # the loop through the used types to create the scientific measurements
+            name = line['name']
+            column_name = line['columnname']
+            angle = line['angle']
 
-        # we need to slugify all the keys first however...
-        im_att = {}
-        for k, v in image_attributes.iteritems():
-            im_att[slugify(k)] = v
+            # create a time parser for this file if not one already
+            if not full_file_name in parsers:
+                parsers[full_file_name] = TimeParser(open(full_file_name, 'r'))
 
-        # get the name of the file
-        # (prepend path + '/images/' to get on disk location)
-        image_name = im_att['imagename']
+            # now register the camera itself with the parser
+            # also get a handle to the database model (needed for camera sensors)
+            camera = parsers[full_file_name].register_camera(name, angle, column_name, deployment, files['image_base'])
 
-        # create the image instance
-        image = models.Image()
-        image.deployment = deployment
-        image.date_time = dateparse(im_att['datetime'])
-        image.image_position = "POINT({0} {1})".format(im_att['longitude'],
-                                                       im_att['latitude'])
-        image.depth = im_att['depth']
+            # add it to the mapping of cameras to their models
+            cameras[name] = camera
 
-        if image.depth > deployment.max_depth:
-            deployment.max_depth = image.depth
+    # sensor parsers as well
+    if 'sensors' in files and files['sensors']:
+        with open(files['sensors'], 'r') as sensors_file:
+            sensors_parser = csv.DictReader(sensors_file)
+            for line in sensors_parser:
+                sensor_type = line['sensortype']
+                short_file_name = line['filename']
+                full_file_name = files['sensor_files'][short_file_name]
+                column_name = line['columnname']
+                camera_name = line['camera']
 
-        if image.depth < deployment.min_depth:
-            deployment.min_depth = image.depth
+                # create a time parser for this file if not one already
+                if not full_file_name in parsers:
+                    parsers[full_file_name] = TimeParser(open(full_file_name, 'r'))
 
-        # do the thumbnailing magic
-        campaign_name = deployment.campaign.short_name
-        deployment_name = deployment.short_name
-        image_path = os.path.join(path, 'image', image_name)
+                if not camera_name in cameras:
+                    parsers[full_file_name].register_pose_sensor(sensor_type, column_name)
+                else:
+                    camera = cameras[camera_name]
+                    parsers[full_file_name].register_camera_sensor(camera, sensor_type, column_name)
 
-        archive_path, webimage_path = image_import(campaign_name,
-                                                   deployment_name, image_name,
-                                                   image_path)
+    # now we have all the parsers in parsers[] and the pose information
+    # retrievable from pose_parser
+    # its a matter of going through and finding when images were taken
+    # creating the images
 
-        image.archive_location = archive_path
-        image.webimage_location = webimage_path
+    # create a list... we will now sort by next image time
+    parsers = [x for x in parsers.itervalues()]
 
-        # save the image
-        image.save()
+    # sort by first image time
+    parsers = sorted(parsers, key=lambda x: x.current_image_time())
 
-        # we need first and last to get start/end points and times
-        last_image = image
-        if not first_image:
-            first_image = image
+    image_time = parsers[0].current_image_time()
 
-        # get the scientific measurements now and save them
-        for field_name, sm_info in used_types.iteritems():
-            value = im_att[field_name]
+    # things needed to get proper stats for the deployment
+    first_pose = None
+    last_pose = None
 
-            # test within range
-            if sm_info[1] <= value and value <= sm_info[2]:
-                sm = models.ScientificMeasurement()
+    lat_lim = LimitTracker()
+    lon_lim = LimitTracker()
 
-                sm.measurement_type = sm_info[0]
-                sm.image = image
-                sm.value = value
+    # the time at which we are done... ie when all next times exceed this
+    end_time = datetime.datetime(datetime.MAXYEAR, 1, 1, tzinfo=tzutc())
+    while image_time < end_time:
+        pose, latitude, longitude = pose_parser.create_pose(deployment, image_time)
+        images = []
 
-                sm.save()
+        # go through and get all images
+        for p in parsers:
+            images.extend(p.create_images(pose))
 
-            else:
-                # out of range
-                # possibly should throw error to indicate likely improper units
-                pass
+        # now get all pose/image measurements
+        for p in parsers:
+            p.apply_measurements(pose, images)
 
-    deployment.start_time_stamp = first_image.date_time
-    deployment.end_time_stamp = last_image.date_time
+        # now get the next time...
+        parsers = sorted(parsers, key=lambda x: x.next_image_time())
 
-    deployment.start_position = first_image.image_position
-    deployment.end_position = last_image.image_position
+        image_time = parsers[0].next_image_time()
 
-    # now save the actual min/max depth as well as start/end times and
-    # start position and end position
+        # we want to track first and last pose
+        last_pose = pose
+        if first_pose is None:
+            first_pose = pose
+
+        # for the transect shape
+        lat_lim.check(latitude)
+        lon_lim.check(longitude)
+
+        # and min/max depth
+        if pose.depth > deployment.max_depth:
+            deployment.max_depth = pose.depth
+
+        if pose.depth < deployment.min_depth:
+            deployment.min_depth = pose.depth
+
+    # at this point we are done with image creation
+    # so need to wrap up deployment creation and return
+    deployment.start_time_stamp = first_pose.date_time
+    deployment.end_time_stamp = last_pose.date_time
+
+    deployment.start_position = first_pose.position
+    deployment.end_position = last_pose.position
+
+    deployment.transect_shape = "POLYGON(({0} {2}, {0} {3}, {1} {3}, {1} {2}, {0} {2} ))".format(
+        lon_lim.minimum,
+        lon_lim.maximum,
+        lat_lim.minimum,
+        lat_lim.maximum)
+
+    # save and done!
     deployment.save()
-
-    # now do the importing of annotations if they exist
-
-    if os.path.isfile(whole_image_file_name):
-        # import habitat classifications
-        deployment_habitat_import(deployment, whole_image_file_name)
-
-    if os.path.isfile(point_image_file_name):
-        # import point annotations
-        deployment_annotation_import(deployment, point_image_file_name)
-
-        # our work is now done!
-
-
-def deployment_habitat_import(deployment, habitat_file_name):
-    """Import habitat information from a csv knowing the source deployment.
-
-    Expected headers are ImageName, and HabitatCode.
-    """
-    pass
-
-
-def deployment_annotation_import(deployment, annotation_file_name):
-    """Import Point Labels (annotations) from a csv knowing source deployment.
-
-    Expected headers are ImageName, x, y, Label.
-
-    x and y are given as percentages from top left corner.
-    """
-    pass
