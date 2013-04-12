@@ -51,6 +51,7 @@
     <script src='{{ STATIC_URL }}assets/js/jquery.flot.axislabels.js'></script>
 
     <script type="text/javascript">
+        var deploymentId = "{{ deployment_id }}";
 
         $(document).ready(function () {
             initDeploymentMap();
@@ -75,11 +76,9 @@
             });
         }
 
-
-
         $.ajax({
             type: "GET",
-            url: "/api/dev/simplepose/?format=json&deployment=1&output=flot&limit=10000",
+            url: "/api/dev/simplepose/?format=json&deployment="+deploymentId+"&output=flot&limit=10000",
             success: function (response, textStatus, jqXHR) {
                 $.plot($("#placeholder_01"),
                         [{
@@ -95,7 +94,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/api/dev/scientificposemeasurement/?format=json&pose__deployment=1&mtype__normalised_name=salinity&limit=10000&output=flot",
+            url: "/api/dev/scientificposemeasurement/?format=json&pose__deployment="+deploymentId+"&mtype__normalised_name=salinity&limit=10000&output=flot",
             success: function (response, textStatus, jqXHR) {
                 $.plot($("#placeholder_02"),
                         [{
@@ -111,7 +110,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/api/dev/scientificposemeasurement/?format=json&pose__deployment=1&mtype__normalised_name=temperature&limit=10000&output=flot",
+            url: "/api/dev/scientificposemeasurement/?format=json&pose__deployment="+deploymentId+"&mtype__normalised_name=temperature&limit=10000&output=flot",
             success: function (response, textStatus, jqXHR) {
                 $.plot($("#placeholder_03"),
                         [{

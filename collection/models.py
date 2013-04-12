@@ -3,7 +3,7 @@ from dateutil.tz import tzutc
 from django.contrib.gis.db import models
 
 from django.contrib.auth.models import User
-from catamidb.models import Image, Deployment
+from catamidb.models import Image, Deployment, ScientificMeasurementType
 from random import sample
 import logging
 from collection import authorization
@@ -76,6 +76,69 @@ class CollectionManager(models.Manager):
             images = Image.objects.filter(pose__deployment=Deployment.objects.
                 filter(id=value))
             collection.images.add(*images)
+
+        return collection
+
+    def collection_from_explore(self, user,
+                                collection_name,
+                                deployment_id_list_string,
+                                depth__gte,
+                                depth__lte,
+                                temperature__gte,
+                                temperature__lte,
+                                salinity__gte,
+                                salinity__lte,
+                                altitude__gte,
+                                altitude__lte):
+
+        """Create a collection using all images in a deployment.
+
+        :returns: the created collection.
+        """
+
+        deployment_list = [int(x) for x in deployment_id_list_string.split(','
+        )]
+
+        # create and prefill the collection as much as possible
+        collection = Collection()
+        collection.name = collection_name
+        collection.owner = user
+        collection.creation_date = datetime.now(tz=tzutc())
+        collection.modified_date = datetime.now(tz=tzutc())
+        collection.is_public = False
+        collection.is_locked = True
+        collection.creation_info = "Deployments: {0}".format(deployment_id_list_string)
+
+        # save the collection so we can associate images with it
+        collection.save()
+
+        #apply permissions
+        authorization.apply_collection_permissions(user, collection)
+
+        # now add all the images
+        #for value in deployment_list:
+
+        #filter deployment id and depth
+        images = Image.objects.filter(pose__deployment__id__in=deployment_list,
+                                      pose__depth__gte=depth__gte,
+                                      pose__depth__lte=depth__lte)
+
+        # get the measurement types we want to query
+        measurement_types = ScientificMeasurementType.objects.all()
+        temperature = measurement_types.get(normalised_name="temperature")
+        salinity = measurement_types.get(normalised_name="salinity")
+        altitude = measurement_types.get(normalised_name="altitude")
+
+        #filter temp
+        images = images.filter(pose__scientificposemeasurement__measurement_type=temperature, pose__scientificposemeasurement__value__range=(temperature__gte, temperature__lte))
+
+        #filter salinity
+        images = images.filter(pose__scientificposemeasurement__measurement_type=salinity, pose__scientificposemeasurement__value__range=(salinity__gte, salinity__lte))
+
+        #filter altitude
+        images = images.filter(pose__scientificposemeasurement__measurement_type=altitude, pose__scientificposemeasurement__value__range=(altitude__gte, altitude__lte))
+
+        collection.images.add(*images)
 
         return collection
 

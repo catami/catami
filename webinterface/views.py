@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 import httplib2
 
 #not API compliant - to be removed after the views are compliant
+from catamidb.api import ImageResource
 from catamidb.models import Pose, Image, Campaign, AUVDeployment, \
     BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment
 from django.contrib.gis.geos import fromstr
@@ -24,7 +25,7 @@ from django.conf import settings
 from collection.api import CollectionResource
 from collection.models import Collection, CollectionManager
 
-from webinterface.forms import CreateCollectionForm, CreateWorksetForm
+from webinterface.forms import CreateCollectionForm, CreateWorksetForm, CreateCollectionExploreForm
 
 
 # DajaxIce
@@ -547,9 +548,11 @@ def get_collection_extent(request):
 
 @csrf_exempt
 def create_collection_from_deployments(request):
+
     if request.method == 'POST':  # If the form has been submitted...
         form = CreateCollectionForm(
             request.POST)  # A form bound to the POST data
+
         if form.is_valid():  # All validation rules pass
             # make a new collection here from the deployment list
             CollectionManager().collection_from_deployments_with_name(
@@ -558,6 +561,34 @@ def create_collection_from_deployments(request):
             return HttpResponseRedirect('/projects')  # Redirect after POST
 
     return render(request, 'noworky.html', {'form': form, })
+
+@csrf_exempt
+def create_collection_from_explore(request):
+
+    if request.method == 'POST':  # If the form has been submitted...
+        form = CreateCollectionExploreForm(
+            request.POST)  # A form bound to the POST data
+        print "post"
+        print request._body
+        if form.is_valid():  # All validation rules pass
+            print "valid"
+            # make a new collection here from the deployment list
+            CollectionManager().collection_from_explore(
+                request.user, request.POST.get('collection_name'),
+                request.POST.get('deployment_ids'),
+                request.POST.get('depth__gte'),
+                request.POST.get('depth__lte'),
+                request.POST.get('temperature__gte'),
+                request.POST.get('temperature__lte'),
+                request.POST.get('salinity__gte'),
+                request.POST.get('salinity__lte'),
+                request.POST.get('altitude__gte'),
+                request.POST.get('altitude__lte')
+                )
+            return HttpResponseRedirect('/projects')  # Redirect after POST
+
+    return render(request, 'noworky.html', {'form': form, })
+
 
 @csrf_exempt
 def create_workset_from_collection(request):

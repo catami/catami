@@ -6,6 +6,17 @@ class CreateCollectionForm(forms.Form):
     deployment_ids = forms.CharField()
     collection_name = forms.CharField()
 
+class CreateCollectionExploreForm(forms.Form):
+    deployment_ids = forms.CharField()
+    collection_name = forms.CharField()
+    depth__gte = forms.CharField()
+    depth__lte = forms.CharField()
+    temperature__gte = forms.CharField()
+    temperature__lte = forms.CharField()
+    salinity__gte = forms.CharField()
+    salinity__lte = forms.CharField()
+    altitude__gte = forms.CharField()
+    altitude__lte = forms.CharField()
 
 #class CreateWorksetForm(forms.Form):
 #    name = forms.CharField()

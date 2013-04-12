@@ -65,8 +65,10 @@ urlpatterns = patterns(
     url(r'^imageedit$', 'image_edit'),
 
     #Collection Management
+    #url(r'^collections/create/$',
+    #    'create_collection_from_deployments'),
     url(r'^collections/create/$',
-        'create_collection_from_deployments'),
+        'create_collection_from_explore'),
     url(r'^collections/createworkset$', 'create_workset_from_collection'),
     url(r'^collections/createworkset2/(?P<method>[\w\-]+)/$',
         'create_workset_from_project'),
