@@ -546,7 +546,7 @@ class SimplePoseResource(ModelResource):
         authorization = PoseAuthorization()
         filtering = {
             'deployment': ALL_WITH_RELATIONS,
-        #    'depth': ['range', 'gt', 'lt'],
+            'depth': ['range', 'gt', 'lt'],
             }
         allowed_methods = ['get']
 

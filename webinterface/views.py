@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 import httplib2
 
 #not API compliant - to be removed after the views are compliant
+from catamidb.api import ImageResource
 from catamidb.models import Pose, Image, Campaign, AUVDeployment, \
     BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment
 from django.contrib.gis.geos import fromstr
@@ -24,7 +25,7 @@ from django.conf import settings
 from collection.api import CollectionResource
 from collection.models import Collection, CollectionManager
 
-from webinterface.forms import CreateCollectionForm, CreateWorksetForm
+from webinterface.forms import CreateCollectionForm, CreateWorksetForm, CreateCollectionExploreForm
 
 
 # DajaxIce
@@ -36,6 +37,29 @@ from dajax.core import Dajax
 from django.contrib.auth import logout
 
 logger = logging.getLogger(__name__)
+
+def check_permission(user, permission, object):
+    """
+    A helper function for checking permissions on object. Need this
+    because of the anonymous user.
+    """
+
+    #just make sure we get the anonymous user from the database - so we can user permissions
+    if user.is_anonymous():
+        user = guardian.utils.get_anonymous_user()
+
+    return user.has_perm(permission, object)
+
+def get_objects_for_user_wrapper(user, permission_array):
+    """
+    Helper function that wraps get_objects_for_user, I put this here to
+    save having to obtain the anonymous user all the time.
+    """
+    #just make sure we get the anonymous user from the database - so we can user permissions
+    if user.is_anonymous():
+        user = guardian.utils.get_anonymous_user()
+
+    return get_objects_for_user(user, permission_array)
 
 
 #front page and zones
@@ -184,17 +208,26 @@ def public_collections_all(request):
     cl = collection_list.obj_get_list()
     return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
+
+
 @waffle_switch('Collections')
 def view_collection(request, collection_id):
     wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random','n':100})
     wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified','n':100})
+
+    #check change permissions
+    collection = Collection.objects.get(pk=collection_id)
+
+    change_collection = check_permission(request.user, 'collection.change_collection', collection)
+
     return render_to_response('webinterface/viewcollection.html',
 #    return render_to_response('webinterface/viewcollectionalternative.html',
                               {'wsform_rand' : wsform_rand,
                                'wsform_strat' : wsform_strat,
                                'collection_id': collection_id,
                                'WMS_URL': settings.WMS_URL,
-                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
+                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME,
+                               'change_collection': change_collection},
                               RequestContext(request))
 
 
@@ -202,6 +235,12 @@ def view_collection(request, collection_id):
 def view_workset(request, collection_id, workset_id):
     wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random'})
     wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified'})
+
+    #check change permissions
+    collection = Collection.objects.get(pk=collection_id)
+
+    change_collection = check_permission(request.user, 'collection.change_collection', collection)
+
     return render_to_response('webinterface/viewcollection.html',
 #    return render_to_response('webinterface/viewworkset.html',
                               {'wsform_rand' : wsform_rand,
@@ -209,7 +248,8 @@ def view_workset(request, collection_id, workset_id):
                                'collection_id': collection_id,
                                'workset_id': workset_id,
                                'WMS_URL': settings.WMS_URL,
-                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
+                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME,
+                               'change_collection': change_collection},
                               RequestContext(request))
 
 
@@ -323,16 +363,9 @@ def auvdeployments(request):
     """@brief AUV Deployment list html for entire database
 
     """
-    user = request.user
 
-    #just make sure we get the anonymous user from the database - so we can user permissions
-    if request.user.is_anonymous():
-        user = guardian.utils.get_anonymous_user()
-
-    latest_campaign_list = get_objects_for_user(user, [
+    latest_campaign_list = get_objects_for_user_wrapper(request.user, [
         'catamidb.view_campaign'])
-
-    print latest_campaign_list
 
     latest_auvdeployment_list = AUVDeployment.objects.filter(campaign__in=latest_campaign_list)
 
@@ -346,13 +379,8 @@ def auvdeployments_map(request):
     """@brief AUV Deployment map html for entire database
 
     """
-    user = request.user
 
-    #just make sure we get the anonymous user from the database - so we can user permissions
-    if request.user.is_anonymous():
-        user = guardian.utils.get_anonymous_user()
-
-    latest_campaign_list = get_objects_for_user(user, [
+    latest_campaign_list = get_objects_for_user_wrapper(request.user, [
         'catamidb.view_campaign'])
 
     latest_auvdeployment_list = AUVDeployment.objects.filter(
@@ -368,13 +396,8 @@ def auvdeployment_detail(request, auvdeployment_id):
     """@brief AUV Deployment map and data plot for specifed AUV deployment
 
     """
-    user = request.user
 
-    #just make sure we get the anonymous user from the database - so we can user permissions
-    if request.user.is_anonymous():
-        user = guardian.utils.get_anonymous_user()
-
-    latest_campaign_list = get_objects_for_user(user, [
+    latest_campaign_list = get_objects_for_user_wrapper(request.user, [
         'catamidb.view_campaign'])
 
     auvdeployment_object = {}
@@ -400,13 +423,7 @@ def campaigns(request):
 
     """
 
-    user = request.user
-
-    #just make sure we get the anonymous user from the database - so we can user permissions
-    if request.user.is_anonymous():
-        user = guardian.utils.get_anonymous_user()
-
-    latest_campaign_list = get_objects_for_user(user, [
+    latest_campaign_list = get_objects_for_user_wrapper(request.user, [
         'catamidb.view_campaign']) #Campaign.objects.all()
     campaign_rects = list()
 
@@ -437,16 +454,11 @@ def campaign_detail(request, campaign_id):
 
     """
 
-    user = request.user
-    #just make sure we get the anonymous user from the database - so we can user permissions
-    if request.user.is_anonymous():
-        user = guardian.utils.get_anonymous_user()
-
     try:
         campaign_object = Campaign.objects.get(id=campaign_id)
 
         #check for permissions
-        if not user.has_perm('catamidb.view_campaign', campaign_object):
+        if not check_permission(request.user, 'catamidb.view_campaign', campaign_object):
             raise Campaign.DoesNotExist
 
     except Campaign.DoesNotExist:
@@ -536,9 +548,11 @@ def get_collection_extent(request):
 
 @csrf_exempt
 def create_collection_from_deployments(request):
+
     if request.method == 'POST':  # If the form has been submitted...
         form = CreateCollectionForm(
             request.POST)  # A form bound to the POST data
+
         if form.is_valid():  # All validation rules pass
             # make a new collection here from the deployment list
             CollectionManager().collection_from_deployments_with_name(
@@ -547,6 +561,34 @@ def create_collection_from_deployments(request):
             return HttpResponseRedirect('/projects')  # Redirect after POST
 
     return render(request, 'noworky.html', {'form': form, })
+
+@csrf_exempt
+def create_collection_from_explore(request):
+
+    if request.method == 'POST':  # If the form has been submitted...
+        form = CreateCollectionExploreForm(
+            request.POST)  # A form bound to the POST data
+        print "post"
+        print request._body
+        if form.is_valid():  # All validation rules pass
+            print "valid"
+            # make a new collection here from the deployment list
+            CollectionManager().collection_from_explore(
+                request.user, request.POST.get('collection_name'),
+                request.POST.get('deployment_ids'),
+                request.POST.get('depth__gte'),
+                request.POST.get('depth__lte'),
+                request.POST.get('temperature__gte'),
+                request.POST.get('temperature__lte'),
+                request.POST.get('salinity__gte'),
+                request.POST.get('salinity__lte'),
+                request.POST.get('altitude__gte'),
+                request.POST.get('altitude__lte')
+                )
+            return HttpResponseRedirect('/projects')  # Redirect after POST
+
+    return render(request, 'noworky.html', {'form': form, })
+
 
 @csrf_exempt
 def create_workset_from_collection(request):
