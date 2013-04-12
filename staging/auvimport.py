@@ -16,7 +16,7 @@ import os.path
 from scipy.io import netcdf
 
 from catamidb.models import ScientificMeasurementType, ScientificPoseMeasurement, Camera, Pose, Image
-from .deploymentimport import image_import
+from .deploymentimport import image_import, LimitTracker
 
 # for trackfiles from the data fabric
 import csv
@@ -25,37 +25,6 @@ import logging
 from django.db import transaction
 
 logger = logging.getLogger(__name__)
-
-
-class LimitTracker:
-    """A class to easily track limits of a value/field.
-
-    The field specifies the option key of the object to look up, or if
-    field is None (the default) use the value itself. All values are
-    converted to floats before comparison.
-
-    minimum and maximum specify starting points.
-    """
-
-    def __init__(self, field=None, minimum=float("inf"),
-                 maximum=float("-inf")):
-        self.maximum = maximum
-        self.minimum = minimum
-        self.field = field
-
-    def check(self, newobject):
-        """Check a new value against the existing limits.
-        """
-        # check if field exists
-        if self.field and self.field in newobject:
-            value = float(newobject[self.field])
-            # then see if it is a new maximum
-            self.maximum = max(self.maximum, value)
-            self.minimum = min(self.minimum, value)
-        elif not self.field:
-            value = float(newobject)
-            self.maximum = max(self.maximum, value)
-            self.minimum = min(self.minimum, value)
 
 
 class NetCDFParser:
@@ -420,7 +389,7 @@ def auvdeployment_import(auvdeployment, files):
 
         # we need first and last to get start/end points and times
         last_pose = pose
-        if not first_pose:
+        if first_pose is None:
             first_pose = pose
 
     auvdeployment.start_time_stamp = first_pose.date_time
