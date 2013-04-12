@@ -92,6 +92,10 @@ class CollectionManager(models.Manager):
             collection = Collection.objects.get(pk=c_id)
             collection_images = collection.images.all()
 
+            #check if the user has permission to do this
+            if not user.has_perm('collection.change_collection', collection):
+                raise CollectionError("Sorry. You don't have sufficient privileges to create a Workset in this Project.")
+
             # check that n < number of images in collection
             if collection_images.count() < n:
                 #n = collection_images.count()

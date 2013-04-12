@@ -37,6 +37,29 @@ from django.contrib.auth import logout
 
 logger = logging.getLogger(__name__)
 
+def check_permission(user, permission, object):
+    """
+    A helper function for checking permissions on object. Need this
+    because of the anonymous user.
+    """
+
+    #just make sure we get the anonymous user from the database - so we can user permissions
+    if user.is_anonymous():
+        user = guardian.utils.get_anonymous_user()
+
+    return user.has_perm(permission, object)
+
+def get_objects_for_user_wrapper(user, permission_array):
+    """
+    Helper function that wraps get_objects_for_user, I put this here to
+    save having to obtain the anonymous user all the time.
+    """
+    #just make sure we get the anonymous user from the database - so we can user permissions
+    if user.is_anonymous():
+        user = guardian.utils.get_anonymous_user()
+
+    return get_objects_for_user(user, permission_array)
+
 
 #front page and zones
 def index(request):
@@ -184,17 +207,26 @@ def public_collections_all(request):
     cl = collection_list.obj_get_list()
     return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
 
+
+
 @waffle_switch('Collections')
 def view_collection(request, collection_id):
     wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random','n':100})
     wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified','n':100})
+
+    #check change permissions
+    collection = Collection.objects.get(pk=collection_id)
+
+    change_collection = check_permission(request.user, 'collection.change_collection', collection)
+
     return render_to_response('webinterface/viewcollection.html',
 #    return render_to_response('webinterface/viewcollectionalternative.html',
                               {'wsform_rand' : wsform_rand,
                                'wsform_strat' : wsform_strat,
                                'collection_id': collection_id,
                                'WMS_URL': settings.WMS_URL,
-                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
+                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME,
+                               'change_collection': change_collection},
                               RequestContext(request))
 
 
@@ -202,6 +234,12 @@ def view_collection(request, collection_id):
 def view_workset(request, collection_id, workset_id):
     wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random'})
     wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified'})
+
+    #check change permissions
+    collection = Collection.objects.get(pk=collection_id)
+
+    change_collection = check_permission(request.user, 'collection.change_collection', collection)
+
     return render_to_response('webinterface/viewcollection.html',
 #    return render_to_response('webinterface/viewworkset.html',
                               {'wsform_rand' : wsform_rand,
@@ -209,7 +247,8 @@ def view_workset(request, collection_id, workset_id):
                                'collection_id': collection_id,
                                'workset_id': workset_id,
                                'WMS_URL': settings.WMS_URL,
-                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME},
+                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME,
+                               'change_collection': change_collection},
                               RequestContext(request))
 
 
@@ -323,16 +362,9 @@ def auvdeployments(request):
     """@brief AUV Deployment list html for entire database
 
     """
-    user = request.user
 
-    #just make sure we get the anonymous user from the database - so we can user permissions
-    if request.user.is_anonymous():
-        user = guardian.utils.get_anonymous_user()
-
-    latest_campaign_list = get_objects_for_user(user, [
+    latest_campaign_list = get_objects_for_user_wrapper(request.user, [
         'catamidb.view_campaign'])
-
-    print latest_campaign_list
 
     latest_auvdeployment_list = AUVDeployment.objects.filter(campaign__in=latest_campaign_list)
 
@@ -346,13 +378,8 @@ def auvdeployments_map(request):
     """@brief AUV Deployment map html for entire database
 
     """
-    user = request.user
 
-    #just make sure we get the anonymous user from the database - so we can user permissions
-    if request.user.is_anonymous():
-        user = guardian.utils.get_anonymous_user()
-
-    latest_campaign_list = get_objects_for_user(user, [
+    latest_campaign_list = get_objects_for_user_wrapper(request.user, [
         'catamidb.view_campaign'])
 
     latest_auvdeployment_list = AUVDeployment.objects.filter(
@@ -368,13 +395,8 @@ def auvdeployment_detail(request, auvdeployment_id):
     """@brief AUV Deployment map and data plot for specifed AUV deployment
 
     """
-    user = request.user
 
-    #just make sure we get the anonymous user from the database - so we can user permissions
-    if request.user.is_anonymous():
-        user = guardian.utils.get_anonymous_user()
-
-    latest_campaign_list = get_objects_for_user(user, [
+    latest_campaign_list = get_objects_for_user_wrapper(request.user, [
         'catamidb.view_campaign'])
 
     auvdeployment_object = {}
@@ -400,13 +422,7 @@ def campaigns(request):
 
     """
 
-    user = request.user
-
-    #just make sure we get the anonymous user from the database - so we can user permissions
-    if request.user.is_anonymous():
-        user = guardian.utils.get_anonymous_user()
-
-    latest_campaign_list = get_objects_for_user(user, [
+    latest_campaign_list = get_objects_for_user_wrapper(request.user, [
         'catamidb.view_campaign']) #Campaign.objects.all()
     campaign_rects = list()
 
@@ -437,16 +453,11 @@ def campaign_detail(request, campaign_id):
 
     """
 
-    user = request.user
-    #just make sure we get the anonymous user from the database - so we can user permissions
-    if request.user.is_anonymous():
-        user = guardian.utils.get_anonymous_user()
-
     try:
         campaign_object = Campaign.objects.get(id=campaign_id)
 
         #check for permissions
-        if not user.has_perm('catamidb.view_campaign', campaign_object):
+        if not check_permission(request.user, 'catamidb.view_campaign', campaign_object):
             raise Campaign.DoesNotExist
 
     except Campaign.DoesNotExist:

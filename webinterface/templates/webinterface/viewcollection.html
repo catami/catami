@@ -31,10 +31,13 @@
                         <!--JS--> Loading...
                     </li>
                 </ul>
+                <!-- People can only see the workset button if they have permissions. -->
+                {% if change_collection %}
                 <ul class="nav nav-list">
                     <li class="divider"></li>
                     <li><a href="#NewWorksetModal" onclick="openNewWorksetModalWindow();"><i class="icon-plus-sign"></i> New Workset</a></li>
                 </ul>
+                {% endif %}
             </div>
             {% include "webinterface/dataviews/workset-forms-modal.html" %}
         </div>
