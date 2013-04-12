@@ -432,7 +432,6 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
             raise Exception(
                 "Could not create thumbnail location, full path: {0}".format(
                     webimage_path))
-    return archive_path, webimage_location
 
     # now actually move/convert the images
     image = cv2.imread(image_path)
