@@ -11,3 +11,5 @@ dbadmintool/backup/*.bak.tar.gz
 catamiPortal/local_settings.py
 log/catamiPortal.log
 !.gitignore
+*.diff
+*.backup
