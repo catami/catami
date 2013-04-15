@@ -18,15 +18,15 @@ function BaseMap(wmsUrl, wmsLayerName, divName) {
 
     /* Filter based on the deployment id */
 
-    var filter_1_1 = new OpenLayers.Format.Filter({version: "1.1.0"});
-    var filter = new OpenLayers.Filter.Logical({
+    this.filter_1_1 = new OpenLayers.Format.Filter({version: "1.1.0"});
+    this.filter = new OpenLayers.Filter.Logical({
         type: OpenLayers.Filter.Logical.OR,
         filters: []
     });
 
     /* Setting up the projection details here, so that 4326 projected data can be displayed on top of
      * base layers that use the google projection */
-    var xml = new OpenLayers.Format.XML();
+    this.xml = new OpenLayers.Format.XML();
     this.geographic = new OpenLayers.Projection("EPSG:4326");
     this.mercator = new OpenLayers.Projection("EPSG:900913");
     this.world = new OpenLayers.Bounds(-180, -89, 180, 89).transform(
@@ -77,7 +77,7 @@ function BaseMap(wmsUrl, wmsLayerName, divName) {
     //this is the layer for our points to be displayed with
     var imagePointsLayer = new OpenLayers.Layer.WMS("Images",
         this.wmsUrl,
-        {layers: this.wmsLayerName, transparent: "true", format: "image/png", filter: xml.write(filter_1_1.write(filter))},
+        {layers: this.wmsLayerName, transparent: "true", format: "image/png", filter: this.xml.write(this.filter_1_1.write(this.filter))},
         {isBaseLayer: false, minZoomLevel: 1, maxZoomLevel: 25, numZoomLevels: 25}
     );
     this.mapInstance.addLayer(imagePointsLayer);
@@ -139,16 +139,25 @@ BaseMap.prototype.zoomToInitialExtent = function() {
  * @param filterArray
  */
 BaseMap.prototype.updateMapUsingFilter = function(filterArray) {
-
     console.log("Applying map filter");
-    //reload map data for new deployment list
-    var filter_1_1 = new OpenLayers.Format.Filter({version: "1.1.0"});
+
+    // the images layer may have been removed by a clear call, so re make it
+    if(this.mapInstance.getLayersByName("Images")[0] == null) {
+        //this is the layer for our points to be displayed with
+        var imagePointsLayer = new OpenLayers.Layer.WMS("Images",
+            this.wmsUrl,
+            {layers: this.wmsLayerName, transparent: "true", format: "image/png", filter: this.xml.write(this.filter_1_1.write(this.filter))},
+            {isBaseLayer: false, minZoomLevel: 1, maxZoomLevel: 25, numZoomLevels: 25}
+        );
+        this.mapInstance.addLayer(imagePointsLayer);
+    }
+
     var filter_logic = new OpenLayers.Filter.Logical({
         type: OpenLayers.Filter.Logical.AND,
         filters: filterArray
     });
     var xml = new OpenLayers.Format.XML();
-    var new_filter = xml.write(filter_1_1.write(filter_logic));
+    var new_filter = xml.write(this.filter_1_1.write(filter_logic));
 
     var layer = this.mapInstance.getLayersByName("Images")[0];
     layer.params['FILTER'] = new_filter;
@@ -160,11 +169,8 @@ BaseMap.prototype.updateMapUsingFilter = function(filterArray) {
  * Removes all layers from the map
  */
 BaseMap.prototype.clearMap = function() {
-    //this.mapInstance.removeLayer(this.mapInstance.getLayersByName("Images")[0]);
-    var layer = this.mapInstance.getLayersByName("Images")[0];
-    layer.params['FILTER'] = [];
-    layer.redraw();
-};
+    this.mapInstance.removeLayer(this.mapInstance.getLayersByName("Images")[0]);
+}
 
 
 
