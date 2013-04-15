@@ -10,6 +10,9 @@ class AnnotationCode(models.Model):
     This stores all the levels of the classifaction tree
     with parent filled in as appropriate.
     """
+    caab_code = models.CharField(max_length=8, unique=True) # 8 numbers
+    cpc_code = models.CharField(max_length=5, unique=True) # CPC Code file code
+    point_colour = models.CharField(max_length=6) # hex RGB colour
     code_name = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
     parent = models.ForeignKey('annotations.AnnotationCode')
