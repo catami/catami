@@ -442,8 +442,8 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
     # (this size chosen due to 4:3 ratio, and multiples of 8)
 
     # target size
-    target_width = settings.STAGING_WEBIMAGE_MAX_SIZE[0]
-    target_height = settings.STAGING_WEBIMAGE_MAX_SIZE[1]
+    target_width = staging_settings.STAGING_WEBIMAGE_MAX_SIZE[0]
+    target_height = staging_settings.STAGING_WEBIMAGE_MAX_SIZE[1]
 
     # get original image parameters
     height, width, channels = image.shape
