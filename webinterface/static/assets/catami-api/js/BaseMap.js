@@ -169,7 +169,8 @@ BaseMap.prototype.updateMapUsingFilter = function(filterArray) {
  * Removes all layers from the map
  */
 BaseMap.prototype.clearMap = function() {
-    this.mapInstance.removeLayer(this.mapInstance.getLayersByName("Images")[0]);
+    if(this.mapInstance.getLayersByName("Images")[0] != null)
+        this.mapInstance.removeLayer(this.mapInstance.getLayersByName("Images")[0]);
 }
 
 
