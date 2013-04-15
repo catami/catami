@@ -40,7 +40,7 @@ class AnnotationSet(models.Model):
 class Annotation(models.Model):
     """The common base for Point and Whole image annotations.
     """
-    image = models.ForeignKey('catamidb.Pose')
+    image = models.ForeignKey('catamidb.Image')
     label = models.ForeignKey('annotations.AnnotationCode')
     labeller = models.ForeignKey(User)
 
