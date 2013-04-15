@@ -35,7 +35,8 @@ ExploreMap.prototype.createExploreFilterArray = function(minDepth,
                                                       minTemperature,
                                                       maxTemperature,
                                                       minSalinity,
-                                                      maxSalinity) {
+                                                      maxSalinity,
+                                                      deploymentIds) {
 
     var filter = [
         new OpenLayers.Filter.Comparison({
@@ -63,6 +64,14 @@ ExploreMap.prototype.createExploreFilterArray = function(minDepth,
             upperBoundary: maxSalinity
         })
     ];
+
+    for (var i = 0; i < deploymentIds.length; i++) {
+        filter.push(new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: "deployment_id",
+            value: deploymentIds[i]
+        }));
+    }
 
     return filter;
 }

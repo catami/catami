@@ -139,7 +139,8 @@ BaseMap.prototype.zoomToInitialExtent = function() {
  * @param filterArray
  */
 BaseMap.prototype.updateMapUsingFilter = function(filterArray) {
-    console.log("applying filter");
+
+    console.log("Applying map filter");
     //reload map data for new deployment list
     var filter_1_1 = new OpenLayers.Format.Filter({version: "1.1.0"});
     var filter_logic = new OpenLayers.Filter.Logical({
@@ -152,7 +153,18 @@ BaseMap.prototype.updateMapUsingFilter = function(filterArray) {
     var layer = this.mapInstance.getLayersByName("Images")[0];
     layer.params['FILTER'] = new_filter;
     layer.redraw();
-}
+};
+
+
+/**
+ * Removes all layers from the map
+ */
+BaseMap.prototype.clearMap = function() {
+    //this.mapInstance.removeLayer(this.mapInstance.getLayersByName("Images")[0]);
+    var layer = this.mapInstance.getLayersByName("Images")[0];
+    layer.params['FILTER'] = [];
+    layer.redraw();
+};
 
 
 
