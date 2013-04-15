@@ -20,5 +20,6 @@ STAGING_ARCHIVE_DIR = getattr(settings, 'STAGING_ARCHIVE_DIR',
 STAGING_MOVE_ORIGINAL_IMAGES = getattr(settings,
                                        'STAGING_MOVE_ORIGINAL_IMAGES', True)
 
-STAGING_LOWRES_WEB_IMAGES = getattr(settings, 'STAGING_LOWRES_WEB_IMAGES',
-                                    False)
+# the maximum size of the web viewable images
+STAGING_WEBIMAGE_MAX_SIZE = getattr(settings, 'STAGING_WEBIMAGE_MAX_SIZE',
+                                    (None, None))

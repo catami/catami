@@ -438,41 +438,55 @@ def image_import(campaign_name, deployment_name, image_name, image_path):
 
     # save the web version
     # if we are wanting lowres web version... scale it down
-    if staging_settings.STAGING_LOWRES_WEB_IMAGES:
-        # calculate the nominal new size of the image to fit within 96x72px
-        # (this size chosen due to 4:3 ratio, and multiples of 8)
+    # calculate the nominal new size of the image to fit within 96x72px
+    # (this size chosen due to 4:3 ratio, and multiples of 8)
 
-        # target size
-        target_width = 96
-        target_height = 72
+    # target size
+    target_width = settings.STAGING_WEBIMAGE_MAX_SIZE[0]
+    target_height = settings.STAGING_WEBIMAGE_MAX_SIZE[1]
 
-        # get original image parameters
-        height, width, channels = image.shape
+    # get original image parameters
+    height, width, channels = image.shape
 
-        # calculating scaling factor
+    # calculating scaling factor
+
+    # if we have no target for that dimension
+    # assume 1:1 scaling is used
+    # that we we don't enlargen images, or have them too small
+    if target_width is None:
+        scale_width = 1.0
+    else:
         scale_width = float(target_width) / float(width)
+
+    if target_height is None:
+        scale_height = 1.0
+    else:
         scale_height = float(target_height) / float(height)
 
-        # determine which scaling factor we want to use as we are aiming for
-        # a max size take the smaller factor and use it
-        if scale_width < scale_height:
-            scale = scale_width
-        else:
-            scale = scale_height
+    # determine which scaling factor we want to use as we are aiming for
+    # a max size take the smaller factor and use it
+    if scale_width < scale_height:
+        scale = scale_width
+    else:
+        scale = scale_height
 
-        # scale them
-        out_width = width * scale
-        out_height = height * scale
+    # a final check we are not making the image larger
+    scale = min(1.0, scale)
 
-        #outsize = (out_height, out_width)
-        outsize = (target_width, target_height)
+    # scale them
+    out_width = width * scale
+    out_height = height * scale
 
-        # use INTER_AREA to see better shrunk results
-        # use INTER_CUBIC, INTER_LINEAR for better enlargement
-        if scale < 1.0:
-            image = cv2.resize(image, outsize, interpolation=cv2.INTER_AREA)
-        else:
-            image = cv2.resize(image, outsize, interpolation=cv2.INTER_LINEAR)
+    #outsize = (out_height, out_width)
+    outsize = (target_width, target_height)
+
+    # use INTER_AREA to see better shrunk results
+    # use INTER_CUBIC, INTER_LINEAR for better enlargement
+    # only shrink images, never increase size
+    if scale < 1.0:
+        image = cv2.resize(image, outsize, interpolation=cv2.INTER_AREA)
+    #elif scale > 1.0:
+    #    image = cv2.resize(image, outsize, interpolation=cv2.INTER_LINEAR)
 
     # save the web version (full size or shrunk)
     cv2.imwrite(webimage_path, image)
