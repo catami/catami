@@ -8,7 +8,7 @@ from guardian.core import ObjectPermissionChecker
 from guardian.shortcuts import assign
 from model_mommy import mommy
 from tastypie.test import ResourceTestCase, TestApiClient
-from catamidb.models import Image
+from catamidb.models import Image, ScientificMeasurementType
 from catamidb.tests import TestCampaignResource
 from collection import authorization
 from collection.models import CollectionManager, Collection
@@ -38,13 +38,15 @@ def create_setup(self):
     self.pose_one = mommy.make_one('catamidb.Pose',
                                    position=Point(12.4, 23.5),
                                    id=1,
-                                   deployment=self.deployment_one
+                                   deployment=self.deployment_one,
+                                   depth=10
     )
 
     self.pose_two = mommy.make_one('catamidb.Pose',
                                    position=Point(12.4, 23.5),
                                    id=2,
-                                   deployment=self.deployment_two
+                                   deployment=self.deployment_two,
+                                   depth=15
     )
 
     self.camera_one = mommy.make_one('catamidb.Camera',
@@ -69,6 +71,44 @@ def create_setup(self):
                                          web_location=self.image_list[1],
                                          pk=2
     )
+
+
+    #make pose measurements
+    self.temp_one = mommy.make_one('catamidb.ScientificPoseMeasurement',
+                                   id=1,
+                                   pose=self.pose_one,
+                                   measurement_type=ScientificMeasurementType.objects.get(normalised_name="temperature"),
+                                   value=10)
+
+    self.temp_two = mommy.make_one('catamidb.ScientificPoseMeasurement',
+                                   id=2,
+                                   pose=self.pose_two,
+                                   measurement_type=ScientificMeasurementType.objects.get(normalised_name="temperature"),
+                                   value=15)
+
+    self.salinity_one = mommy.make_one('catamidb.ScientificPoseMeasurement',
+                                   id=3,
+                                   pose=self.pose_one,
+                                   measurement_type=ScientificMeasurementType.objects.get(normalised_name="salinity"),
+                                   value=10)
+
+    self.salinity_two = mommy.make_one('catamidb.ScientificPoseMeasurement',
+                                   id=4,
+                                   pose=self.pose_two,
+                                   measurement_type=ScientificMeasurementType.objects.get(normalised_name="salinity"),
+                                   value=15)
+
+    self.altitude_one = mommy.make_one('catamidb.ScientificPoseMeasurement',
+                                   id=5,
+                                   pose=self.pose_one,
+                                   measurement_type=ScientificMeasurementType.objects.get(normalised_name="altitude"),
+                                   value=10)
+
+    self.altitude_two = mommy.make_one('catamidb.ScientificPoseMeasurement',
+                                   id=6,
+                                   pose=self.pose_two,
+                                   measurement_type=ScientificMeasurementType.objects.get(normalised_name="altitude"),
+                                   value=15)
 
 
 class TestCollectionModel(TestCase):
@@ -212,6 +252,124 @@ class TestCollectionModel(TestCase):
             self.assertTrue(True)
 
 
+    def test_collection_from_explore(self):
+        #create the list of deployment ids to create a collection from
+        deployment_ids = (self.deployment_one.id.__str__() + ',' +
+                          self.deployment_two.id.__str__())
+
+        # this range of values should obtain us the single image from deployment_one
+        depth__gte = 9
+        depth__lte = 11
+        temperature__gte = 9
+        temperature__lte = 11
+        salinity__gte = 9
+        salinity__lte = 11
+        altitude__gte = 9
+        altitude__lte = 11
+
+        #create a collection
+        self.collection_manager.collection_from_explore(self.user,
+                                                        self.collection_name,
+                                                        deployment_ids.__str__(),
+                                                        depth__gte,
+                                                        depth__lte,
+                                                        temperature__gte,
+                                                        temperature__lte,
+                                                        salinity__gte,
+                                                        salinity__lte,
+                                                        altitude__gte,
+                                                        altitude__lte)
+
+
+
+        #check it got created
+        collection = Collection.objects.get(name=self.collection_name)
+        self.assertIsInstance(collection, Collection)
+
+        #check that the user and details were assigned
+        self.assertEqual(collection.owner, self.user)
+        self.assertEqual(collection.is_locked, True)
+
+        #check that default permissions were applied
+        self.assertTrue(self.user.has_perm('collection.view_collection',
+                                           collection))
+        self.assertTrue(self.user.has_perm('collection.add_collection',
+                                           collection))
+        self.assertTrue(self.user.has_perm('collection.change_collection',
+                                           collection))
+        self.assertTrue(self.user.has_perm('collection.delete_collection',
+                                           collection))
+
+        public_group, created = Group.objects.get_or_create(name='Public')
+        checker = ObjectPermissionChecker(public_group)
+        self.assertTrue(checker.has_perm('collection.view_collection',
+                                         collection))
+
+        #check the images went across - IMPORTANT!
+        #get images for the deployment and the collection
+        collection_images = collection.images.all().order_by("web_location")
+        deployment_one_images = Image.objects.filter(pose__deployment=self.
+        deployment_one).order_by("web_location")
+
+
+        # check that we only got the image withiin our query bounds
+        self.assertEqual(collection_images.count(), 1)
+
+        #try create with no user, should be an error
+        try:
+            self.collection_manager.collection_from_explore(None, self.
+            collection_name, deployment_ids.__str__())
+        except Exception:
+            self.assertTrue(True)
+
+        #try create with no name
+        try:
+            self.collection_manager.collection_from_explore(self.user,
+                                                            None,
+                                                            deployment_ids.__str__(),
+                                                            depth__gte,
+                                                            depth__lte,
+                                                            temperature__gte,
+                                                            temperature__lte,
+                                                            salinity__gte,
+                                                            salinity__lte,
+                                                            altitude__gte,
+                                                            altitude__lte)
+        except Exception:
+            self.assertTrue(True)
+
+        #try create with no deployments
+        try:
+            self.collection_manager.collection_from_explore(self.user,
+                                                            self.collection_name,
+                                                            "",
+                                                            depth__gte,
+                                                            depth__lte,
+                                                            temperature__gte,
+                                                            temperature__lte,
+                                                            salinity__gte,
+                                                            salinity__lte,
+                                                            altitude__gte,
+                                                            altitude__lte)
+        except Exception:
+            self.assertTrue(True)
+
+        #try create collection with duplicate name
+        try:
+            self.collection_manager.collection_from_explore(self.user,
+                                                            self.collection_name,
+                                                            deployment_ids.__str__(),
+                                                            depth__gte,
+                                                            depth__lte,
+                                                            temperature__gte,
+                                                            temperature__lte,
+                                                            salinity__gte,
+                                                            salinity__lte,
+                                                            altitude__gte,
+                                                            altitude__lte)
+        except Exception:
+            self.assertTrue(True)
+
 
 #======================================#
 # Test the API                         #
@@ -342,7 +500,6 @@ class TestCollectionResource(ResourceTestCase):
         response = self.anon_api_client.get(self.collection_url + "3/",
                                             format='json')
         self.assertHttpUnauthorized(response)
-
 
     def test_update_collection_authorised(self):
         #TODO: implement this test
