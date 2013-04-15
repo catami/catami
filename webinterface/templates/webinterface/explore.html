@@ -21,10 +21,12 @@
         }
 
         .viewpane {
+/*
             padding-left: 10px;
             border-left-style: solid;
             border-left-width: 1px;
             border-color: #ddd;
+*/
         }
 
         .viewobj {
@@ -79,9 +81,23 @@
 
     <div class="row-fluid">
 
-        <div class="span2">
+        <div class="span2" id="map-sidebar">
+            <form style="width=100%;">
+		        <p style="width:100%;">
+				  	<a href="#" id="opener" class="btn" type="button" style="width:100%;" ><i class="icon-plus-sign"></i> Select Data</a>
+				</p>
+				<table class="table table-bordered" id="selectedDeploymentTable">
+					<tr><td>Nothing Selected</td></tr>
+				</table>              
+				
+				                {% comment %}Deployments:
+                <select name="deploymentSelect" multiple="multiple"
+                        class="workpane" id="deploymentSelect"
+                        onchange="selectDeployment($(this).val());">
+                    <!-- Content inserted from jqery -->
+                </select>
+                {% endcomment %}
 
-            <form>
 
                 {% comment %}{% switch Experimental %}
                     Year:
@@ -97,6 +113,7 @@
 
                 {% comment %}<div class="well" style="padding:10px; padding-left: 0; padding-right: 0;">{% endcomment %}
 
+<!--
                     <ul class="nav nav-list">
                         <li class="nav-header">Type</li>
 
@@ -106,59 +123,43 @@
                                 <button type="button" id="dov" class="btn" style="width: 100%">DOV</button>
                             </div>
                     </ul>
+-->
+
+				<div id="sliderSet">
+	                <ul class="nav nav-list" style="margin-bottom: 20px; margin-top: 10px">
+	                        <li class="nav-header">Depth (m) <span id="selectedDepthRange" class="label label pull-right"></span>  </li>
+	                        <div id="depthSlider" style="width: 100%; height:5px; margin-top: 2px;margin-bottom: 15px; "></div>
+	                        <!--<span id="selectedDepthMin" class="label label-inverse pull-left" ></span>-->
+	                        <!--<span id="selectedDepthMax" class="label label-inverse pull-right" ></span>-->
+	                        <!--<div id="depthSlider" class="pull-left" style="width: 100%; height:5px; margin-top: 2px; margin-bottom: 20px; margin-left: 5px"></div>-->
+	                </ul>
+	
+	                <ul class="nav nav-list" style="margin-bottom: 20px; ">
+	                        <li class="nav-header">Altitude (m) <span id="selectedAltitudeRange" class="label label pull-right" ></span></li>
+	                        <div id="altitudeSlider" style="width: 100%; height:5px; margin-top: 2px;margin-bottom: 15px; "></div>
+	
+	                    </ul>
+	
+	                <ul class="nav nav-list" style="margin-bottom: 20px; ">
+	                        <li class="nav-header">Temperature (C) <span id="selectedTemperatureRange" class="label label pull-right" ></span> </li>
+	                        <div id="temperatureSlider" style="width: 100%; height:5px; margin-top: 2px;margin-bottom: 15px; "></div>
+	
+	
+	                </ul>
+	
+	                <ul class="nav nav-list" style="margin-bottom: 20px; ">
+	                        <li class="nav-header">Salinity (PSU) <span id="selectedSalinityRange" class="label label pull-right" ></span> </li>
+	                        <div id="salinitySlider" style="width: 100%; height:5px; margin-top: 2px;margin-bottom: 15px; "></div>
+	
+	
+	                </ul>
+				</div>
+                {% comment %}Depth Range: <strong id="selectedDepthMin"></strong> to
+                <strong id="selectedDepthMax"></strong> m{% endcomment %}
 
 
-                    <ul class="nav nav-list" style="margin-right: 15px">
-                        <li class="nav-header">Depth</li>
+                {% comment %} </div>{% endcomment %}
 
-                        {% comment %}<span id="depthMin"></span>
-                        <span id="depthMax" style="float:right"></span><br>{% endcomment %}
-                        <div>
-                            <span id="selectedDepthMin" class="label label-inverse text-center pull-left"></span>
-                            <div id="depthSlider" style="height:5px; margin-top: 2px; margin-bottom: 15px; margin-left: 30px; "></div>
-
-                        <span id="selectedDepthMax" class="label label-inverse text-center pull-right"></span>
-                        </div>
-                    </ul>
-
-                    <ul class="nav nav-list" style="margin-right: 10px">
-                        <li class="nav-header">Altitude</li>
-                        <div id="altitudeSlider" style="width:100%; height:5px; margin-top: 2px; margin-bottom: 15px; margin-left: 5px"></div>
-                    </ul>
-
-                    <ul class="nav nav-list" style="margin-right: 10px">
-                        <li class="nav-header">Temperature</li>
-                        <div id="temperatureSlider" style="width:100%; height:5px; margin-top: 2px; margin-bottom: 15px; margin-left: 5px"></div>
-                    </ul>
-
-                    <ul class="nav nav-list" style="margin-right: 10px">
-                        <li class="nav-header">Salinity</li>
-                        <div id="salinitySlider" style="width:100%; height:5px; margin-top: 2px; margin-bottom: 15px; margin-left: 5px"></div>
-                    </ul>
-
-                    {% comment %}Depth Range: <strong id="selectedDepthMin"></strong> to
-                    <strong id="selectedDepthMax"></strong> m{% endcomment %}
-
-
-               {% comment %} </div>{% endcomment %}
-
-
-
-
-
-
-               {% comment %} Campaign:
-                <select name="campaignSelect" multiple="multiple"
-                        class="workpane" id="campaignSelect"
-                        onchange="selectCampaign($(this).val());">
-                    <!-- Content inserted from jqery -->
-                </select><br><br>
-                Deployments:
-                <select name="deploymentSelect" multiple="multiple"
-                        class="workpane" id="deploymentSelect"
-                        onchange="selectDeployment($(this).val());">
-                    <!-- Content inserted from jqery -->
-                </select>{% endcomment %}
             </form>
 
             {% comment %}{% switch Collections %}
@@ -176,6 +177,7 @@
             {% endswitch %}{% endcomment %}
         </div>
 
+        {% if user.is_authenticated %}
         <div id="CreateProjectModal" class="modal hide fade">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"
@@ -193,10 +195,11 @@
                 </button>
             </div>
         </div>
-
+        {% endif  %}
+        
         <div class="span10 viewpane">
 
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs" style="margin-bottom:0px;">
                 <li class="active"><a href="#map" data-toggle="tab"><i
                         class="icon-globe"></i> Map</a></li>
                 <li><a href="#thm" data-toggle="tab"><i
@@ -205,8 +208,9 @@
                     <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
                 {% endswitch %}
 
+                {% if user.is_authenticated %}
                 <a href="#CreateProjectModal" class="btn btn-primary pull-right btn-create-collection newCollection" data-toggle="modal"><i class="icon-list-alt"></i> Create Project </a></a>
-
+                {% endif %}
             </ul>
 
 
@@ -215,7 +219,7 @@
                 <div class="tab-pane active" id="map">
 
                     <div class="row-fluid" style="position:relative">
-                        <div id='deployment-map' style="width:100%;height:600px;z-index:0" class="span9">
+                        <div id='deployment-map' style="width:100%;height:600px;z-index:0;position:relative;" class="span9">
                             <!-- Map content inserted using JQuery -->
                         </div>
 
@@ -248,7 +252,7 @@
 		<h3 id="myModalLabel">Image Preview</h3>
 	</div>
 	<div class="modal-body">
-		<p>Hmm...no image content? This is a problem</p>
+		<p>Hmm...no image content has been loaded. This is a problem.</p>
 	</div>
 	<div class="modal-footer">
 		<i class="icon-angle-left icon-4x pull-left"></i>
@@ -256,18 +260,51 @@
 	</div>
 </div>
 
+<div id="dialog" title="Basic dialog"  style="display: none">
+  <p>test testtest</p>
+</div>
 {% endblock %}
 
 {% block add_script %}
     <script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
     <script src='{{ STATIC_URL }}assets/catami-api/js/explore.js'></script>
-    <script src='{{ STATIC_URL }}assets/catami-api/js/map.js'></script>
+    <script src='{{ STATIC_URL }}assets/catami-api/js/BaseMap.js'></script>
+    <script src='{{ STATIC_URL }}assets/catami-api/js/ExploreMap.js'></script>
 
 	<script type="text/javascript" src="/static/assets/catami-api/js/catamiImageView.js"></script>
 
+	<!--
+		<script>
+		function openDialog() {
+	
+		    $('#dialog').remove();
+		
+		    $('#content').prepend('<div id="dialog" style="padding: 3px 0px 0px 0px;"><iframe src="URL of HTML page" style="padding:0; margin: 0; display: block; width: 100%; height: 100%;" frameborder="no" scrolling="auto"></iframe></div>');
+		
+		    $('#dialog').dialog({
+		        title: 'Title of dialog',
+		
+		        close: function (event, ui) {
+		              // Code which you want to run at the time of close dialog box;
+		        },  
+		        bgiframe: false,
+		        width: 1000,
+		        height: 500,
+		        resizable: false,
+		        modal: false
+		    });
+		};
+		    $( "#opener" ).click(function() {
+		    	$( "#dialog" ).dialog( "open" );
+		    });
+		  });
+		</script>
+	-->
+  
     <script type="text/javascript">
 
         var currentSelectedDeployments = [];
+        var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map")
 
         $('.newCollection').popover({ html: true});
 
@@ -275,23 +312,22 @@
             $("#newCollectionPopover").popover('hide');
         }
 
-
-
         function selectCampaign(id) {
             getDeploymentList(id);
-            getNewImageList("limit=30&campaign=" + id);
-            //alert('Selected campaign id: '+id);
+            //getNewImageList("limit=30&campaign=" + id);
         }
 
         function selectDeployment(id) {
+        	currentSelectedDeployments.push(id);
+        	//currentSelectedDeployments += id;
+            //updateMapForSelectedDeployments(id);
             getNewImageList("limit=30&deployment=" + id);
-            updateMapForSelectedDeployments(id);
-            updateUIForDeploymentList(id);
+            updateUIForDeploymentList(currentSelectedDeployments);
         }
 
         function getDeploymentList(campaign_id) {
 
-            filter_array.length = 0;
+            //filter_array.length = 0;
             var deployment_ids = [];
 
             var apiurl = "/api/dev/deployment/?format=json";
@@ -311,9 +347,9 @@
 
                 $("#deploymentSelect").html(options);
 
-                updateMapForSelectedDeployments(deployment_ids);
+                //updateMapForSelectedDeployments(deployment_ids);
 
-                updateUIForDeploymentList(deployment_ids);
+                // updateUIForDeploymentList(deployment_ids);
                 //$('#deploymentSelect option:first').attr('selected', 'selected');
             })
 
@@ -323,33 +359,55 @@
             var apiurl = "/api/dev/campaign/?format=json";
             $.getJSON(apiurl, function (campaigns) {
                 //alert ('L: ' + j.objects.length);
-                var options = '<option value="">--ALL--</option>';
+                var options = '<option value=""><strong class="btn">Select All</strong></option>';
                 for (var i = 0; i < campaigns.objects.length; i++) {
                     options += '<option value="' + campaigns.objects[i].id + '">' + campaigns.objects[i].short_name + '</option>';
                 }
                 $("#campaignSelect").html(options);
-                //$('#deploymentSelect option:first').attr('selected', 'selected');
             })
         }
 
         function updateUIForDeploymentList(deployment_ids) {
-            $('.btn-create-collection').removeAttr('disabled');
-            currentSelectedDeployments.length = 0;
+            var deploymentListReadable = [];
+            var apiurl = "/api/dev/deployment/?format=json";
 
+            //updateMapForSelectedDeployments(deployment_ids);
+            
             if (deployment_ids.length > 0) {
+                $('.btn-create-collection').removeAttr('disabled');
                 $("#newCollectionPopover").popover('enable');
-
-                $("#collection_info").text(deployment_ids.length + ' deployments in the view');
+                //$("#collection_info").text(deployment_ids.length + ' deployments in the view');
+	                
                 for (var i = 0; i < deployment_ids.length; i++) {
-                    currentSelectedDeployments.push(deployment_ids[i]);
+                    //currentSelectedDeployments.push(deployment_ids[i]);
+                    var apiurl = "/api/dev/deployment/"+deployment_ids[i]+"/?format=json";
+
+                    $.ajax({
+                    	url: apiurl, 
+                    	async:false,
+                    	dataType: 'json',
+                    	success: function (deploymentInfo) {
+	                    	console.log(deploymentInfo);
+	                    	deploymentListReadable += '<tr><td>'+deploymentInfo.short_name+'(id:'+deploymentInfo.id+')</tr></td>';
+	                    	console.log(deploymentListReadable);
+	                    }
+	               });
                 }
+                console.log("test");
+                console.log(deploymentListReadable);
 
+                $("#selectedDeploymentTable").html(deploymentListReadable);
+                
+                executeFilter();
+                
                 updateMapExtent();
-
             } else {
                 $("#newCollectionPopover").popover('disable');
                 $('.btn-create-collection').attr('disabled', 'disabled');
                 $("#collection_info").text('Nothing being viewed');
+                $("#sliderSet").attr('disabled', 'disabled');
+                $("#selectedDeploymentTable").html('<tr><td>Nothing Selected</td></tr>');
+
             }
             //$('#savecollection').p("wee");
         }
@@ -360,7 +418,7 @@
 
             var form = document.createElement('form');
             form.setAttribute('method', 'post');
-            form.setAttribute('action', '{% url webinterface.views.create_collection_from_deployments %}');
+            form.setAttribute('action', '{% url webinterface.views.create_collection_from_explore %}');
             form.style.display = 'hidden';
 
             var hiddenField = document.createElement("input");
@@ -375,8 +433,67 @@
             hiddenField2.setAttribute("value", colname);
             form.appendChild(hiddenField2);
 
+            var minDepth = $( "#depthSlider" ).slider( "values", 0 );
+            var maxDepth = $( "#depthSlider" ).slider( "values", 1 );
 
-            document.body.appendChild(form)
+            var minAltitude = $( "#altitudeSlider" ).slider( "values", 0 );
+            var maxAltitude = $( "#altitudeSlider" ).slider( "values", 1 );
+
+            var minTemperature = $( "#temperatureSlider" ).slider( "values", 0 );
+            var maxTemperature = $( "#temperatureSlider" ).slider( "values", 1 );
+
+            var minSalinity = $( "#salinitySlider" ).slider( "values", 0 );
+            var maxSalinity = $( "#salinitySlider" ).slider( "values", 1 );
+
+            var depth__gte = document.createElement("input");
+            depth__gte.setAttribute("type", "hidden");
+            depth__gte.setAttribute("name", "depth__gte");
+            depth__gte.setAttribute("value", minDepth);
+            form.appendChild(depth__gte);
+
+            var depth__lte = document.createElement("input");
+            depth__lte.setAttribute("type", "hidden");
+            depth__lte.setAttribute("name", "depth__lte");
+            depth__lte.setAttribute("value", maxDepth);
+            form.appendChild(depth__lte);
+
+            var temperature__gte = document.createElement("input");
+            temperature__gte.setAttribute("type", "hidden");
+            temperature__gte.setAttribute("name", "temperature__gte");
+            temperature__gte.setAttribute("value", minTemperature);
+            form.appendChild(temperature__gte);
+
+            var temperature__lte = document.createElement("input");
+            temperature__lte.setAttribute("type", "hidden");
+            temperature__lte.setAttribute("name", "temperature__lte");
+            temperature__lte.setAttribute("value", maxTemperature);
+            form.appendChild(temperature__lte);
+
+            var salinity__gte = document.createElement("input");
+            salinity__gte.setAttribute("type", "hidden");
+            salinity__gte.setAttribute("name", "salinity__gte");
+            salinity__gte.setAttribute("value", minSalinity);
+            form.appendChild(salinity__gte);
+
+            var salinity__lte = document.createElement("input");
+            salinity__lte.setAttribute("type", "hidden");
+            salinity__lte.setAttribute("name", "salinity__lte");
+            salinity__lte.setAttribute("value", maxSalinity);
+            form.appendChild(salinity__lte);
+
+            var altitude__gte = document.createElement("input");
+            altitude__gte.setAttribute("type", "hidden");
+            altitude__gte.setAttribute("name", "altitude__gte");
+            altitude__gte.setAttribute("value", minAltitude);
+            form.appendChild(altitude__gte);
+
+            var altitude__lte = document.createElement("input");
+            altitude__lte.setAttribute("type", "hidden");
+            altitude__lte.setAttribute("name", "altitude__lte");
+            altitude__lte.setAttribute("value", maxAltitude);
+            form.appendChild(altitude__lte);
+
+            document.body.appendChild(form);
             form.submit();
         }
 
@@ -392,29 +509,25 @@
                     bounds.extend(new OpenLayers.LonLat(boundsArr[2], boundsArr[3]));
                     var geographic = new OpenLayers.Projection("EPSG:4326");
                     var mercator = new OpenLayers.Projection("EPSG:900913");
-                    deploymentMap.zoomToExtent(bounds.transform(geographic, mercator));
+                    map.mapInstance.zoomToExtent(bounds.transform(geographic, mercator));
                 }
             });
         }
 
-        setDepthRange = function(minDepth, maxDepth) {
+       setDepthRange = function(minDepth, maxDepth) {
             $("#depthSlider").slider({
                 range: true,
                 min: minDepth,
                 max: maxDepth,
                 values: [ minDepth, maxDepth ],
                 slide: function (event, ui) {
-                    $("#selectedDepthMin").html(ui.values[ 0 ]);
-                    $("#selectedDepthMax").html(ui.values[ 1 ]);
+                    $("#selectedDepthRange").html(ui.values[ 0 ] + " : " +ui.values[ 1 ]);
                 },
                 stop: function( event, ui ) {
-                    executeFilter(ui.values[ 0 ], ui.values[ 1 ]);
+                    executeFilter();
                 }
             });
-            $("#depthMin").html(minDepth);
-            $("#depthMax").html(maxDepth);
-            $("#selectedDepthMin").html(minDepth);
-            $("#selectedDepthMax").html(maxDepth);
+            $("#selectedDepthRange").html(minDepth + " : " +maxDepth);
         }
 
         setAltitudeRange = function (minAltitude, maxAltitude) {
@@ -424,56 +537,131 @@
                 max: maxAltitude,
                 values: [ minAltitude, maxAltitude ],
                 slide: function (event, ui) {
-
+                    $("#selectedAltitudeRange").html(ui.values[ 0 ] + " : " + ui.values[ 1 ]);
+                    //$("#selectedAltitudeMax").html(ui.values[ 1 ]);
+                },
+                stop: function( event, ui ) {
+                    executeFilter();
                 }
             });
+            $("#selectedAltitudeRange").html(minAltitude + " : " +maxAltitude);
+            //$("#selectedAltitudeMax").html(maxAltitude);
         };
 
-        setSalinityRange = function (minSalinity, maxSalinity) {
+        setTemperatureRange = function (minSalinity, maxSalinity) {
             $("#temperatureSlider").slider({
                 range: true,
                 min: minSalinity,
                 max: maxSalinity,
                 values: [ minSalinity, maxSalinity ],
                 slide: function (event, ui) {
-
+                    $("#selectedTemperatureRange").html(ui.values[ 0 ] + " : " + ui.values[ 1 ]);
+                },
+                stop: function( event, ui ) {
+                    executeFilter();
                 }
             });
+            $("#selectedTemperatureRange").html(minSalinity + " : " +maxSalinity);
         };
 
-        setTemperatureRange = function (minTemperature, maxTemperature) {
+        setSalinityRange = function (minTemperature, maxTemperature) {
             $("#salinitySlider").slider({
                 range: true,
                 min: minTemperature,
                 max: maxTemperature,
                 values: [ minTemperature, maxTemperature ],
                 slide: function (event, ui) {
-
+                    $("#selectedSalinityRange").html(ui.values[ 0 ] + " : " + ui.values[ 1 ]);
+                },
+                stop: function( event, ui ) {
+                    executeFilter();
                 }
             });
+            $("#selectedSalinityRange").html(minTemperature + " : " + maxTemperature);
         };
 
         executeFilter = function() {
-            //get depth from depth slider
+            //get filter properties
             var minDepth = $( "#depthSlider" ).slider( "values", 0 );
             var maxDepth = $( "#depthSlider" ).slider( "values", 1 );
 
-            //construct the depth filter
-            var depthFilter = [
-                new OpenLayers.Filter.Comparison({
-                    type: OpenLayers.Filter.Comparison.BETWEEN,
-                    property: "depth",
-                    lowerBoundary: minDepth,
-                    upperBoundary: maxDepth
-                })
-            ];
+            var minAltitude = $( "#altitudeSlider" ).slider( "values", 0 );
+            var maxAltitude = $( "#altitudeSlider" ).slider( "values", 1 );
 
-            map.updateMapUsingFilter(depthFilter);
+            var minTemperature = $( "#temperatureSlider" ).slider( "values", 0 );
+            var maxTemperature = $( "#temperatureSlider" ).slider( "values", 1 );
 
+            var minSalinity = $( "#salinitySlider" ).slider( "values", 0 );
+            var maxSalinity = $( "#salinitySlider" ).slider( "values", 1 );
+
+            //construct and execute filter
+            var filterArray = map.createExploreFilterArray(minDepth,
+                                                            maxDepth,
+                                                            minAltitude,
+                                                            maxAltitude,
+                                                            minTemperature,
+                                                            maxTemperature,
+                                                            minSalinity,
+                                                            maxSalinity);
+
+            map.updateMapUsingFilter(filterArray);
+            executeImageFilter(minDepth,
+                                maxDepth,
+                                minAltitude,
+                                maxAltitude,
+                                minTemperature,
+                                maxTemperature,
+                                minSalinity,
+                                maxSalinity);
+            };
+
+            executeImageFilter = function(minDepth,
+                                      maxDepth,
+                                      minAltitude,
+                                      maxAltitude,
+                                      minTemperature,
+                                      maxTemperature,
+                                      minSalinity,
+                                      maxSalinity) {
+
+            getNewImageList("pose__depth__gte="+minDepth+"&pose__depth__lte="+maxDepth+"&temperature__gte="+minTemperature+"&temperature__lte="+maxTemperature+"&salinity__gte="+minSalinity+"&salinity__lte="+maxSalinity+"&altitude__gte="+minAltitude+"&altitude__lte="+maxAltitude, 30);
 
         };
 
-        var map = new CatamiMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map")
+		$(function () {
+		    $('#opener').click(function() {
+		        var NewDialog = $('\
+		        <form style="margin-bottom=0px;font-size:14px;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;">\
+                <select name="campaignSelect" multiple="multiple"\
+                        class="workpane" id="campaignSelect"\
+                        onchange="selectCampaign($(this).val());" style="height:100%;float:left; width:30%; margin-left:0px;color:#000;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;">\
+                        <!-- Content inserted from jquery -->\
+                </select>\
+                <select name="deploymentSelect" multiple="multiple"\
+                        class="workpane" id="deploymentSelect"\
+                        onchange="selectDeployment($(this).val());" style="height:100%;float:right; width:69%; margin-left:4px;color:#000;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;">\
+                    <!-- Content inserted from jquery -->\
+                </select>\
+                </form>');
+		        NewDialog.dialog({
+		            modal: false,
+		            open: getCampaignList(),
+		            title: "Select Campaigns and deployments",
+		            width: 600,
+		            height: 400,
+		            resizable: false,
+		            draggable: false,
+		            closeOnEscape: true,
+		            position: { my: 'left top', at: 'right top', of: '#map-sidebar' }, 
+		            buttons: [
+		                {text: "Done", click: function() {$(this).dialog("close")}}
+		            ]
+		        }).siblings('.ui-dialog-titlebar').remove();
+		        return true;
+		    });
+		});
+
+        //var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map")
 
         $(document).ready(function () {
 
@@ -484,22 +672,13 @@
                 $(e.target).addClass("active");
             });
 
-            //getDeploymentList();
-            //getCampaignList();
+            getCampaignList();
 
-            //initDeploymentMap();
-
-            var explore = new Explore();
             setDepthRange(0, 500);
-            setAltitudeRange(0, 500);
-            setSalinityRange(0, 500);
-            setTemperatureRange(0, 500);
+            setAltitudeRange(0, 12000);
+            setSalinityRange(2, 41);
+            setTemperatureRange(-3, 40);
 
-
-            //map.updateMapUsingFilter(map.createExploreFilterArray());
-
-            //map.zoomToInitialExtent();
-            //map.enablePopup();
         });
     </script>
 {% endblock %}
