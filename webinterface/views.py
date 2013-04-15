@@ -591,48 +591,6 @@ def create_collection_from_explore(request):
 
 
 @csrf_exempt
-def create_workset_from_collection(request):
-    if request.method == 'POST':  # If the form has been submitted...
-        form = CreateWorksetForm(request.POST)  # A form bound to the POST data
-        if form.is_valid():  # All validation rules pass
-            workset = CollectionManager().workset_from_collection(
-                request.user,
-                request.POST.get('name'),
-                request.POST.get('description'),
-                request.POST.get('ispublic') == "true",
-                int(request.POST.get('c_id')),
-                int(request.POST.get('n')),
-                request.POST.get('method'),
-            )
-
-            return HttpResponseRedirect(
-                '/collections/' + request.POST.get('c_id') + '/workset/' + workset.id.__str__())  # Redirect after POST
-
-    return HttpResponse(form)
-
-
-@csrf_exempt
-def create_workset_from_project(request, method):
-    if request.method == 'POST':  # If the form has been submitted...
-        form = CreateWorksetForm(request.POST)  # A form bound to the POST data
-        if form.is_valid():  # All validation rules pass
-            workset = CollectionManager().workset_from_collection(
-                request.user,
-                request.POST.get('name'),
-                request.POST.get('description'),
-                request.POST.get('ispublic') == "true",
-                int(request.POST.get('c_id')),
-                int(request.POST.get('n')),
-                method
-            )
-
-            return HttpResponseRedirect(
-                '/collections/' + request.POST.get('c_id') + '/workset/' + workset.id.__str__())  # Redirect after POST
-
-    return HttpResponse(form)
-
-
-@csrf_exempt
 def proxy(request):
 
     url = request.GET.get('url',None)
