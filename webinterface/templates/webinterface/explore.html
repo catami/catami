@@ -1,4 +1,4 @@
-{% extends "base-topmenu.html" %}
+	{% extends "base-topmenu.html" %}
 {% load waffle_tags %}
 
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
@@ -45,7 +45,7 @@
             margin: 0px;
             width: 40px;
         }
-
+        
         #map_container2 {
             height: 600px;
             width: 100%;
@@ -60,7 +60,7 @@
 	        margin: 2px;
 	        padding: 2px;
         }
-
+        
 		#imageModal .modal-body {
 			max-height: 800px;
 		}
@@ -83,12 +83,22 @@
 
         <div class="span2" id="map-sidebar">
             <form style="width=100%;">
-		        <p style="width:100%;">
-				  	<a href="#" id="opener" class="btn" type="button" style="width:100%;" ><i class="icon-plus-sign"></i> Select Data</a>
+		        <p style="width:90%;">
+				  	<a href="#" id="opener" class="btn" type="button" style="width:100%;" ><i class="icon-plus-sign"></i> Select Deployments</a>
 				</p>
+<!--
 				<table class="table table-bordered" id="selectedDeploymentTable">
 					<tr><td>Nothing Selected</td></tr>
-				</table>              
+				</table>
+-->
+				<div class="well" style="padding:10px; padding-left: 0; padding-right: 0;">
+					<ul class="nav nav-list" id="selectedDeploymentList">
+						<li class="nav-header">
+						Selected Deployments
+						</li>
+						<li class="divider" style="margin:0px;"></li>
+					</ul>
+				</div>      
 				
 				                {% comment %}Deployments:
                 <select name="deploymentSelect" multiple="multiple"
@@ -303,9 +313,13 @@
   
     <script type="text/javascript">
 
+	    // currentSelectedDeployments contains a list of the selected deployment IDs, from the deployment JSON.
+	    // The IDs are the actual database IDs 
         var currentSelectedDeployments = [];
-        var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map")
-
+        
+        var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map");
+        var deploymentDialogOpen = false;
+        
         $('.newCollection').popover({ html: true});
 
         function dismissPopover() {
@@ -318,10 +332,28 @@
         }
 
         function selectDeployment(id) {
-        	currentSelectedDeployments.push(id);
+
+	        var found = false;
+	        
+	        for (var i = 0; i < currentSelectedDeployments.length; i++){
+		        if (currentSelectedDeployments[i] === id) {
+			        found = true;
+		        };
+	        }
+	        
+	        if (!found) {
+		    	currentSelectedDeployments.push(id);
+	        };
+/*
+        	var idx = currentSelectedDeployments.indexOf(id);
+        	
+        	if (idx === -1) {
+        		currentSelectedDeployments.push(id);
+        	}
+*/
         	//currentSelectedDeployments += id;
             //updateMapForSelectedDeployments(id);
-            getNewImageList("limit=30&deployment=" + id);
+            //getNewImageList("limit=30&deployment=" + id);
             updateUIForDeploymentList(currentSelectedDeployments);
         }
 
@@ -342,7 +374,8 @@
                 var options = '';
                 for (var i = 0; i < deployment_list.objects.length; i++) {
                     options += '<option value="' + deployment_list.objects[i].id + '">' + deployment_list.objects[i].short_name + '</option>';
-                    deployment_ids.push(deployment_list.objects[i].id);
+                    var index = deployment_list.objects[i].id;
+                    deployment_ids.push(index);
                 }
 
                 $("#deploymentSelect").html(options);
@@ -387,31 +420,43 @@
                     	async:false,
                     	dataType: 'json',
                     	success: function (deploymentInfo) {
-	                    	console.log(deploymentInfo);
-	                    	deploymentListReadable += '<tr><td>'+deploymentInfo.short_name+'(id:'+deploymentInfo.id+')</tr></td>';
-	                    	console.log(deploymentListReadable);
+	                    	//deploymentListReadable += '<tr><td><button class="close" onclick="removeDeploymentFromList('+deploymentInfo.id+')">&times;</button></td><td> '+deploymentInfo.short_name+'(id:'+deploymentInfo.id+')</tr></td>';
+	                    	deploymentListReadable += '<li id="selectedDeploymentItem" class="active">\
+                            						<button class="close" onclick="removeDeploymentFromList('+deploymentInfo.id+')"><i class="icon-remove-sign"></i></button><p style="width: 80%; overflow: hidden; display: inline-block; word-wrap: break-word;">r20120827_011950_si_02_SplitBommyDense</p>\
+                            						</li><li class="divider" style="margin:0px;"></li>';
 	                    }
 	               });
                 }
                 console.log("test");
                 console.log(deploymentListReadable);
 
-                $("#selectedDeploymentTable").html(deploymentListReadable);
+                $("#selectedDeploymentList").html(deploymentListReadable);
                 
                 executeFilter();
-                
                 updateMapExtent();
+                
             } else {
                 $("#newCollectionPopover").popover('disable');
                 $('.btn-create-collection').attr('disabled', 'disabled');
                 $("#collection_info").text('Nothing being viewed');
                 $("#sliderSet").attr('disabled', 'disabled');
-                $("#selectedDeploymentTable").html('<tr><td>Nothing Selected</td></tr>');
-
+                $("#selectedDeploymentList").html('<li id="selectedDeploymentItem" class="active">Nothing Selected</li>');
+                
+                executeFilter();
+                //resetImagesAndMap();
             }
+            
+            
+                
             //$('#savecollection').p("wee");
         }
 
+        function removeDeploymentFromList(deploymentId) {
+            currentSelectedDeployments.splice(currentSelectedDeployments.indexOf(deploymentId), 1);  
+            //delete currentSelectedDeployments["'"+deploymentId+"'"];
+            updateUIForDeploymentList(currentSelectedDeployments);
+        }
+        
         function createCollection() {
             var colname = $('#collection_name').val();
             $("#collection_options").html("<div id='create_collection_spinner'><i class='icon-refresh icon-spin icon-3x pull-left'></i> <p>I'm making your new collection. This will take a little while.</p></div>");
@@ -579,87 +624,130 @@
             });
             $("#selectedSalinityRange").html(minTemperature + " : " + maxTemperature);
         };
+        
+        /**
+        * Helper function to clear the images and map layers, when there is nothing to show
+        **/
+        resetImagesAndMap = function() {
+        	//reset the map
+        	map.clearMap();
+            map.zoomToInitialExtent();
+            
+            //reset the images	
+            $("#thmlist").html("");
+            $("#thminfo").html('No images to show...');	
+            $("#btnnext").hide();
+            $("#btnnext").attr("onClick", "");
+        
+        };
 
-        executeFilter = function() {
-            //get filter properties
-            var minDepth = $( "#depthSlider" ).slider( "values", 0 );
-            var maxDepth = $( "#depthSlider" ).slider( "values", 1 );
+        executeFilter = function() {          
+            deploymentIds = currentSelectedDeployments;
+            
+            if(deploymentIds.length > 0) {
+            
+            	
+				//get filter properties
+				var minDepth = $( "#depthSlider" ).slider( "values", 0 );
+				var maxDepth = $( "#depthSlider" ).slider( "values", 1 );
+	
+				var minAltitude = $( "#altitudeSlider" ).slider( "values", 0 );
+				var maxAltitude = $( "#altitudeSlider" ).slider( "values", 1 );
+	
+				var minTemperature = $( "#temperatureSlider" ).slider( "values", 0 );
+				var maxTemperature = $( "#temperatureSlider" ).slider( "values", 1 );
+	
+				var minSalinity = $( "#salinitySlider" ).slider( "values", 0 );
+				var maxSalinity = $( "#salinitySlider" ).slider( "values", 1 );
+	
+				
+	
+				//construct and execute filter
+				var filterArray = map.createExploreFilterArray(minDepth,
+																maxDepth,
+																minAltitude,
+																maxAltitude,
+																minTemperature,
+																maxTemperature,
+																minSalinity,
+																maxSalinity,
+																deploymentIds);
+	
+				map.updateMapUsingFilter(filterArray);
+				executeImageFilter(minDepth,
+									maxDepth,
+									minAltitude,
+									maxAltitude,
+									minTemperature,
+									maxTemperature,
+									minSalinity,
+									maxSalinity,
+									deploymentIds);
+			} else {
+				resetImagesAndMap();	
+			}
+        };
 
-            var minAltitude = $( "#altitudeSlider" ).slider( "values", 0 );
-            var maxAltitude = $( "#altitudeSlider" ).slider( "values", 1 );
-
-            var minTemperature = $( "#temperatureSlider" ).slider( "values", 0 );
-            var maxTemperature = $( "#temperatureSlider" ).slider( "values", 1 );
-
-            var minSalinity = $( "#salinitySlider" ).slider( "values", 0 );
-            var maxSalinity = $( "#salinitySlider" ).slider( "values", 1 );
-
-            //construct and execute filter
-            var filterArray = map.createExploreFilterArray(minDepth,
-                                                            maxDepth,
-                                                            minAltitude,
-                                                            maxAltitude,
-                                                            minTemperature,
-                                                            maxTemperature,
-                                                            minSalinity,
-                                                            maxSalinity);
-
-            map.updateMapUsingFilter(filterArray);
-            executeImageFilter(minDepth,
-                                maxDepth,
-                                minAltitude,
-                                maxAltitude,
-                                minTemperature,
-                                maxTemperature,
-                                minSalinity,
-                                maxSalinity);
-            };
-
-            executeImageFilter = function(minDepth,
+        executeImageFilter = function(minDepth,
                                       maxDepth,
                                       minAltitude,
                                       maxAltitude,
                                       minTemperature,
                                       maxTemperature,
                                       minSalinity,
-                                      maxSalinity) {
+                                      maxSalinity,
+                                      deploymentIds) {
 
-            getNewImageList("pose__depth__gte="+minDepth+"&pose__depth__lte="+maxDepth+"&temperature__gte="+minTemperature+"&temperature__lte="+maxTemperature+"&salinity__gte="+minSalinity+"&salinity__lte="+maxSalinity+"&altitude__gte="+minAltitude+"&altitude__lte="+maxAltitude, 30);
+            getNewImageList("pose__depth__gte="+minDepth+"&pose__depth__lte="+maxDepth+"&temperature__gte="+minTemperature+"&temperature__lte="+maxTemperature+"&salinity__gte="+minSalinity+"&salinity__lte="+maxSalinity+"&altitude__gte="+minAltitude+"&altitude__lte="+maxAltitude+"&deployment="+deploymentIds, 30);
 
         };
 
 		$(function () {
 		    $('#opener').click(function() {
-		        var NewDialog = $('\
-		        <form style="margin-bottom=0px;font-size:14px;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;">\
-                <select name="campaignSelect" multiple="multiple"\
-                        class="workpane" id="campaignSelect"\
-                        onchange="selectCampaign($(this).val());" style="height:100%;float:left; width:30%; margin-left:0px;color:#000;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;">\
-                        <!-- Content inserted from jquery -->\
-                </select>\
-                <select name="deploymentSelect" multiple="multiple"\
-                        class="workpane" id="deploymentSelect"\
-                        onchange="selectDeployment($(this).val());" style="height:100%;float:right; width:69%; margin-left:4px;color:#000;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;">\
-                    <!-- Content inserted from jquery -->\
-                </select>\
-                </form>');
-		        NewDialog.dialog({
-		            modal: false,
-		            open: getCampaignList(),
-		            title: "Select Campaigns and deployments",
-		            width: 600,
-		            height: 400,
-		            resizable: false,
-		            draggable: false,
-		            closeOnEscape: true,
-		            position: { my: 'left top', at: 'right top', of: '#map-sidebar' }, 
-		            buttons: [
-		                {text: "Done", click: function() {$(this).dialog("close")}}
-		            ]
-		        }).siblings('.ui-dialog-titlebar').remove();
-		        return true;
+				if(deploymentDialogOpen) { 
+					deploymentDialogOpen = false; 
+					$("#selectDeploymentDialog").dialog('close'); 
+				} else { 
+					deploymentDialogOpen = true; 
+					$("#selectDeploymentDialog").dialog('open'); 
+				} 
 		    });
-		});
+		});		    
+		    
+		function initSelectDeploymentDialog() {
+	        var NewDialog = $('\
+	        <form style="margin-bottom=0px;font-size:14px;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;" id="selectDeploymentDialog">\
+            <select name="campaignSelect" multiple="multiple"\
+                    class="workpane" id="campaignSelect"\
+                    onchange="selectCampaign($(this).val());" style="height:100%;float:left; width:30%; margin-left:0px;color:#000;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;">\
+                    <!-- Content inserted from jquery -->\
+            </select>\
+            <select name="deploymentSelect" multiple="multiple"\
+                    class="workpane" id="deploymentSelect"\
+                    onchange="selectDeployment($(this).val());" style="height:100%;float:right; width:69%; margin-left:4px;color:#000;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;">\
+                <!-- Content inserted from jquery -->\
+            </select>\
+            </form>');
+	        NewDialog.dialog({
+	            modal: false,
+	            autoOpen: false,
+	            open: getCampaignList(),
+	            title: "Select Campaigns and deployments",
+	            width: 600,
+	            height: 400,
+	            resizable: false,
+	            draggable: false,
+	            closeOnEscape: true,
+	            position: { my: 'left top', at: 'right top', of: '#map-sidebar' }, 
+	            buttons: [
+	                {text: "Done", click: function() {$(this).dialog("close");
+	                								  deploymentDialogOpen = false;
+	                								 }
+	                }
+	            ]
+	         }).siblings('.ui-dialog-titlebar').remove();
+	        return true;
+		};
 
         //var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map")
 
@@ -672,12 +760,15 @@
                 $(e.target).addClass("active");
             });
 
+            initSelectDeploymentDialog();
             getCampaignList();
 
             setDepthRange(0, 500);
             setAltitudeRange(0, 12000);
             setSalinityRange(2, 41);
             setTemperatureRange(-3, 40);
+
+            updateUIForDeploymentList(currentSelectedDeployments);
 
         });
     </script>
