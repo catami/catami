@@ -332,29 +332,22 @@
         }
 
         function selectDeployment(id) {
-
-	        var found = false;
+		
+			var found = false;
 	        
 	        for (var i = 0; i < currentSelectedDeployments.length; i++){
-		        if (currentSelectedDeployments[i] === id) {
-			        found = true;
-		        };
+		        console.log(currentSelectedDeployments[i]);
+		        if (currentSelectedDeployments[i] == id) {
+			    	found = true;
+ 		        };
 	        }
-	        
+			
+			//if the deployment is not already in the list then add it and refresh 	        
 	        if (!found) {
-		    	currentSelectedDeployments.push(id);
-	        };
-/*
-        	var idx = currentSelectedDeployments.indexOf(id);
-        	
-        	if (idx === -1) {
-        		currentSelectedDeployments.push(id);
-        	}
-*/
-        	//currentSelectedDeployments += id;
-            //updateMapForSelectedDeployments(id);
-            //getNewImageList("limit=30&deployment=" + id);
-            updateUIForDeploymentList(currentSelectedDeployments);
+		    	currentSelectedDeployments[currentSelectedDeployments.length] = id[0];
+		    	updateUIForDeploymentList(currentSelectedDeployments);
+	        }
+            
         }
 
         function getDeploymentList(campaign_id) {
@@ -375,7 +368,7 @@
                 for (var i = 0; i < deployment_list.objects.length; i++) {
                     options += '<option value="' + deployment_list.objects[i].id + '">' + deployment_list.objects[i].short_name + '</option>';
                     var index = deployment_list.objects[i].id;
-                    deployment_ids.push(index);
+                    deployment_ids[deployment_ids.length] = index;
                 }
 
                 $("#deploymentSelect").html(options);
@@ -392,7 +385,7 @@
             var apiurl = "/api/dev/campaign/?format=json";
             $.getJSON(apiurl, function (campaigns) {
                 //alert ('L: ' + j.objects.length);
-                var options = '<option value=""><strong class="btn">Select All</strong></option>';
+                var options = ' ';
                 for (var i = 0; i < campaigns.objects.length; i++) {
                     options += '<option value="' + campaigns.objects[i].id + '">' + campaigns.objects[i].short_name + '</option>';
                 }
@@ -401,16 +394,18 @@
         }
 
         function updateUIForDeploymentList(deployment_ids) {
+
             var deploymentListReadable = [];
             var apiurl = "/api/dev/deployment/?format=json";
 
             //updateMapForSelectedDeployments(deployment_ids);
-            
+
             if (deployment_ids.length > 0) {
+          
                 $('.btn-create-collection').removeAttr('disabled');
                 $("#newCollectionPopover").popover('enable');
                 //$("#collection_info").text(deployment_ids.length + ' deployments in the view');
-	                
+	                                            						                                        
                 for (var i = 0; i < deployment_ids.length; i++) {
                     //currentSelectedDeployments.push(deployment_ids[i]);
                     var apiurl = "/api/dev/deployment/"+deployment_ids[i]+"/?format=json";
@@ -420,13 +415,16 @@
                     	async:false,
                     	dataType: 'json',
                     	success: function (deploymentInfo) {
+
 	                    	//deploymentListReadable += '<tr><td><button class="close" onclick="removeDeploymentFromList('+deploymentInfo.id+')">&times;</button></td><td> '+deploymentInfo.short_name+'(id:'+deploymentInfo.id+')</tr></td>';
 	                    	deploymentListReadable += '<li id="selectedDeploymentItem" class="active">\
                             						<button class="close" onclick="removeDeploymentFromList('+deploymentInfo.id+')"><i class="icon-remove-sign"></i></button><p style="width: 80%; overflow: hidden; display: inline-block; word-wrap: break-word;">r20120827_011950_si_02_SplitBommyDense</p>\
                             						</li><li class="divider" style="margin:0px;"></li>';
+
 	                    }
 	               });
                 }
+
                 console.log("test");
                 console.log(deploymentListReadable);
 
@@ -629,8 +627,9 @@
         * Helper function to clear the images and map layers, when there is nothing to show
         **/
         resetImagesAndMap = function() {
+   
         	//reset the map
-        	map.clearMap();
+        	map.clearMap();     	
             map.zoomToInitialExtent();
             
             //reset the images	
@@ -644,7 +643,9 @@
         executeFilter = function() {          
             deploymentIds = currentSelectedDeployments;
             
-            if(deploymentIds.length > 0) {
+            console.log(deploymentIds);
+            
+            if(deploymentIds != null && deploymentIds.length > 0) {
             
             	
 				//get filter properties
