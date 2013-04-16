@@ -202,7 +202,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id='startCreateCollectionButton' class='btn btn-primary btn-create-collection pull-right'
+                <button id='startCreateCollectionButton' class='btn btn-primary pull-right'
                         onclick='createCollection();'> Ok
                 </button>
             </div>
@@ -221,7 +221,7 @@
                 {% endswitch %}
 
                 {% if user.is_authenticated %}
-                <a href="#CreateProjectModal" class="btn btn-primary pull-right btn-create-collection newCollection" data-toggle="modal"><i class="icon-list-alt"></i> Create Project </a></a>
+                <button id="CreateProjectButton" class="btn btn-primary pull-right btn-create-collection newCollection" data-toggle="modal"><i class="icon-list-alt"></i> Create Project </button>
                 {% endif %}
             </ul>
 
@@ -337,6 +337,10 @@
 			}
 		});
 
+        function showCreateProjectModal() {
+            $('#CreateProjectModal').modal('show');
+        }
+
         function selectCampaign(id) {
             getDeploymentList(id);
             //getNewImageList("limit=30&campaign=" + id);
@@ -439,9 +443,12 @@
             var deploymentListReadable = [];
 
             if (deploymentIds.length > 0) {
-          
+
+                //enable the create project button
                 $('.btn-create-collection').removeAttr('disabled');
-                                  						                                        
+                console.log("applying the fing thing");
+                $('#CreateProjectButton').attr("onclick", "showCreateProjectModal()");
+
                 for (var i = 0; i < deploymentIds.length; i++) {
                     deploymentListReadable += '<li id="selectedDeploymentItem" class="active">\
                             						<button class="close" onclick="removeDeploymentFromList('+deploymentIds[i]+')"><i class="icon-remove-sign"></i></button><p style="width: 80%; overflow: hidden; display: inline-block; word-wrap: break-word;">'+deploymentNames[i]+'</p>\
@@ -454,7 +461,9 @@
                 updateMapExtent();
                 
             } else {
+                //disable create project button
                 $('.btn-create-collection').attr('disabled', 'disabled');
+                $('#CreateProjectButton').attr("onclick", "");
                 $("#collection_info").text('Nothing being viewed');
                 $("#sliderSet").attr('disabled', 'disabled');
                 $("#selectedDeploymentList").html('<li id="selectedDeploymentItem" class="active">Nothing Selected</li>');
@@ -798,7 +807,7 @@
             setSalinityRange(2, 41);
             setTemperatureRange(-3, 40);
 
-            updateUIForDeploymentList(currentSelectedDeployments);
+            updateUIForDeploymentList(currentSelectedDeployments, currentSelectedDeploymentNames);
 
         //});
     </script>
