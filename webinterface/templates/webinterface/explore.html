@@ -95,63 +95,23 @@
 
     <div class="row-fluid" id="mainContainer">
 
-        <div class="span2" id="map-sidebar">
-            <form style="width=100%;">
-		        <p style="width:90%;">
+        <div class="well span3" id="map-sidebar">
+            <form style="width:100%;">
+
+                <p style="width:90%;">
 				  	<a href="#" id="opener" class="btn" type="button" style="width:100%;" ><i class="icon-plus-sign"></i> Select Deployments</a>
 				</p>
-<!--
-				<table class="table table-bordered" id="selectedDeploymentTable">
-					<tr><td>Nothing Selected</td></tr>
-				</table>
--->
-                <div class="well" style="padding:10px; padding-left: 0; padding-right: 0;">
+
+                <div class="" style=" padding-left: 0; padding-right: 0;">
                     <ul class="nav nav-list" id="">
                         <li class="nav-header">
                             Selected Deployments
                         </li>
-
                     </ul>
-                    <ul class="nav nav-list" id="selectedDeploymentList">
 
+                    <ul class="nav nav-list" id="selectedDeploymentList"></ul>
 
-                    </ul>
                 </div>
-
-                {% comment %}Deployments:
-                <select name="deploymentSelect" multiple="multiple"
-                        class="workpane" id="deploymentSelect"
-                        onchange="selectDeployment($(this).val());">
-                    <!-- Content inserted from jqery -->
-                </select>
-                {% endcomment %}
-
-
-                {% comment %}{% switch Experimental %}
-                    Year:
-                    <input type="number" min="2006" step="1" value="2007"><br>
-                    <br>
-                    Source:
-                    <select style="width: 100%">
-                        <option selected>AUV
-                        <option>BRUVs
-                        <option>Towed Video
-                    </select>
-                {% endswitch %}{% endcomment %}
-
-                {% comment %}<div class="well" style="padding:10px; padding-left: 0; padding-right: 0;">{% endcomment %}
-
-<!--
-                    <ul class="nav nav-list">
-                        <li class="nav-header">Type</li>
-
-                            <div class="data-collected-type btn-group btn-group-vertical" style="width: 100%;">
-                                <button type="button" id="auv" class="btn" style="width: 100%">AUV</button>
-                                <button type="button" id="ti" class="btn" style="width: 100%">Towed Imagery</button>
-                                <button type="button" id="dov" class="btn" style="width: 100%">DOV</button>
-                            </div>
-                    </ul>
--->
 
 				<div id="sliderSet">
 	                <ul class="nav nav-list" style="margin-bottom: 20px; margin-top: 10px">
@@ -182,11 +142,6 @@
 	
 	                </ul>
 				</div>
-                {% comment %}Depth Range: <strong id="selectedDepthMin"></strong> to
-                <strong id="selectedDepthMax"></strong> m{% endcomment %}
-
-
-                {% comment %} </div>{% endcomment %}
 
             </form>
 
@@ -212,7 +167,7 @@
         </div>
         {% endif  %}
         
-        <div class="span10 viewpane">
+        <div class="span9 viewpane">
 
             <ul class="nav nav-tabs" style="margin-bottom:0px;">
                 <li class="active"><a href="#map" data-toggle="tab"><i
@@ -468,9 +423,13 @@
                 $('#CreateProjectButton').attr("onclick", "showCreateProjectModal()");
 
                 for (var i = 0; i < deploymentIds.length; i++) {
+                    //deploymentListReadable += '<li id="selectedDeploymentItem" class="active">\
+                    //        						<button class="close" onclick="removeDeploymentFromList('+deploymentIds[i]+')"><i class="icon-remove-sign"></i></button><p style="width: 80%; overflow: hidden; display: inline-block; word-wrap: break-word;">'+deploymentNames[i]+'</p>\
+                    //       						</li><li class="divider" style="margin:0px;"></li>';
                     deploymentListReadable += '<li id="selectedDeploymentItem" class="active">\
-                            						<button class="close" onclick="removeDeploymentFromList('+deploymentIds[i]+')"><i class="icon-remove-sign"></i></button><p style="width: 80%; overflow: hidden; display: inline-block; word-wrap: break-word;">'+deploymentNames[i]+'</p>\
-                            						</li><li class="divider" style="margin:0px;"></li>';
+                            						<div class="alert alert-success">\
+                            						<button class="close" onclick="removeDeploymentFromList('+deploymentIds[i]+')">x</button><p style="width: 80%; overflow: hidden; display: inline-block; word-wrap: break-word;">'+deploymentNames[i]+'</p>\
+                            						</li></div>';
                 }
 
                 $("#selectedDeploymentList").html(deploymentListReadable);
@@ -484,8 +443,11 @@
                 $('#CreateProjectButton').attr("onclick", "");
                 $("#collection_info").text('Nothing being viewed');
                 $("#sliderSet").attr('disabled', 'disabled');
-                $("#selectedDeploymentList").html('<li id="selectedDeploymentItem" class="active">Nothing Selected</li>');
-                
+                //$("#selectedDeploymentList").html('<li id="selectedDeploymentItem" class="active">Nothing Selected</li>');
+
+                $("#selectedDeploymentList").html('<li><p class="alert alert-info">No Deployments selected.</p></li>');
+
+
                 executeFilter();
             }
         }
