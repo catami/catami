@@ -191,7 +191,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class='btn btn-primary btn-create-collection pull-right'
+                <button id='startCreateCollectionButton' class='btn btn-primary btn-create-collection pull-right'
                         onclick='createCollection();'> Ok
                 </button>
             </div>
@@ -310,6 +310,16 @@
         
         var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map");
         var deploymentDialogOpen = false;
+
+        //OK button in create collection should be active if there is a project name, otherwise disabled.
+		$('#collection_name').on('input',function(e){
+			$('#startCreateCollectionButton').removeAttr('disabled');
+
+			if(this.value.length === 0) {
+				$('#startCreateCollectionButton').attr('disabled', 'disabled');
+
+			}
+		});
 
         function selectCampaign(id) {
             getDeploymentList(id);
