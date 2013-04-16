@@ -176,19 +176,6 @@
 
             </form>
 
-            {% comment %}{% switch Collections %}
-                <div id="savecollection" class="well">
-                    <p id="collection_info">Getting points...</p>
-                    <a href="#" class="btn btn-primary btn-create-collection newCollection"
-                       rel="popover"
-                       data-html="true"
-                       id="newCollectionPopover"
-                       data-content="<div id='collection_options'>Collection Name <input type='text' id='collection_name' value='my new collection'><br><button class='btn btn-warning btn-create-collection pull-left' onclick='dismissPopover();'>Forget it</button><button class='btn btn-primary btn-create-collection pull-right' onclick='createCollection();'> Make it</button><br><p> </p></div>"
-                       data-original-title="New Collection Options"> <i class="icon-plus-sign icon-2x pull-left"></i>
-                        Save
-                        As Collection</a>
-                </div>
-            {% endswitch %}{% endcomment %}
         </div>
 
         {% if user.is_authenticated %}
@@ -323,12 +310,6 @@
         
         var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map");
         var deploymentDialogOpen = false;
-        
-        $('.newCollection').popover({ html: true});
-
-        function dismissPopover() {
-            $("#newCollectionPopover").popover('hide');
-        }
 
         function selectCampaign(id) {
             getDeploymentList(id);
@@ -407,9 +388,7 @@
             if (deployment_ids.length > 0) {
           
                 $('.btn-create-collection').removeAttr('disabled');
-                $("#newCollectionPopover").popover('enable');
-                //$("#collection_info").text(deployment_ids.length + ' deployments in the view');
-	                                            						                                        
+                                  						                                        
                 for (var i = 0; i < deployment_ids.length; i++) {
                     //currentSelectedDeployments.push(deployment_ids[i]);
                     var apiurl = "/api/dev/deployment/"+deployment_ids[i]+"/?format=json";
@@ -438,7 +417,6 @@
                 updateMapExtent();
                 
             } else {
-                $("#newCollectionPopover").popover('disable');
                 $('.btn-create-collection').attr('disabled', 'disabled');
                 $("#collection_info").text('Nothing being viewed');
                 $("#sliderSet").attr('disabled', 'disabled');
