@@ -65,6 +65,17 @@
 			max-height: 800px;
 		}
 
+        .olControlLoadingPanel {
+            background-image:url("{{ STATIC_URL }}images/loading.gif");
+            position: relative;
+            padding-left: 50%;
+            padding-top: 50%;
+            padding-right: 50%;
+            background-position:center;
+            background-repeat: no-repeat;
+            display: none;
+        }
+
         {% comment %}.ui-slider .ui-slider-handle .ui-slider-range {
             margin-top: 40px;
         }{% endcomment %}
@@ -268,6 +279,10 @@
 
 {% block add_script %}
     <script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
+    <!--<script src="{{ STATIC_URL }}assets/OpenLayers/OpenLayers.js"></script>-->
+    <script src="{{ STATIC_URL }}assets/OpenLayers/LoadingPanel.js"></script>
+
+
     <script src='{{ STATIC_URL }}assets/catami-api/js/explore.js'></script>
     <script src='{{ STATIC_URL }}assets/catami-api/js/BaseMap.js'></script>
     <script src='{{ STATIC_URL }}assets/catami-api/js/ExploreMap.js'></script>
