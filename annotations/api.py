@@ -28,8 +28,17 @@ class AnnotationCodeResource(ModelResource):
         filtering = {
             'parent': ALL_WITH_RELATIONS,
             'code_name': ALL,
+            'id': ALL,
         }
         allowed_methods = ['get']
+
+    def dehydrate(self, bundle):
+        """Add a parent_id field to AnnotationCodeResource."""
+        if bundle.obj.parent:
+            bundle.data['parent_id'] = bundle.obj.parent.pk
+        else:
+            bundle.data['parent_id'] = None
+        return bundle
     
 
 class QualifierCodeResource(ModelResource):
