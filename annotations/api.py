@@ -18,7 +18,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class AnnotationCodeResource(ModelResource):
-    parent = fields.ForeignKey('annotations.api.AnnotationCodeResource', 'parent')
+    parent = fields.ForeignKey('annotations.api.AnnotationCodeResource', 'parent', null=True)
     
     class Meta:
         queryset = models.AnnotationCode.objects.all()
