@@ -322,6 +322,7 @@
 	    // currentSelectedDeployments contains a list of the selected deployment IDs, from the deployment JSON.
 	    // The IDs are the actual database IDs 
         var currentSelectedDeployments = [];
+        var currentSelectedDeploymentNames = [];
         
         var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map");
         var deploymentDialogOpen = false;
@@ -341,21 +342,21 @@
             //getNewImageList("limit=30&campaign=" + id);
         }
 
-        function selectDeployment(id) {
-		
+        function selectDeployment(id, shortName) {
+
 			var found = false;
 	        
 	        for (var i = 0; i < currentSelectedDeployments.length; i++){
-		        console.log(currentSelectedDeployments[i]);
 		        if (currentSelectedDeployments[i] == id) {
 			    	found = true;
- 		        };
+ 		        }
 	        }
 			
 			//if the deployment is not already in the list then add it and refresh 	        
 	        if (!found) {
 		    	currentSelectedDeployments[currentSelectedDeployments.length] = id[0];
-		    	updateUIForDeploymentList(currentSelectedDeployments);
+                currentSelectedDeploymentNames[currentSelectedDeploymentNames.length] = shortName;
+		    	updateUIForDeploymentList(currentSelectedDeployments, currentSelectedDeploymentNames);
 	        }
             
         }
@@ -377,17 +378,12 @@
                 var options = '';
                 for (var i = 0; i < deployment_list.objects.length; i++) {
                     options += '<option value="' + deployment_list.objects[i].id + '">' + deployment_list.objects[i].short_name + '</option>';
-                    var index = deployment_list.objects[i].id;
-                    deployment_ids[deployment_ids.length] = index;
+                    deployment_ids[deployment_ids.length] = deployment_list.objects[i].id;
                 }
 
                 $("#deploymentSelect").html(options);
 
-                //updateMapForSelectedDeployments(deployment_ids);
-
-                // updateUIForDeploymentList(deployment_ids);
-                //$('#deploymentSelect option:first').attr('selected', 'selected');
-            })
+            });
 
         }
 
@@ -403,38 +399,19 @@
             })
         }
 
-        function updateUIForDeploymentList(deployment_ids) {
+        function updateUIForDeploymentList(deploymentIds, deploymentNames) {
 
             var deploymentListReadable = [];
-            var apiurl = "/api/dev/deployment/?format=json";
 
-            //updateMapForSelectedDeployments(deployment_ids);
-
-            if (deployment_ids.length > 0) {
+            if (deploymentIds.length > 0) {
           
                 $('.btn-create-collection').removeAttr('disabled');
                                   						                                        
-                for (var i = 0; i < deployment_ids.length; i++) {
-                    //currentSelectedDeployments.push(deployment_ids[i]);
-                    var apiurl = "/api/dev/deployment/"+deployment_ids[i]+"/?format=json";
-
-                    $.ajax({
-                    	url: apiurl, 
-                    	async:false,
-                    	dataType: 'json',
-                    	success: function (deploymentInfo) {
-
-	                    	//deploymentListReadable += '<tr><td><button class="close" onclick="removeDeploymentFromList('+deploymentInfo.id+')">&times;</button></td><td> '+deploymentInfo.short_name+'(id:'+deploymentInfo.id+')</tr></td>';
-	                    	deploymentListReadable += '<li id="selectedDeploymentItem" class="active">\
-                            						<button class="close" onclick="removeDeploymentFromList('+deploymentInfo.id+')"><i class="icon-remove-sign"></i></button><p style="width: 80%; overflow: hidden; display: inline-block; word-wrap: break-word;">'+deploymentInfo.short_name+'</p>\
+                for (var i = 0; i < deploymentIds.length; i++) {
+                    deploymentListReadable += '<li id="selectedDeploymentItem" class="active">\
+                            						<button class="close" onclick="removeDeploymentFromList('+deploymentIds[i]+')"><i class="icon-remove-sign"></i></button><p style="width: 80%; overflow: hidden; display: inline-block; word-wrap: break-word;">'+deploymentNames[i]+'</p>\
                             						</li><li class="divider" style="margin:0px;"></li>';
-
-	                    }
-	               });
                 }
-
-                console.log("test");
-                console.log(deploymentListReadable);
 
                 $("#selectedDeploymentList").html(deploymentListReadable);
                 
@@ -457,9 +434,19 @@
         }
 
         function removeDeploymentFromList(deploymentId) {
-            currentSelectedDeployments.splice(currentSelectedDeployments.indexOf(deploymentId), 1);  
-            //delete currentSelectedDeployments["'"+deploymentId+"'"];
-            updateUIForDeploymentList(currentSelectedDeployments);
+
+            var index = -1;
+
+            for (var i = 0; i < currentSelectedDeployments.length; i++){
+                if (currentSelectedDeployments[i] == deploymentId) {
+                    index = i;
+                    break;
+                }
+            }
+
+            currentSelectedDeployments.splice(index, 1);
+            currentSelectedDeploymentNames.splice(index, 1);
+            updateUIForDeploymentList(currentSelectedDeployments, currentSelectedDeploymentNames);
         }
         
         function createCollection() {
@@ -650,8 +637,6 @@
         executeFilter = function() {          
             deploymentIds = currentSelectedDeployments;
             
-            console.log(deploymentIds);
-            
             if(deploymentIds != null && deploymentIds.length > 0) {
             
             	
@@ -732,7 +717,7 @@
             </select>\
             <select name="deploymentSelect" multiple="multiple"\
                     class="workpane" id="deploymentSelect"\
-                    onchange="selectDeployment($(this).val());" style="height:100%;float:right; width:69%; margin-left:4px;color:#000;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;">\
+                    onchange="selectDeployment($(this).val(), $(this).text());" style="height:100%;float:right; width:69%; margin-left:4px;color:#000;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;">\
                 <!-- Content inserted from jquery -->\
             </select>\
             </form>');
@@ -759,7 +744,7 @@
 
         //var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map")
 
-        $(document).ready(function () {
+        //$(document).ready(function () {
 
            $('.data-collected-type').on('click', function(e){
                 $('#auv').removeClass("active");
@@ -778,6 +763,6 @@
 
             updateUIForDeploymentList(currentSelectedDeployments);
 
-        });
+        //});
     </script>
 {% endblock %}
