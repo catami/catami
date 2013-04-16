@@ -4,10 +4,10 @@
         "model": "annotations.AnnotationCode",
         "fields": {
             "caab_code": "00000000",
-            "cpc_code": "UNKN",
+            "cpc_code": "NC",
             "point_colour": "8F8F8F",
-            "code_name": "Unknown",
-            "description": "No description.",
+            "code_name": "Not Considered",
+            "description": "Item has not been considered/looked at.",
             "parent": null
         }
 
@@ -3532,6 +3532,32 @@
             "code_name": "Bedforms: 2D: Ripples (<10cm height)",
             "description": "No description.",
             "parent": 270
+        }
+
+    },
+    {
+        "pk": 273,
+        "model": "annotations.AnnotationCode",
+        "fields": {
+            "caab_code": "00000001",
+            "cpc_code": "UNS",
+            "point_colour": "8F8F8F",
+            "code_name": "Unscorable.",
+            "description": "Item is not recognisable/too dark/too bright.",
+            "parent": 1
+        }
+
+    },
+    {
+        "pk": 274,
+        "model": "annotations.AnnotationCode",
+        "fields": {
+            "caab_code": "00000002",
+            "cpc_code": "NOI",
+            "point_colour": "8F8F8F",
+            "code_name": "Not of Interest",
+            "description": "Item is not of interest to labeller.",
+            "parent": 1
         }
 
     }
