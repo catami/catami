@@ -336,7 +336,6 @@
 		
 		$(window).resize(function () {
 		    resolveFullHeight();
-		    console.log("resize");
 		});
 		
 		// currentSelectedDeployments contains a list of the selected deployment IDs, from the deployment JSON.
@@ -794,7 +793,6 @@
 	            resizable: false,
 	            draggable: false,
 	            closeOnEscape: true,
-	            zIndex:2000,
 	            position: { my: 'left top', at: 'right top', of: '#map-sidebar' }, 
 	            buttons: [
 	                {text: "Done", click: function() {$(this).dialog("close");
