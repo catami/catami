@@ -65,13 +65,21 @@ ExploreMap.prototype.createExploreFilterArray = function(minDepth,
         })
     ];
 
+    var deploymentIdFilter = [];
     for (var i = 0; i < deploymentIds.length; i++) {
-        filter.push(new OpenLayers.Filter.Comparison({
+        deploymentIdFilter.push(new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
             property: "deployment_id",
             value: deploymentIds[i]
         }));
     }
+
+    deploymentIdFilter = new OpenLayers.Filter.Logical({
+        type: OpenLayers.Filter.Logical.OR,
+        filters: deploymentIdFilter
+    });
+
+    filter.push(deploymentIdFilter);
 
     return filter;
 }

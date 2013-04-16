@@ -91,16 +91,20 @@
 					<tr><td>Nothing Selected</td></tr>
 				</table>
 -->
-				<div class="well" style="padding:10px; padding-left: 0; padding-right: 0;">
-					<ul class="nav nav-list" id="selectedDeploymentList">
-						<li class="nav-header">
-						Selected Deployments
-						</li>
-						<li class="divider" style="margin:0px;"></li>
-					</ul>
-				</div>      
-				
-				                {% comment %}Deployments:
+                <div class="well" style="padding:10px; padding-left: 0; padding-right: 0;">
+                    <ul class="nav nav-list" id="">
+                        <li class="nav-header">
+                            Selected Deployments
+                        </li>
+
+                    </ul>
+                    <ul class="nav nav-list" id="selectedDeploymentList">
+
+
+                    </ul>
+                </div>
+
+                {% comment %}Deployments:
                 <select name="deploymentSelect" multiple="multiple"
                         class="workpane" id="deploymentSelect"
                         onchange="selectDeployment($(this).val());">
