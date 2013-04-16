@@ -480,7 +480,7 @@ class ImageResource(ModelResource):
             'scale',
             '.jpg'
         ).url
-        bundle.data['web_location'] = 'images/{0}'.format(file_name)
+        bundle.data['web_location'] = '/images/{0}'.format(file_name)
         return bundle
 
     def get_object_list(self, request):

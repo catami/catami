@@ -117,6 +117,10 @@ function BaseMap(wmsUrl, wmsLayerName, divName) {
     this.mapInstance.addControl(info);
     info.activate();
 
+    var loadingPanel = new OpenLayers.Control.LoadingPanel();
+    this.loadingPanel = loadingPanel;
+    this.mapInstance.addControl(this.loadingPanel);
+
     this.zoomToInitialExtent();
 }
 
@@ -140,7 +144,7 @@ BaseMap.prototype.zoomToInitialExtent = function() {
  */
 BaseMap.prototype.updateMapUsingFilter = function(filterArray) {
     console.log("Applying map filter");
-
+    //this.loadingPanel.maximizeControl();
     // the images layer may have been removed by a clear call, so re make it
     if(this.mapInstance.getLayersByName("Images")[0] == null) {
         //this is the layer for our points to be displayed with
@@ -162,6 +166,7 @@ BaseMap.prototype.updateMapUsingFilter = function(filterArray) {
     var layer = this.mapInstance.getLayersByName("Images")[0];
     layer.params['FILTER'] = new_filter;
     layer.redraw();
+    //this.loadingPanel.minimizeControl();
 };
 
 

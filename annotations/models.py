@@ -15,7 +15,11 @@ class AnnotationCode(models.Model):
     point_colour = models.CharField(max_length=6) # hex RGB colour
     code_name = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
-    parent = models.ForeignKey('annotations.AnnotationCode')
+    parent = models.ForeignKey(
+            'annotations.AnnotationCode',
+            blank=True,
+            null=True
+        )
 
 
 class QualifierCode(models.Model):
