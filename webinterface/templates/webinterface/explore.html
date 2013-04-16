@@ -343,7 +343,7 @@
         var currentSelectedDeployments = [];
         var currentSelectedDeploymentNames = [];
         
-        var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map");
+        var map = new ExploreMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map", '{% url webinterface.views.get_multiple_deployment_extent %}');
         var deploymentDialogOpen = false;
 
         //OK button in create collection should be active if there is a project name, otherwise disabled.
@@ -476,7 +476,7 @@
                 $("#selectedDeploymentList").html(deploymentListReadable);
                 
                 executeFilter();
-                updateMapExtent();
+                map.updateMapBoundsForDeployments(deploymentIds);
                 
             } else {
                 //disable create project button
@@ -487,12 +487,7 @@
                 $("#selectedDeploymentList").html('<li id="selectedDeploymentItem" class="active">Nothing Selected</li>');
                 
                 executeFilter();
-                //resetImagesAndMap();
             }
-            
-            
-                
-            //$('#savecollection').p("wee");
         }
 
         function removeDeploymentFromList(deploymentId) {
@@ -594,23 +589,6 @@
 
             document.body.appendChild(form);
             form.submit();
-        }
-
-        function updateMapExtent() {
-            $.ajax({
-                type: "POST",
-                url: '{% url webinterface.views.get_multiple_deployment_extent %}',
-                data: "deployment_ids=" + currentSelectedDeployments,
-                success: function (response, textStatus, jqXHR) {
-                    var boundsArr = response.extent.replace("(", "").replace(")", "").split(",");
-                    var bounds = new OpenLayers.Bounds();
-                    bounds.extend(new OpenLayers.LonLat(boundsArr[0], boundsArr[1]));
-                    bounds.extend(new OpenLayers.LonLat(boundsArr[2], boundsArr[3]));
-                    var geographic = new OpenLayers.Projection("EPSG:4326");
-                    var mercator = new OpenLayers.Projection("EPSG:900913");
-                    map.mapInstance.zoomToExtent(bounds.transform(geographic, mercator));
-                }
-            });
         }
 
        setDepthRange = function(minDepth, maxDepth) {

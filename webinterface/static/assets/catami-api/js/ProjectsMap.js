@@ -42,6 +42,7 @@ ProjectsMap.prototype.updateMapForSelectedCollection = function(collectionId) {
  * Will update the bounds of a collection given it's id
  */
 ProjectsMap.prototype.updateMapBoundsForCollection = function(collectionId) {
+    var mapInstance = this.mapInstance;
     $.ajax({
         type: "POST",
         url: this.extentUrl,
@@ -53,7 +54,7 @@ ProjectsMap.prototype.updateMapBoundsForCollection = function(collectionId) {
             bounds.extend(new OpenLayers.LonLat(boundsArr[2], boundsArr[3]));
             var geographic = new OpenLayers.Projection("EPSG:4326");
             var mercator = new OpenLayers.Projection("EPSG:900913");
-            deploymentMap.zoomToExtent(bounds.transform(geographic, mercator));
+            mapInstance.zoomToExtent(bounds.transform(geographic, mercator));
         }
     });
 }

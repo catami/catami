@@ -7,9 +7,10 @@
  * @param divName
  * @constructor
  */
-function ExploreMap(wmsUrl, wmsLayerName, divName) {
+function ExploreMap(wmsUrl, wmsLayerName, divName, extentUrl) {
     this.BaseMap = BaseMap;
     this.BaseMap(wmsUrl, wmsLayerName, divName);
+    this.extentUrl = extentUrl;
 }
 
 ExploreMap.prototype = new BaseMap;
@@ -84,17 +85,22 @@ ExploreMap.prototype.createExploreFilterArray = function(minDepth,
     return filter;
 }
 
-ExploreMap.prototype.updateMapForSelectedDeployments = function(deployment_ids) {
-    var filter_array = [];
-
-    for (var i = 0; i < deployment_ids.length; i++) {
-        filter_array.push(new OpenLayers.Filter.Comparison({
-            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-            property: "deployment_id",
-            value: deployment_ids[i]
-        }));
-    }
-
-    this.updateMapUsingFilter(filter_array);
+ExploreMap.prototype.updateMapBoundsForDeployments = function(deploymentIds) {
+    var mapInstance = this.mapInstance;
+    $.ajax({
+        type: "POST",
+        url: this.extentUrl,
+        data: "deployment_ids=" + currentSelectedDeployments,
+        success: function (response, textStatus, jqXHR) {
+            var boundsArr = response.extent.replace("(", "").replace(")", "").split(",");
+            var bounds = new OpenLayers.Bounds();
+            bounds.extend(new OpenLayers.LonLat(boundsArr[0], boundsArr[1]));
+            bounds.extend(new OpenLayers.LonLat(boundsArr[2], boundsArr[3]));
+            var geographic = new OpenLayers.Projection("EPSG:4326");
+            var mercator = new OpenLayers.Projection("EPSG:900913");
+            mapInstance.zoomToExtent(bounds.transform(geographic, mercator));
+        }
+    });
 }
+
 

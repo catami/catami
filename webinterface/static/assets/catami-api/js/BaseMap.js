@@ -179,4 +179,3 @@ BaseMap.prototype.clearMap = function() {
 }
 
 
-

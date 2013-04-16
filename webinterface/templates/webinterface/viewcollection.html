@@ -9,6 +9,16 @@
             border-color: #ddd;
         }
 
+        .olControlLoadingPanel {
+            background-image:url("{{ STATIC_URL }}images/loading.gif");
+            position: relative;
+            padding-left: 50%;
+            padding-top: 50%;
+            padding-right: 50%;
+            background-position:center;
+            background-repeat: no-repeat;
+            display: none;
+        }
 
     </style>
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/catami-api/css/collections.css" type="text/css">
@@ -67,7 +77,10 @@
                         <li id="map-ctrl-cl"><a href="#_"  data-toggle="tab" onclick="updateMapForSelectedCollection({{ collection_id }});">Collection</a></li>
                         <li id="map-ctrl-ws"><a href="#_"  data-toggle="tab">Workset</a></li>
                     </ul>
-                    {% include "webinterface/dataviews/mapview.html" %}
+                    {% comment %}{% include "webinterface/dataviews/mapview.html" %}{% endcomment %}
+                    <div id='deployment-map' style="width:100%;height:600px;z-index:0;position:relative;" class="span9">
+                        <!-- Map content inserted using JQuery -->
+                    </div>
                 </div>
                 <!--
                 <div class="tab-pane" id="tax">
@@ -105,7 +118,14 @@
 
 {% block add_script %}
     <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/collections.js"></script>
+    <script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
+    <script src="{{ STATIC_URL }}assets/OpenLayers/LoadingPanel.js"></script>
+    <script src='{{ STATIC_URL }}assets/catami-api/js/BaseMap.js'></script>
+    <script src='{{ STATIC_URL }}assets/catami-api/js/ProjectsMap.js'></script>
+
     <script type="text/javascript">
+
+        var map = new ProjectsMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map", '{% url webinterface.views.get_collection_extent %}');
 
         // Instantiate collection list object
         wslist = new CollectionAPI({
@@ -124,7 +144,8 @@
 
         function selectCollection(id) {
             getNewImageList('collection=' + id);
-            updateMapForSelectedCollection(id);
+            map.updateMapForSelectedCollection(id);
+            map.updateMapBoundsForCollection(id);
             showMapControl (false)
         }
 
@@ -148,7 +169,7 @@
             // NOTE: THIS IS A BIT HACKY
             // TODO: This should be controllable through layers on the map (eg: Google maps)
             if (id) {
-                $('#map-ctrl-ws>a').attr('onClick', 'updateMapForSelectedCollection('+id+')');
+                $('#map-ctrl-ws>a').attr('onClick', 'map.updateMapForSelectedCollection('+id+')');
                 $('#map-ctrl-ws').addClass('active');
                 $('#map-ctrl').show();
             } else {
@@ -162,7 +183,7 @@
             wslist.getCollectionItems('parent={{ collection_id }}&limit=100', '#ws-list');
             clitem.getCollectionInfo({{ collection_id }}, '#cl-item');
             $('.clinfopopover').popover();
-            initDeploymentMap();
+            //initDeploymentMap();
 
             {% if workset_id %}
                 selectWorkset({{ workset_id }});
