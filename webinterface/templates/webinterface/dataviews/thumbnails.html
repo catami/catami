@@ -33,15 +33,16 @@ Template-specific HTML
 Template-specific javascript functions
 ------------------------------------------->
 <script type="text/javascript">
-
+    var ajax = '';
     function getNewImageList(filter, numimgs) {
+        if (typeof(ajax)=='object') ajax.abort();
         numimgs = numimgs || 36;            // set default number of images
         var apiurl = '/api/dev/image/?limit=' + numimgs + '&' + filter;    //create api url with filter
         $("#thmlist").html('');                    //clear thumbnail list
         appendImageListAPI(apiurl);               //add thumbnails to image list
     }
     function appendImageListAPI(apiurl) {
-        $.getJSON(apiurl, function (img) {
+        ajax = $.getJSON(apiurl, function (img) {
             var images = '';
             for (var i = 0; i < img.objects.length; i++) {
                 images += '<img src="' + img.objects[i].thumbnail_location + '"/>';
