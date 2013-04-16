@@ -364,7 +364,7 @@
         function getDeploymentList(campaign_id) {
 
             //filter_array.length = 0;
-            var deployment_ids = [];
+            {% comment %}var deployment_ids = [];
 
             var apiurl = "/api/dev/deployment/?format=json";
 
@@ -383,11 +383,15 @@
 
                 $("#deploymentSelect").html(options);
 
-            });
+            });{% endcomment %}
 
+            $("#deploymentSelect").html(deploymentOptionsList[campaign_id]);
         }
 
-        function getCampaignList() {
+        var campaignOptions = "";
+        var deploymentOptionsList = [];
+
+        function fetchCampaignsAndDeployments() {
             var apiurl = "/api/dev/campaign/?format=json";
             $.getJSON(apiurl, function (campaigns) {
                 //alert ('L: ' + j.objects.length);
@@ -395,8 +399,39 @@
                 for (var i = 0; i < campaigns.objects.length; i++) {
                     options += '<option value="' + campaigns.objects[i].id + '">' + campaigns.objects[i].short_name + '</option>';
                 }
+                //$("#campaignSelect").html(options);
+                campaignOptions = options;
+                $("#campaignSelect").html(campaignOptions);
+            });
+
+            apiurl = "/api/dev/deployment/?format=json";
+
+            $.getJSON(apiurl, function (deployments) {
+                var options = '';
+                for (var i = 0; i < deployments.objects.length; i++) {
+                    var campaignId = deployments.objects[i].campaign.replace("/api/dev/campaign/", "").replace("/","");
+
+                    options = '<option value="' + deployments.objects[i].id + '">' + deployments.objects[i].short_name + '</option>';
+
+                    deploymentOptionsList[campaignId] += options;
+                }
+
+                //$("#deploymentSelect").html(options);
+
+            });
+        }
+
+        function getCampaignList() {
+            {% comment %}var apiurl = "/api/dev/campaign/?format=json";
+            $.getJSON(apiurl, function (campaigns) {
+                //alert ('L: ' + j.objects.length);
+                var options = ' ';
+                for (var i = 0; i < campaigns.objects.length; i++) {
+                    options += '<option value="' + campaigns.objects[i].id + '">' + campaigns.objects[i].short_name + '</option>';
+                }
                 $("#campaignSelect").html(options);
-            })
+            }){% endcomment %}
+            $("#campaignSelect").html(campaignOptions);
         }
 
         function updateUIForDeploymentList(deploymentIds, deploymentNames) {
@@ -724,7 +759,7 @@
 	        NewDialog.dialog({
 	            modal: false,
 	            autoOpen: false,
-	            open: getCampaignList(),
+	            open: fetchCampaignsAndDeployments(),
 	            title: "Select Campaigns and deployments",
 	            width: 600,
 	            height: 400,
@@ -753,8 +788,10 @@
                 $(e.target).addClass("active");
             });
 
+
             initSelectDeploymentDialog();
-            getCampaignList();
+            //getCampaignList();
+            //getDeploymentList();
 
             setDepthRange(0, 500);
             setAltitudeRange(0, 12000);
