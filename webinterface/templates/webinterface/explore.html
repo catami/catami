@@ -95,7 +95,7 @@
 
     <div class="row-fluid" id="mainContainer">
 
-        <div class="well span3" id="map-sidebar">
+        <div class="well span3" id="map-sidebar" style="padding:10px; padding-left: 0; padding-right: 0;">
             <form style="width:100%;">
 
                 <p style="width:90%;">
@@ -430,7 +430,8 @@
                     //       						</li><li class="divider" style="margin:0px;"></li>';
                     deploymentListReadable += '<li id="selectedDeploymentItem" class="active">\
                             						<div class="alert alert-success">\
-                            						<button class="close" onclick="removeDeploymentFromList('+deploymentIds[i]+')">x</button><p style="width: 80%; overflow: hidden; display: inline-block; word-wrap: break-word;">'+deploymentNames[i]+'</p>\
+                            						<button class="close" onclick="removeDeploymentFromList('+deploymentIds[i]+')">x</button>\
+                            						<p style="width: 80%; overflow: hidden; display: inline-block; word-wrap: break-word;">'+deploymentNames[i]+'</p>\
                             						</li></div>';
                 }
 
@@ -447,7 +448,7 @@
                 $("#sliderSet").attr('disabled', 'disabled');
                 //$("#selectedDeploymentList").html('<li id="selectedDeploymentItem" class="active">Nothing Selected</li>');
 
-                $("#selectedDeploymentList").html('<li><p class="alert alert-info">No Deployments selected.</p></li>');
+                $("#selectedDeploymentList").html('<li class="active" style";margin-right:-15px;margin-left:-15px;background-color:#0088cc;"><p style="color:#fff; background-color:#0088cc;">No Deployments selected.</p></li>');
 
 
                 executeFilter();
