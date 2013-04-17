@@ -390,7 +390,10 @@
 
                     options = '<option value="' + deployments.objects[i].id + '">' + deployments.objects[i].short_name + '</option>';
 
-                    deploymentOptionsList[campaignId] += options;
+                    if(deploymentOptionsList[campaignId] == null)
+                        deploymentOptionsList[campaignId] = options;
+                    else
+                        deploymentOptionsList[campaignId] += options;
                 }
 
                 //$("#deploymentSelect").html(options);
@@ -419,7 +422,6 @@
 
                 //enable the create project button
                 $('.btn-create-collection').removeAttr('disabled');
-                console.log("applying the fing thing");
                 $('#CreateProjectButton').attr("onclick", "showCreateProjectModal()");
 
                 for (var i = 0; i < deploymentIds.length; i++) {
