@@ -32,34 +32,17 @@ Template-specific HTML
 <!------------------------------------------
 Template-specific javascript functions
 ------------------------------------------->
-<script type="text/javascript">
-    var ajax = '';
-    function getNewImageList(filter, numimgs) {
-        if (typeof(ajax)=='object') ajax.abort();
-        numimgs = numimgs || 36;            // set default number of images
-        var apiurl = '/api/dev/image/?limit=' + numimgs + '&' + filter;    //create api url with filter
-        $("#thmlist").html('');                    //clear thumbnail list
-        appendImageListAPI(apiurl);               //add thumbnails to image list
-    }
-    function appendImageListAPI(apiurl) {
-        ajax = $.getJSON(apiurl, function (img) {
-            var images = '';
-            for (var i = 0; i < img.objects.length; i++) {
-                images += '<img src="' + img.objects[i].thumbnail_location + '"/>';
-            }
-            $("#thmlist").append(images);
+<script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/thumbnails.js"></script>
 
-            if (img.meta.total_count > 0) {
-                //$('#deploymentSelect option:first').attr('selected', 'selected');
-                //$("#btnprev").attr("onClick","getImageList('"+img.meta.previous+"',0);");
-                $("#btnnext").show();
-                $("#btnnext").attr("onClick", "appendImageListAPI('" + img.meta.next + "');");
-                $("#thminfo").html('Viewing 1 to ' + Math.min((img.meta.offset + img.meta.limit), img.meta.total_count) + ' of ' + img.meta.total_count);
-            } else {
-                $("#thminfo").html('No images available...');
-            }
-            //alert(img.meta.next);
-            //JSON.parse('{"' + decodeURI("abc=foo&def=%5Basf%5D&xyz=5".replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
-        })
+<script type="text/javascript">
+    var thlist = new ThumnailAPI({});
+
+    function getNewImageList(filter, numimgs) {
+        numimgs = numimgs || 36;            // set default number of images
+        filter = 'limit=' + numimgs + '&' + filter;
+        thlist.getNewThumbnails("#thmlist",filter);
+        $('#btnnext').attr('onclick','getThumbnails("'+thlist.meta.next+'",false);');
+        //$('#thminfo').html('Showing '+thlist.meta.start+' to '+thlist.meta.end+' of '+thlist.meta.total_count);
+        $('#thminfo').html('Showing 1 to '+thlist.meta.end+' of '+thlist.meta.total_count);
     }
 </script>
