@@ -29,7 +29,7 @@
         <div class="span2">
             <div class="well" style="padding:10px; padding-left: 0; padding-right: 0;">
                 <ul class="nav nav-list">
-                    <li class="nav-header">Collection:</li>
+                    <li class="nav-header">Project:</li>
                     <li id="cl-item">
                         <!--JS--> Loading...
                     </li>
@@ -55,7 +55,7 @@
         <div class="span10 viewpane">
 
 
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs" style="margin-bottom:0px;">
                 <li class="active"><a href="#map" ><i class="icon-globe"></i> Map</a></li>
                 <li><a href="#thm" ><i class="icon-eye-open"></i> Thumbnails</a></li>
                 <!--
@@ -74,7 +74,7 @@
                 <div class="tab-pane active" id="map">
                     <ul id="map-ctrl" class="nav nav-pills"  style="margin-bottom: 0; padding-bottom: 0;">
                         <li class="disabled"><a href="#_">Show:</a></li>
-                        <li id="map-ctrl-cl"><a href="#_"  data-toggle="tab" onclick="updateMapForSelectedCollection({{ collection_id }});">Collection</a></li>
+                        <li id="map-ctrl-cl"><a href="#_"  data-toggle="tab" onclick="updateMapForSelectedCollection({{ collection_id }});">Project</a></li>
                         <li id="map-ctrl-ws"><a href="#_"  data-toggle="tab">Workset</a></li>
                     </ul>
                     {% comment %}{% include "webinterface/dataviews/mapview.html" %}{% endcomment %}
@@ -127,6 +127,22 @@
 
         var map = new ProjectsMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map", '{% url webinterface.views.get_collection_extent %}');
 
+		function resolveFullHeight() {
+		    $("#deployment-map").css("height", "auto", "z-index","0");
+
+		    var estimatedHeaderHeight = 25;
+		
+		    var h_fullHeight = (-1 * ($("#deployment-map").position().top - $(document).height()))-estimatedHeaderHeight;
+
+		    $("#deployment-map").height(h_fullHeight);
+		}
+		
+		resolveFullHeight();
+		
+		$(window).resize(function () {
+		    resolveFullHeight();
+		});
+		
         // Instantiate collection list object
         wslist = new CollectionAPI({
             config: {
@@ -177,6 +193,8 @@
                 $('#cl-item').addClass('active');
                 $('#map-ctrl').hide();
             }
+            resolveFullHeight();
+
         }
 
         $(document).ready(function () {
