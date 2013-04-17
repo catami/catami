@@ -303,7 +303,7 @@
 
         //OK button in create collection should be active if there is a project name, otherwise disabled.
 		$('#collection_name').on('input',function(e){
-			$('#startCreateCollectionButton').attr('enabled', 'enabled');
+			$('#startCreateCollectionButton').removeAttr('disabled');
 			if(this.value.length === 0) {
 				$('#startCreateCollectionButton').attr('disabled', 'disabled');
 
@@ -714,7 +714,7 @@
 		    
 		function initSelectDeploymentDialog() {
 	        var NewDialog = $('\
-	        <form style="margin-bottom=0px;font-size:14px;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;" id="selectDeploymentDialog">\
+	        <form style="font-size:14px;margin:0px;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;" id="selectDeploymentDialog">\
             <select name="campaignSelect" multiple="multiple"\
                     class="workpane" id="campaignSelect"\
                     onchange="selectCampaign($(this).val());" style="height:100%;float:left; width:30%; margin-left:0px;color:#000;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;">\
