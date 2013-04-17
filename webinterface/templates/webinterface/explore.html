@@ -3,6 +3,7 @@
 
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
 {% block tail_head %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/catami-api/css/thumbnails.css" type="text/css">
     <style type="text/css">
         {% comment %}body {
             padding: 10px;
@@ -209,7 +210,14 @@
                 {% endswitch %}
 
                 <div class="tab-pane" id="thm" style="height:100%;">
-                    {% include "webinterface/dataviews/thumbnails.html" %}
+                    {% comment %}{% include "webinterface/dataviews/thumbnails.html" %}{% endcomment %}
+                    <div id="thmcontainer">
+                        <div id="thmlist" style="width:100%;"><!-- Content inserted using jQuery --></div>
+                        <div style="width:100%; text-align: center;">
+                            <a href="#_" class="btn btn-primary" id="btnnext"><i class="icon-plus-sign"></i> View more images</a><br>
+                            <span id="thminfo"><!-- Content inserted using jQuery --></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -237,12 +245,9 @@
 
 {% block add_script %}
     <script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
-    <!--<script src="{{ STATIC_URL }}assets/OpenLayers/OpenLayers.js"></script>-->
     <script src="{{ STATIC_URL }}assets/OpenLayers/LoadingPanel.js"></script>
-
-
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/thumbnails.js"></script>
     <script src='{{ STATIC_URL }}assets/catami-api/js/Map.js'></script>
-
 	<script type="text/javascript" src="/static/assets/catami-api/js/catamiImageView.js"></script>
 
 	<!--
@@ -307,6 +312,21 @@
 
 			}
 		});
+
+        var thlist = new ThumnailAPI({
+            config: {theme: 'th-fancybox'}
+        });
+
+        function getThumbnails (apistring,getnew) {
+            if (getnew) {
+                thlist.getNewThumbnails("#thmlist",apistring);
+            } else {
+                thlist.appendThumnails("#thmlist",apistring);
+            }
+            $('#btnnext').attr('onclick','getThumbnails("'+thlist.meta.next+'",false);');
+            //$('#thminfo').html('Showing '+thlist.meta.start+' to '+thlist.meta.end+' of '+thlist.meta.total_count);
+            $('#thminfo').html('Showing 1 to '+thlist.meta.end+' of '+thlist.meta.total_count);
+        }
 
         function showCreateProjectModal() {
             $('#CreateProjectModal').modal('show');
@@ -631,7 +651,7 @@
             
             //reset the images	
             $("#thmlist").html("");
-            $("#thminfo").html('No images to show...');	
+            $("#thminfo").html('<div class="alert alert-info"> No Deployments selected.</div>');
             $("#btnnext").hide();
             $("#btnnext").attr("onClick", "");
         
@@ -694,8 +714,9 @@
                                       maxSalinity,
                                       deploymentIds) {
 
-            getNewImageList("pose__depth__gte="+minDepth+"&pose__depth__lte="+maxDepth+"&temperature__gte="+minTemperature+"&temperature__lte="+maxTemperature+"&salinity__gte="+minSalinity+"&salinity__lte="+maxSalinity+"&altitude__gte="+minAltitude+"&altitude__lte="+maxAltitude+"&deployment="+deploymentIds, 30);
-
+            //getNewImageList("pose__depth__gte="+minDepth+"&pose__depth__lte="+maxDepth+"&temperature__gte="+minTemperature+"&temperature__lte="+maxTemperature+"&salinity__gte="+minSalinity+"&salinity__lte="+maxSalinity+"&altitude__gte="+minAltitude+"&altitude__lte="+maxAltitude+"&deployment="+deploymentIds, 30);
+            getThumbnails("pose__depth__gte="+minDepth+"&pose__depth__lte="+maxDepth+"&temperature__gte="+minTemperature+"&temperature__lte="+maxTemperature+"&salinity__gte="+minSalinity+"&salinity__lte="+maxSalinity+"&altitude__gte="+minAltitude+"&altitude__lte="+maxAltitude+"&pose__deployment="+deploymentIds, true);
+            $("#btnnext").show();
         };
 
 		$(function () {
@@ -768,6 +789,7 @@
 
             updateUIForDeploymentList(currentSelectedDeployments);
 
+            $(".th-fancybox").fancybox();
         //});
     </script>
 {% endblock %}

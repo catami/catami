@@ -2,9 +2,9 @@
 Template-specific styles
 ------------------------------------------->
 <style type="text/css">
-    #thmcontainer {
+    {% comment %}#thmcontainer {
         width: 950px;
-    }
+    }{% endcomment %}
 
     #thmlist img {
         width: 150px;
@@ -18,7 +18,7 @@ Template-specific styles
 Template-specific HTML
 ------------------------------------------->
 <div id="thmcontainer">
-    <div id="thmlist" style="width:100%;">
+    <div id="thmlist" >
         <!-- Content inserted using javascript function -->
     </div>
     <div style="width:100%; text-align: center;">
