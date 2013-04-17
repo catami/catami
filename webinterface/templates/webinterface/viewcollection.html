@@ -2,13 +2,6 @@
 {% block title %}{{ block.super }} : {{ request.path }}{% endblock %}
 {% block tail_head %}
     <style type="text/css">
-        .viewpane {
-            padding-left: 10px;
-            border-left-style: solid;
-            border-left-width: 1px;
-            border-color: #ddd;
-        }
-
         .olControlLoadingPanel {
             background-image:url("{{ STATIC_URL }}images/loading.gif");
             position: relative;
@@ -22,6 +15,7 @@
 
     </style>
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/catami-api/css/collections.css" type="text/css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/catami-api/css/thumbnails.css" type="text/css">
 {% endblock %}
 {% block content %}
     <div class="row-fluid">
@@ -74,7 +68,7 @@
                 <div class="tab-pane active" id="map">
                     <ul id="map-ctrl" class="nav nav-pills"  style="margin-bottom: 0; padding-bottom: 0;">
                         <li class="disabled"><a href="#_">Show:</a></li>
-                        <li id="map-ctrl-cl"><a href="#_"  data-toggle="tab" onclick="updateMapForSelectedCollection({{ collection_id }});">Project</a></li>
+                        <li id="map-ctrl-cl"><a href="#_"  data-toggle="tab" onclick="map.updateMapForSelectedCollection({{ collection_id }});">Collection</a></li>
                         <li id="map-ctrl-ws"><a href="#_"  data-toggle="tab">Workset</a></li>
                     </ul>
                     {% comment %}{% include "webinterface/dataviews/mapview.html" %}{% endcomment %}
@@ -91,7 +85,13 @@
                 </div>
                 -->
                 <div class="tab-pane" id="thm">
-                    {% include "webinterface/dataviews/thumbnails.html" %}
+                    <div id="thmcontainer">
+                        <div id="thmlist" style="width:100%;"><!-- Content inserted using jQuery --></div>
+                        <div style="width:100%; text-align: center;">
+                            <a href="#_" class="btn btn-primary" id="btnnext"><i class="icon-plus-sign"></i> View more images</a><br>
+                            <span id="thminfo"><!-- Content inserted using jQuery --></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane" id="ant">
                     This will give options to continue or create an annotation run on the selected Workset.<br>
@@ -122,7 +122,7 @@
     <script src="{{ STATIC_URL }}assets/OpenLayers/LoadingPanel.js"></script>
     <script src='{{ STATIC_URL }}assets/catami-api/js/BaseMap.js'></script>
     <script src='{{ STATIC_URL }}assets/catami-api/js/ProjectsMap.js'></script>
-
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/thumbnails.js"></script>
     <script type="text/javascript">
 
         var map = new ProjectsMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map", '{% url webinterface.views.get_collection_extent %}');
@@ -157,12 +157,28 @@
             }
         });
 
+        var thlist = new ThumnailAPI({
+            config: {theme: 'th-fancybox'}
+        });
+
+
+        function getThumbnails (apistring,getnew) {
+            if (getnew) {
+                thlist.getNewThumbnails("#thmlist",apistring);
+            } else {
+                thlist.appendThumnails("#thmlist",apistring);
+            }
+            $('#btnnext').attr('onclick','getThumbnails("'+thlist.meta.next+'",false);');
+            //$('#thminfo').html('Showing '+thlist.meta.start+' to '+thlist.meta.end+' of '+thlist.meta.total_count);
+            $('#thminfo').html('Showing 1 to '+thlist.meta.end+' of '+thlist.meta.total_count);
+        }
+
 
         function selectCollection(id) {
-            getNewImageList('collection=' + id);
             map.updateMapForSelectedCollection(id);
             map.updateMapBoundsForCollection(id);
-            showMapControl (false)
+            showMapControl (false);
+            getThumbnails('collection=' + id+'&limit=36',true);
         }
 
         function clearWorkset(id) {
@@ -216,6 +232,8 @@
                 $(this).tab('show');
                 history.replaceState(null, '', $(this).attr('href'));
             });
+
+            $(".th-fancybox").fancybox();
 
             $(".imageframe").fancybox({
                 maxWidth: 2000,

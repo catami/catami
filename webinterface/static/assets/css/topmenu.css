@@ -21,4 +21,9 @@ ul.nav li.dropdown:hover ul.dropdown-menu {
     margin-top: 0px;
 }
 
-
+.viewpane {
+    padding-left: 10px;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-color: #ddd;
+}
