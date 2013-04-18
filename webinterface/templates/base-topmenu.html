@@ -64,7 +64,11 @@
                     <li class="{% ifequal request.path url.webinterface.views.index %}active{% endifequal %}"><a
                             href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home "></i>
                         Home</a></li>
+
+                    {% if user.is_superuser %}
                     <li><a href="/staging/"><i class="icon-cloud-upload"></i> Import </a></li>
+                    {% endif %}
+
                     <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}"><a
                             href="{% url webinterface.views.explore %}"><i class="icon-search "></i> Explore</a>
 
