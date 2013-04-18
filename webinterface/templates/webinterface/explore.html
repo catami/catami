@@ -249,6 +249,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/thumbnails.js"></script>
     <script src='{{ STATIC_URL }}assets/catami-api/js/Map.js'></script>
 	<script type="text/javascript" src="/static/assets/catami-api/js/catamiImageView.js"></script>
+    <script src="http://jquery.bassistance.de/validate/jquery.validate.js"></script>
 
 	<!--
 		<script>
@@ -307,7 +308,7 @@
         //OK button in create collection should be active if there is a project name, otherwise disabled.
 		$('#collection_name').on('input',function(e){
 			$('#startCreateCollectionButton').removeAttr('disabled');
-			if(this.value.length === 0) {
+			if($.trim(this.value) == "") {
 				$('#startCreateCollectionButton').attr('disabled', 'disabled');
 
 			}
