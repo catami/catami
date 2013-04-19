@@ -21,6 +21,9 @@ class AnnotationCode(models.Model):
             null=True
         )
 
+    def __unicode__(self):
+        return "{0} - ({1})".format(self.code_name, self.caab_code)
+
 
 class QualifierCode(models.Model):
     """Qualifiers to annotations.
@@ -31,6 +34,8 @@ class QualifierCode(models.Model):
     modifier_name = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
 
+    def __unicode__(self):
+        return self.modifier_name
 
 class AnnotationSet(models.Model):
     """The common base for Point and Whole image annotation sets.
@@ -109,6 +114,14 @@ class PointAnnotationSet(AnnotationSet):
     # an integer parameter (for random selection, stratified etc)
     # not always used
     count = models.IntegerField()
+
+    def __unicode__(self):
+        return "{0} ({1} - {2}: {3})".format(
+                self.name,
+                self.collection.name,
+                POINT_METHODOLOGIES[self.methodology][1],
+                self.count
+            )
 
     class Meta:
         unique_together = (('owner', 'name', 'collection'), )
