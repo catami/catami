@@ -202,6 +202,7 @@ class PointAnnotationResource(ModelResource):
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                 ApiKeyAuthentication())
         authorization = PointAnnotationAuthorization()
+        always_return_data = True
 
     def obj_get_list(self, bundle, **kwargs):
         """Overrides the given method from ModelResource.
