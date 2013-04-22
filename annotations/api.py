@@ -39,6 +39,7 @@ class AnnotationCodeResource(ModelResource):
             'id': ALL,
         }
         allowed_methods = ['get']
+        ordering = ['code_name', 'caab_code', 'cpc_code']
 
     def dehydrate(self, bundle):
         """Add a parent_id field to AnnotationCodeResource."""
@@ -60,6 +61,7 @@ class QualifierCodeResource(ModelResource):
             'modifier_name': ALL,
         }
         allowed_methods = ['get']
+        ordering = ['modifier_name']
 
 class PointAnnotationSetAuthorization(Authorization):
     def read_list(self, object_list, bundle):
@@ -128,6 +130,7 @@ class PointAnnotationSetResource(ModelResource):
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                 ApiKeyAuthentication())
         authorization = PointAnnotationSetAuthorization()
+        ordering = ['name']
 
 
 class PointAnnotationAuthorization(Authorization):
