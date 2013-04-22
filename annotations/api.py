@@ -1,13 +1,19 @@
-from tastypie import fields
+from tastypie import fields, http
 from tastypie.resources import ModelResource, Resource, Bundle
+from tastypie.resources import convert_post_to_patch
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.authentication import Authentication, SessionAuthentication, MultiAuthentication, ApiKeyAuthentication
 from tastypie.authorization import Authorization
 from tastypie.exceptions import NotFound, BadRequest, Unauthorized
 
+from tastypie.utils import is_valid_jsonp_callback_value, dict_strip_unicode_keys, trailing_slash
+
 import guardian
 from guardian.shortcuts import (get_objects_for_user, get_perms_for_model,
                                 get_users_with_perms, get_groups_with_perms)
+
+import django
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 from collection.models import Collection
 from catamidb.models import Image
@@ -134,7 +140,7 @@ class PointAnnotationAuthorization(Authorization):
         # annotationset before
         user_objects = []
         for o in object_list:
-            if user.has_perm('annotations.viewpointannotationset', o.annotation_set):
+            if user.has_perm('annotations.view_pointannotationset', o.annotation_set):
                 user_objects.append(o)
 
         # send em off
@@ -145,7 +151,7 @@ class PointAnnotationAuthorization(Authorization):
         user = get_real_user_object(bundle.request.user)
 
         # check the user has permission to view this object
-        if user.has_perm('annotations.view_pointannotation', bundle.obj):
+        if user.has_perm('annotations.view_pointannotationset', bundle.obj.annotation_set):
             return True
 
         # raise hell! - https://github.com/toastdriven/django-
@@ -160,6 +166,11 @@ class PointAnnotationAuthorization(Authorization):
         raise Unauthorized("Sorry, no updates.")
 
     def update_detail(self, object_list, bundle):
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('annotations.update_pointannotationset', bundle.obj.annotation_set):
+            return True
         raise Unauthorized("Sorry, no updates.")
 
     def delete_list(self, object_list, bundle):
@@ -267,3 +278,114 @@ class PointAnnotationResource(ModelResource):
             raise BadRequest("Invalid resource lookup data provided (mismatched type.")
 
 
+
+    def patch_list(self, request, **kwargs):
+        """Override of the default to make the allowed methods map better.
+
+        Mainly makes delete depend on delete (already happend).
+        Makes creation depend on post, full update/create with URI depend
+        on put and update existing depend on patch - which isn't a method at
+        all.
+        """
+        print "patch_list"
+        request = convert_post_to_patch(request)
+        if django.VERSION >= (1, 4):
+            body = request.body
+        else:
+            body = request.raw_post_data
+        deserialized = self.deserialize(request, body, format=request.META.get('CONTENT_TYPE', 'application/json'))
+
+        collection_name = self._meta.collection_name
+        deleted_collection_name = 'deleted_%s' % collection_name
+        if collection_name not in deserialized:
+            raise BadRequest("Invalid data sent: missing '%s'" % collection_name)
+
+        #if len(deserialized[collection_name]) and 'put' not in self._meta.detail_allowed_methods:
+        #    raise ImmediateHttpResponse(response=http.HttpMethodNotAllowed())
+
+        bundles_seen = []
+
+        for data in deserialized[collection_name]:
+            # If there's a resource_uri then this is either an
+            # update-in-place or a create-via-PUT.
+            if "resource_uri" in data:
+                uri = data.pop('resource_uri')
+
+                try:
+                    obj = self.get_via_uri(uri, request=request)
+
+                    # The object does exist, so this is an update-in-place.
+                    if 'patch' not in self._meta.detail_allowed_methods:
+                        raise ImmediateHttpResponse(response=http.HttpMethodNotAllowed())
+                    bundle = self.build_bundle(obj=obj, request=request)
+                    bundle = self.full_dehydrate(bundle, for_list=True)
+                    bundle = self.alter_detail_data_to_serialize(request, bundle)
+                    self.update_in_place(request, bundle, data)
+                except (ObjectDoesNotExist, MultipleObjectsReturned):
+                    # The object referenced by resource_uri doesn't exist,
+                    # so this is a create-by-PUT equivalent.
+                    if 'put' not in self._meta.detail_allowed_methods:
+                        raise ImmediateHttpResponse(response=http.HttpMethodNotAllowed())
+                    data = self.alter_deserialized_detail_data(request, data)
+                    bundle = self.build_bundle(data=dict_strip_unicode_keys(data), request=request)
+                    self.obj_create(bundle=bundle)
+            else:
+                # There's no resource URI, so this is a create call just
+                # like a POST to the list resource.
+                if 'post' not in self._meta.detail_allowed_methods:
+                    raise ImmediateHttpResponse(response=http.HttpMethodNotAllowed())
+
+                data = self.alter_deserialized_detail_data(request, data)
+                bundle = self.build_bundle(data=dict_strip_unicode_keys(data), request=request)
+                self.obj_create(bundle=bundle)
+
+            bundles_seen.append(bundle)
+
+        deleted_collection = deserialized.get(deleted_collection_name, [])
+
+        if deleted_collection:
+            if 'delete' not in self._meta.detail_allowed_methods:
+                raise ImmediateHttpResponse(response=http.HttpMethodNotAllowed())
+
+            for uri in deleted_collection:
+                obj = self.get_via_uri(uri, request=request)
+                bundle = self.build_bundle(obj=obj, request=request)
+                self.obj_delete(bundle=bundle)
+
+        if not self._meta.always_return_data:
+            return http.HttpAccepted()
+        else:
+            to_be_serialized = {}
+            to_be_serialized['objects'] = [self.full_dehydrate(bundle, for_list=True) for bundle in bundles_seen]
+            to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
+            return self.create_response(request, to_be_serialized, response_class=http.HttpAccepted)
+
+    def update_in_place(self, request, original_bundle, new_data):
+        """
+        Update the object in original_bundle in-place using new_data.
+        """
+        updated = dict_strip_unicode_keys(new_data)
+
+        usable = {}
+        permitted_values = ['label', 'level', 'qualifiers']
+
+        for pv in permitted_values:
+            if pv in updated:
+                usable[pv] = updated[pv]
+
+        user = get_real_user_object(request.user)
+
+        # maybe should be pk, or uri not user object...
+        usable['labeller'] = user
+
+        original_bundle.data.update(**usable)
+
+        # Now we've got a bundle with the new data sitting in it and we're
+        # we're basically in the same spot as a PUT request. SO the rest of this
+        # function is cribbed from put_detail.
+        self.alter_deserialized_detail_data(request, original_bundle.data)
+        kwargs = {
+            self._meta.detail_uri_name: self.get_bundle_detail_data(original_bundle),
+            'request': request,
+        }
+        return self.obj_update(bundle=original_bundle, **kwargs)
