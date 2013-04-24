@@ -118,6 +118,7 @@ class PointAnnotationSetAuthorization(Authorization):
 
 class PointAnnotationSetResource(ModelResource):
     collection = fields.ForeignKey('collection.api.CollectionResource', 'collection')
+    owner = fields.ForeignKey('jsonapi.api.UserResource', 'owner')
     
     class Meta:
         queryset = models.PointAnnotationSet.objects.all()
