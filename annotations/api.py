@@ -98,7 +98,7 @@ class PointAnnotationSetAuthorization(Authorization):
         user = get_real_user_object(bundle.request.user)
 
         # check if they are allowed to create point annotation sets
-        if user.has_perm('catamidb.create_pointannotationset', bundle.obj):
+        if user.has_perm('annotations.create_pointannotationset', bundle.obj):
             return True
 
         raise Unauthorized("You are not allowed to create point sets.")
