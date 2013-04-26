@@ -44,9 +44,9 @@ urlpatterns = patterns(
     #Collection detail Views
     url(r'^collections/(?P<collection_id>\d+)/$',
         'view_collection'),
-    url(
-        r'^collections/(?P<collection_id>\d+)/workset/(?P<workset_id>\d+)/$',
-        'view_workset'),
+#    url(
+#        r'^collections/(?P<collection_id>\d+)/workset/(?P<workset_id>\d+)/$',
+#        'view_workset'),
     #url(r'^my_collections$', 'my_collections'),
     #url(r'^my_collections_all$', 'my_collections_all'),
     #url(r'^my_collections_recent$', 'my_collections_recent'),
@@ -61,7 +61,8 @@ urlpatterns = patterns(
     url(r'^my_subsets$', 'my_subsets'),
     url(r'^public_subsets$', 'public_subsets'),
     url(r'^imageview$', 'image_view'),
-    url(r'^imageannotate$', 'image_annotate'),
+#    url(r'^imageannotate$', 'image_annotate'),
+    url(r'^imageannotate/(?P<image_id>\d+)/$', 'image_annotate'),
     url(r'^imageedit$', 'image_edit'),
 
     #Collection Management

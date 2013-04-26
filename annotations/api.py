@@ -6,6 +6,8 @@ from tastypie.authentication import Authentication, SessionAuthentication, Multi
 from tastypie.authorization import Authorization
 from tastypie.exceptions import NotFound, BadRequest, Unauthorized
 
+from django.views.decorators.csrf import csrf_exempt
+
 from tastypie.utils import is_valid_jsonp_callback_value, dict_strip_unicode_keys, trailing_slash
 
 import guardian
@@ -97,10 +99,28 @@ class PointAnnotationSetAuthorization(Authorization):
         # get real user
         user = get_real_user_object(bundle.request.user)
 
+        print "Checking create_pointannotationset"
+
         # check if they are allowed to create point annotation sets
         if user.has_perm('annotations.create_pointannotationset', bundle.obj):
+            print "Has permissions"
             return True
 
+        print "No permissions"
+        raise Unauthorized("You are not allowed to create point sets.")
+
+    def create_list(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        print "Checking LIST create_pointannotationset"
+
+        # check if they are allowed to create point annotation sets
+        if user.has_perm('annotations.create_pointannotationset', bundle.obj):
+            print "Has permissions"
+            return True
+
+        print "No permissions"
         raise Unauthorized("You are not allowed to create point sets.")
 
     def update_list(self, object_list, bundle):
@@ -128,10 +148,41 @@ class PointAnnotationSetResource(ModelResource):
             'name': ALL,
         }
         allowed_methods = ['get', 'post']
-        authentication = MultiAuthentication(AnonymousGetAuthentication(),
-                ApiKeyAuthentication())
+        authentication = Authentication(require_active=False)
+        #authentication = MultiAuthentication(AnonymousGetAuthentication(),
+        #        SessionAuthentication(),
+        #        ApiKeyAuthentication())
         authorization = PointAnnotationSetAuthorization()
         ordering = ['name']
+
+    def dispatch(self, request_type, request, **kwargs):
+        print "DISPATCH in PointAnnotationSetResource"
+        print request_type
+
+        print request
+
+        print request.user
+
+        print "session authent: ", SessionAuthentication().is_authenticated(request)
+        print "anon get authent", AnonymousGetAuthentication().is_authenticated(request)
+        print "apikey authent", ApiKeyAuthentication().is_authenticated(request)
+
+        print "request user authent", request.user.is_authenticated()
+        print "request security level", request.is_secure()
+
+        print "request csrf", request.META.get('HTTP_X_CSRF_TOKEN', '')
+        print "request csrf", request.META.get('csrfmiddlewaretoken', '')
+        print "request csrf", request.POST.get('csrfmiddlewaretoken', '')
+
+        from django.middleware.csrf import _sanitize_token
+        from django.conf import settings
+        print "expected csrf", _sanitize_token(request.COOKIES.get(settings.CSRF_COOKIE_NAME, ""))
+
+
+        print "Testing authentication"
+        self.is_authenticated(request)
+        print "finished testing authentication"
+        return super(PointAnnotationSetResource, self).dispatch(request_type, request, **kwargs)
 
 
 class PointAnnotationAuthorization(Authorization):
@@ -204,6 +255,7 @@ class PointAnnotationResource(ModelResource):
         }
         allowed_methods = ['get', 'patch']
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
+                SessionAuthentication(),
                 ApiKeyAuthentication())
         authorization = PointAnnotationAuthorization()
         always_return_data = True

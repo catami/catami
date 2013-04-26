@@ -7,10 +7,10 @@
         border:1px solid red !important;
         background-color:#fdd !important;
     }
-    .form-horizontal .control-label {
+    .form-horizontal-modal .control-label {
         width:75px;
     }
-    .form-horizontal .controls {
+    .form-horizontal-modal .controls {
         margin-left: 80px;
     }
     .alert {
@@ -45,7 +45,7 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active well" id="rnd">
-                        <form action="" method="post" id="wsform_rand" class="form-horizontal" >
+                        <form action="" method="post" id="wsform_rand" class="form-horizontal form-horizontal-modal" >
 
                             <p><strong>Random sampling:</strong></p>
                             <span id="errors"></span>
@@ -57,7 +57,7 @@
                         </form>
                     </div>
                     <div class="tab-pane well" id="str">
-                        <form action="" method="post" id="wsform_strat"  class="form-horizontal">
+                        <form action="" method="post" id="wsform_strat"  class="form-horizontal form-horizontal-modal">
                             <p><strong>Stratified sampling:</strong></p>
                             <span id="errors"></span>
                             <p>Make a new Workset by sub-sampling every "N<sup>th</sup>" image from the collection.</p>

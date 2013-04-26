@@ -6,19 +6,28 @@
 
 #imageFrame img {
     position: absolute;
-    margin: 0px auto;
+    margin: 0px;
 }
 
 #image {
     display: block;
-    margin: auto;
+    margin: 0px;
 }
 
 #pointDetails {
     position: absolute;
+    /*
     border: 5px solid gray;
+    */
     background: white;
     padding: 5px;
     width: 270px;
     height: 350px;
+    border: 2px solid #e3e3e3;
+    -webkit-border-radius: 10px;
+}
+
+#annotationInfo td {
+    text-align: left;
+    vertical-align: top;
 }
