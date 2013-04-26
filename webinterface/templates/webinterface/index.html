@@ -51,7 +51,7 @@
 
                                 <p class="lead">Welcome to Catami, you might be be new here.</p>
                                 <div class="well" style="align:center;">
-                                    <p class="lead">If you'd like to make an account ... <a href="/accounts/signup/"><i
+                                    <p class="lead">If you'd like to make an account ... <a href="{% url userena_signup %}"><i
                                             class="icon-user icon-3x icon-border"></i></a></p>
                                     <a href="#"
                                        rel="popover"
@@ -66,9 +66,9 @@
                                 </div>
                                 <div class="well">
                                     <p class="lead">If you already have an account, login ... <a
-                                            href="/accounts/signin/"><i class="icon-signin icon-3x icon-border"></i></a>
+                                            href="{% url userena_signin %}"><i class="icon-signin icon-3x icon-border"></i></a>
                                     </p>
-                                    <a href="http://localhost:8000/accounts/password/reset/"><p><i
+                                    <a href="{% url userena_password_reset %}"><p><i
                                             class="icon-exclamation-sign"></i> Forgot your account details?</p></a>
                                 </div>
                             {% endif %}
@@ -83,7 +83,7 @@
 
         <div class="row-fluid">
             <div class="span12">
-                <div class="span2 offset2" align="center"><a href="https://github.com/catami/catami"><i
+                <div class="span2 offset1" align="center"><a href="https://github.com/catami/catami"><i
                         class="icon-github icon-3x"></i></a><h4>source code</h4></div>
                 <div class="span2" align="center"><a href="https://github.com/catami/catami/wiki"><i
                         class="icon-file-alt icon-3x"></i></a><h4>documentation</h4></div>
