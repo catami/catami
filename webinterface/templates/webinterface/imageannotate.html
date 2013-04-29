@@ -2,7 +2,7 @@
 
 {% block imageview %}
     <div id="imageFrame">
-        <img id="image"/></p>
+        <img id="image"/>
     </div>
     <div id="pointDetails" style="display:none; height: 200px; width: 300px;">
         <h4><i class="icon-tag"></i> Annotation Details</h4>
@@ -245,8 +245,33 @@
                         searchstr += '&code_name__icontains='+word;
                     });
                     taglist.getNewTags('limit=999'+searchstr,'#label-list');
+                    $("[rel=label-popover]").popover({ trigger: "hover" });
                 },
                 delay: 500
+            });
+
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    function getCookie(name) {
+                        var cookieValue = null;
+                        if (document.cookie && document.cookie != '') {
+                            var cookies = document.cookie.split(';');
+                            for (var i = 0; i < cookies.length; i++) {
+                                var cookie = jQuery.trim(cookies[i]);
+                                // Does this cookie string begin with the name we want?
+                                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                    break;
+                                }
+                            }
+                        }
+                        return cookieValue;
+                    }
+                    if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                        // Only send the token to relative URLs i.e. locally.
+                        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    }
+                }
             });
 
 

@@ -12,6 +12,7 @@
 #image {
     display: block;
     margin: 0px;
+    position: relative;
 }
 
 #pointDetails {
