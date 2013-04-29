@@ -88,7 +88,7 @@
             for (var i = 0; i < pointList.length; i++) {
             	if (pointList[i].cssid == selectedPoint.id) {
                     if (pointList[i].selected == true) {
-			            selectedPoint.src = (pointList.labeled)
+			            selectedPoint.src = (pointList[i].scored)
                                 ? '{{ STATIC_URL }}images/annotationPointOverlayScored.png'
                                 : '{{ STATIC_URL }}images/annotationPointOverlay.png';
 			            pointList[i].selected = false;
@@ -106,7 +106,13 @@
          */
         function showAnnotationDetails() {
             var id = event.srcElement.id;
-            var selectedPoint = event.srcElement;
+            for (var i = 0; i < pointList.length; i++) {
+                if (pointList[i].cssid === event.srcElement.id) {
+                    var selectedPoint = pointList[i];
+                    break;
+                }
+            }
+            //var selectedPoint = event.srcElement;
             if (selectedPoint.scored == true)
             {
 	            $('#pointDetails').css({
@@ -133,7 +139,7 @@
          */
         function setAnnotationPoints() {
             $.each(pointList, function(i,thispoint) {
-                var imgsrc = (thispoint.labeled)
+                var imgsrc = (thispoint.scored)
                         ? '{{ STATIC_URL }}images/annotationPointOverlayScored.png'
                         : '{{ STATIC_URL }}images/annotationPointOverlay.png';
                 var img = $('<img>');
@@ -168,11 +174,14 @@
         function labelSelectedPoints(label) {
             //'{ "objects": [{"resource_uri": "/api/dev/point_annotation/2/", "label": "/api/dev/annotation_code/273/"}]}'
             var patchdata = {objects: []};
+            var selectedinds = [];
             var patchpoints = false;
             for (var i = 0; i < pointList.length; i++) {
                 if (pointList[i].selected == true) {
                     patchdata.objects.push({resource_uri: pointList[i].resource_uri, label: label});
                     patchpoints = true;
+                    selectedinds.push(i);
+                    console.log(i+': '+pointList[i].selected);
                 }
             }
             if (patchpoints) {
@@ -183,14 +192,16 @@
                     contentType: 'application/json',
                     data: JSON.stringify(patchdata),
                     success: function(response, textStatus, jqXhr) {
-                        $('#'+pointList[i].cssid).attr('src','{{ STATIC_URL }}images/annotationPointOverlayScored.png');
-                        pointList[i].selected = false;
-                        pointList[i].scored = true;
+                        for (var i=0 ; i<selectedinds.length ; i++) {
+                            $('#'+pointList[selectedinds[i]].cssid).attr('src','{{ STATIC_URL }}images/annotationPointOverlayScored.png');
+                            pointList[selectedinds[i]].selected = false;
+                            pointList[selectedinds[i]].scored = true;
+                            pointList[selectedinds[i]].label = label;
+                        }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR);
-                        console.log(textStatus);
-                        alert('TODO: fix error with API: '+errorThrown+ '(see console log for more)');
+                        console.log(XMLHttpRequest);
+                        show_note('Error','There was an error while processing your request: '+errorThrown, 'error');
                     }
                 });
             }
@@ -199,8 +210,9 @@
         /**
          *
          */
+        /*
         function generateAnnotationPoints() {
-            /*
+
             // Number of points and minimum separation.  These should be parameters for the point selection
             var numPoints = 50;
             // the list of points for this image.  This should eventually be put into the database and checked
@@ -216,10 +228,10 @@
                 newPoint.id = 'AnnotionPoint' + i;
                 pointList.push(newPoint);
             }
-            */
+
             pointList = taglist.getAnnotationPoints('image={{ image_id }}&annotation_set={{ annotation_id }}&limit=0');
             //console.log(pointList);
-        }
+        }*/
 
         $(document).ready(function () {
 
@@ -227,7 +239,8 @@
             taglist.getNewTags('limit=999','#label-list');
             $("[rel=label-popover]").popover({ trigger: "hover" });
 
-            generateAnnotationPoints();
+            //generateAnnotationPoints();
+            pointList = taglist.getAnnotationPoints('image={{ image_id }}&annotation_set={{ annotation_id }}&limit=0');
             $("#image").one("load", function() {
                 setAnnotationPoints(pointList);
             });
