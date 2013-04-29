@@ -179,7 +179,9 @@
                 $.ajax({
                     url: '/api/dev/point_annotation/',
                     type: 'PATCH',
-                    data: patchdata,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(patchdata),
                     success: function(response, textStatus, jqXhr) {
                         $('#'+pointList[i].cssid).attr('src','{{ STATIC_URL }}images/annotationPointOverlayScored.png');
                         pointList[i].selected = false;
