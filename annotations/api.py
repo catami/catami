@@ -148,42 +148,11 @@ class PointAnnotationSetResource(ModelResource):
             'name': ALL,
         }
         allowed_methods = ['get', 'post']
-        authentication = Authentication(require_active=False)
-        #authentication = MultiAuthentication(AnonymousGetAuthentication(),
-        #        SessionAuthentication(),
-        #        ApiKeyAuthentication())
+        authentication = MultiAuthentication(AnonymousGetAuthentication(),
+                SessionAuthentication(),
+                ApiKeyAuthentication())
         authorization = PointAnnotationSetAuthorization()
         ordering = ['name']
-
-    def dispatch(self, request_type, request, **kwargs):
-        print "DISPATCH in PointAnnotationSetResource"
-        print request_type
-
-        print request
-
-        print request.user
-
-        print "session authent: ", SessionAuthentication().is_authenticated(request)
-        print "anon get authent", AnonymousGetAuthentication().is_authenticated(request)
-        print "apikey authent", ApiKeyAuthentication().is_authenticated(request)
-
-        print "request user authent", request.user.is_authenticated()
-        print "request security level", request.is_secure()
-
-        print "request csrf", request.META.get('HTTP_X_CSRF_TOKEN', '')
-        print "request csrf", request.META.get('csrfmiddlewaretoken', '')
-        print "request csrf", request.POST.get('csrfmiddlewaretoken', '')
-
-        from django.middleware.csrf import _sanitize_token
-        from django.conf import settings
-        print "expected csrf", _sanitize_token(request.COOKIES.get(settings.CSRF_COOKIE_NAME, ""))
-
-
-        print "Testing authentication"
-        self.is_authenticated(request)
-        print "finished testing authentication"
-        return super(PointAnnotationSetResource, self).dispatch(request_type, request, **kwargs)
-
 
 class PointAnnotationAuthorization(Authorization):
     def read_list(self, object_list, bundle):
