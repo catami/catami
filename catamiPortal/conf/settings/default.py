@@ -65,13 +65,18 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+STAGING_IMPORT_DIR = '/mnt/catami-media/catami-staging'
+STAGING_ARCHIVE_DIR = '/mnt/catami-media/catami-archive/archiveimages/'
+
 # dont have slashes at either end, they are automatically added
 IMAGES_URL = 'images'
-IMAGES_ROOT = '/media/catami_live/importedimages'
+IMAGES_ROOT = '/mnt/catami-media/catami-live/importedimages'
 
 THUMBNAILS_SOURCE_ROOT = IMAGES_ROOT
-THUMBNAILS_STORAGE_ROOT = '/media/catami_live/thumbnailimages'
+THUMBNAILS_STORAGE_ROOT = '/mnt/catami-media/catami-live/thumbnailimages'
 THUMBNAILS_RESPONSE_BACKEND = 'restthumbnails.responses.apache.sendfile'
+
+STAGING_WEBIMAGE_MAX_SIZE = (1360,1024)
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
