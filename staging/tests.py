@@ -25,6 +25,9 @@ from . import deploymentimport
 from catamidb.models import Campaign, Deployment, ScientificMeasurementType
 
 import datetime
+
+from datetime import datetime
+
 from dateutil.tz import tzutc
 
 
@@ -95,7 +98,7 @@ class AUVImportTools(TestCase):
         """Test NetCDFParser used in auvimports."""
         netcdf_file = open(
             'staging/fixtures/IMOS_AUV_ST_20090611T063544Z_SIRIUS_FV00.nc',
-            'r')
+            'rb')
 
         # test that opening works and that we can get a value
         netcdf_parser = NetCDFParser(netcdf_file)
@@ -138,7 +141,7 @@ class DeploymentImport(ResourceTestCase):
                 password=self.password
             )
 
-        self.campaign = mommy.make_one('catamidb.Campaign', id=1)
+        self.campaign = mommy.make_one('catamidb.Campaign', id=1, short_name='campaign'+datetime.now().strftime('%Y%m%d%H%M%S%f'))
 
         # get the local directory of this file
         # relative to this are the fixtures

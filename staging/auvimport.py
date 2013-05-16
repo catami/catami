@@ -11,6 +11,7 @@ from cStringIO import StringIO
 
 import glob
 import os.path
+import sys
 
 # for netcdf files
 from scipy.io import netcdf
@@ -235,7 +236,7 @@ def auvdeployment_import(auvdeployment, files):
     print "Entered!"
     logger.debug("Entering auvdeployment import")
 
-    netcdf = NetCDFParser(open(files['netcdf'], "r"))
+    netcdf = NetCDFParser(open(files['netcdf'], "rb"))
     track_parser = TrackParser(open(files['track'], "r"))
     image_subfolder = files['image']
 

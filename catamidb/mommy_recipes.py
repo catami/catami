@@ -47,6 +47,7 @@ auvdeployment2 = Recipe(
     end_time_stamp=datetime.now(),
     min_depth=10.0,
     max_depth=50.0,
+    short_name = 'bob',
     transect_shape=Polygon(((0.0, 0.0),
                             (0.0, 50.0),
                             (50.0, 50.0),
