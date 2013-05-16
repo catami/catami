@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 # default permissions for collection objects
 def apply_collection_permissions(user, collection):
     #assign all permissions view, add, change, delete
-    logger.debug("Applying owner permissions to campaign: " + collection.name)
+    logger.debug("Applying owner permissions to collection: " + collection.name)
 
     assign('view_collection', user, collection)
     assign('add_collection', user, collection)
@@ -20,7 +20,7 @@ def apply_collection_permissions(user, collection):
     assign('delete_collection', user, collection)
 
     #assign view permissions to the Anonymous user
-    logger.debug("Making campaign public: " + collection.name)
+    logger.debug("Making collection public: " + collection.name)
 
     public_group, created = Group.objects.get_or_create(name='Public')
     assign('view_collection', public_group, collection)

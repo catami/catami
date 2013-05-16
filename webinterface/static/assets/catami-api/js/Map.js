@@ -87,8 +87,9 @@ function BaseMap(wmsUrl, wmsLayerName, divName) {
     //return deploymentMap;
 
     var popupMapInstance = this.mapInstance;
+    var baseMap = this;
     //popup window configuration that queries more information about a point that is clicked on
-    var info = new OpenLayers.Control.WMSGetFeatureInfo({
+    this.getFeatureInfo = new OpenLayers.Control.WMSGetFeatureInfo({
         url: this.wmsUrl,
         title: 'Identify features by clicking',
         queryVisible: true,
@@ -96,7 +97,7 @@ function BaseMap(wmsUrl, wmsLayerName, divName) {
             getfeatureinfo: function (event) {
                 if (event.text.search('ServiceExceptionReport') > 0) {
                     event.text = '<p>I have encountered an error looking for Catami image data,<br>please contact <a href="mailto:catami@ivec.org?subject=Catami%20Error%20Report&body=Error%20Text%0A%0A' + encodeURIComponent(event.text) + '%0A%0APlease%20enter%20any%20other%20revelant%20information."><br>Catami Support</a></p>';
-                };
+                }
 
                 //ugly hack:  if there are no img tags there are no thumbnails, so the popup would be empty.
                 if (event.text.search('img') != -1) {
@@ -110,19 +111,19 @@ function BaseMap(wmsUrl, wmsLayerName, divName) {
                         null
                     );
                     popupMapInstance.addPopup(popup, true);
-                };
+                }
             }
         }
     });
-    this.mapInstance.addControl(info);
-    info.activate();
+    this.mapInstance.addControl(this.getFeatureInfo);
+    this.getFeatureInfo.activate();
 
     var loadingPanel = new OpenLayers.Control.LoadingPanel();
     this.loadingPanel = loadingPanel;
     this.mapInstance.addControl(this.loadingPanel);
 
     this.zoomToInitialExtent();
-}
+};
 
 /**
  * Called to zoom into Australia
@@ -166,7 +167,10 @@ BaseMap.prototype.updateMapUsingFilter = function(filterArray) {
     var layer = this.mapInstance.getLayersByName("Images")[0];
     layer.params['FILTER'] = new_filter;
     layer.redraw();
-    //this.loadingPanel.minimizeControl();
+
+    this.getFeatureInfo.vendorParams = {
+        "filter": new_filter
+    }
 };
 
 
@@ -176,6 +180,8 @@ BaseMap.prototype.updateMapUsingFilter = function(filterArray) {
 BaseMap.prototype.clearMap = function() {
     if(this.mapInstance.getLayersByName("Images")[0] != null)
         this.mapInstance.removeLayer(this.mapInstance.getLayersByName("Images")[0]);
+
+    this.currentFilter = [];
 }
 
 /**

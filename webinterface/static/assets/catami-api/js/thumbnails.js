@@ -1,7 +1,7 @@
 function ThumnailAPI(usrsettings) {
     var settings = {
         api_baseurl: '/api/dev/image/',
-        linkurl: ""
+        linkurl: "/imageannotate/"
     }
     if (usrsettings.settings) $.extend(settings, usrsettings.settings);  // override defaults with input arguments
 
@@ -28,6 +28,11 @@ function ThumnailAPI(usrsettings) {
     }
 
 
+    this.setFormat = function(newformat) {
+        config.format = newformat;
+    }
+
+
     /**
      *
      * @param outputelement
@@ -43,10 +48,9 @@ function ThumnailAPI(usrsettings) {
      * @param filter
      */
     this.appendThumnails = function (outputelement, apistring) {
-
-
         var parent = this;
         var obj = {};
+        var apistringviewer = '';
         ajaxobj = $.ajax({
             dataType: "json",
             async: false,  // prevent asyncronous mode to allow setting of variables within function
@@ -55,6 +59,12 @@ function ThumnailAPI(usrsettings) {
                 if (img.objects.length > 0) {
                     for (var i = 0; i < img.objects.length; i++) {
                         obj = getThObj(img.objects[i]);
+                        obj.itemoffset = img.meta.offset + i;
+                        obj.apistring = encodeURIComponent(apistring);
+                        obj.apistringviewer = updateQueryStringParameter(apistring, 'limit', 10);
+                        obj.apistringviewer = updateQueryStringParameter(obj.apistringviewer, 'offset', obj.itemoffset);
+                        obj.apistringviewer = encodeURIComponent(obj.apistringviewer);
+                        //obj.apistringviewer = encodeURIComponent(apistring.replace(/limit=([^&]$|[^&]*)/i, 'limit=10'));
                         $(outputelement).append(formatThObj(config.format, obj));
                     }
                 }
@@ -65,8 +75,7 @@ function ThumnailAPI(usrsettings) {
                 parent.meta.start = img.meta.offset+1;
                 parent.meta.end = Math.min((img.meta.offset + img.meta.limit), img.meta.total_count);
             }
-        })
-        //console.log(this.meta);
+        });
     }
 
     /**
@@ -118,10 +127,81 @@ function ThumnailAPI(usrsettings) {
      */
     function getFormat(theme) {
         if (theme == 'th-fancybox') {
-            config.format = '<a class="th-fancybox" rel="gallery1" href="{web_location}"><img src="{thumbnail_location}"/></a>';
-        }
-        else {
+            config.format = '<a class="'+theme+'" rel="gallery1" href="{web_location}"><img src="{thumbnail_location}"/></a>';
+        } else if (theme == 'th-annotate') {
+            config.format = '<a class="'+theme+' imageframe" href="'+settings.linkurl+'{id}/?offset={itemoffset}&apistring={apistringviewer}" data-fancybox-group="al{itemoffset}" data-fancybox-type="iframe"><img src="{thumbnail_location}"/></a>';
+        } else if (theme == 'th-catamiviewer') {
+            config.format = '<a class="'+theme+'" href="'+settings.linkurl+'{id}/?offset={itemoffset}&apistring={apistringviewer}" ><img src="{thumbnail_location}" /></a>';
+        } else {
             config.format = '<a class="'+theme+'" href="{web_location}"><img src="{thumbnail_location}"/></a>';
         }
+    }
+}
+
+
+function updateQueryStringParameter(uri, key, value) {
+    var re = new RegExp("([?|&])" + key + "=.*?(&|$)", "i");
+    //var re = new RegExp("" + key + "=.*?(&|$)", "i");
+    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+    if (uri.match(re)) {
+        return uri.replace(re, '$1' + key + "=" + value + '$2');
+    }
+    else {
+        return uri + separator + key + "=" + value;
+    }
+}
+
+/***************************************************************************************
+ *
+ * @param usrsettings
+ * @constructor
+ */
+function ImageAPI (usrsettings) {
+    var settings = {
+        api_baseurl: '/api/dev/image/',
+        linkurl: ""
+    }
+//    if (usrsettings !== 'undefined') {
+//        if (usrsettings.settings) $.extend(settings, usrsettings.settings);  // override defaults with input arguments
+//    }
+    var ajaxobj = ''; // variable to reference current ajax object
+
+    this.getImageObj = function(id) {
+        var obj = {};
+        ajaxobj = $.ajax({
+            dataType: "json",
+            async: false,  // prevent asyncronous mode to allow setting of variables within function
+            url: settings.api_baseurl+id+'/',
+            success: function (img) {
+                obj = getImObj(img);
+            }
+        });
+        return obj;
+    }
+
+    /**
+     *
+     * @param id
+     * @param imgelement
+     */
+    this.getImage = function (id,imgelement) {
+        var obj = this.getImageObj(id);
+        $(imgelement).attr('src',obj.web_location);
+    }
+
+    /**
+     *
+     * @param obj
+     * @return {*}
+     */
+    function getImObj(obj) {
+        return objout = {
+            id: obj.id,
+            measurements: obj.measurements,
+            pose: obj.pose,
+            resource_uri: obj.resource_uri,
+            thumbnail_location: obj.thumbnail_location,
+            web_location: obj.web_location
+        };
     }
 }

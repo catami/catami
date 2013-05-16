@@ -25,8 +25,9 @@ from django.conf import settings
 from collection.api import CollectionResource
 from collection.models import Collection, CollectionManager
 
-from webinterface.forms import CreateCollectionForm, CreateWorksetForm, CreateCollectionExploreForm
+from webinterface.forms import CreateCollectionForm, CreateWorksetForm, CreateCollectionExploreForm, CreatePointAnnotationSet
 
+import HTMLParser
 
 # DajaxIce
 from dajaxice.decorators import dajaxice_register
@@ -214,6 +215,12 @@ def public_collections_all(request):
 def view_collection(request, collection_id):
     wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random','n':100})
     wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified','n':100})
+    asform = CreatePointAnnotationSet()
+
+    # check for optional get parameters
+    # This avoids needing to specify a new url and view for each optional parameter
+    workset_id = request.GET.get("wsid", "")
+    annotation_id = request.GET.get("asid", "")
 
     #check change permissions
     collection = Collection.objects.get(pk=collection_id)
@@ -224,33 +231,39 @@ def view_collection(request, collection_id):
 #    return render_to_response('webinterface/viewcollectionalternative.html',
                               {'wsform_rand' : wsform_rand,
                                'wsform_strat' : wsform_strat,
-                               'collection_id': collection_id,
-                               'WMS_URL': settings.WMS_URL,
-                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME,
-                               'change_collection': change_collection},
-                              RequestContext(request))
-
-
-@waffle_switch('Collections')
-def view_workset(request, collection_id, workset_id):
-    wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random'})
-    wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified'})
-
-    #check change permissions
-    collection = Collection.objects.get(pk=collection_id)
-
-    change_collection = check_permission(request.user, 'collection.change_collection', collection)
-
-    return render_to_response('webinterface/viewcollection.html',
-#    return render_to_response('webinterface/viewworkset.html',
-                              {'wsform_rand' : wsform_rand,
-                               'wsform_strat' : wsform_strat,
+                               'asform' : asform,
                                'collection_id': collection_id,
                                'workset_id': workset_id,
+                               "annotation_id": annotation_id,
                                'WMS_URL': settings.WMS_URL,
                                'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME,
                                'change_collection': change_collection},
                               RequestContext(request))
+
+
+#@waffle_switch('Collections')
+#def view_workset(request, collection_id, workset_id):
+#    wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random'})
+#    wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified'})
+#    asform = CreatePointAnnotationSet()
+#
+#
+#    #check change permissions
+#    collection = Collection.objects.get(pk=collection_id)
+#
+#    change_collection = check_permission(request.user, 'collection.change_collection', collection)
+#
+#    return render_to_response('webinterface/viewcollection.html',
+##    return render_to_response('webinterface/viewworkset.html',
+#                              {'wsform_rand' : wsform_rand,
+#                               'wsform_strat' : wsform_strat,
+#                               'asform' : asform,
+#                               'collection_id': collection_id,
+#                               'workset_id': workset_id,
+#                               'WMS_URL': settings.WMS_URL,
+#                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME,
+#                               'change_collection': change_collection},
+#                              RequestContext(request))
 
 
 # view collection table views
@@ -317,9 +330,14 @@ def image_view(request):
                               RequestContext(request))
 
 
-def image_annotate(request):
-    return render_to_response('webinterface/imageannotate.html', {},
-                              RequestContext(request))
+def image_annotate(request,image_id):
+    apistring = request.GET.get("apistring", "")
+    offset = request.GET.get("offset", "")
+    annotation_id = request.GET.get("asid", "")
+
+    return render_to_response('webinterface/imageannotate.html',
+        {"image_id": image_id, "offset": offset, "apistring": apistring, "annotation_id": annotation_id},
+        RequestContext(request))
 
 
 def image_edit(request):

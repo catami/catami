@@ -1,6 +1,6 @@
 from django import forms
-
-
+from annotations.models import POINT_METHODOLOGIES
+from annotations.models import PointAnnotationSet
 
 class CreateCollectionForm(forms.Form):
     deployment_ids = forms.CharField()
@@ -34,10 +34,14 @@ class CreateWorksetForm(forms.Form):
     c_id = forms.IntegerField(widget=forms.HiddenInput())
 
 
-#class CreateWorksetForm(forms.Form):
-#    name = forms.CharField(label=u'Name', widget=forms.TextInput(attrs={'placeholder': 'Enter a descriptive name'}))
-#    #ispublic = forms.BooleanField(label=u'Make public?', required=False)
-#    n = forms.IntegerField(label=u'N', widget=forms.TextInput(attrs={'placeholder': 'Numeric input'}))
-#    description = forms.CharField(label=u'Description', required=False, widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Longer description (optional)'}))
-#    method = forms.CharField(widget=forms.HiddenInput())
-#    c_id = forms.IntegerField(widget=forms.HiddenInput())
+class CreatePointAnnotationSet (forms.Form):
+    collection = forms.IntegerField(widget=forms.HiddenInput())
+    owner = forms.CharField(widget=forms.HiddenInput())
+    name = forms.CharField(label=u'Name', widget=forms.TextInput(attrs={'placeholder': 'Enter a descriptive name'}))
+    methodology = forms.ChoiceField(label=u'Methodology', choices=POINT_METHODOLOGIES, initial=0)
+    count = forms.IntegerField(label=u'N', min_value=1)
+
+
+#class CreatePointAnnotationSet (forms.ModelForm):
+#    class Meta:
+#        model = PointAnnotationSet

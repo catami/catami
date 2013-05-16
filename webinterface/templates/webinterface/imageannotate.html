@@ -2,12 +2,16 @@
 
 {% block imageview %}
     <div id="imageFrame">
-        <img src="{{ STATIC_URL }}images/PR_20090727_025242_115_LC16.png" id="image"/></p>
+        <img id="image"/>
     </div>
-    <form id="pointDetails" style="display:none;">
-        <h2><i class="icon-tag"></i> Annotation Details</h2>
-        <div id="annotationLabel" align="left"></div>
-    </form>
+    <div id="pointDetails" style="display:none; height: 200px; width: 300px;">
+        <h4><i class="icon-tag"></i> Annotation Details</h4>
+        <table cellpadding="3" id="annotationInfo">
+            <tr><td><b>Label :</b></td><td id="annotationLabel">Label</td></tr>
+            <tr><td><b>CAAB code: </b></td><td id="annotationCaab">CAAB code</td></tr>
+            <tr><td><b>Description: </b></td><td id="annotationDescription">Show some useful information from the database here</td></tr>
+        </table>
+    </div>
 {% endblock %}
 
 {% block leftpane %}
@@ -28,180 +32,13 @@
                                                  title="Type a class name/keyword to filter the list of options."><i
                 class="icon-question-sign"></i></a></h1>
 
-        <form class="form-search" style="margin:0 0 5px 0;padding:0;">
-            <input type="text" id="KeywordSearchText" class="input-medium search-query" style="width:210px;" placeholder="Type name/keyword">
-        </form>
-        <!--<div class=" divfixedh200">
+
+            <input type="text" id="KeywordSearchText" class="input-medium search-query" style="width:210px;" placeholder="Type name/keyword" autocomplete="off">
+
+        <div class="divfixedh400">
             <small>
-                <table class="table table-striped">
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Algae: large canopy forming</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Algae: erect branching</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Bacteria: Cyanobacteria</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Algae: Ecklonia</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Worms: Flatworms</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Worms: Echiura</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Bryozoa: Encrusting</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Bryozoa: Dendroid</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Bryozoa: Foliaceous</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Sponges: Bee hive</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Sponges: Cushion</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Sponges: Elongated drips</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Sponges: Creeping</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Sponges: Patchy</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Echinoderms: stalked crinoid</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Echinoderms: unstalked crinoid</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Echinoderms: regular urchin</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Echinoderms: irregular urchin</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Crustacea: Crabs</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Crustacea: Barnacles?</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Sponges: Lobsters</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Cnidaria: Hydrocorals</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Cnidaria: Jellies</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Cnidaria: Hydroids</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Cnidaria: Flytrap</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Cnidaria: Zooanthids</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Synonyms: ?, ?, ?<br>Kingdom: ?<br>Phylum: ?<br>Class: ?<br>Order: ?<br>Family: ?<br>Genus: ?<br>Species: ?</p>"
-                               data-original-title="Label information">Cnidaria: Tube anemones</a></td>
-                    </tr>
-                </table>
-            </small>
-        </div>
-    </div>-->
-
-
-
-    <div class="well infopane">
-        <h2>Previous relevant annotations <a class="pull-right" href="#" rel="tooltip" data-placement="left"
-                                             title="This image has previous annotations that may be relevant. Click below to load/refine an existing batch of annotations for this image."><i
-                class="icon-question-sign"></i></a></h2>
-
-        <div class=" divfixedh70">
-            <small>
-                <table class="table table-striped">
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Completed by: ??<br>Date: ??<br>Workset: ??<br>Collection: ??<br>Sampling: random (sequential)<br>Summary: 70 Random points from 104 images</p>"
-                               data-original-title="Annotation information">A. Friedman | 02-12-2012 | 70pt/104im</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Completed by: ??<br>Date: ??<br>Workset: ??<br>Collection: ??<br>Sampling: random (sequential)<br>Summary: 70 Random points from 104 images</p>"
-                               data-original-title="Annotation information">S. Williams | 02-12-2012 | 200pt/104im</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><a href="#" rel="popover-roll" data-placement="left" data-html="true"
-                               data-content="<p>Completed by: ??<br>Date: ??<br>Workset: ??<br>Collection: ??<br>Sampling: random (sequential)<br>Summary: 70 Random points from 104 images</p>"
-                               data-original-title="Annotation information">D. Steinberg | 02-12-2012 | 50pt/104im</a>
-                        </td>
-                    </tr>
+                <table class="table table-striped" id="label-list">
+                <!-- JS -->
                 </table>
             </small>
         </div>
@@ -209,50 +46,73 @@
 {% endblock %}
 
 {% block rightfootpane %}
-    <a href="{% url webinterface.views.image_view %}" class="btn" style="width: 60px;margin: 0;" title="View"><i
+    <a href="#" class="btn disabled" style="width: 60px;margin: 0;" title="View"><i
             class="icon-eye-open"></i><br>View</a>
-    <a href="{% url webinterface.views.image_annotate %}" class="btn btn-inverse" style="width: 60px;margin: 0;"
+    <a href="{% url webinterface.views.image_annotate image_id %}?offset={{ offset }}&apistring={{ apistring|urlencode }}" class="btn btn-inverse" style="width: 60px;margin: 0;"
        title="Annotate"><i class="icon-tag"></i><br>Annotate</a>
-    <a href="{% url webinterface.views.image_edit %}" class="btn" style="width: 60px;margin: 0;" title="Edit"><i
+    <a href="#" class="btn disabled" style="width: 60px;margin: 0;" title="Edit"><i
             class="icon-edit"></i><br>Edit</a>
 {% endblock %}
 
 {% block add_script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/annotations.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/thumbnails.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/delayed-keyup.js"></script>
     <script type="text/javascript">
-        var selectedPoints = [];
+
+        var taglist = new AnnotationAPI({
+            config: {
+                format: '<tr><td><a href="#" onclick="labelSelectedPoints(\'{[resource_uri]}\');" rel="label-popover" data-placement="leftTop" data-html="true"'+
+                        'data-content="<b>CAAB Code:</b> {[caab_code]}<br>{[description]}" data-original-title="{[code_name]}">{[code_name]}</a></td></tr>'
+            }
+        });
+
+        var imgobj = new ImageAPI();
+        var thmlist = new ThumnailAPI({
+            config: {
+                theme: 'th-catamiviewer',
+                format: '<a class="th-catamiviewer" href="/imageannotate/{id}/?offset={itemoffset}&apistring={apistringviewer}&asid={{ annotation_id }}" ><img src="{thumbnail_location}" /></a>'
+            }
+        });
+
         var pointList = [];
+        //var selectedPoints = [];
+
+        /**
+         *
+         */
         function selectAnnotationPoint() {
             //var id = event.srcElement.id;
             var selectedPoint = event.srcElement;
             var isSelected = false;
-            for (i = 0; i < selectedPoints.length; i++)
-            {
-            	if (selectedPoints[i].id == selectedPoint.id)
-            	{
-            		isSelected = true;
-		            if (selectedPoint.selected == true)
-		            {
-			            selectedPoint.src = ( '{{ STATIC_URL }}images/annotationPointOverlay.png' );    
-			            selectedPoint.selected = false;       
-			            selectedPoints.pop(i); 	            	
+            for (var i = 0; i < pointList.length; i++) {
+            	if (pointList[i].cssid == selectedPoint.id) {
+                    if (pointList[i].selected == true) {
+			            selectedPoint.src = (pointList[i].scored)
+                                ? '{{ STATIC_URL }}images/annotationPointOverlayScored.png'
+                                : '{{ STATIC_URL }}images/annotationPointOverlay.png';
+			            pointList[i].selected = false;
 		            } else {
-			            selectedPoint.src = ( '{{ STATIC_URL }}images/annotationPointOverlaySelected.png' );            	
-			            selectedPoint.selected = true;
+                        pointList[i].selected = true;
+			            selectedPoint.src = ( '{{ STATIC_URL }}images/annotationPointOverlaySelected.png' );
 		                $('#KeywordSearchText').focus();
 		            }
-            	}
-            }
-            if (isSelected == false)
-            {
-	            selectedPoint.src = ( '{{ STATIC_URL }}images/annotationPointOverlaySelected.png' );            	
-	            selectedPoint.selected = true;
-                $('#KeywordSearchText').focus();
-            	selectedPoints.push(selectedPoint);
+                }
             }
         }
+
+        /**
+         *
+         */
         function showAnnotationDetails() {
             var id = event.srcElement.id;
-            selectedPoint = event.srcElement;
+            for (var i = 0; i < pointList.length; i++) {
+                if (pointList[i].cssid === event.srcElement.id) {
+                    var selectedPoint = pointList[i];
+                    break;
+                }
+            }
+            //var selectedPoint = event.srcElement;
             if (selectedPoint.scored == true)
             {
 	            $('#pointDetails').css({
@@ -260,124 +120,151 @@
 	                top: event.pageY,
 	                position: 'absolute'
 	            });
-	            $('#annotationLabel').html('<table><tr><td><b>Label :</b></td><td>' + selectedPoint.label + '</td></tr><tr><td><b>CAAB code: </b></td><td>' + selectedPoint.value + '</td></tr></table><b>Description</b><br>Show some useful information from the database here')
-	            $('#pointDetails').fadeIn(500);
+                $('#annotationInfo #annotationLabel').html(selectedPoint.label);
+                $('#annotationInfo #annotationCaab').html(selectedPoint.value);
+                $('#annotationInfo #annotationDescription').html('Show some useful information from the database here');
+                $('#pointDetails').fadeIn(500);
             }
         }
+
+        /**
+         *
+         */
         function hideAnnotationDetails() {
         	$('#pointDetails').fadeOut(250);
         }
-        function setAnnotationPoints(newPoint) {
-            var img = $('<img>');
-            img.attr('id', newPoint.id);
-            img.css('top', newPoint.y);
-            img.css('left', newPoint.x);
-            img.attr('onmouseover', 'showAnnotationDetails()');
-            img.attr('onmouseout', 'hideAnnotationDetails()');
-            img.attr('onclick', 'selectAnnotationPoint()');
-            img.attr('src', '{{ STATIC_URL }}images/annotationPointOverlay.png');
-            img.attr('selected', false);
-            img.appendTo('#imageFrame');
+
+        /**
+         *
+         */
+        function setAnnotationPoints() {
+            $.each(pointList, function(i,thispoint) {
+                var imgsrc = (thispoint.scored)
+                        ? '{{ STATIC_URL }}images/annotationPointOverlayScored.png'
+                        : '{{ STATIC_URL }}images/annotationPointOverlay.png';
+                var img = $('<img>');
+                img.attr('id', thispoint.cssid);
+                img.css('top', thispoint.y*$('#image').height());
+                img.css('left', thispoint.x*$('#image').width());
+                img.attr('onmouseover', 'showAnnotationDetails()');
+                img.attr('onmouseout', 'hideAnnotationDetails()');
+                img.attr('onclick', 'selectAnnotationPoint()');
+                img.attr('src', imgsrc);
+                img.attr('selected', false);
+                img.appendTo('#imageFrame');
+            });
         }
-        $(document).ready(function () {
+
+        /**
+         *
+         */
+        function moveAnnotationPoints() {
+            $.each(pointList, function(i,thispoint) {
+                var imgpoint = $('#'+thispoint.cssid);
+                imgpoint.css('top',thispoint.y*$('#image').height());
+                imgpoint.css('left',thispoint.x*$('#image').width());
+            });
+        }
+
+        /**
+         *
+         * @param label
+         * @param value
+         */
+        function labelSelectedPoints(label) {
+            //'{ "objects": [{"resource_uri": "/api/dev/point_annotation/2/", "label": "/api/dev/annotation_code/273/"}]}'
+            var patchdata = {objects: []};
+            var selectedinds = [];
+            var patchpoints = false;
+            for (var i = 0; i < pointList.length; i++) {
+                if (pointList[i].selected == true) {
+                    patchdata.objects.push({resource_uri: pointList[i].resource_uri, label: label});
+                    patchpoints = true;
+                    selectedinds.push(i);
+                    console.log(i+': '+pointList[i].selected);
+                }
+            }
+            if (patchpoints) {
+                $.ajax({
+                    url: '/api/dev/point_annotation/',
+                    type: 'PATCH',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(patchdata),
+                    success: function(response, textStatus, jqXhr) {
+                        for (var i=0 ; i<selectedinds.length ; i++) {
+                            $('#'+pointList[selectedinds[i]].cssid).attr('src','{{ STATIC_URL }}images/annotationPointOverlayScored.png');
+                            pointList[selectedinds[i]].selected = false;
+                            pointList[selectedinds[i]].scored = true;
+                            pointList[selectedinds[i]].label = label;
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest);
+                        show_note('Error','There was an error while processing your request: '+errorThrown, 'error');
+                    }
+                });
+            }
+        }
+
+        /**
+         *
+         */
+        /*
+        function generateAnnotationPoints() {
+
             // Number of points and minimum separation.  These should be parameters for the point selection
             var numPoints = 50;
-            var minDistPx = 20;
             // the list of points for this image.  This should eventually be put into the database and checked
             // for the image when loaded
             for (var i = 0; i < numPoints; i++) {
                 // need to make sure the spacing of points is not too close
                 // the point locations also need to be pushed into the database
                 var newPoint = {x: -1, y: -1, id: -1};
-                var minSepChecked = false;
-                var imWidth = $('#image').width();
-                var imHeight = $('#image').height();
-                if (imWidth <= 0 || imHeight <= 0) {
-                    alert("Bad image size.  Generating annotation points will eventually be moved to the back end");
-                    return;
-                }
-                while (minSepChecked == false) {
-                    var minDistViolated = false;
-                    // radomly assign a point (accounting for size of icon)
-                    newPoint.x = Math.round(Math.random() * imWidth) - 5;
-                    newPoint.y = Math.round(Math.random() * imHeight) - 5;
-                    newPoint.id = 'AnnotionPoint' + i;
-                    // check spacing between points so we don't end up with points on top of each other
-                    if (pointList.length > 0) {
-                        for (var j = 0; j < pointList.length; j++) {
-                            var checkPoint = pointList[j];
-                            if (Math.pow(pointList[j].x - newPoint.x, 2) + Math.pow(pointList[j].y - newPoint.y, 2) < Math.pow(minDistPx, 2)) {
-                                minDistViolated = true;
-                            }
-                        }
-                    }
-                    if (minDistViolated == false) {
-                        minSepChecked = true;
-                        pointList.push(newPoint)
-                    }
-                }
-
-                // assign the point
-                setAnnotationPoints(newPoint);
+                var imWidth = 1; //$('#image').width();
+                var imHeight = 1; //$('#image').height();
+                newPoint.x = Math.random() * imWidth; //Math.round(Math.random() * imWidth) - 5;
+                newPoint.y = Math.random() * imHeight; //Math.round(Math.random() * imHeight) - 5;
+                newPoint.id = 'AnnotionPoint' + i;
+                pointList.push(newPoint);
             }
-        });
-        $(function () {
-            var availableTags = [
-                { label: "Algae: large canopy forming", value: '010001' },
-                { label: "Algae: erect branching", value: '010002' },
-                { label: "Bacteria: Cyanobacteria", value: '020001' },
-                { label: "Algae: Ecklonia", value: '030001' },
-                { label: "Worms: Flatworms", value: '040001' },
-                { label: "Worms: Echiura", value: '040002' },
-                { label: "Bryozoa: Encrusting", value: '050001' },
-                { label: "Bryozoa: Dendroid", value: '050002' },
-                { label: "Bryozoa: Foliaceous", value: '050003' },
-                { label: "Sponges: Bee hive", value: '060001' },
-                { label: "Sponges: Cushion", value: '060002' },
-                { label: "Sponges: Elongated drips", value: '060003' },
-                { label: "Sponges: Creeping", value: '060004' },
-                { label: "Sponges: Patchy", value: '060005' },
-                { label: "Echinoderms: stalked crinoid", value: '070001' },
-                { label: "Echinoderms: unstalked crinoid", value: '070002' },
-                { label: "Echinoderms: regular urchin", value: '070003' },
-                { label: "Echinoderms: irregular urchin", value: '070004' },
-                { label: "Crustacea: Crabs", value: '080001' },
-                { label: "Crustacea: Barnacles", value: '080002' },
-                { label: "Crustacea: Lobsters", value: '080003' },
-                { label: "Cnidaria: Hydrocorals", value: '090001' },
-                { label: "Cnidaria: Jellies", value: '090002' },
-                { label: "Cnidaria: Hydroids", value: '090003' },
-                { label: "Cnidaria: Flytrap", value: '090004' },
-                { label: "Cnidaria: Zooanthids", value: '090005' },
-                { label: "Cnidaria: Tube anemones", value: '090006' }
-            ];
-            $("#KeywordSearchText").autocomplete({
-                // This list should be populated by a call to the database returning a JSON element
-                source: availableTags,
-                select: function (event, ui) {
-                    /* Prevent the input from being populated: */
-                    event.preventDefault();
-                    /* Use ui.item.value to access the id */
-                    //window.location.href = "/index.php?id=" + ui.item.value;
-                    for (j = 0; j < selectedPoints.length; j++)
-                    {
-                    	if (selectedPoints[j].selected == true)
-                    	{
-		                    selectedPoints[j].src = ( '{{ STATIC_URL }}images/annotationPointOverlayScored.png' );    
-		                    selectedPoints[j].scored = true; 
-		                    selectedPoints[j].selected = false;
-		                    selectedPoints[j].label = ui.item.label;  
-		                    selectedPoints[j].value = ui.item.value;  
-                    	}
-                    }
-                    selectedPoints = [];
-                    this.value = '';
-                },
-                focus: function (event, ui) {
-                    // don't let the value be populated into the input box
-                    event.preventDefault();
-                }
+
+            pointList = taglist.getAnnotationPoints('image={{ image_id }}&annotation_set={{ annotation_id }}&limit=0');
+            //console.log(pointList);
+        }*/
+
+        $(document).ready(function () {
+
+            imgobj.getImage({{ image_id }}, '#image');
+            taglist.getNewTags('limit=999','#label-list');
+            $("[rel=label-popover]").popover({ trigger: "hover" });
+
+            //generateAnnotationPoints();
+            pointList = taglist.getAnnotationPoints('image={{ image_id }}&annotation_set={{ annotation_id }}&limit=0');
+            $("#image").one("load", function() {
+                setAnnotationPoints(pointList);
             });
+            //$('#image').load(setAnnotationPoints(pointList));
+            $(window).resize(function(e){moveAnnotationPoints(pointList)});
+            thmlist.appendThumnails('#thumbnailpane','{{ apistring|safe }}');
+
+            // Select input field contents on focus
+            $('#KeywordSearchText').focus(function(){
+                this.select();
+            });
+            $("#KeywordSearchText").onDelayedKeyup({
+                handler: function() {
+                    var searchwords = $(this).val().split(' ');
+                    var searchstr = '';
+                    $.each (searchwords, function(i,word) {
+                        searchstr += '&code_name__icontains='+word;
+                    });
+                    taglist.getNewTags('limit=999'+searchstr,'#label-list');
+                    $("[rel=label-popover]").popover({ trigger: "hover" });
+                },
+                delay: 500
+            });
+
         });
     </script>
 {% endblock %}

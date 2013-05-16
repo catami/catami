@@ -227,7 +227,7 @@ function CollectionAPI(usrsettings) {
             creation_info: clobj.creation_info,
             creation_date: clobj.creation_date.substr(0, 10),
             access: "Public",//access: (clobj.is_public) ? 'Public' : 'Private',
-            link: (clobj.parent_id) ? settings.linkurl + clobj.parent_id + '/workset/' + clobj.id + '/' : settings.linkurl + clobj.id + '/',
+            link: (clobj.parent_id) ? settings.linkurl + clobj.parent_id + '/?wsid=' + clobj.id : settings.linkurl + clobj.id + '/',
             type: (clobj.parent_id) ? 'Workset' : 'Project'
         };
 

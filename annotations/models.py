@@ -21,6 +21,9 @@ class AnnotationCode(models.Model):
             null=True
         )
 
+    def __unicode__(self):
+        return "{0} - ({1})".format(self.code_name, self.caab_code)
+
 
 class QualifierCode(models.Model):
     """Qualifiers to annotations.
@@ -30,6 +33,9 @@ class QualifierCode(models.Model):
     """
     modifier_name = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.modifier_name
 
 
 class AnnotationSet(models.Model):
@@ -62,6 +68,39 @@ POINT_METHODOLOGIES = (
     (2, 'Fixed Pattern'),
 )
 
+class PointAnnotationManager(models.Manager):
+    """Manager for PointAnnotationSet.
+
+    Helps create the pointannotations for images
+    within the set.
+    """
+
+    def create_annotations(self, annotation_set, image, labeller):
+
+        if annotation_set.methodology == 0:
+            random_point(annotation_set, image, labeller)
+        else:
+            # don't know what to do... invalid choice etc.
+            pass
+
+    def random_point(annotation_set, image, labeller):
+        import random
+        for i in xrange(annotation_set.count):
+            x = random.random()
+            y = random.random()
+
+            ann = PointAnnotation()
+
+            ann.annotation_set = annotation_set
+            ann.image = image
+            ann.labeller = labeller
+            ann.x = x
+            ann.y = y
+
+            ann.label = AnnotationCode.objects.get(id=1) # not considered
+            ann.level = 0 # not considered
+
+            ann.save()
 
 class PointAnnotationSet(AnnotationSet):
     """Point Annotation Container.
@@ -75,14 +114,28 @@ class PointAnnotationSet(AnnotationSet):
     # not always used
     count = models.IntegerField()
 
+    def __unicode__(self):
+        return "{0} ({1} - {2}: {3})".format(
+                self.name,
+                self.collection.name,
+                POINT_METHODOLOGIES[self.methodology][1],
+                self.count
+            )
+
     class Meta:
         unique_together = (('owner', 'name', 'collection'), )
+        permissions = (
+                ('create_pointannotationset', 'Create a pointannotation set'),
+                ('view_pointannotationset', 'View pointannotation set'),
+            )
+
 
 
 LEVELS = (
-    (0, "Primary"),
-    (1, "Secondary"),
-    (2, "Tertiary"),
+    (0, "Not Specified"),
+    (1, "Primary"),
+    (2, "Secondary"),
+    (3, "Tertiary"),
 )
 
 
@@ -103,6 +156,8 @@ class PointAnnotation(Annotation):
         'QualifierCode',
         related_name='point_annotations'
     )
+
+    objects = PointAnnotationManager()
 
 
 class ImageAnnotationSet(AnnotationSet):
