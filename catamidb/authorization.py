@@ -46,7 +46,7 @@ def apply_campaign_permissions(user, campaign):
     assign('delete_campaign', user, campaign)
 
     #assign view permissions to the Anonymous user
-    logger.debug("Making collection public: " + campaign.short_name)
+    logger.debug("Making campaign public: " + campaign.short_name)
 
     public_group, created = Group.objects.get_or_create(name='Public')
     assign('view_campaign', public_group, campaign)

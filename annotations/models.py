@@ -37,6 +37,7 @@ class QualifierCode(models.Model):
     def __unicode__(self):
         return self.modifier_name
 
+
 class AnnotationSet(models.Model):
     """The common base for Point and Whole image annotation sets.
     """
@@ -67,26 +68,6 @@ POINT_METHODOLOGIES = (
     (2, 'Fixed Pattern'),
 )
 
-def random_point(annotation_set, image, labeller):
-    import random
-    for i in xrange(annotation_set.count):
-        x = random.random()
-        y = random.random()
-
-        ann = PointAnnotation()
-
-        ann.annotation_set = annotation_set
-        ann.image = image
-        ann.labeller = labeller
-        ann.x = x
-        ann.y = y
-
-        ann.label = AnnotationCode.objects.get(id=1) # not considered
-        ann.level = 0 # not considered
-
-        ann.save()
-
-
 class PointAnnotationManager(models.Manager):
     """Manager for PointAnnotationSet.
 
@@ -102,6 +83,24 @@ class PointAnnotationManager(models.Manager):
             # don't know what to do... invalid choice etc.
             pass
 
+    def random_point(annotation_set, image, labeller):
+        import random
+        for i in xrange(annotation_set.count):
+            x = random.random()
+            y = random.random()
+
+            ann = PointAnnotation()
+
+            ann.annotation_set = annotation_set
+            ann.image = image
+            ann.labeller = labeller
+            ann.x = x
+            ann.y = y
+
+            ann.label = AnnotationCode.objects.get(id=1) # not considered
+            ann.level = 0 # not considered
+
+            ann.save()
 
 class PointAnnotationSet(AnnotationSet):
     """Point Annotation Container.

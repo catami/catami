@@ -22,11 +22,145 @@ from catamidb.models import Image
 
 from . import models 
 from catamidb.api import AnonymousGetAuthentication, get_real_user_object
+from annotations import authorization
 
 import logging
 
 logger = logging.getLogger(__name__)
 
+#=========================
+# API Authorisation up here
+#=========================
+
+
+class PointAnnotationSetAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        user_objects = get_objects_for_user(
+                user,
+                ['annotations.view_pointannotationset'],
+                object_list
+            )
+
+        # send em off
+        return user_objects
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        ### DEBUG
+        logger.debug("Reading annotation set " + bundle.obj.name.__str__())
+
+        # check the user has permission to view this object
+        if user.has_perm('annotations.view_pointannotationset', bundle.obj):
+            return True
+
+        # raise hell! - https://github.com/toastdriven/django-
+        # tastypie/issues/826
+        raise Unauthorized()
+
+    def create_detail(self, object_list, bundle):
+        # Bug patch - Should be fixed in next verison of tastypie
+        # see - https://github.com/toastdriven/django-tastypie/issues/884
+        try:
+            logger.debug("Trying to force tastypie to cooperate with: " + bundle.obj.collection.__str__()) #force an exception
+        except ObjectDoesNotExist:
+            return super(PointAnnotationSetAuthorization, self).create_detail(object_list, bundle)
+
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check if they are allowed to create point annotation on a collection/workset
+        if user.has_perm('collection.change_collection', bundle.obj.collection):
+            #return that this user indeed has permission to execute this action
+            return True
+
+        #return True
+        raise Unauthorized("You are not allowed to create point annotation sets on the given workset.")
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Create list is un-implemented.")
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes on lists, too desctrutive.")
+
+    def delete_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check if they are allowed to delte the point annotation set
+        if user.has_perm('annotations.delete_pointannotationset', bundle.obj):
+            return True
+
+        #return True
+        raise Unauthorized("You are not allowed to delete this annotation set.")
+
+
+class PointAnnotationAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        # may be able to cache the lookup based on if have seen that
+        # annotationset before
+        user_objects = []
+        for point_annotations in object_list:
+            if user.has_perm('annotations.view_pointannotationset', point_annotations.annotation_set):
+                user_objects.append(point_annotations)
+
+        # send em off
+        return user_objects
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('annotations.view_pointannotationset', bundle.obj.annotation_set):
+            return True
+
+        # raise hell! - https://github.com/toastdriven/django-
+        # tastypie/issues/826
+        raise Unauthorized()
+
+    def create_detail(self, object_list, bundle):
+        # get real user
+        raise Unauthorized("Sorry, no creates.")
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('annotations.update_pointannotationset', bundle.obj.annotation_set):
+            return True
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
+
+#========================
+# Configure the API
+#========================
 class AnnotationCodeResource(ModelResource):
     parent = fields.ForeignKey('annotations.api.AnnotationCodeResource', 'parent', null=True)
     
@@ -65,76 +199,6 @@ class QualifierCodeResource(ModelResource):
         allowed_methods = ['get']
         ordering = ['modifier_name']
 
-class PointAnnotationSetAuthorization(Authorization):
-    def read_list(self, object_list, bundle):
-        # get real user object
-        user = get_real_user_object(bundle.request.user)
-
-        # get the objects the user has permission to see
-        user_objects = get_objects_for_user(
-                user,
-                ['annotations.view_pointannotationset'],
-                object_list
-            )
-
-        # send em off
-        return user_objects
-
-    def read_detail(self, object_list, bundle):
-        # get real user
-        user = get_real_user_object(bundle.request.user)
-
-        ### DEBUG
-        print bundle.obj
-
-        # check the user has permission to view this object
-        if user.has_perm('annotations.view_pointannotationset', bundle.obj):
-            return True
-
-        # raise hell! - https://github.com/toastdriven/django-
-        # tastypie/issues/826
-        raise Unauthorized()
-
-    def create_detail(self, object_list, bundle):
-        # get real user
-        user = get_real_user_object(bundle.request.user)
-
-        print "Checking create_pointannotationset"
-
-        # check if they are allowed to create point annotation sets
-        if user.has_perm('annotations.create_pointannotationset', bundle.obj):
-            print "Has permissions"
-            return True
-
-        print "No permissions"
-        raise Unauthorized("You are not allowed to create point sets.")
-
-    def create_list(self, object_list, bundle):
-        # get real user
-        user = get_real_user_object(bundle.request.user)
-
-        print "Checking LIST create_pointannotationset"
-
-        # check if they are allowed to create point annotation sets
-        if user.has_perm('annotations.create_pointannotationset', bundle.obj):
-            print "Has permissions"
-            return True
-
-        print "No permissions"
-        raise Unauthorized("You are not allowed to create point sets.")
-
-    def update_list(self, object_list, bundle):
-        raise Unauthorized("Sorry, no updates.")
-
-    def update_detail(self, object_list, bundle):
-        raise Unauthorized("Sorry, no updates.")
-
-    def delete_list(self, object_list, bundle):
-        # Sorry user, no deletes for you!
-        raise Unauthorized("Sorry, no deletes.")
-
-    def delete_detail(self, object_list, bundle):
-        raise Unauthorized("Sorry, no deletes.")
 
 class PointAnnotationSetResource(ModelResource):
     collection = fields.ForeignKey('collection.api.CollectionResource', 'collection')
@@ -147,62 +211,31 @@ class PointAnnotationSetResource(ModelResource):
             'collection': ALL_WITH_RELATIONS,
             'name': ALL,
         }
-        allowed_methods = ['get', 'post']
-        authentication = MultiAuthentication(AnonymousGetAuthentication(),
-                SessionAuthentication(),
-                ApiKeyAuthentication())
+        allowed_methods = ['get', 'post', 'delete']
+        authentication = MultiAuthentication(SessionAuthentication(),
+                                             ApiKeyAuthentication(),
+                                             Authentication())
         authorization = PointAnnotationSetAuthorization()
         ordering = ['name']
+        always_return_data = True
 
-class PointAnnotationAuthorization(Authorization):
-    def read_list(self, object_list, bundle):
-        # get real user object
-        user = get_real_user_object(bundle.request.user)
+    def obj_create(self, bundle, **kwargs):
+        """
+        We are overiding this function so we can get access to the newly
+        created annotation set. Once we have reference to it, we can apply
+        object level permissions to the object.
+        """
 
-        # get the objects the user has permission to see
-        # may be able to cache the lookup based on if have seen that
-        # annotationset before
-        user_objects = []
-        for o in object_list:
-            if user.has_perm('annotations.view_pointannotationset', o.annotation_set):
-                user_objects.append(o)
+        bundle = super(PointAnnotationSetResource, self).obj_create(
+            bundle)
 
-        # send em off
-        return user_objects
-
-    def read_detail(self, object_list, bundle):
         # get real user
         user = get_real_user_object(bundle.request.user)
 
-        # check the user has permission to view this object
-        if user.has_perm('annotations.view_pointannotationset', bundle.obj.annotation_set):
-            return True
+        #make sure we apply permissions to this newly created object
+        authorization.apply_pointannotationset_permissions(user, bundle.obj)
 
-        # raise hell! - https://github.com/toastdriven/django-
-        # tastypie/issues/826
-        raise Unauthorized()
-
-    def create_detail(self, object_list, bundle):
-        # get real user
-        raise Unauthorized("Sorry, no creates.")
-
-    def update_list(self, object_list, bundle):
-        raise Unauthorized("Sorry, no updates.")
-
-    def update_detail(self, object_list, bundle):
-        user = get_real_user_object(bundle.request.user)
-
-        # check the user has permission to view this object
-        if user.has_perm('annotations.update_pointannotationset', bundle.obj.annotation_set):
-            return True
-        raise Unauthorized("Sorry, no updates.")
-
-    def delete_list(self, object_list, bundle):
-        # Sorry user, no deletes for you!
-        raise Unauthorized("Sorry, no deletes.")
-
-    def delete_detail(self, object_list, bundle):
-        raise Unauthorized("Sorry, no deletes.")
+        return bundle
 
 
 class PointAnnotationResource(ModelResource):
@@ -302,8 +335,6 @@ class PointAnnotationResource(ModelResource):
             return self.authorized_read_list(objects, bundle)
         except ValueError:
             raise BadRequest("Invalid resource lookup data provided (mismatched type.")
-
-
 
     def patch_list(self, request, **kwargs):
         """Override of the default to make the allowed methods map better.

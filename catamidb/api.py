@@ -474,6 +474,7 @@ class ImageResource(ModelResource):
 
     def dehydrate(self, bundle):
         file_name = bundle.data['web_location']
+        print file_name
         bundle.data['thumbnail_location'] = get_thumbnail_proxy(
             file_name,
             "96x72",
