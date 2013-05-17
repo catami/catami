@@ -16,7 +16,19 @@ from tastypie.resources import ModelResource, Resource
 from .models import *
 from restthumbnails.helpers import get_thumbnail_proxy
 
+from tastypie.authorization import DjangoAuthorization
 
+# ==============================
+# Integration of Backbone and tastypie.
+# Usage: extend this resource to make model compatibile with Backbonejs
+# ==============================
+
+class BackboneCompatibleResource(ModelResource):
+    class Meta:
+        always_return_data = True
+
+    def alter_list_data_to_serialize(self, request, data):
+        return data["objects"]
 
 
 # ==============================
@@ -75,7 +87,8 @@ class CampaignAuthorization(Authorization):
         raise Unauthorized("Sorry, no creates.")
 
     def create_detail(self, object_list, bundle):
-        raise Unauthorized("Sorry, no creates.")
+        #set to true as campaign creation is done via backbonejs (using REST API)
+        return True
 
     def update_list(self, object_list, bundle):
         raise Unauthorized("Sorry, no updates.")
@@ -361,14 +374,14 @@ class ScientificImageMeasurementAuthorization(Authorization):
 # API configuration
 # ========================
 
-class CampaignResource(ModelResource):
+class CampaignResource(BackboneCompatibleResource):
     class Meta:
         queryset = Campaign.objects.all()
         resource_name = "campaign"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
         authorization = CampaignAuthorization()
-        allowed_methods = ['get']
+        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
 class DeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')

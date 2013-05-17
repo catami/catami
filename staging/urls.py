@@ -1,6 +1,5 @@
 """URL Mappings for the staging application.
 """
-__author__ = 'Lachlan Toohey'
 
 from django.conf.urls import patterns, url
 #from django.contrib.auth.models import User
