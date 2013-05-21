@@ -62,20 +62,7 @@ def index(request):
 @login_required
 def campaigncreate(request):
     context = {}
-
-    if request.method == 'POST':
-        form = CampaignCreateForm(request.POST)
-
-        if form.is_valid():
-            campaign = form.save()
-
-            # apply authorisation rules to the newly created campaign
-            authorization.apply_campaign_permissions(request.user, campaign)
-
-            return redirect('staging.views.campaigncreated')
-    else:
-        form = CampaignCreateForm()
-
+    form = CampaignCreateForm()
     rcon = RequestContext(request)
     context['form'] = form
 

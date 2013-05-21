@@ -71,8 +71,7 @@ unit_test [off] :: set to test corruption procedure :: off, corrupt
         test = {'checksum': True, 'archive': True, 'copy': True}
 
         # Setup the files to write data to.
-        fname = str(datetime.now()) + '-' + dbname + '.bak'
-
+        fname = str(datetime.now().strftime('%Y%m%d%H%M%S%f')) + '-' + dbname + '.bak'
         # Catch the data from dumpdata on the stdio
         content = StringIO()
         management.call_command('dumpdata', stdout=content, interactive=False,

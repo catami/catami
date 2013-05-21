@@ -30,7 +30,7 @@ from dateutil import parser
 from django.test import TestCase
 from django.contrib.gis.geos import Point
 from django.contrib.auth.models import AnonymousUser
-
+from datetime import datetime
 
 #======================================#
 # Test the authorization.py functions
@@ -846,9 +846,9 @@ class TestScientificPoseMeasurementResource(ResourceTestCase):
 
     def test_pose_measurement_operations_as_authorised_users(self):
         # create a campaign & deployment that ONLY bill can see
-        bills_campaign = mommy.make_one('catamidb.Campaign', id=3)
+        bills_campaign = mommy.make_one('catamidb.Campaign', id=3, short_name='campaign'+datetime.now().strftime('%Y%m%d%H%M%S%f'))
         bills_deployment = mommy.make_recipe('catamidb.auvdeployment', id=3,
-                                             campaign=bills_campaign)
+                                             campaign=bills_campaign,short_name='campaign'+datetime.now().strftime('%Y%m%d%H%M%S%f'))
         bills_pose = mommy.make_recipe('catamidb.pose3', id=3,
                                        deployment=bills_deployment)
         bills_camera = mommy.make_one('catamidb.Camera', id=3,

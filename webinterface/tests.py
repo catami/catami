@@ -77,15 +77,15 @@ class TestViews(TestCase):
             campaign_02)
 
         self.dummy_dep1 = mommy.make_recipe('webinterface.auvdeployment',
-                                            id=3, campaign=self.campaign_02)
+                                            id=3, campaign=self.campaign_02, short_name='campaign'+datetime.now().strftime('%Y%m%d%H%M%S%f'))
         self.dummy_dep2 = mommy.make_recipe('webinterface.bruvdeployment',
-                                            id=4, campaign=self.campaign_02)
+                                            id=4, campaign=self.campaign_02, short_name='campaign'+datetime.now().strftime('%Y%m%d%H%M%S%f'))
         self.dummy_dep3 = mommy.make_recipe('webinterface.dovdeployment',
-                                            id=5, campaign=self.campaign_02)
-        self.dummy_dep4 = mommy.make_recipe('webinterface.tvdeployment', id=6,
-                                            campaign=self.campaign_02)
+                                            id=5, campaign=self.campaign_02, short_name='campaign'+datetime.now().strftime('%Y%m%d%H%M%S%f'))
+        self.dummy_dep4 = mommy.make_recipe('webinterface.tvdeployment', id=6, 
+                                            campaign=self.campaign_02, short_name='campaign'+datetime.now().strftime('%Y%m%d%H%M%S%f'))
         self.dummy_dep5 = mommy.make_recipe('webinterface.tideployment', id=7,
-                                            campaign=self.campaign_02)
+                                            campaign=self.campaign_02, short_name='campaign'+datetime.now().strftime('%Y%m%d%H%M%S%f'))
 
         #apply permissions to the campaigns so we get nice reponses
         authorization.apply_campaign_permissions(self.user_bob, self.campaign_01)
