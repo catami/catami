@@ -8,10 +8,11 @@
         background-color:#fdd !important;
     }
     .form-horizontal-modal .control-label {
-        width:75px;
+        width:150px;
+        padding-right:10px;
     }
     .form-horizontal-modal .controls {
-        margin-left: 80px;
+        margin-left: 0px;
     }
     .alert {
         margin-bottom: 10px;
@@ -19,59 +20,29 @@
         border-color: #252525;
     }
     .modal .modal-body {
-        max-height: 95%;
+        max-height: 100%;
     }
 </style>
 
-<div id="NewWorksetModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel"
-     aria-hidden="true">
+<div id="NewWorksetModal" style="display:none" tabindex="-1" role="dialog" aria-labelledby="TaskModalLabel" aria-hidden="true">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="NewWorksetModalLabel">Create new Workset</h3>
+        <h3 id="NewWorksetModalLabel">Create a new workset for annotation</h3>
     </div>
 
     <div class="modal-body">
-        <div class="tab-pane" id="newwks">
-            <p>Use this section to create a new Workset. Select a sampling strategy:</p>
-
-            <div class="tabbable tabs-left">
-                <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a href="#rnd" data-toggle="tab">Random</a>
-                    </li>
-                    <li>
-                        <a href="#str" data-toggle="tab">Stratified</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active well" id="rnd">
-                        <form action="" method="post" id="wsform_rand" class="form-horizontal form-horizontal-modal" >
-
-                            <p><strong>Random sampling:</strong></p>
-                            <span id="errors"></span>
-                            <p>Make a new Workset by randomly sub-sampling "N" images from the collection.</p>
-                            {% csrf_token %}
-                            {{ wsform_rand|as_bootstrap }}
-                            <button class="btn" aria-hidden="true" data-dismiss="modal" onclick="clear_form('#wsform_rand');">Cancel</button>
-                            <input class="btn btn-primary pull-right" type="button" value="Create Workset" onclick="send_workset_form('#wsform_rand');">
-                        </form>
-                    </div>
-                    <div class="tab-pane well" id="str">
-                        <form action="" method="post" id="wsform_strat"  class="form-horizontal form-horizontal-modal">
-                            <p><strong>Stratified sampling:</strong></p>
-                            <span id="errors"></span>
-                            <p>Make a new Workset by sub-sampling every "N<sup>th</sup>" image from the collection.</p>
-                            {% csrf_token %}
-                            {{ wsform_strat|as_bootstrap }}
-                            <button class="btn" aria-hidden="true" data-dismiss="modal" onclick="clear_form('#wsform_strat');">Cancel</button>
-                            <input class="btn btn-primary pull-right" type="button" value="Create Workset" onclick="send_workset_form('#wsform_strat');">
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+	    <p>Enter a name, decide how to sample images and how you want to annotate your images</p>
+	
+	        <div id="creation_modal">
+	        <form action="" method="post" id="workset_annotation_creation_form" class="form-horizontal form-horizontal-modal" >
+	            <span id="errors"></span>
+	            {% csrf_token %}
+	            {{ workset_annotation_creation_form|as_bootstrap }}
+	            <input class="btn btn-primary pull-right" type="button" value="Create Workset" onclick="send_workset_form('#workset_annotation_creation_form');">
+	            <button class="btn pull-right" style="margin-right:10px;" aria-hidden="true" data-dismiss="modal" onclick="">Cancel</button>
+	        </form>
+	        </div>
     </div>
-</div>
+</div>                
 
 <script type="text/javascript">
     /*
@@ -79,11 +50,28 @@
     TODO: figure out a better way to manage the JS in these situations
     */
     function openNewWorksetModalWindow() {
-        $('#NewWorksetModal').modal('show');
+        //$('#NewWorksetModal').modal('show');
+        
+        	$.fancybox({
+                'autoScale': true,
+                'transitionIn': 'elastic',
+                'transitionOut': 'elastic',
+                'speedIn': 0,
+                'speedOut': 0,
+                'closeBtn' : false,
+                'autoDimensions': true,
+                'href' : '#NewWorksetModal',
+                'helpers'   : { 
+							   overlay : {closeClick: false} // prevents closing when clicking OUTSIDE fancybox 
+							  }
+            });                   
     }
+    
     function send_workset_form(form_id){
-        Dajaxice.webinterface.send_workset_form(Dajax.process, {'form':$(form_id).serialize(true),'form_id':form_id});
+     	$.fancybox.close();
+    	Dajaxice.webinterface.send_workset_and_annotation_form(Dajax.process, {'form':$(form_id).serialize(true),'form_id':form_id});
     }
+    
     function refresh_worksets(wsid, msg) {
         $('#NewWorksetModal').modal('hide');
         if (wsid != null) {

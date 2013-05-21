@@ -1,0 +1,54 @@
+/* Custom Elastislide Styling */
+.catami-slide .elastislide-horizontal {
+	background-color: #000;
+	padding: 10px 50px;
+}
+
+.catami-slide .elastislide-horizontal {
+	opacity: 0.8;
+	-webkit-transition: opacity 0.3s ease-in-out;
+	-moz-transition: opacity 0.3s ease-in-out;
+	-ms-transition: opacity 0.3s ease-in-out;
+	-o-transition: opacity 0.3s ease-in-out;
+	transition: opacity 0.3s ease-in-out;
+}
+
+
+.catami-slide  .elastislide-wrapper nav span {
+	background-color: #000;
+	background: #000 url(images/elastislide-nav.png) no-repeat 4px 3px;
+
+}
+.catami-slide  .elastislide-horizontal:hover {
+	opacity: 1;
+}
+
+
+.catami-slide  .elastislide-carousel ul li a img {
+	border-radius: 0px;
+	border: 0px;
+}
+
+.catami-slide .elastislide-horizontal:before {
+	top: 0px;
+	bottom: 0px;
+	left: 30;
+	right: 30;
+	content: " ";
+	position: absolute;
+	z-index: -2;
+	box-shadow: 0 0 15px rgba(0,0,0,0.6);
+	border-radius: 20px/160px;
+}
+
+.catami-slide .elastislide-horizontal:after {
+	content: " ";
+	position: absolute;
+	z-index: -2;
+}
+
+.elastislide-horizontal nav span.elastislide-next {
+	right: 10px;
+	left: auto;
+	background-position: 4px -17px;
+}

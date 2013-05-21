@@ -100,41 +100,6 @@
                         <a href="{% url webinterface.views.projects %}"><i class="icon-list-alt "></i> Projects</a>
                     {% endswitch %}
 
-                    {% switch Experimental %}
-                        <li class="dropdown"><a href="#" class="dropdown-toggle"><i class="icon-tasks "></i> Data Tasks
-                            <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li class="nav-header">Collection</li>
-                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"
-                                                        data-target="#TaskModal"><i class="icon-cog"></i> Cluster
-                                    Collection</a></li>
-                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"
-                                                        data-target="#TaskModal"><i class="icon-th-list"></i> Create
-                                    Workset</a></li>
-                                <li class="nav-header">Workset</li>
-                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"
-                                                        data-target="#TaskModal"><i class="icon-tag"></i> Annotate
-                                    Workset</a></li>
-                                <li class="disabled"><a href="#TaskModal" data-toggle="modal"
-                                                        data-target="#TaskModal"><i class="icon-sitemap"></i>
-                                    Auto-classify Collection</a></li>
-                                <li class="nav-header">Data</li>
-                                <li class="disabled"><a href="#TaskModal" data-toggle="modal" data-target="#TaskModal"><i
-                                        class="icon-download-alt"></i> Download data</a></li>
-                                <li><a href="/staging/"><i class="icon-cloud-upload"></i> Upload data</a></li>
-                            </ul>
-                        </li>
-                    {% endswitch %}
-                    <!--
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage<b class="caret"></b> </a>
-                            <ul class="dropdown-menu">
-                                <li><a  href="{% url staging.views.index %}"><i class="icon-upload"></i> Import Data</a></li>
-                                 <li><a  href="#"><i class="icon-download"></i> Download Data</a></li>
-                            </ul>
-                        </li>
--->
-
                     <!--<li class="divider-vertical"></li>-->
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign "></i>

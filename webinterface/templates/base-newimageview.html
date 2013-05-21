@@ -16,10 +16,11 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/bootstrap-responsive.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/plugins/popover-extra-placements.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/font-awesome/css/font-awesome.css" type="text/css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/singleimage.css" type="text/css">
+<!--    <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/singleimage.css" type="text/css"> -->
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/imageannotate.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/jquery/jquery-ui.css" type="text/css">
 
+    <!-- Le elastislide styles -->
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -36,63 +37,53 @@
           href="http://catami.ivec.org/static/assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed"
           href="http://catami.ivec.org/static/assets/ico/apple-touch-icon-57-precomposed.png">
+          
+          
+    <style type="text/css">
+		#clear {
+		    text-indent: -1000em;
+		    width: 20px;
+		    height: 20px;
+		    display: inline-block;
+		    position: relative;
+		    left: -20px;
+		    top: 3px;
+		}
+		.thumbnail-list {
+			/* remove default list styles */
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			background-color: black;
+ 			/* remove spaces between li tags*/
+			font-size: 0;
+		}
+		
+		.thumbnail-list li {
+			display: inline-block;
+			vertical-align: top;
+			padding: 0.1%;
+			-moz-box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			box-sizing: border-box;
+			min-height: 72px;
+			min-width: 72px;
+			max-height: 100px;
+			max-width: 100px;
+		}
+		
+		.thumbnail-list img {
+			display: block;
+			width: 100%;
+		}
+    </style>
 
-    <style type="text/css"></style>
+
 </head>
 
 <body>
 
-<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-        <td class="leftpane">
-            {% block leftpane %}&nbsp;{% endblock %}
-        </td>
-        <td colspan="3" class="imageview">
-            {% block imageview %}&nbsp;{% endblock %}
-        </td>
-        <td class="rightpane">
-            {% block rightpane %}&nbsp;{% endblock %}
-        </td>
-    </tr>
-    <tr>
-        <td class="leftpane footpane">
-            {% block leftfootpane %}&nbsp;{% endblock %}
-        </td>
-        <td class="footpane zoompanel">
-            {% block linfofootpane %}&nbsp;{% endblock %}
-        </td>
-        <td class="footpane">
-            {% block midfootpane %}&nbsp;{% endblock %}
-        </td>
-        <td class="footpane zoompanel" style="text-align:right;">{% block rinfofootpane %}&nbsp;{% endblock %}</td>
-        <td class="rightpane footpane">
-            {% block rightfootpane %}&nbsp;{% endblock %}
-        </td>
-    </tr>
-</table>
-<div class="thumbnail" id="thumbnailpane">
-    <!-- jQuery -->
-</div>
-
-<!--
-<div class="sidbar-fullheight leftpane">
-    <div style="position:absolute; top:50%; height:300px; margin-top:-150px;">
-        <a href="#" class="btn" rel="popover-roll" data-placement="right" style="padding:7px;" title="Image location"><i class="icon-globe"></i></a><br>
-        <a href="#" class="btn" rel="popover-roll" data-placement="right" style="padding:7px;" title="Image information" ><i class="icon-info-sign"></i></a><br>
-        <a href="#" class="btn" rel="popover-roll" data-placement="right" style="padding:7px;" title="Create subset"><i class="icon-th-list"></i></a><br>
-    </div>
-</div>
-<div class="sidbar-fullheight content">
-    <img src="images/PR_20090727_025242_115_LC16.png" style="width: auto;height: auto; max-width: 100%; max-height: 100%;position:absolute;top:0;bottom:0; left: 0; right: 0; margin:auto;" />
-</div>
-<div class="footer">
-    <a href="#" class="btn" rel="popover-click" data-placement="top" style="padding:7px; margin: 5px;" title="Thumbnails"><i class="icon-circle-arrow-up"></i><br>Thumbnails</a>
-</div>
-<div class="sidbar-fullheight rightpane">
-    mode
-</div>
--->
-
+{% block content %}{% endblock %}
 
 <!-- Le javascript
 ================================================== -->
@@ -100,15 +91,15 @@
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="{{ STATIC_URL }}assets/jquery/jquery.js"></script>
-<script src="{{ STATIC_URL }}assets/jquery/jquery-ui.js"></script>
-<script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.js"></script>
-<script src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tooltip.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery-ui.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tooltip.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/plugins/popover-extra-placements.js"></script>
-
 
 <!-- popover js -->
 <script type="text/javascript">
+/*
     (function () {
         $("[rel=popover-roll]").popover({ trigger: "hover" });
     })();
@@ -123,6 +114,7 @@
             $('#thumbnailpane').toggle();
         });
     });
+*/
 
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {

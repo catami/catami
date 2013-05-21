@@ -16,16 +16,16 @@ import httplib2
 
 #not API compliant - to be removed after the views are compliant
 from catamidb.api import ImageResource
-from catamidb.models import Pose, Image, Campaign, AUVDeployment, \
-    BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment
+from catamidb.models import Pose, Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment
 from django.contrib.gis.geos import fromstr
 from django.db.models import Max, Min
+
 import simplejson
 from django.conf import settings
 from collection.api import CollectionResource
 from collection.models import Collection, CollectionManager
 
-from webinterface.forms import CreateCollectionForm, CreateWorksetForm, CreateCollectionExploreForm, CreatePointAnnotationSet
+from webinterface.forms import CreateWorksetAndAnnotationForm, CreateCollectionForm, CreateWorksetForm, CreateCollectionExploreForm, CreatePointAnnotationSetForm
 
 import HTMLParser
 
@@ -87,6 +87,11 @@ def faq(request):
 
 def contact(request):
     return render_to_response('webinterface/contact.html', {},
+                              RequestContext(request))
+
+
+def licensing(request):
+    return render_to_response('webinterface/licensing.html', {},
                               RequestContext(request))
 
 
@@ -215,7 +220,20 @@ def public_collections_all(request):
 def view_collection(request, collection_id):
     wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random','n':100})
     wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified','n':100})
-    asform = CreatePointAnnotationSet()
+
+    workset_annotation_creation = CreateWorksetAndAnnotationForm(
+              initial = {'collection_id': collection_id,
+                         'image_selection_method': 'random',
+                         'image_count': 100,
+                         'owner': request.user.id,
+                         'annotation_point_count': 25,
+                         'randomize_workset': True, 
+                         'annotation_set_name': 'annotation_set',
+                         'annotation_methodology': 0
+                        }
+    )
+
+    asform = CreatePointAnnotationSetForm()
 
     # check for optional get parameters
     # This avoids needing to specify a new url and view for each optional parameter
@@ -231,6 +249,7 @@ def view_collection(request, collection_id):
 #    return render_to_response('webinterface/viewcollectionalternative.html',
                               {'wsform_rand' : wsform_rand,
                                'wsform_strat' : wsform_strat,
+                               'workset_annotation_creation_form' : workset_annotation_creation,
                                'asform' : asform,
                                'collection_id': collection_id,
                                'workset_id': workset_id,
@@ -336,6 +355,16 @@ def image_annotate(request,image_id):
     annotation_id = request.GET.get("asid", "")
 
     return render_to_response('webinterface/imageannotate.html',
+        {"image_id": image_id, "offset": offset, "apistring": apistring, "annotation_id": annotation_id},
+        RequestContext(request))
+
+
+def inline_image_annotate(request,image_id):
+    apistring = request.GET.get("apistring", "")
+    offset = request.GET.get("offset", "")
+    annotation_id = request.GET.get("asid", "")
+
+    return render_to_response('webinterface/inline_image_annotate.html',
         {"image_id": image_id, "offset": offset, "apistring": apistring, "annotation_id": annotation_id},
         RequestContext(request))
 

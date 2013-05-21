@@ -45,7 +45,7 @@ body, html {
     text-align: left;
 }
 
-.thumbnail {
+.thumbnail_hide {
     position: absolute;
     bottom: 60px;
     left: 50%;
