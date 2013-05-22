@@ -77,8 +77,8 @@
         var apiurl = "/api/dev/campaign/?format=json";
         $.getJSON(apiurl, function (campaigns) {
             var options = '<option value="">--ALL--</option>';
-            for (var i = 0; i < campaigns.objects.length; i++) {
-                options += '<option value="' + campaigns.objects[i].id + '">' + campaigns.objects[i].short_name + '</option>';
+            for (var i = 0; i < campaigns.length; i++) {
+                options += '<option value="' + campaigns[i].id + '">' + campaigns[i].short_name + '</option>';
             }
             $("#campaignSelect").html(options);
             //$('#deploymentSelect option:first').attr('selected', 'selected');
