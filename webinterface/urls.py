@@ -22,6 +22,7 @@ urlpatterns = patterns(
     #Info Pages
     url(r'^faq', 'faq'),
     url(r'^contact', 'contact'),
+    url(r'^licensing', 'licensing'),
     url(r'^howto', 'howto'),
     url(r'^about', 'about'),
     url(r'^proxy/$', 'proxy'),
@@ -63,6 +64,8 @@ urlpatterns = patterns(
     url(r'^imageview$', 'image_view'),
 #    url(r'^imageannotate$', 'image_annotate'),
     url(r'^imageannotate/(?P<image_id>\d+)/$', 'image_annotate'),
+    url(r'^inlineimageannotate/(?P<image_id>\d+)/$', 'inline_image_annotate'),
+
     url(r'^imageedit$', 'image_edit'),
 
     #Collection Management
@@ -113,10 +116,11 @@ urlpatterns += patterns(
         'django.contrib.auth.views.login',
         {'template_name': 'registration/login.html'}),
     # the raw original images
-    url(r'^{0}/(?P<path>.*)$'.format(settings.IMAGES_URL),
-        'django.views.static.serve',
-        {'document_root': settings.IMAGES_ROOT,
-         'show_indexes': False}),
+    url(r'images/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.IMAGES_ROOT, 'show_indexes': True}),
+    # url(r'^{0}/(?P<path>.*)$'.format(settings.IMAGES_URL),
+    #     'django.views.static.serve',
+    #     {'document_root': settings.IMAGES_ROOT,
+    #      'show_indexes': False}),
     # and the thumbnails...
     url(r'^thumbnails/', include('restthumbnails.urls')),
 )

@@ -12,25 +12,60 @@
             background-repeat: no-repeat;
             display: none;
         }
+		.inlineList li {
+		    display: inline;
+		    display: -moz-inline-block;
+		}
+		div.wrapper{  
+		    float:left; /* important */  
+		    position:relative; /* important(so we can absolutely position the description div */  
+		}      
+		div.description{  
+		    position:absolute; /* absolute position (so we can position it where we want)*/  
+		    bottom:5px;
+		    left:0px;  
+		    width:100%;  
+		    background-color:rgba(0,0,0,0.2);  
+		    font-family: 'helvetica';  
+		    font-size:15px;  
+		    color:white;
+		    font-weight: bold;
+		    text-align: center;    
+		}
+		
+		/* bootstrap-responsive sets -30px 		 */
+		div.row {
+			margin-left:0px;
+		}
 
-    </style>
+	</style>
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/catami-api/css/collections.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/catami-api/css/thumbnails.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/elastislide.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
+	<script src="{{ STATIC_URL }}assets/jquery/modernizr.custom.17475.js"></script>
+<!--
+    <style type="text/css">
+		.catami-slide .elastislide-wrapper nav span{
+			background: #ddd url("{{ STATIC_URL }}assets/css/elastislide/images/elastislide-nav.png") no-repeat 4px 3px;
+		}
+	</style>
+-->	
 {% endblock %}
+
 {% block content %}
     <div class="row-fluid">
 
         <div class="span2">
             <div class="well" style="padding:10px; padding-left: 0; padding-right: 0;">
                 <ul class="nav nav-list">
-<!--                     <li class="nav-header">Project:</li> -->
                     <li id="cl-item">
                         <!--JS--> Loading...
                     </li>
                     <li class="divider"></li>
-                    <li class="nav-header">Worksets</li>
+                    <li class="nav-header">Worksets <a href="#_" class="pull-right" data-toggle="popover" data-trigger="hover" data-placement="rightTop" data-html="true" data-content="text" data-original-title="About Worksets"></a></li>
                 </ul>
-                <ul id="ws-list" class="nav nav-list nav-no-reload" style="max-height: 150px; overflow: auto;">
+                <ul id="ws-list" class="nav nav-list nav-no-reload">
                     <li>
                         <!--JS--> Loading...
                     </li>
@@ -39,39 +74,12 @@
                 {% if change_collection %}
                 <ul class="nav nav-list">
                     <li class="divider"></li>
-                    <li><a href="#NewWorksetModal" onclick="openNewWorksetModalWindow();"><i class="icon-plus-sign"></i> New Workset</a></li>
+                    <li><a href="#NewWorksetModal" onclick="openNewWorksetModalWindow();"><i class="icon-plus-sign"></i> New Workset</a></button></li>
                 </ul>
                 {% endif %}
-                <!--
-                <div id="annotations">
-                    <ul id="as-list" class="nav nav-list" style="max-height: 200px; overflow: auto;">
-                        <li> </li>
-                    </ul>
-                    {% if change_collection %}
-                    <ul class="nav nav-list">
-                        <li class="divider"></li>
-                        <li><a id="NewAnnotationBtn" href="#NewAnnotationSetModal" data-toggle="modal" disabled="disabled"><i class="icon-plus-sign"></i> New Annotation Set</a></li>
-                    </ul>
-                    {% endif %}
-                </div>
-                -->
             </div>
-            <div id="annotations" class="well" style="padding:10px; padding-left: 0; padding-right: 0;">
-                <ul class="nav nav-list">
-                    <li class="nav-header">Annotation Set</li>
-                </ul>
-                <ul id="as-list" class="nav nav-list nav-no-reload" style="max-height: 150px; overflow: auto;">
-                    <li>
-                        <!--JS--> None...
-                    </li>
-                </ul>
-                <ul class="nav nav-list">
-                    <li class="divider"></li>
-                    <li><a id="NewAnnotationBtn" href="#NewAnnotationSetModal" data-toggle="modal"><i class="icon-plus-sign"></i> New Annotation Set</a></li>
-                </ul>
-            </div>
+
             {% include "webinterface/dataviews/workset-forms-modal.html" %}
-            {% include "webinterface/dataviews/annotationset-forms-modal.html" %}
         </div>
 
         <div class="span10 viewpane">
@@ -79,40 +87,54 @@
 
             <!--<ul class="nav nav-tabs" style="margin-bottom:0px;">-->
             <ul class="nav nav-tabs" >
-                <li class="active"><a href="#map" ><i class="icon-globe"></i> Map</a></li>
-                <li><a href="#thm" ><i class="icon-eye-open"></i> Thumbnails</a></li>
-                <!--
-                <li><a href="#tax" >Taxonomy</a></li>
-                <li><a href="#cst" ><i class="icon-cog"></i> Visual Clusters</a></li>
-                -->
-                <li class="pull-right"><a href="#dwn" ><i class="icon-download-alt"></i> Download</a></li>
-                <!--
-                <li class="pull-right"><a href="#ant" ><i class="icon-tag"></i> Annotate</a></li>
-                <li class="pull-right"><a href="#cls" ><i class="icon-sitemap"></i> Classify</a></li>
-                -->
+                <li class="active"><a href="#annotation-pane" data-toggle="tab"><i class="icon-pencil"></i> Annotation View <span id="annotation_badge" class="badge badge-success"></span></a></li>
+                <li class="pull-right"><a href="#map" data-toggle="tab"><i class="icon-globe"></i> Map</a></li>
+                <li class="pull-right"><a href="#thm" data-toggle="tab"><i class="icon-eye-open"></i> Thumbnails</a></li>
             </ul>
 
 
             <div class="tab-content">
-                <div class="tab-pane active" id="map">
-                    <ul id="map-ctrl" class="nav nav-pills"  style="margin-bottom: 0; padding-bottom: 0;">
-                        <li class="disabled"><a href="#_">Show:</a></li>
-                        <li id="map-ctrl-cl"><a href="#_"  data-toggle="tab" onclick="map.updateMapForSelectedCollection({{ collection_id }});">Collection</a></li>
-                        <li id="map-ctrl-ws"><a href="#_"  data-toggle="tab">Workset</a></li>
-                    </ul>
-                    {% comment %}{% include "webinterface/dataviews/mapview.html" %}{% endcomment %}
-                    <div id='deployment-map' style="width:100%;height:600px;z-index:0;position:relative;" class="span9">
-                        <!-- Map content inserted using JQuery -->
-                    </div>
+
+                <div class="tab-pane active" id="annotation-pane">
+	                <div class='row'>
+	            		<div class="span12 thumbnail-pane catami-slide" id = "thumbnail-pane">
+	            		<!-- added by js, and then made fancy by elastiSlide -->
+	            		</div>
+	                </div>
+                	<div class='row'>
+	                    <div class="span12" id="annotation_inline_container">
+	                    <!-- info view if no iframe is inserted -->
+							<h2>A quick guide to projects</h2>
+
+	                        <div class='row'>
+							<div class="span9 hero-unit">
+								<h3><i class="icon-lightbulb"></i> Getting started with annotation...</h3>
+								<p>1. Make a new workset: 
+								<img src="{{ STATIC_URL }}images/newWorksetButton.png"></p>
+								<div class="well well-small">
+									<strong>But what's a 'Workset'?</strong> In Catami a workset is the place where you do work on your data.  When you make a workset
+									you decide how to subset the imagery and how to annotate.
+									
+								</div>
+	
+								<p>2. Select your new workset and start annotating.</p>
+							</div>
+	                        </div>
+	                        <div class='row'>
+
+							<div class="span9 hero-unit">
+								<h3><i class="icon-lightbulb"></i> The tabs at the top...</h3>
+	
+								<div class="span3"><h4>Annotation Tab</h4><p>This is where you'll find the annotation tool, for worksets. Make a workset and head to the annotation tab.</div>
+								<div class="span3"><h4>Thumbnail Tab</h4><p>The thumbnail view shows you the images in your project or workset. Click on one for a fullscreen view.</div>
+								<div class="span3"><h4>Map Tab</h4><p> The map view shows you where the imagery in your workset or project is located. Click on a point to see the imagery.</div>							
+							</div>
+	                        </div>
+		                <!-- iframe js inserted -->
+	                    </div>
+                	</div>
                 </div>
-                <!--
-                <div class="tab-pane" id="tax">
-{#                    {% include "webinterface/dataviews/taxonomytree.html" %}#}
-                </div>
-                <div class="tab-pane" id="cst">
-{#                    {% include "webinterface/dataviews/clusterview.html" %}#}
-                </div>
-                -->
+                
                 <div class="tab-pane" id="thm">
                     <div id="thmcontainer">
                         <div id="thmlist" style="width:100%;"><!-- Content inserted using jQuery --></div>
@@ -122,7 +144,18 @@
                         </div>
                     </div>
                 </div>
-
+                
+                <div class="tab-pane" id="map">
+                    <ul id="map-ctrl" class="nav nav-pills"  style="margin-bottom: 0; padding-bottom: 0;">
+                        <li class="disabled"><a href="#_">Show:</a></li>
+                        <li id="map-ctrl-cl"><a href="#_" data-toggle="tab" onclick="map.updateMapForSelectedCollection({{ collection_id }});">Collection</a></li>
+                        <li id="map-ctrl-ws"><a href="#_" data-toggle="tab">Workset</a></li>
+                    </ul>
+                    {% comment %}{% include "webinterface/dataviews/mapview.html" %}{% endcomment %}
+                    <div id='deployment-map' style="width:2000px;height:600px;z-index:0;position:relative;" class="span9">
+                        <!-- Map content inserted using JQuery -->
+                    </div>
+                </div>
                 <!--
                 <div class="tab-pane" id="ant">
                     <div class="row-fluid">
@@ -136,9 +169,15 @@
                     Classify
                 </div>
                 -->
+<!--
                 <div class="tab-pane" id="dwn">
-                    This will contain options for downloading a variety of different combinations the data.
+                    <ul>
+                    	<li class="btn disabled">Download Imagery Data</li>
+                    	<li class="btn disabled">Download Annotation Data</li>
+                    </ul>
                 </div>
+-->
+                
             </div>
         </div>
     </div>
@@ -156,9 +195,12 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/thumbnails.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/annotations.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/serialize-object.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquerypp.custom.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.elastislide.js"></script>
+
     <script type="text/javascript">
 
-
+		
         var currentselection = {
             thm_apistring: '',
             collection_id: 0,
@@ -171,12 +213,6 @@
             config: {
                 format: '<li id="ws-{id}"><a href="#_" class="clinfopopover pull-right" data-toggle="popover" data-trigger="hover" data-placement="rightTop" data-html="true" data-content="<small>Created by <b>{username}</b> on <b>{creation_date}</b>.<br>Contains <b>{image_count}</b> images.<br>{creation_info}.<br><em>{description}</em></small>" data-original-title="{type} information"><i class="icon-info-sign"></i></a>' +
                         '<a href="/collections/{parent_id}/?wsid={id}" onclick="selectWorkset({id});">{name}</a></li>'
-            }
-        });
-        var clitem = new CollectionAPI({
-            config: {
-                format: '<a href="#_" class="clinfopopover pull-right" data-toggle="popover" data-trigger="hover" data-placement="rightTop" data-html="true" data-content="<small>Created by <b>{username}</b> on <b>{creation_date}</b>.<br>Contains <b>{image_count}</b> images.<br>{creation_info}.<br><em>{description}</em></small>" data-original-title="{type} information"><i class="icon-info-sign"></i></a>' +
-                        '<a href="#_" onclick="clearWorkset({id});">{name}</a>'
             }
         });
 
@@ -193,21 +229,27 @@
         var clitem = new CollectionAPI({
             config: {
                 format: '<a href="#_" class="clinfopopover pull-right" data-toggle="popover" data-trigger="hover" data-placement="rightTop" data-html="true" data-content="<small>Created by <b>{username}</b> on <b>{creation_date}</b>.<br>Contains <b>{image_count}</b> images.<br>{creation_info}.<br><em>{description}</em></small>" data-original-title="{type} information"><i class="icon-info-sign"></i></a>' +
-                        '<a href="#_" onclick="clearWorkset({id});">{name}</a>'
+                        '<a href="/collections/{id}" onclick="clearWorkset({id});">{name}</a>'
             }
         });
 
 
         var map = new ProjectsMap("{{ WMS_URL }}", "{{ WMS_layer_name }}", "deployment-map", '{% url webinterface.views.get_collection_extent %}');
 
-		function resolveFullHeight() {
-		    $("#deployment-map").css("height", "auto", "z-index","0");
 
-		    var estimatedHeaderHeight = 25;
+		function resolveFullHeight() {
+			//ensures that the map and deployment views are sized to the screen height.
+		    $("#deployment-map").css("height", "auto", "z-index","0");
+		    $("#annotation-frame").css("height", "auto");
+
+		    var estimatedHeaderHeight = 220;
 		
-		    var h_fullHeight = (-1 * ($("#deployment-map").position().top - $(document).height()))-estimatedHeaderHeight;
+		    //var h_fullHeight = (-1 * ($("#deployment-map").position().top - $(document).height()))-estimatedHeaderHeight;
+		    var h_fullHeight = (-1 * ($("#deployment-map").position().top - $(window).height()))-estimatedHeaderHeight;
 
 		    $("#deployment-map").height(h_fullHeight);
+		    $("#deployment-map").width('100%');
+		    $("#annotation-frame").height(h_fullHeight);
 		}
 
 		resolveFullHeight();
@@ -238,13 +280,11 @@
 
 
         function selectCollection(id) {
-
             map.updateMapForSelectedCollection(id);
             map.updateMapBoundsForCollection(id);
             showMapControl (false);
-            currentselection.thm_apistring = 'collection=' + id+'&limit=200';
+            currentselection.thm_apistring = 'collection=' + id+'&limit=40';
             getThumbnails(currentselection.thm_apistring,true);
-
         }
 
         function clearWorkset(id) {
@@ -259,21 +299,35 @@
         }
 
         function selectWorkset(id) {
-            //wsinfo.getCollectionInfo(id, '#ws-info');
+            //wsinfo.getCollectionInfo(id, '#ws-info');/
             if (currentselection.workset_id !== id) {
                 currentselection.workset_id = id;
                 currentselection.annotationset_id = 0;
                 aslist.getNewAnnotationSets('collection='+id,'#as-list');
             }
-
+            
+            $.ajax({
+                dataType: "json",
+                async: true,
+                url: '/api/dev/image/?collection='+currentselection.workset_id+'&format=json&limit=0',
+                success: function(data) {
+			    	currentselection.imagedata = 0;
+			    	currentselection.imagedata = data.objects;
+			    }
+		    });
+		    
             selectCollection(id);
+            getAnnotationSetForWorkset(id);
             $('#ws-list>li.active').removeClass('active'); // remove active class from active workset
             $('#cl-item.active').removeClass('active');  // remove active class from active collection
             $('#ws-list>#ws-'+id).addClass('active');
             showMapControl (id);
             $('#asform>#id_collection').val('/api/dev/collection/'+id+'/');
-            $('#asform>#id_owner').val('/api/dev/users/1/');
+            $('#asform>#id_owner').val('/api/dev/users/3/');
             $('#annotations').show();
+            
+            initAnnotationView(id);
+            loadThumbnails(id);
         }
 
         function selectAnnotationSet(id) {
@@ -297,14 +351,98 @@
                 $('#map-ctrl').hide();
             }
             resolveFullHeight();
+        }
+
+		function loadThumbnails(worksetId) {
+			//grabs thumbnails for selected workset (by Id) and loads elastislide
+			
+            var url = "/api/dev/image/?limit=300&collection=" + worksetId;
+            var carouselEl = $( '#carousel' ), carousel = carouselEl.elastislide();
+            
+            $.ajax({
+                dataType: "json",
+                async: true,
+                url: url,
+                success: function (img) {
+                    var html = "<ul id='carousel' class='elastislide-list'>";
+                    if (img.objects.length > 0) {
+                        for (var i = 0; i < img.objects.length; i++) {
+                            html += "<li><div class='wrapper'><a href='#'><div class='description'></div><img src='"+img.objects[i].thumbnail_location+"' data-src='"+img.objects[i].thumbnail_location+"' alt='image'></a></div></li>";
+                        }
+                    }
+                    html += "</ul>"
+
+                    $(".thumbnail-pane").html(html);
+
+                    
+                    $( '#carousel' ).elastislide( {
+						orientation : 'horizontal',
+						minItems : 5,
+						onClick : function( el, position, evt ) {selectImageFromList(position);}
+					} );
+					
+					selectImageFromList(0);
+                 }
+                 
+            });
+            
 
         }
+        
+        function selectImageFromList(index) {
+        	// selects image from ordered list and updates the currently viewed image i the annotation view 
+			$('#annotation_inline_container').html('<iframe style="width:100%; height:1000px; border:0px;" id="annotation-frame" src="/inlineimageannotate/'+currentselection.imagedata[index].id+'/?offset=1&asid='+currentselection.annotationset_id+'#"></iframe>');
+
+
+			$( "#carousel li" ).each(function( localindex ) {
+				if (localindex == index) {
+					$(this).find('.description').html("<i class='icon-chevron-sign-down icon-2x'></i>");
+				} else {
+					$(this).find('.description').html("");
+				};
+			});
+            resolveFullHeight();
+
+        }
+        
+        function getAnnotationSetForWorkset(id) {
+	        $.ajax({
+			  dataType: "json",
+			  async: false,
+			  url: '/api/dev/point_annotation_set/?collection='+id,
+			  success: function(data) {
+			  			currentselection.annotationset_id = data.objects[0].id;
+			  			$('#annotation_badge').text(data.objects[0].count);
+			  }
+			}); 
+        }
+        
+        function initAnnotationView (id) {
+	        //set the annotation view iframe to start with the first image in the workset
+	        
+	        //get the first image in the set.  This is the default start point
+	        $.getJSON('/api/dev/image/?collection='+id+'&format=json',function(data) {
+					$('#annotation_inline_container').html('<iframe style="width:100%; height:1000px; border:0px;" id="annotation-frame" src="/inlineimageannotate/'+data.objects[0].id+'/?offset=1&asid='+currentselection.annotationset_id+'#"></iframe>');
+			});
+        }
+        
+		$('a[data-toggle="tab"]').on('shown', function (e) {
+			if ($(e.target).attr('href') == '#annotation-pane') {
+				//if the page was loaded with the map view at the front then elastislide has been unable to size the <li> holding the thumbs
+				//need to force a reload
+				if ($( "#carousel li" ).first().width() == 20) {
+					console.log('reaload');
+					loadThumbnails(currentselection.workset_id);
+				}
+			}
+			resolveFullHeight();
+		})
+
 
         $(document).ready(function () {
             wslist.getCollectionItems('parent={{ collection_id }}&limit=100', '#ws-list');
             clitem.getCollectionInfo({{ collection_id }}, '#cl-item');
             $('.clinfopopover').popover();
-            //initDeploymentMap();
 
             currentselection.collection_id = {{ collection_id }};
 
@@ -322,6 +460,10 @@
                 history.pushState(null, '', $(this).attr('href'));
             });
 
+            $(window).resize(function(e){
+            	resolveFullHeight();
+            });
+            
             // Allow for workset links to change URL without page refresh
             $('.nav-no-reload a').on('click',function (e) {
                 e.preventDefault();
@@ -341,6 +483,9 @@
                 openEffect: 'fade',
                 closeEffect: 'none'
             });
+            
+            resolveFullHeight();
+
         });
 
     </script>

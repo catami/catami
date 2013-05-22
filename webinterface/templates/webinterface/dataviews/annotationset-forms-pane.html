@@ -1,0 +1,44 @@
+{% load bootstrap_toolkit %}
+
+
+<div id="AnnotationPane"  tabindex="-1" aria-labelledby="AnnotationPane">
+
+    <div class="well span6">
+        <h3>Initialise the annotation set</h3>
+        <p>It looks like there are no annotations on this set of images. Select the number of points per image to annotate and the annotation method and start annotating</p>
+        <form method="post" id="asform"  class="form-horizontal">
+            {% csrf_token %}
+            {{ asform|as_bootstrap }}
+            <div class="controls">
+                <input class="btn btn-primary" type="button" value="Create" onclick="send_asform();">
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    //NOTE: this is a simple ajax form that sends to the API
+    //TODO: API forms do not use django form validation and cannot deal with errors nicely with dajaxice - rethink!
+    function send_asform() {
+        //console.log(JSON.stringify($('#asform').serializeObject()));
+        $.ajax({
+            url: '/api/dev/point_annotation_set/',
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify($('#asform').serializeObject()),
+            success: function( data ) {
+                //console.log(data);
+                show_note('Success','Your annotation set has been created successfully!','success',true);
+                $('#NewAnnotationSetModal').modal('hide');
+                aslist.getNewAnnotationSets('collection='+currentselection.workset_id,'#as-list');
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest);
+                show_note('Error','There was an error: '+errorThrown, 'error');
+                //console.log(textStatus);
+            }
+        });
+    }
+</script>

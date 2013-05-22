@@ -44,6 +44,7 @@ function AnnotationAPI (usrsettings) {
         $(outputelement).html('');
     }
 
+    this.annotationCodeList = {};
 
     this.getTags = function (filter, outputelement) {
         filter = ((typeof filter !== 'undefined') ? '?' + filter : '');
@@ -54,11 +55,13 @@ function AnnotationAPI (usrsettings) {
             async: false,  // prevent asyncronous mode to allow setting of variables within function
             url: settings.api_tag_baseurl + filter,
             success: function (objs) {
+
                 var obj = {};
                 $.extend(parent.meta_tags, objs.meta);
                 parent.meta_tags.start = objs.meta.offset+1;
                 parent.meta_tags.end = Math.min((objs.meta.offset + objs.meta.limit), objs.meta.total_count);
                 if (objs.objects.length > 0) {
+                    parent.annotationCodeList = objs.objects;
                     for (var i = 0; i < objs.objects.length; i++) {
                         obj = getTagObj(objs.objects[i]);
                         list += formatObj(config.format, obj);
