@@ -3,7 +3,7 @@ django==1.4.1
 django-jenkins
 south
 vectorformats
-psycopg2
+psycopg2==2.5
 simplejson
 openpyxl==1.5.8
 xlrd
@@ -18,7 +18,7 @@ django-guardian
 django-nose
 python-memcached
 django-memcached
-django-tastypie==0.9.12
+django-tastypie==0.9.15
 django-orm-extensions
 -e git://github.com/hcarvalhoalves/django-rest-thumbnails.git@6e949d137246e9d3d8180dbc3fa26c512e753b11#egg=django-rest-thumbnails
 httplib2

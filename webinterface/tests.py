@@ -169,7 +169,7 @@ class TestViews(TestCase):
         response = self.client.post("/collections/create", post_data)
         self.assertEqual(response.status_code, 301)
 
-        response = self.client.get("/collections/1/")
+        response = self.client.get("/collections/"+self.collection_01.id.__str__()+"/")
         self.assertEqual(response.status_code, 200)
 
 #        #make a collection from a deployment using random
@@ -177,7 +177,7 @@ class TestViews(TestCase):
 #        response = self.client.post("/collections/createworkset/random", post_data)
 #        self.assertEqual(response.status_code, 301)
 
-        response = self.client.get("/collections/1/?wsid=1")
+        response = self.client.get("/collections/"+self.collection_01.id.__str__()+"/?wsid=1")
         self.assertEqual(response.status_code, 200)
 
 #        #make a collection from a deployment using random
@@ -186,7 +186,7 @@ class TestViews(TestCase):
 #        response = self.client.post("/collections/createworkset/stratified", post_data)
 #        self.assertEqual(response.status_code, 301)
 
-        response = self.client.get("/collections/1/?wsid=2")
+        response = self.client.get("/collections/"+self.collection_01.id.__str__()+"/?wsid=2")
         self.assertEqual(response.status_code, 200)
 
 

@@ -31,6 +31,9 @@ from django.test import TestCase
 from django.contrib.gis.geos import Point
 from django.contrib.auth.models import AnonymousUser
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 #======================================#
 # Test the authorization.py functions
@@ -131,8 +134,8 @@ class TestCampaignResource(ResourceTestCase):
         guardian.utils.get_anonymous_user().groups.add(public_group)
 
         #make a couple of campaigns and save
-        self.campaign_bobs = mommy.make_one('catamidb.Campaign', id=1)
-        self.campaign_bills = mommy.make_one('catamidb.Campaign', id=2)
+        self.campaign_bobs = mommy.make_one('catamidb.Campaign')
+        self.campaign_bills = mommy.make_one('catamidb.Campaign')
 
         #assign this one to bob
         authorization.apply_campaign_permissions(
@@ -157,10 +160,12 @@ class TestCampaignResource(ResourceTestCase):
             'contact_person': 'Blah',
         }
 
+
     # can only do GET at this stage
     def test_campaign_operations_disabled(self):
-        # test that we can NOT create
-        self.assertHttpMethodNotAllowed(
+        # test that we are unauthorized to create
+
+        self.assertHttpUnauthorized(
             self.anon_api_client.post(self.campaign_url,
                                       format='json',
                                       data=self.post_data))
@@ -180,13 +185,6 @@ class TestCampaignResource(ResourceTestCase):
                 format='json')
         )
 
-        # test that we can NOT create authenticated
-        self.assertHttpMethodNotAllowed(
-            self.bob_api_client.post(self.campaign_url,
-                                     format='json',
-                                     data=self.post_data)
-        )
-
         # test that we can NOT modify authenticated
         self.assertHttpMethodNotAllowed(
             self.bob_api_client.put(
@@ -204,16 +202,16 @@ class TestCampaignResource(ResourceTestCase):
     #test can get a list of campaigns authorised
     def test_campaigns_operations_as_authorised_users(self):
         # create a campaign that only bill can see
-        bills_campaign = mommy.make_one('catamidb.Campaign', id=3)
+        bills_campaign = mommy.make_one('catamidb.Campaign')
         assign('view_campaign', self.user_bill, bills_campaign)
 
         # check that bill can see via the API
         response = self.bill_api_client.get(self.campaign_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+        self.assertEqual(len(self.deserialize(response)), 3)
 
         # check that bill can get to the object itself
-        response = self.bill_api_client.get(self.campaign_url + "3/",
+        response = self.bill_api_client.get(self.campaign_url + bills_campaign.id.__str__() +"/",
                                             format='json')
         self.assertValidJSONResponse(response)
 
@@ -221,23 +219,51 @@ class TestCampaignResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.campaign_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+        self.assertEqual(len(self.deserialize(response)), 2)
 
         # check bob can NOT get to the hidden object
-        response = self.bob_api_client.get(self.campaign_url + "3/",
+        response = self.bob_api_client.get(self.campaign_url + bills_campaign.id.__str__() +"/",
                                            format='json')
         self.assertHttpUnauthorized(response)
 
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.campaign_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+        self.assertEqual(len(self.deserialize(response)), 2)
 
         #check anonymous can NOT get to the hidden object
-        response = self.anon_api_client.get(self.campaign_url + "3/",
+        response = self.anon_api_client.get(self.campaign_url + bills_campaign.id.__str__() +"/",
                                             format='json')
         self.assertHttpUnauthorized(response)
 
+        #create via the API
+        auth_post_data = {
+            'short_name': 'AuthBlah',
+            'description': 'AuthBlah',
+            'associated_researchers': 'AuthBlah',
+            'associated_publications': 'AuthBlah',
+            'associated_research_grant': 'AuthBlah',
+            'date_start': '2012-05-01',
+            'date_end': '2012-05-01',
+            'contact_person': 'AuthBlah',
+        }
+
+        # test that we can create authenticated
+        self.assertHttpCreated(
+            self.bob_api_client.post(self.campaign_url,
+                                     format='json',
+                                     data=auth_post_data)
+        )
+
+        #check that ones we created via API are there
+        response = self.bill_api_client.get(self.campaign_url, format='json')
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)), 4)
+
+        #check public can see it too
+        response = self.anon_api_client.get(self.campaign_url, format='json')
+        self.assertValidJSONResponse(response)
+        self.assertEqual(len(self.deserialize(response)), 3)
 
 class TestDeploymentResource(ResourceTestCase):
     def setUp(self):

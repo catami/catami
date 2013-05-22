@@ -15,8 +15,12 @@ from tastypie.exceptions import Unauthorized
 from tastypie.resources import ModelResource, Resource
 from .models import *
 from restthumbnails.helpers import get_thumbnail_proxy
-
+from catamidb import authorization
+from django.core.exceptions import ObjectDoesNotExist
 from tastypie.authorization import DjangoAuthorization
+import logging
+
+logger = logging.getLogger(__name__)
 
 # ==============================
 # Integration of Backbone and tastypie.
@@ -84,10 +88,11 @@ class CampaignAuthorization(Authorization):
         raise Unauthorized()
 
     def create_list(self, object_list, bundle):
+        logger.debug("In create list")
         raise Unauthorized("Sorry, no creates.")
 
     def create_detail(self, object_list, bundle):
-        #set to true as campaign creation is done via backbonejs (using REST API)
+        #Alloe creates for Authorised users
         return True
 
     def update_list(self, object_list, bundle):
@@ -378,10 +383,34 @@ class CampaignResource(BackboneCompatibleResource):
     class Meta:
         queryset = Campaign.objects.all()
         resource_name = "campaign"
-        authentication = MultiAuthentication(AnonymousGetAuthentication(),
+        authentication = MultiAuthentication(SessionAuthentication(),
+                                             AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
         authorization = CampaignAuthorization()
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+        object_class = Campaign
+
+    def hydrate(self, bundle):
+        bundle.obj = Campaign()
+        return bundle
+
+    def obj_create(self, bundle, **kwargs):
+        """
+        We are overiding this function so we can get access to the newly
+        created campaign. Once we have reference to it, we can apply
+        object level permissions to the object.
+        """
+
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        #create the bundle
+        super(CampaignResource, self).obj_create(bundle)
+
+        #make sure we apply permissions to this newly created object
+        authorization.apply_campaign_permissions(user, bundle.obj)
+
+        return bundle
 
 class DeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
