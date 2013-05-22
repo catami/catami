@@ -175,9 +175,6 @@
                         class="icon-globe"></i> Map</a></li>
                 <li><a href="#thm" data-toggle="tab"><i
                         class="icon-eye-open"></i> Images</a></li>
-                {% switch Experimental %}
-                    <li><a href="#tax" data-toggle="tab">Taxonomy</a></li>
-                {% endswitch %}
 
                 {% if user.is_authenticated %}
                 <button id="CreateProjectButton" class="btn btn-primary pull-right btn-create-collection newCollection" data-toggle="modal"><i class="icon-list-alt"></i> Create Project </button>
@@ -392,8 +389,8 @@
             $.getJSON(apiurl, function (campaigns) {
                 //alert ('L: ' + j.objects.length);
                 var options = ' ';
-                for (var i = 0; i < campaigns.objects.length; i++) {
-                    options += '<option value="' + campaigns.objects[i].id + '">' + campaigns.objects[i].short_name + '</option>';
+                for (var i = 0; i < campaigns.length; i++) {
+                    options += '<option value="' + campaigns[i].id + '">' + campaigns[i].short_name + '</option>';
                 }
                 //$("#campaignSelect").html(options);
                 campaignOptions = options;
@@ -425,8 +422,8 @@
             $.getJSON(apiurl, function (campaigns) {
                 //alert ('L: ' + j.objects.length);
                 var options = ' ';
-                for (var i = 0; i < campaigns.objects.length; i++) {
-                    options += '<option value="' + campaigns.objects[i].id + '">' + campaigns.objects[i].short_name + '</option>';
+                for (var i = 0; i < campaigns.length; i++) {
+                    options += '<option value="' + campaigns[i].id + '">' + campaigns[i].short_name + '</option>';
                 }
                 $("#campaignSelect").html(options);
             }){% endcomment %}
