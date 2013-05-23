@@ -232,6 +232,25 @@ class Image(models.Model):
         """Defines Metaparameters of the model."""
         unique_together = (('pose', 'camera'), )
 
+class GenericImage(models.Model):
+    """
+    Defining a simple image Model. Depth is included in the model to make
+    queries flat, simple and faster.
+
+    This is to replace existing Image and Pose.
+    """
+    camera = models.ForeignKey(Camera)
+    web_location = models.CharField(max_length=200)
+    archive_location = models.CharField(max_length=200)
+    deployment = models.ForeignKey(Deployment)
+    date_time = models.DateTimeField()
+    position = models.PointField()
+    depth = models.FloatField()
+
+    class Meta:
+        """Defines Metaparameters of the model."""
+        unique_together = (('date_time', 'camera'), )
+
 
 class ScientificMeasurementTypeManager(models.Manager):
     """Management class for ScientificMeasurementType."""
@@ -304,6 +323,56 @@ class ScientificImageMeasurement(models.Model):
     class Meta:
         """Defines Metaparameters of the model."""
         unique_together = (('measurement_type', 'image'), )
+
+
+class Measurements(models.Model):
+    """
+    A simple measurements model. To make joins and queries on images
+    faster.
+
+    This is to replace ScientificMeasurement models.
+    """
+
+    UNITS_CHOICES = (
+        ('ppm', 'ppm'),
+        ('ms', 'm s<sup>-1</sup>'),
+        ('m', 'm'),
+        ('cel', '&ordm;C'),
+        ('rad', 'radians'),
+        ('deg', '&ordm;'),
+        ('psu', 'PSU'),
+        ('dbar', 'dbar'),
+        ('umoll', 'umol/l'),
+        ('umolk', 'umol/kg'),
+        ('mgm3', 'mg/m<sup>3</sup>'),
+    )
+
+    #the related image for these measurements
+    image = models.ForeignKey(GenericImage)
+
+    #The water temperature at the location (and time) of the image.
+    temperature = models.FloatField()
+    temperature_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='cel')
+
+    #Water salinity at the measurement point.
+    salinity = models.FloatField()
+    salinity_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='psu')
+
+    #Pitch of camera at time of image.
+    pitch = models.FloatField()
+    pitch_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='rad')
+
+    #Roll of camera at time of image.
+    roll = models.FloatField()
+    roll_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='rad')
+
+    #Yaw of camera at time of image.
+    yaw = models.FloatField()
+    yaw_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='rad')
+
+    #Altitude of camera at time of image.
+    altitude = models.FloatField()
+    altitude_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='m')
 
 
 class AUVDeployment(Deployment):
