@@ -1,7 +1,7 @@
 from datetime import datetime
 from model_mommy.recipe import Recipe
 from django.contrib.gis.geos import Point, Polygon
-from catamidb.models import AUVDeployment, DOVDeployment, BRUVDeployment, TVDeployment, TIDeployment, Pose
+from catamidb.models import AUVDeployment, DOVDeployment, BRUVDeployment, TVDeployment, TIDeployment, Pose, GenericImage
 
 pose1 = Recipe(
     Pose,
@@ -23,6 +23,27 @@ pose3 = Recipe(
     depth=27.5,
     date_time=datetime.now()
 )
+
+genericImage1 = Recipe(
+    GenericImage,
+    position=Point(12.4604, 43.9420),
+    depth=27.5,
+    date_time=datetime.now()     
+)   
+
+genericImage2 = Recipe(
+    GenericImage,
+    position=Point(12.4604, 43.9420),
+    depth=27.5,
+    date_time=datetime.now()     
+)          
+
+genericImage3 = Recipe(
+    GenericImage,
+    position=Point(12.4604, 43.9420),
+    depth=27.5,
+    date_time=datetime.now()     
+)        
 
 auvdeployment1 = Recipe(
     AUVDeployment,

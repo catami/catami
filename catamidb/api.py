@@ -266,6 +266,125 @@ class ImageAuthorization(Authorization):
     def delete_detail(self, object_list, bundle):
         raise Unauthorized("Sorry, no deletes.")
 
+class GenericImageAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, [
+            'catamidb.view_campaign'])
+
+        # get all images for the above allowable campaigns
+        images = GenericImage.objects.select_related("deployment__campaign")
+        image_ids = images.filter(
+            deployment__campaign__in=campaign_objects).values_list('id')
+
+        #now filter out the images we are not allowed to see
+        image_objects = object_list.filter(id__in=image_ids)
+
+        # send em off
+        return image_objects
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('catamidb.view_campaign',
+                         bundle.obj.deployment.campaign):
+            return True
+
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        return True
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
+class MeasurementsAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, [
+            'catamidb.view_campaign'])
+
+        # get all images for the above allowable campaigns
+        images = GenericImage.objects.select_related("deployment__campaign")
+        image_ids = images.filter(
+            deployment__campaign__in=campaign_objects).values_list('id')
+        
+        images2 = GenericImage.objects.select_related("measurements")
+        images2_ids = images2.filter(measurements__in=image_ids).values_list('id')
+
+        #now filter out the measurements we are not allowed to see
+        measurement_objects = object_list.filter(id__in=images2_ids)
+
+        # send em off
+        return measurement_objects
+        #return object_list
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+       
+        # XXX calling read_list here gives me error saying function is not global. So cut and paste function below:
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, [
+            'catamidb.view_campaign'])
+
+        # get all images for the above allowable campaigns
+        images = GenericImage.objects.select_related("deployment__campaign")
+        image_ids = images.filter(
+            deployment__campaign__in=campaign_objects).values_list('id')
+        
+        images2 = GenericImage.objects.select_related("measurements")
+        images2_ids = images2.filter(measurements__in=image_ids).values_list('id')
+
+        #now filter out the measurements we are not allowed to see
+        measurement_objects = object_list.filter(id__in=images2_ids)
+
+        # check the user has permission to view this object
+        if bundle.obj in measurement_objects:
+            return True
+
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        return True
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
 
 class ScientificPoseMeasurementAuthorization(Authorization):
     def read_list(self, object_list, bundle):
@@ -558,6 +677,45 @@ class ImageResource(ModelResource):
             images = images.filter(pose__scientificposemeasurement__measurement_type=altitude, pose__scientificposemeasurement__value__range=(altitude__gte, altitude__lte))
 
         return images
+
+class GenericImageResource(BackboneCompatibleResource):   
+    collection = fields.ToManyField('collection.api.CollectionResource',
+                                    'collections')
+    measurements = fields.ToOneField('catamidb.api.MeasurementsResource', 'measurements')
+
+    class Meta:
+        queryset = GenericImage.objects.all()
+        resource_name = "generic_image"
+        excludes = ['archive_location']
+        authentication = MultiAuthentication(AnonymousGetAuthentication(),
+                                             ApiKeyAuthentication())
+        authorization = GenericImageAuthorization()
+        filtering = {
+            'collection': ALL,
+        }
+        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+         
+    def dehydrate(self, bundle):
+        file_name = bundle.data['web_location']
+        print file_name
+        bundle.data['thumbnail_location'] = get_thumbnail_proxy(
+            file_name,
+            "96x72",
+            'scale',
+            '.jpg'
+        ).url
+        bundle.data['web_location'] = '/images/{0}'.format(file_name)
+        return bundle
+
+class MeasurementsResource(BackboneCompatibleResource):     
+
+    class Meta:
+        queryset = Measurements.objects.all()
+        resource_name = "measurements"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(),
+                                             ApiKeyAuthentication())
+        authorization = MeasurementsAuthorization()
+        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
 class ScientificMeasurementTypeResource(ModelResource):
     class Meta:

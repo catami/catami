@@ -239,6 +239,7 @@ class GenericImage(models.Model):
 
     This is to replace existing Image and Pose.
     """
+    measurements = models.ForeignKey(Measurements)
     camera = models.ForeignKey(Camera)
     web_location = models.CharField(max_length=200)
     archive_location = models.CharField(max_length=200)
@@ -346,9 +347,6 @@ class Measurements(models.Model):
         ('umolk', 'umol/kg'),
         ('mgm3', 'mg/m<sup>3</sup>'),
     )
-
-    #the related image for these measurements
-    image = models.ForeignKey(GenericImage)
 
     #The water temperature at the location (and time) of the image.
     temperature = models.FloatField()
