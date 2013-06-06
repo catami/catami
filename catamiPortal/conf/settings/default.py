@@ -68,6 +68,8 @@ USE_TZ = True
 # dont have slashes at either end, they are automatically added
 IMAGES_URL = 'images'
 IMAGES_ROOT = '/media/catami_live/importedimages'
+IMPORT_PATH = '/media/catami_live'
+THUMBNAIL_SIZE = [96, 72]
 
 THUMBNAILS_SOURCE_ROOT = IMAGES_ROOT
 THUMBNAILS_STORAGE_ROOT = '/media/catami_live/thumbnailimages'

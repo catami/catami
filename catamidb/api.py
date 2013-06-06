@@ -1,5 +1,8 @@
 from shutil import copy
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
+
 import guardian
 from guardian.shortcuts import (get_objects_for_user, get_perms_for_model,
                                 get_users_with_perms, get_groups_with_perms)
@@ -9,15 +12,18 @@ from tastypie.authentication import (MultiAuthentication,
                                      ApiKeyAuthentication,
                                      Authentication,
                                      BasicAuthentication)
-from tastypie.authorization import Authorization
+from tastypie.authorization import Authorization, DjangoAuthorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
-from tastypie.exceptions import Unauthorized
+from tastypie.exceptions import Unauthorized, ImmediateHttpResponse
+from tastypie import http
 from tastypie.resources import ModelResource, Resource
 from .models import *
 from restthumbnails.helpers import get_thumbnail_proxy
 from catamidb import authorization
-from django.core.exceptions import ObjectDoesNotExist
-from tastypie.authorization import DjangoAuthorization
+
+import os, sys
+import PIL
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -296,6 +302,32 @@ class GenericImageAuthorization(Authorization):
             return True
 
         raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        return True
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
+class ImageUploadAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        return image_objects
+
+    def read_detail(self, object_list, bundle):
+        return True
 
     def create_list(self, object_list, bundle):
         raise Unauthorized("Sorry, no creates.")
@@ -678,6 +710,82 @@ class ImageResource(ModelResource):
 
         return images
 
+class ImageUploadResource(BackboneCompatibleResource):
+    img = fields.FileField(attribute="img", null=True, blank=True)
+
+    class Meta:
+        queryset = ImageUpload.objects.all()
+        deployments = Deployment.objects.all()
+        resource_name = "image_upload"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(),
+                                             ApiKeyAuthentication())
+        authorization = ImageUploadAuthorization()
+        filtering = {
+            'collection': ALL,
+        }
+        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+
+    def deserialize(self, request, data, format=None):
+        if not format:
+            format = request.META.get('CONTENT_TYPE', 'application/json')
+        if format == 'application/x-www-form-urlencoded':
+            return request.POST
+        if format.startswith('multipart'):
+            data = request.POST.copy()
+            data.update(request.FILES)
+            return data
+        return super(ImageUploadResource, self).deserialize(request, data, format)
+
+    def obj_create(self, bundle, **kwargs):              
+        if ("img" in bundle.data.keys() and 
+            "deployment" in bundle.data.keys()):
+            #Split image name and image path
+            sourcePath, imgName =  os.path.split(str(bundle.data["img"]))
+            if imgName.find("@") != -1:
+                imgName = imgName[:1] #remove "@" if exists
+            #split image name and image extension    
+            imgNameNoExt, imgExt = os.path.splitext(imgName)
+            
+            if (imgExt == ".png" or
+                imgExt == ".jpg" or
+                imgExt == ".jpeg"):
+                
+                deployment = self.Meta.deployments.filter(id=bundle.data["deployment"])
+                #Use specified deployment id to get Campaign and Deployment names, which is used to create path for image and thumbnails
+                if deployment.exists():
+                    deploymentName = deployment[0].short_name
+                    campaignName = deployment[0].campaign.short_name                
+                    imageDest = settings.IMPORT_PATH + "//" + campaignName + "//" + deploymentName + "//images//"
+                    thumbDest = settings.IMPORT_PATH + "//" + campaignName + "//" + deploymentName + "//thumbnails//"
+                    bundle.obj.img.field.upload_to = imageDest
+                    
+                    super(ImageUploadResource, self).obj_create(bundle, **kwargs)
+                    
+                    print "%s uploaded to server.." % imgName              
+                    size = str(settings.THUMBNAIL_SIZE[0]) + "x" + str(settings.THUMBNAIL_SIZE[1])
+                    
+                    infile = os.path.normpath(imageDest + imgName)
+                    outfile = os.path.normpath(thumbDest + imgNameNoExt+ "_" + size + imgExt)
+                    
+                    if infile != outfile:
+                        try:
+                            if not os.path.exists(thumbDest):
+                                os.makedirs(thumbDest)
+                                im = PIL.Image.open(infile)
+                                im.thumbnail(settings.THUMBNAIL_SIZE, PIL.Image.ANTIALIAS)                       
+                                im.save(outfile, "JPEG")
+                                print "Thumbnail imagery %s created." % outfile
+                        except IOError as io:
+                            print "cannot create thumbnail for '%s'" % infile
+                else:
+                    raise ImmediateHttpResponse(response=http.HttpBadRequest("Invalid Deployment ID specified"))    
+            else:
+                    raise ImmediateHttpResponse(response=http.HttpBadRequest("Image format not supported! Supported images include .png, .jpg, .jpeg"))  
+        else:
+            raise ImmediateHttpResponse(response=http.HttpBadRequest("Please specify 'img', 'deployment' and 'thumbnailsize' parameters"))    
+        return bundle
+
+
 class GenericImageResource(BackboneCompatibleResource):   
     collection = fields.ToManyField('collection.api.CollectionResource',
                                     'collections')
@@ -694,7 +802,7 @@ class GenericImageResource(BackboneCompatibleResource):
             'collection': ALL,
         }
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
-         
+
     def dehydrate(self, bundle):
         file_name = bundle.data['web_location']
         print file_name
@@ -706,6 +814,7 @@ class GenericImageResource(BackboneCompatibleResource):
         ).url
         bundle.data['web_location'] = '/images/{0}'.format(file_name)
         return bundle
+
 
 class MeasurementsResource(BackboneCompatibleResource):     
 

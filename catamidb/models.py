@@ -280,6 +280,19 @@ class Measurements(models.Model):
     altitude_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='m')
 
 
+class ImageUpload(models.Model):
+    """
+    Model used to upload images to server, and have server generate thumbnails
+    Upload path defaults to "images" folder but will change during POST; use specified "deployment" to get Campaign and Deployment names
+    e.g. deployment id = 2, look up Deployment short_name = "r20110612_033752_st_helens_01_elephant_rock_deep_repeat"
+    and respective Campaign short_name = "Campaign1"
+    Upload image goes into: UPLOAD_PATH/r20110612_033752_st_helens_01_elephant_rock_deep_repeat/Campaign1/images/
+    Generated thumbnail goes into: UPLOAD_PATH/r20110612_033752_st_helens_01_elephant_rock_deep_repeat/Campaign1/thumbnails/
+    UPLOAD_PATH defined in settings.py
+    """
+
+    img = models.ImageField(upload_to="images", null=True, blank=True, max_length=255)   
+
 class GenericImage(models.Model):
     """
     Defining a simple image Model. Depth is included in the model to make
@@ -287,6 +300,7 @@ class GenericImage(models.Model):
 
     This is to replace existing Image and Pose.
     """
+
     measurements = models.ForeignKey(Measurements)
     camera = models.ForeignKey(Camera)
     web_location = models.CharField(max_length=200)
