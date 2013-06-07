@@ -23,6 +23,7 @@ v1_api = Api(api_name='v1')
 
 dev_api.register(collection.api.CollectionResource())
 dev_api.register(catamidb.api.CampaignResource())
+dev_api.register(catamidb.api.GenericDeploymentResource())
 dev_api.register(catamidb.api.DeploymentResource())
 dev_api.register(catamidb.api.PoseResource())
 dev_api.register(catamidb.api.SimplePoseResource())

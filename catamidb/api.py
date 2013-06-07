@@ -114,6 +114,57 @@ class CampaignAuthorization(Authorization):
     def delete_detail(self, object_list, bundle):
         raise Unauthorized("Sorry, no deletes.")
 
+class GenericDeploymentAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, [
+            'catamidb.view_campaign'])
+
+        # get all deployments for the above allowable campaigns
+        deployments = Deployment.objects.select_related("campaign")
+        deployment_ids = (deployments.filter(campaign__in=campaign_objects).
+                          values_list('id'))
+
+        #now filter out the deployments we are not allowed to see
+        deployment_objects = object_list.filter(id__in=deployment_ids)
+
+        # send em off
+        return deployment_objects
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('catamidb.view_campaign', bundle.obj.campaign):
+            return True
+
+        # raise hell! - https://github.com/toastdriven/django-
+        # tastypie/issues/826
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        return True
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
 
 class DeploymentAuthorization(Authorization):
     def read_list(self, object_list, bundle):
@@ -563,7 +614,21 @@ class CampaignResource(BackboneCompatibleResource):
 
         return bundle
 
-class DeploymentResource(ModelResource):
+class GenericDeploymentResource(BackboneCompatibleResource):
+    campaign = fields.ForeignKey(CampaignResource, 'campaign')
+
+    class Meta:
+        queryset = Deployment.objects.prefetch_related("campaign").all()
+        resource_name = "generic_deployment"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(),
+                                             ApiKeyAuthentication())
+        authorization = GenericDeploymentAuthorization()
+        filtering = {
+            'campaign': ALL_WITH_RELATIONS,
+        }
+        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+
+class DeploymentResource(BackboneCompatibleResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
 
     class Meta:
@@ -575,7 +640,7 @@ class DeploymentResource(ModelResource):
         filtering = {
             'campaign': ALL_WITH_RELATIONS,
         }
-        allowed_methods = ['get']
+        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
 
 class PoseResource(ModelResource):

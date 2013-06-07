@@ -83,6 +83,51 @@ class DeploymentManager(models.GeoManager):
         return self.get(start_time_stamp=start_time_stamp,
                         short_name=short_name)
 
+class GenericDeployment(models.Model):
+    """
+    Defining a simple Deployment Model. Operator is included in the model as part of denormalising the subtypes
+    This is to replace existing Deployment and subtypes BRUVDeployment, DOVDeployment, TIDEDeployment and TVDeployment
+    
+    """
+    objects = DeploymentManager()
+
+    type = models.CharField(max_length=100)
+    operator = short_name = models.CharField(max_length=100)
+
+    start_position = models.PointField()
+    end_position = models.PointField()
+    transect_shape = models.PolygonField()
+
+    start_time_stamp = models.DateTimeField()
+    end_time_stamp = models.DateTimeField()
+
+    short_name = models.CharField(max_length=100)
+    mission_aim = models.TextField()
+
+    min_depth = models.FloatField()
+    max_depth = models.FloatField()
+
+    campaign = models.ForeignKey(Campaign)
+
+    contact_person = models.TextField()
+    descriptive_keywords = models.TextField()
+    license = models.TextField()
+
+    def __unicode__(self):
+        return "Deployment: {0} - {1}".format(
+                self.start_time_stamp, self.short_name
+            )
+
+    def natural_key(self):
+        """Get the natural key of this object.
+        :returns: tuple representing the natural key
+        """
+
+        return (self.start_time_stamp, self.short_name)
+
+    class Meta:
+        """Defines Metaparameters of the model."""
+        unique_together = (('start_time_stamp', 'short_name'), )
 
 class Deployment(models.Model):
     """Core Deployment class that holds basic position and time information.
