@@ -124,7 +124,7 @@ class GenericDeploymentAuthorization(Authorization):
             'catamidb.view_campaign'])
 
         # get all deployments for the above allowable campaigns
-        deployments = Deployment.objects.select_related("campaign")
+        deployments = GenericDeployment.objects.select_related("campaign")
         deployment_ids = (deployments.filter(campaign__in=campaign_objects).
                           values_list('id'))
 

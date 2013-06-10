@@ -12,9 +12,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 admin.site.register(Campaign, admin.GeoModelAdmin)
+admin.site.register(GenericDeployment, admin.GeoModelAdmin)
 admin.site.register(Deployment, admin.GeoModelAdmin)
 admin.site.register(Pose, admin.GeoModelAdmin)
 admin.site.register(Camera, admin.ModelAdmin)
+admin.site.register(GenericCamera, admin.ModelAdmin)
 admin.site.register(Image, admin.ModelAdmin)
 admin.site.register(ImageUpload, admin.ModelAdmin)
 admin.site.register(GenericImage, admin.ModelAdmin)

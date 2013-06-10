@@ -233,6 +233,30 @@ class Pose(models.Model):
         """Defines Metaparameters of the model."""
         unique_together = (('deployment', 'date_time'), )
 
+class GenericCamera(models.Model):
+    """Data about a camera used in a deployment.
+    Contains information about the orientation and quality of the images
+    as well as a name for the camera itself.
+    
+    This will replace Camera eventually.
+    """
+
+    DOWN_ANGLE = 0
+    UP_ANGLE = 1
+    SLANT_ANGLE = 2
+    HORIZONTAL_ANGLE = 3
+
+    CAMERA_ANGLES = (
+        (DOWN_ANGLE, 'Downward'),
+        (UP_ANGLE, 'Upward'),
+        (SLANT_ANGLE, 'Slanting/Oblique'),
+        (HORIZONTAL_ANGLE, 'Horizontal/Seascape'),
+    )
+
+    deployment = models.ForeignKey(GenericDeployment)
+    name = models.CharField(max_length=50)
+    angle = models.IntegerField(choices=CAMERA_ANGLES)
+
 
 class Camera(models.Model):
     """Data about a camera used in a deployment.
@@ -347,10 +371,10 @@ class GenericImage(models.Model):
     """
 
     measurements = models.ForeignKey(Measurements)
-    camera = models.ForeignKey(Camera)
+    camera = models.ForeignKey(GenericCamera)
     web_location = models.CharField(max_length=200)
     archive_location = models.CharField(max_length=200)
-    deployment = models.ForeignKey(Deployment)
+    deployment = models.ForeignKey(GenericDeployment)
     date_time = models.DateTimeField()
     position = models.PointField()
     depth = models.FloatField()
