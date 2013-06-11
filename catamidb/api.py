@@ -618,7 +618,7 @@ class GenericDeploymentResource(BackboneCompatibleResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
 
     class Meta:
-        queryset = Deployment.objects.prefetch_related("campaign").all()
+        queryset = GenericDeployment.objects.prefetch_related("campaign").all()
         resource_name = "generic_deployment"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
