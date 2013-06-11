@@ -468,7 +468,12 @@ class TestGenericDeploymentResource(ResourceTestCase):
         #the API url for deployments
         self.deployment_url = '/api/dev/generic_deployment/'
 
-        self.post_data = []
+        #some post data for testing deployment creation
+        self.post_data = {
+            'type': 'AUV',
+            'operator': 'XXX',
+        }
+
 
     # can only do GET at this stage
     def test_deployment_operations_disabled(self):
@@ -496,17 +501,8 @@ class TestGenericDeploymentResource(ResourceTestCase):
             )
         )
 
-        # test that we can NOT create authenticated
-        self.assertHttpMethodNotAllowed(
-            self.bob_api_client.post(
-                self.deployment_url,
-                format='json',
-                data=self.post_data
-            )
-        )
-
         # test that we can NOT modify authenticated
-        self.assertHttpUnauthorized(
+        self.assertHttpMethodNotAllowed(
             self.bob_api_client.put(
                 self.deployment_url + self.deployment_bobs.id.__str__() + "/",
                 format='json',
@@ -515,7 +511,7 @@ class TestGenericDeploymentResource(ResourceTestCase):
         )
 
         # test that we can NOT delete authenticated
-        self.assertHttpUnauthorized(
+        self.assertHttpMethodNotAllowed(
             self.bob_api_client.delete(
                 self.deployment_url + self.deployment_bobs.id.__str__() + "/",
                 format='json'

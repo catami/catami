@@ -628,7 +628,7 @@ class GenericDeploymentResource(BackboneCompatibleResource):
         }
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
-class DeploymentResource(BackboneCompatibleResource):
+class DeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
 
     class Meta:
@@ -640,7 +640,7 @@ class DeploymentResource(BackboneCompatibleResource):
         filtering = {
             'campaign': ALL_WITH_RELATIONS,
         }
-        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+        allowed_methods = ['get']
 
 
 class PoseResource(ModelResource):
