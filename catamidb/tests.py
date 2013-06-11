@@ -1095,10 +1095,10 @@ class TestMeasurementsResource(ResourceTestCase):
         self.campaign_bills = mommy.make_one('catamidb.Campaign', id=2)
 
         #make a deployments
-        self.deployment_bobs = mommy.make_recipe('catamidb.auvdeployment1',
+        self.deployment_bobs = mommy.make_recipe('catamidb.genericDeployment1',
                                                  id=1,
                                                  campaign=self.campaign_bobs)
-        self.deployment_bills = mommy.make_recipe('catamidb.auvdeployment2',
+        self.deployment_bills = mommy.make_recipe('catamidb.genericDeployment2',
                                                   id=2,
                                                   campaign=self.campaign_bills)
 
@@ -1109,9 +1109,9 @@ class TestMeasurementsResource(ResourceTestCase):
                                                   id=2)
 
         #make cameras
-        self.camera_bobs = mommy.make_one('catamidb.Camera', id=1,
+        self.camera_bobs = mommy.make_one('catamidb.GenericCamera', id=1,
                                           deployment=self.deployment_bobs)
-        self.camera_bills = mommy.make_one('catamidb.Camera', id=2,
+        self.camera_bills = mommy.make_one('catamidb.GenericCamera', id=2,
                                            deployment=self.deployment_bills)
 
         #make images
@@ -1192,9 +1192,9 @@ class TestMeasurementsResource(ResourceTestCase):
     def test_image_measurement_operations_as_authorised_users(self):
         # create a campaign & deployment that ONLY bill can see
         bills_campaign = mommy.make_one('catamidb.Campaign', id=3, short_name='cp__3')
-        bills_deployment = mommy.make_recipe('catamidb.auvdeployment', id=3,
+        bills_deployment = mommy.make_recipe('catamidb.genericDeployment1', id=3,
                                              campaign=bills_campaign, short_name='dp__3')
-        bills_camera = mommy.make_one('catamidb.Camera', id=3,
+        bills_camera = mommy.make_one('catamidb.GenericCamera', id=3,
                                       deployment=bills_deployment)
         bills_measurements = mommy.make_one('catamidb.Measurements', id=3)
         bills_image = mommy.make_recipe('catamidb.genericImage3', 
