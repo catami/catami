@@ -732,7 +732,6 @@ class ImageResource(ModelResource):
 
     def dehydrate(self, bundle):
         file_name = bundle.data['web_location']
-        print file_name
         bundle.data['thumbnail_location'] = get_thumbnail_proxy(
             file_name,
             "96x72",
@@ -826,7 +825,7 @@ class ImageUploadResource(BackboneCompatibleResource):
                     
                     super(ImageUploadResource, self).obj_create(bundle, **kwargs)
                     
-                    print "%s uploaded to server.." % imgName              
+                    logger.debug("%s uploaded to server.." % imgName)
                     size = str(settings.THUMBNAIL_SIZE[0]) + "x" + str(settings.THUMBNAIL_SIZE[1])
                     
                     infile = os.path.normpath(imageDest + imgName)
@@ -839,9 +838,9 @@ class ImageUploadResource(BackboneCompatibleResource):
                                 im = PIL.Image.open(infile)
                                 im.thumbnail(settings.THUMBNAIL_SIZE, PIL.Image.ANTIALIAS)                       
                                 im.save(outfile, "JPEG")
-                                print "Thumbnail imagery %s created." % outfile
+                                logger.debug("Thumbnail imagery %s created." % outfile)
                         except IOError as io:
-                            print "cannot create thumbnail for '%s'" % infile
+                            logger.debug("cannot create thumbnail for '%s'" % infile)
                 else:
                     raise ImmediateHttpResponse(response=http.HttpBadRequest("Invalid Deployment ID specified"))    
             else:
@@ -870,7 +869,7 @@ class GenericImageResource(BackboneCompatibleResource):
 
     def dehydrate(self, bundle):
         file_name = bundle.data['web_location']
-        print file_name
+        logger.debug(file_name)
         bundle.data['thumbnail_location'] = get_thumbnail_proxy(
             file_name,
             "96x72",
