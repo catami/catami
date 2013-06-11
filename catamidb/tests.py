@@ -32,8 +32,13 @@ from django.contrib.gis.geos import Point
 from django.contrib.auth.models import AnonymousUser
 from datetime import datetime
 import logging
+import socket
 
-logger = logging.getLogger(__name__)
+#disable logging on the build server so it goes faster, and model mommy
+#output does not interfere with jenkins XML files
+if "build" in socket.gethostname():
+    logging.disable(logging.DEBUG)
+
 
 #======================================#
 # Test the authorization.py functions
