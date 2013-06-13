@@ -253,7 +253,6 @@ class GenericCamera(models.Model):
         (HORIZONTAL_ANGLE, 'Horizontal/Seascape'),
     )
 
-    deployment = models.ForeignKey(GenericDeployment)
     name = models.CharField(max_length=50)
     angle = models.IntegerField(choices=CAMERA_ANGLES)
 

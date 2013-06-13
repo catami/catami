@@ -129,10 +129,7 @@ class GenericDeploymentAuthorization(Authorization):
                           values_list('id'))
 
         #now filter out the deployments we are not allowed to see
-        deployment_objects = object_list.filter(id__in=deployment_ids)
-
-        # send em off
-        return deployment_objects
+        return object_list.filter(id__in=deployment_ids)
 
     def read_detail(self, object_list, bundle):
         # get real user
@@ -399,6 +396,72 @@ class ImageUploadAuthorization(Authorization):
     def delete_detail(self, object_list, bundle):
         raise Unauthorized("Sorry, no deletes.")
 
+class GenericCameraAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        # get real user object
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, [
+            'catamidb.view_campaign'])
+
+        # campaign contain deployments, which is referenced in images. Find images user can see first
+        images = GenericImage.objects.select_related("deployment__campaign")
+        allowed_images = images.filter(
+            deployment__campaign__in=campaign_objects)
+
+        #get respective camera id from each image       
+        camera_ids = allowed_images.values_list('camera_id')
+
+        #now filter out the measurements we are not allowed to see   
+        return object_list.filter(id__in=camera_ids)
+
+    def read_detail(self, object_list, bundle):
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+       
+        # XXX calling read_list here gives me error saying function is not global. So cut and paste function below:
+
+        # get the objects the user has permission to see
+        campaign_objects = get_objects_for_user(user, [
+            'catamidb.view_campaign'])
+
+        # campaign contain deployments, which is referenced in images. Find images user can see first
+        images = GenericImage.objects.select_related("deployment__campaign")
+        allowed_images = images.filter(
+            deployment__campaign__in=campaign_objects)
+
+        #get respective camera id from each image       
+        camera_ids = allowed_images.values_list('camera_id')
+
+        #now filter out the measurements we are not allowed to see
+        cameras = object_list.filter(id__in=camera_ids)
+
+        # check the user has permission to view this camera
+        if bundle.obj in cameras:
+            return True
+
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no creates.")
+
+    def create_detail(self, object_list, bundle):
+        return True
+
+    def update_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def update_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no updates.")
+
+    def delete_list(self, object_list, bundle):
+        # Sorry user, no deletes for you!
+        raise Unauthorized("Sorry, no deletes.")
+
+    def delete_detail(self, object_list, bundle):
+        raise Unauthorized("Sorry, no deletes.")
+
 class MeasurementsAuthorization(Authorization):
     def read_list(self, object_list, bundle):
         # get real user object
@@ -410,18 +473,13 @@ class MeasurementsAuthorization(Authorization):
 
         # get all images for the above allowable campaigns
         images = GenericImage.objects.select_related("deployment__campaign")
-        image_ids = images.filter(
-            deployment__campaign__in=campaign_objects).values_list('id')
+        allowed_images = images.filter(
+                             deployment__campaign__in=campaign_objects)
         
-        images2 = GenericImage.objects.select_related("measurements")
-        images2_ids = images2.filter(measurements__in=image_ids).values_list('id')
+        measurements_ids = allowed_images.values_list('measurements_id')
 
         #now filter out the measurements we are not allowed to see
-        measurement_objects = object_list.filter(id__in=images2_ids)
-
-        # send em off
-        return measurement_objects
-        #return object_list
+        return object_list.filter(id__in=measurements_ids)
 
     def read_detail(self, object_list, bundle):
         # get real user
@@ -435,17 +493,16 @@ class MeasurementsAuthorization(Authorization):
 
         # get all images for the above allowable campaigns
         images = GenericImage.objects.select_related("deployment__campaign")
-        image_ids = images.filter(
-            deployment__campaign__in=campaign_objects).values_list('id')
+        allowed_images = images.filter(
+                             deployment__campaign__in=campaign_objects)
         
-        images2 = GenericImage.objects.select_related("measurements")
-        images2_ids = images2.filter(measurements__in=image_ids).values_list('id')
+        measurements_ids = allowed_images.values_list('measurements_id')
 
         #now filter out the measurements we are not allowed to see
-        measurement_objects = object_list.filter(id__in=images2_ids)
+        measurements = object_list.filter(id__in=measurements_ids)
 
-        # check the user has permission to view this object
-        if bundle.obj in measurement_objects:
+        # check the user has permission to view the measurements
+        if bundle.obj in measurements:
             return True
 
         raise Unauthorized()
@@ -616,17 +673,21 @@ class CampaignResource(BackboneCompatibleResource):
 
 class GenericDeploymentResource(BackboneCompatibleResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
-
+    
     class Meta:
         queryset = GenericDeployment.objects.prefetch_related("campaign").all()
         resource_name = "generic_deployment"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
-        authorization = GenericDeploymentAuthorization()
+        authorization = GenericDeploymentAuthorization()        
         filtering = {
             'campaign': ALL_WITH_RELATIONS,
         }
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+
+    def dehydrate(self, bundle):
+        bundle.data['campaign_name'] = self.Meta.queryset[0].campaign.short_name
+        return bundle
 
 class DeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
@@ -880,8 +941,17 @@ class GenericImageResource(BackboneCompatibleResource):
         return bundle
 
 
-class MeasurementsResource(BackboneCompatibleResource):     
+class GenericCameraResource(BackboneCompatibleResource):   
+    class Meta:
+        queryset = GenericCamera.objects.all()
+        resource_name = "generic_camera"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(),
+                                             ApiKeyAuthentication())
+        authorization = GenericCameraAuthorization()
+        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
+
+class MeasurementsResource(BackboneCompatibleResource):     
     class Meta:
         queryset = Measurements.objects.all()
         resource_name = "measurements"
