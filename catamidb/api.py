@@ -929,17 +929,11 @@ class GenericImageResource(BackboneCompatibleResource):
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
     def dehydrate(self, bundle):
-        file_name = bundle.data['web_location']
-        logger.debug(file_name)
-        bundle.data['thumbnail_location'] = get_thumbnail_proxy(
-            file_name,
-            "96x72",
-            'scale',
-            '.jpg'
-        ).url
-        bundle.data['web_location'] = '/images/{0}'.format(file_name)
+        deploymentName = bundle.obj.deployment.short_name
+        campaignName = bundle.obj.deployment.campaign.short_name
+        bundle.data['web_location'] = os.path.normpath(settings.IMPORT_PATH + "//" + campaignName + "//" + deploymentName + "//images//")
+        bundle.data['thumbnail_location'] = os.path.normpath(settings.IMPORT_PATH + "//" + campaignName + "//" + deploymentName + "//thumbnails//")
         return bundle
-
 
 class GenericCameraResource(BackboneCompatibleResource):   
     class Meta:
