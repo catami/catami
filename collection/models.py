@@ -3,7 +3,7 @@ from dateutil.tz import tzutc
 from django.contrib.gis.db import models
 
 from django.contrib.auth.models import User
-from catamidb.models import Image, GenericImage, Deployment, ScientificMeasurementType
+from catamidb.models import Image, Deployment, ScientificMeasurementType
 from random import sample
 import logging
 from collection import authorization
@@ -251,7 +251,6 @@ class Collection(models.Model):
     is_locked = models.BooleanField()
     parent = models.ForeignKey('Collection', null=True, blank=True)
     images = models.ManyToManyField(Image, related_name='collections')
-    generic_images = models.ManyToManyField(GenericImage, related_name='collections')
     creation_info = models.CharField(max_length=200)
 
     class Meta:

@@ -912,9 +912,9 @@ class ImageUploadResource(BackboneCompatibleResource):
 
 
 class GenericImageResource(BackboneCompatibleResource):   
-    collection = fields.ToManyField('collection.api.CollectionResource',
-                                    'collections')
     measurements = fields.ToOneField('catamidb.api.MeasurementsResource', 'measurements')
+    deployment = fields.ToOneField('catamidb.api.GenericDeploymentResource', 'deployment')
+    camera = fields.ToOneField('catamidb.api.GenericCameraResource', 'camera')    
 
     class Meta:
         queryset = GenericImage.objects.all()
