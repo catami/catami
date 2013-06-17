@@ -604,32 +604,18 @@ class TestGenericImageResource(ResourceTestCase):
                                                  campaign=self.campaign_bobs)
         self.deployment_bills = mommy.make_recipe('catamidb.genericDeployment2',
                                                   id=2,
-                                                  campaign=self.campaign_bills)
-
-        #make measurements
-        self.measurements_bobs = mommy.make_one('catamidb.Measurements',
-                                                 id=1)
-        self.measurements_bills = mommy.make_one('catamidb.Measurements',
-                                                  id=2)
-
-        #make cameras
-        self.camera_bobs = mommy.make_one('catamidb.GenericCamera', id=1)
-        self.camera_bills = mommy.make_one('catamidb.GenericCamera', id=2)
+                                                  campaign=self.campaign_bills) 
 
         #make images
         self.image_bobs = mommy.make_recipe(
             'catamidb.genericImage1',
-            id=1, 
-            measurements=self.measurements_bobs,
-            deployment=self.deployment_bobs,
-            camera=self.camera_bobs)
+            id=1,             
+            deployment=self.deployment_bobs)
 
         self.image_bills = mommy.make_recipe(
             'catamidb.genericImage2',
-            id=2,
-            measurements=self.measurements_bills,
-            deployment=self.deployment_bills,
-            camera=self.camera_bills)
+            id=2,            
+            deployment=self.deployment_bills)
 
         #assign this one to bob
         authorization.apply_campaign_permissions(
@@ -694,13 +680,9 @@ class TestGenericImageResource(ResourceTestCase):
         bills_campaign = mommy.make_one('catamidb.Campaign', id=3, short_name='cp__1')
         bills_deployment = mommy.make_recipe('catamidb.genericDeployment3', id=3,
                                              campaign=bills_campaign)
-        bills_camera = mommy.make_one('catamidb.GenericCamera', id=3)
-        bills_measurements = mommy.make_one('catamidb.Measurements', id=3)
         bills_image = mommy.make_recipe('catamidb.genericImage3', 
-                                        id=3,
-                                        measurements=bills_measurements,
-                                        deployment=bills_deployment,
-                                        camera=bills_camera)
+                                        id=3,                                        
+                                        deployment=bills_deployment)
         assign('view_campaign', self.user_bill, bills_campaign)
 
         # check that bill can see via the API
@@ -777,30 +759,27 @@ class TestGenericCameraResource(ResourceTestCase):
         self.deployment_bills = mommy.make_recipe('catamidb.genericDeployment2',
                                                   id=2,
                                                   campaign=self.campaign_bills)
-        #make measurements
-        self.measurements_bobs = mommy.make_one('catamidb.Measurements',
-                                                 id=1)
-        self.measurements_bills = mommy.make_one('catamidb.Measurements',
-                                                  id=2)
-
-        #make cameras
-        self.camera_bobs = mommy.make_one('catamidb.GenericCamera', id=1)
-        self.camera_bills = mommy.make_one('catamidb.GenericCamera', id=2)
 
         #make images
         self.image_bobs = mommy.make_recipe(
             'catamidb.genericImage1',
             id=1, 
-            measurements=self.measurements_bobs,
-            deployment=self.deployment_bobs,
-            camera=self.camera_bobs)
+            deployment=self.deployment_bobs)
 
         self.image_bills = mommy.make_recipe(
             'catamidb.genericImage2',
             id=2,
-            measurements=self.measurements_bills,
-            deployment=self.deployment_bills,
-            camera=self.camera_bills)
+            deployment=self.deployment_bills)
+
+        #make cameras
+        self.camera_bobs = mommy.make_one(
+            'catamidb.GenericCamera', 
+            id=1,
+            image=self.image_bobs)
+        self.camera_bills = mommy.make_one(
+            'catamidb.GenericCamera',
+            id=2,
+            image=self.image_bills)
 
         #assign this one to bob
         authorization.apply_campaign_permissions(
@@ -816,9 +795,8 @@ class TestGenericCameraResource(ResourceTestCase):
         #some post data for testing camera creation
         self.post_data = []
 
-
     # can only do GET at this stage
-    def test_deployment_operations_disabled(self):
+    def test_camera_operations_disabled(self):
         # test that we can NOT create
 
         self.assertHttpUnauthorized(
@@ -860,24 +838,24 @@ class TestGenericCameraResource(ResourceTestCase):
             )
         )
 
-    def test_deployments_operations_as_authorised_users(self):
+    def test_camera_operations_as_authorised_users(self):
         # create a campaign & deployment that ONLY bill can see
         bills_campaign = mommy.make_one('catamidb.Campaign', id=3, short_name='cp_3')
         bills_deployment = mommy.make_recipe('catamidb.genericDeployment3', id=3,
                                              campaign=bills_campaign)
         assign('view_campaign', self.user_bill, bills_campaign)
 
-        #make exclusive camera for bill
-        self.camera_bill_exc = mommy.make_one('catamidb.GenericCamera', id=3)
-
-        #make exclusive image for bill and assign this camera to image
+        #make exclusive image for bill and assign this image to camera to image
         self.image_bill_exc = mommy.make_recipe(
             'catamidb.genericImage3',
-            id=3, 
-            measurements=self.measurements_bills,
-            deployment=bills_deployment, #IMPORTANT camera checks campaign which has reference to deployment. Image has reference to deployment and camera
-            camera=self.camera_bill_exc)
+            id=3,             
+            deployment=bills_deployment) #IMPORTANT camera checks campaign which has reference to deployment. Image has reference to deployment and camera
 
+        #make exclusive camera for bill
+        self.camera_bill_exc = mommy.make_one(
+            'catamidb.GenericCamera',
+            id=3,
+            image=self.image_bill_exc)
 
         # check that bill can see via the API
         response = self.bill_api_client.get(self.camera_url, format='json')
@@ -891,8 +869,7 @@ class TestGenericCameraResource(ResourceTestCase):
 
         # check that bob can not see - now we know tastypie API has correct
         # permission validation
-        response = self.bob_api_client.get(self.camera_url, format='json')
-        print 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx response.content: %s ' % response.content
+        response = self.bob_api_client.get(self.camera_url, format='json')       
         self.assertValidJSONResponse(response)
         self.assertEqual(len(self.deserialize(response)), 2)
 
@@ -1280,31 +1257,26 @@ class TestMeasurementsResource(ResourceTestCase):
         self.deployment_bills = mommy.make_recipe('catamidb.genericDeployment2',
                                                   id=2,
                                                   campaign=self.campaign_bills)
-
-        #make measurements
-        self.measurements_bobs = mommy.make_one('catamidb.Measurements',
-                                                 id=1)
-        self.measurements_bills = mommy.make_one('catamidb.Measurements',
-                                                  id=2)
-
-        #make cameras
-        self.camera_bobs = mommy.make_one('catamidb.GenericCamera', id=1)
-        self.camera_bills = mommy.make_one('catamidb.GenericCamera', id=2)
-
         #make images
         self.image_bobs = mommy.make_recipe(
             'catamidb.genericImage1',
             id=1, 
-            measurements=self.measurements_bobs,
-            deployment=self.deployment_bobs,
-            camera=self.camera_bobs)
+            deployment=self.deployment_bobs)
 
         self.image_bills = mommy.make_recipe(
             'catamidb.genericImage2',
             id=2,
-            measurements=self.measurements_bills,
-            deployment=self.deployment_bills,
-            camera=self.camera_bills)
+            deployment=self.deployment_bills)
+
+        #make measurements
+        self.measurements_bobs = mommy.make_one(
+            'catamidb.Measurements',
+            id=1,
+            image=self.image_bobs)
+        self.measurements_bills = mommy.make_one(
+            'catamidb.Measurements',
+            id=2,
+            image=self.image_bills)
 
         #assign this one to bob
         authorization.apply_campaign_permissions(
@@ -1327,7 +1299,7 @@ class TestMeasurementsResource(ResourceTestCase):
         }
 
     # can only do GET at this stage
-    def test_image_measurement_operations_disabled(self):
+    def test_measurement_operations_disabled(self):
         # test that we can NOT modify
         self.assertHttpMethodNotAllowed(
             self.anon_api_client.put(
@@ -1366,18 +1338,18 @@ class TestMeasurementsResource(ResourceTestCase):
             )
         )
 
-    def test_image_measurement_operations_as_authorised_users(self):
+    def test_measurement_operations_as_authorised_users(self):
         # create a campaign & deployment that ONLY bill can see
         bills_campaign = mommy.make_one('catamidb.Campaign', id=3, short_name='cp__3')
         bills_deployment = mommy.make_recipe('catamidb.genericDeployment1', id=3,
                                              campaign=bills_campaign, short_name='dp__3')
-        bills_camera = mommy.make_one('catamidb.GenericCamera', id=3)
-        bills_measurements = mommy.make_one('catamidb.Measurements', id=3)
         bills_image = mommy.make_recipe('catamidb.genericImage3', 
-                                        id=3,
-                                        measurements=bills_measurements,
-                                        deployment=bills_deployment,
-                                        camera=bills_camera)
+                                        id=3,                                        
+                                        deployment=bills_deployment)
+        bills_measurements = mommy.make_one('catamidb.Measurements', 
+                                            id=3,
+                                            image=bills_image)
+
         assign('view_campaign', self.user_bill, bills_campaign)
 
         # check that bill can see via the API

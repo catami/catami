@@ -98,7 +98,7 @@ class CampaignAuthorization(Authorization):
         raise Unauthorized("Sorry, no creates.")
 
     def create_detail(self, object_list, bundle):
-        #Alloe creates for Authorised users
+        #Allow creates for Authorised users
         return True
 
     def update_list(self, object_list, bundle):
@@ -352,7 +352,7 @@ class GenericImageAuthorization(Authorization):
         raise Unauthorized()
 
     def create_list(self, object_list, bundle):
-        raise Unauthorized("Sorry, no creates.")
+        return object_list
 
     def create_detail(self, object_list, bundle):
         return True
@@ -407,35 +407,29 @@ class GenericCameraAuthorization(Authorization):
 
         # campaign contain deployments, which is referenced in images. Find images user can see first
         images = GenericImage.objects.select_related("deployment__campaign")
-        allowed_images = images.filter(
-            deployment__campaign__in=campaign_objects)
-
-        #get respective camera id from each image       
-        camera_ids = allowed_images.values_list('camera_id')
+        #get ids of allowed images
+        allowed_images_ids = images.filter(
+            deployment__campaign__in=campaign_objects).values_list('id')     
 
         #now filter out the measurements we are not allowed to see   
-        return object_list.filter(id__in=camera_ids)
-
+        return object_list.filter(image__in=allowed_images_ids)
+    
     def read_detail(self, object_list, bundle):
         # get real user
         user = get_real_user_object(bundle.request.user)
        
-        # XXX calling read_list here gives me error saying function is not global. So cut and paste function below:
-
         # get the objects the user has permission to see
         campaign_objects = get_objects_for_user(user, [
             'catamidb.view_campaign'])
 
         # campaign contain deployments, which is referenced in images. Find images user can see first
         images = GenericImage.objects.select_related("deployment__campaign")
-        allowed_images = images.filter(
-            deployment__campaign__in=campaign_objects)
+        #get ids of allowed images
+        allowed_images_ids = images.filter(
+            deployment__campaign__in=campaign_objects).values_list('id')     
 
-        #get respective camera id from each image       
-        camera_ids = allowed_images.values_list('camera_id')
-
-        #now filter out the measurements we are not allowed to see
-        cameras = object_list.filter(id__in=camera_ids)
+        #now filter out the measurements we are not allowed to see   
+        cameras = object_list.filter(image__in=allowed_images_ids)
 
         # check the user has permission to view this camera
         if bundle.obj in cameras:
@@ -471,35 +465,31 @@ class MeasurementsAuthorization(Authorization):
         campaign_objects = get_objects_for_user(user, [
             'catamidb.view_campaign'])
 
-        # get all images for the above allowable campaigns
+        # campaign contain deployments, which is referenced in images. Find images user can see first
         images = GenericImage.objects.select_related("deployment__campaign")
-        allowed_images = images.filter(
-                             deployment__campaign__in=campaign_objects)
-        
-        measurements_ids = allowed_images.values_list('measurements_id')
+        #get ids of allowed images
+        allowed_images_ids = images.filter(
+            deployment__campaign__in=campaign_objects).values_list('id')     
 
-        #now filter out the measurements we are not allowed to see
-        return object_list.filter(id__in=measurements_ids)
+        #now filter out the measurements we are not allowed to see   
+        return object_list.filter(image__in=allowed_images_ids)
 
     def read_detail(self, object_list, bundle):
         # get real user
         user = get_real_user_object(bundle.request.user)
        
-        # XXX calling read_list here gives me error saying function is not global. So cut and paste function below:
-
         # get the objects the user has permission to see
         campaign_objects = get_objects_for_user(user, [
             'catamidb.view_campaign'])
 
-        # get all images for the above allowable campaigns
+        # campaign contain deployments, which is referenced in images. Find images user can see first
         images = GenericImage.objects.select_related("deployment__campaign")
-        allowed_images = images.filter(
-                             deployment__campaign__in=campaign_objects)
-        
-        measurements_ids = allowed_images.values_list('measurements_id')
+        #get ids of allowed images
+        allowed_images_ids = images.filter(
+            deployment__campaign__in=campaign_objects).values_list('id')     
 
-        #now filter out the measurements we are not allowed to see
-        measurements = object_list.filter(id__in=measurements_ids)
+        #now filter out the measurements we are not allowed to see   
+        measurements = object_list.filter(image__in=allowed_images_ids)  
 
         # check the user has permission to view the measurements
         if bundle.obj in measurements:
@@ -912,9 +902,7 @@ class ImageUploadResource(BackboneCompatibleResource):
 
 
 class GenericImageResource(BackboneCompatibleResource):   
-    measurements = fields.ToOneField('catamidb.api.MeasurementsResource', 'measurements')
     deployment = fields.ToOneField('catamidb.api.GenericDeploymentResource', 'deployment')
-    camera = fields.ToOneField('catamidb.api.GenericCameraResource', 'camera')    
 
     class Meta:
         queryset = GenericImage.objects.all()
@@ -936,6 +924,7 @@ class GenericImageResource(BackboneCompatibleResource):
         return bundle
 
 class GenericCameraResource(BackboneCompatibleResource):   
+    image = fields.ToOneField('catamidb.api.GenericImageResource', 'image')    
     class Meta:
         queryset = GenericCamera.objects.all()
         resource_name = "generic_camera"
@@ -946,6 +935,7 @@ class GenericCameraResource(BackboneCompatibleResource):
 
 
 class MeasurementsResource(BackboneCompatibleResource):     
+    image = fields.ToOneField('catamidb.api.GenericImageResource', 'image')   
     class Meta:
         queryset = Measurements.objects.all()
         resource_name = "measurements"

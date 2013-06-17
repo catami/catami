@@ -233,6 +233,38 @@ class Pose(models.Model):
         """Defines Metaparameters of the model."""
         unique_together = (('deployment', 'date_time'), )
 
+class ImageUpload(models.Model):
+    """
+    Model used to upload images to server, and have server generate thumbnails
+    Upload path defaults to "images" folder but will change during POST; use specified "deployment" to get Campaign and Deployment names
+    e.g. deployment id = 2, look up Deployment short_name = "r20110612_033752_st_helens_01_elephant_rock_deep_repeat"
+    and respective Campaign short_name = "Campaign1"
+    Upload image goes into: UPLOAD_PATH/r20110612_033752_st_helens_01_elephant_rock_deep_repeat/Campaign1/images/
+    Generated thumbnail goes into: UPLOAD_PATH/r20110612_033752_st_helens_01_elephant_rock_deep_repeat/Campaign1/thumbnails/
+    UPLOAD_PATH defined in settings.py
+    """
+
+    img = models.ImageField(upload_to="images", null=True, blank=True, max_length=255)   
+
+class GenericImage(models.Model):
+    """
+    Defining a simple image Model. Depth is included in the model to make
+    queries flat, simple and faster.
+
+    This is to replace existing Image and Pose.
+    """
+
+    deployment = models.ForeignKey(GenericDeployment)
+    web_location = models.CharField(max_length=200)
+    archive_location = models.CharField(max_length=200)    
+    date_time = models.DateTimeField()
+    position = models.PointField()
+    depth = models.FloatField()
+
+    class Meta:
+        """Defines Metaparameters of the model."""
+        unique_together = (('date_time', 'deployment'), )
+
 class GenericCamera(models.Model):
     """Data about a camera used in a deployment.
     Contains information about the orientation and quality of the images
@@ -253,9 +285,13 @@ class GenericCamera(models.Model):
         (HORIZONTAL_ANGLE, 'Horizontal/Seascape'),
     )
 
+    image = models.ForeignKey(GenericImage)
     name = models.CharField(max_length=50)
-    angle = models.IntegerField(choices=CAMERA_ANGLES)
+    angle = models.IntegerField(choices=CAMERA_ANGLES)    
 
+    class Meta:
+        """Defines Metaparameters of the model."""
+        unique_together = (('image', 'name'), )
 
 class Camera(models.Model):
     """Data about a camera used in a deployment.
@@ -322,6 +358,8 @@ class Measurements(models.Model):
         ('umolk', 'umol/kg'),
         ('mgm3', 'mg/m<sup>3</sup>'),
     )
+        
+    image = models.ForeignKey(GenericImage)
 
     #The water temperature at the location (and time) of the image.
     temperature = models.FloatField()
@@ -346,42 +384,6 @@ class Measurements(models.Model):
     #Altitude of camera at time of image.
     altitude = models.FloatField()
     altitude_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='m')
-
-
-class ImageUpload(models.Model):
-    """
-    Model used to upload images to server, and have server generate thumbnails
-    Upload path defaults to "images" folder but will change during POST; use specified "deployment" to get Campaign and Deployment names
-    e.g. deployment id = 2, look up Deployment short_name = "r20110612_033752_st_helens_01_elephant_rock_deep_repeat"
-    and respective Campaign short_name = "Campaign1"
-    Upload image goes into: UPLOAD_PATH/r20110612_033752_st_helens_01_elephant_rock_deep_repeat/Campaign1/images/
-    Generated thumbnail goes into: UPLOAD_PATH/r20110612_033752_st_helens_01_elephant_rock_deep_repeat/Campaign1/thumbnails/
-    UPLOAD_PATH defined in settings.py
-    """
-
-    img = models.ImageField(upload_to="images", null=True, blank=True, max_length=255)   
-
-class GenericImage(models.Model):
-    """
-    Defining a simple image Model. Depth is included in the model to make
-    queries flat, simple and faster.
-
-    This is to replace existing Image and Pose.
-    """
-
-    measurements = models.ForeignKey(Measurements)
-    camera = models.ForeignKey(GenericCamera)
-    web_location = models.CharField(max_length=200)
-    archive_location = models.CharField(max_length=200)
-    deployment = models.ForeignKey(GenericDeployment)
-    date_time = models.DateTimeField()
-    position = models.PointField()
-    depth = models.FloatField()
-
-    class Meta:
-        """Defines Metaparameters of the model."""
-        unique_together = (('date_time', 'camera'), )
-
 
 class ScientificMeasurementTypeManager(models.Manager):
     """Management class for ScientificMeasurementType."""
