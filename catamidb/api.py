@@ -830,7 +830,7 @@ class ImageUploadResource(BackboneCompatibleResource):
 
     class Meta:
         queryset = ImageUpload.objects.all()
-        deployments = Deployment.objects.all()
+        deployments = GenericDeployment.objects.all()
         resource_name = "image_upload"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
@@ -851,7 +851,8 @@ class ImageUploadResource(BackboneCompatibleResource):
             return data
         return super(ImageUploadResource, self).deserialize(request, data, format)
 
-    def obj_create(self, bundle, **kwargs):              
+    def obj_create(self, bundle, **kwargs):
+                  
         if ("img" in bundle.data.keys() and 
             "deployment" in bundle.data.keys()):
             #Split image name and image path
@@ -861,11 +862,11 @@ class ImageUploadResource(BackboneCompatibleResource):
             #split image name and image extension    
             imgNameNoExt, imgExt = os.path.splitext(imgName)
             
-            if (imgExt == ".png" or
-                imgExt == ".jpg" or
-                imgExt == ".jpeg"):
+            if (imgExt.lower() == ".png" or
+                imgExt.lower() == ".jpg" or
+                imgExt.lower() == ".jpeg"):
                 
-                deployment = self.Meta.deployments.filter(id=bundle.data["deployment"])
+                deployment = self.Meta.deployments.filter(id=int(bundle.data["deployment"]))
                 #Use specified deployment id to get Campaign and Deployment names, which is used to create path for image and thumbnails
                 if deployment.exists():
                     deploymentName = deployment[0].short_name
@@ -893,7 +894,7 @@ class ImageUploadResource(BackboneCompatibleResource):
                         except IOError as io:
                             logger.debug("cannot create thumbnail for '%s'" % infile)
                 else:
-                    raise ImmediateHttpResponse(response=http.HttpBadRequest("Invalid Deployment ID specified"))    
+                    raise ImmediateHttpResponse(response=http.HttpBadRequest("Invalid Deployment ID specified:"+str(bundle.data["deployment"])))    
             else:
                     raise ImmediateHttpResponse(response=http.HttpBadRequest("Image format not supported! Supported images include .png, .jpg, .jpeg"))  
         else:
