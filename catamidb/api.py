@@ -871,8 +871,8 @@ class ImageUploadResource(BackboneCompatibleResource):
                 if deployment.exists():
                     deploymentName = deployment[0].short_name
                     campaignName = deployment[0].campaign.short_name                
-                    imageDest = settings.IMPORT_PATH + "//" + campaignName + "//" + deploymentName + "//images//"
-                    thumbDest = settings.IMPORT_PATH + "//" + campaignName + "//" + deploymentName + "//thumbnails//"
+                    imageDest = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "images","")
+                    thumbDest = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "thumbnails","")
                     bundle.obj.img.field.upload_to = imageDest
                     
                     super(ImageUploadResource, self).obj_create(bundle, **kwargs)
@@ -920,8 +920,8 @@ class GenericImageResource(BackboneCompatibleResource):
     def dehydrate(self, bundle):
         deploymentName = bundle.obj.deployment.short_name
         campaignName = bundle.obj.deployment.campaign.short_name
-        bundle.data['web_location'] = os.path.normpath(settings.IMPORT_PATH + "//" + campaignName + "//" + deploymentName + "//images//")
-        bundle.data['thumbnail_location'] = os.path.normpath(settings.IMPORT_PATH + "//" + campaignName + "//" + deploymentName + "//thumbnails//")
+        bundle.data['web_location'] = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "images","")
+        bundle.data['thumbnail_location'] = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "thumbnails","")
         return bundle
 
 class GenericCameraResource(BackboneCompatibleResource):   
