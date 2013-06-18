@@ -830,7 +830,7 @@ class ImageUploadResource(BackboneCompatibleResource):
 
     class Meta:
         queryset = ImageUpload.objects.all()
-        deployments = Deployment.objects.all()
+        deployments = GenericDeployment.objects.all()
         resource_name = "image_upload"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
