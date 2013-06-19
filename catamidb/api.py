@@ -899,11 +899,8 @@ class ImageUploadResource(BackboneCompatibleResource):
                     infile = os.path.normpath(imageDest + imgName)
                     outfile = os.path.normpath(thumbDest + imgNameNoExt + "_" + size + imgExt)
 
-                    logger.debug("imageDest %s" % imageDest)
-                    logger.debug("thumbDest %s" % thumbDest)
-                    logger.debug("deploymentName %s" % deploymentName)
-                    logger.debug("infile %s" % infile)
-                    logger.debug("outfile %s" % outfile)
+                    logger.debug("Full size image is %s" % infile)
+                    logger.debug("Thumbnail image will be %s" % outfile)
 
                     try:
                         if not os.path.exists(thumbDest):
@@ -913,7 +910,8 @@ class ImageUploadResource(BackboneCompatibleResource):
                         im.save(outfile, "JPEG")
                         logger.debug("Thumbnail imagery %s created." % outfile)
                     except IOError:
-                        logger.debug("cannot create thumbnail for '%s'" % infile)
+                        logger.debug("Cannot create thumbnail for '%s'" % infile)
+                        raise ImmediateHttpResponse(response=http.HttpBadRequest("Cannot create thumbnail for '%s'" % infile))
 
                 else:
                     raise ImmediateHttpResponse(response=http.HttpBadRequest("Invalid Deployment ID specified:"+str(bundle.data["deployment"])))
