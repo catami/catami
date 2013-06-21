@@ -1,4 +1,14 @@
 from django.db import models
+from datetime import datetime
+from dateutil.tz import tzutc
+from django.contrib.gis.db import models
+from django.contrib.auth.models import User
+from catamidb.models import GenericImage, GenericDeployment
+from random import sample
+from django.db.utils import IntegrityError
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+import logging
 
 
 class AnnotationCodes(models.Model):
@@ -13,7 +23,7 @@ class AnnotationCodes(models.Model):
     code_name = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
     parent = models.ForeignKey(
-            'projects.AnnotationCode',
+            'projects.AnnotationCodes',
             blank=True,
             null=True
         )
@@ -46,10 +56,10 @@ class Project(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, null=True)
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()
-    generic_images = models.ManyToManyField(GenericImage, related_name='projects')
+    generic_images = models.ManyToManyField(GenericImage, null=True)
     creation_info = models.CharField(max_length=200)
 
     class Meta:
@@ -75,7 +85,7 @@ class GenericAnnotationSet(models.Model):
     )
 
     project = models.ForeignKey('projects.Project')
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, null=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     creation_date = models.DateTimeField()
@@ -83,12 +93,19 @@ class GenericAnnotationSet(models.Model):
     generic_images = models.ManyToManyField(GenericImage, related_name='projects')
     methodology = models.IntegerField(choices=METHODOLOGY_CHOICES)
 
+    class Meta:
+        unique_together = (('owner', 'name', 'creation_date'), )
+        permissions = (
+            ('view_genericannotationset', 'View the generic annotation set.'),
+        )
+
 
 class GenericAnnotation(models.Model):
     """The common base for Point and Whole image annotations.
     """
+
     image = models.ForeignKey('catamidb.GenericImage')
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, null=True)
 
     #loose reference to AnnotationCode table
     annotation_caab_code = models.CharField(max_length=200)
@@ -109,12 +126,10 @@ class GenericPointAnnotation(GenericAnnotation):
     the set to which it belongs.
     """
 
-    annotation_set = models.ForeignKey(
-        GenericAnnotationSet,
-        related_name='images'
-    )
-    x = models.FloatField()
-    y = models.FloatField()
+    generic_annotation_set = models.ForeignKey('projects.GenericAnnotationSet')
+
+    x = models.FloatField(validators = [MinValueValidator(0.0), MaxValueValidator(100.0)])
+    y = models.FloatField(validators = [MinValueValidator(0.0), MaxValueValidator(100.0)])
 
 
 class GenericWholeImageAnnotation(GenericAnnotation):
@@ -125,7 +140,4 @@ class GenericWholeImageAnnotation(GenericAnnotation):
     annotation.
     """
 
-    annotation_set = models.ForeignKey(
-        GenericAnnotationSet,
-        related_name='images'
-    )
+    generic_annotation_set = models.ForeignKey('projects.GenericAnnotationSet')

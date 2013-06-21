@@ -7,6 +7,7 @@ import catamidb.api
 import jsonapi.api
 import staging.api
 import annotations.api
+import projects.api
 
 # monkey patch the Resource init method to remove a particularly cpu hungry deepcopy
 def patched_resource__init__(self, api_name=None):
@@ -48,6 +49,13 @@ dev_api.register(annotations.api.AnnotationCodeResource())
 dev_api.register(annotations.api.QualifierCodeResource())
 dev_api.register(annotations.api.PointAnnotationSetResource())
 dev_api.register(annotations.api.PointAnnotationResource())
+
+dev_api.register(projects.api.ProjectResource())
+dev_api.register(projects.api.GenericAnnotationSetResource())
+dev_api.register(projects.api.GenericPointAnnotationResource())
+dev_api.register(projects.api.GenericWholeImageAnnotationResource())
+dev_api.register(projects.api.AnnotationCodesResource())
+dev_api.register(projects.api.QualifierCodesResource())
 
 urlpatterns = patterns('',
                        (r'^$', 'jsonapi.views.help'),

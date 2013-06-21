@@ -194,6 +194,7 @@ INSTALLED_APPS = (
     'dajaxice',
     'dajax',
     'bootstrap_toolkit',
+    'projects'
 )
 #    'haystack', # disabled 16th Jan 2013
 
@@ -217,6 +218,7 @@ PROJECT_APPS = (
     'features',
     'jsonapi',
     'clustering',
+    'projects'
 )
 
 #haystack support
@@ -314,6 +316,10 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'features': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
+        'projects': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
         },
