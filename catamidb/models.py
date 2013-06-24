@@ -357,32 +357,33 @@ class Measurements(models.Model):
         ('umoll', 'umol/l'),
         ('umolk', 'umol/kg'),
         ('mgm3', 'mg/m<sup>3</sup>'),
+        ('',''), 
     )
         
     image = models.ForeignKey(GenericImage)
 
     #The water temperature at the location (and time) of the image.
-    temperature = models.FloatField()
+    temperature = models.FloatField(null=True, blank=True)
     temperature_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='cel')
 
     #Water salinity at the measurement point.
-    salinity = models.FloatField()
+    salinity = models.FloatField(null=True, blank=True)
     salinity_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='psu')
 
     #Pitch of camera at time of image.
-    pitch = models.FloatField()
+    pitch = models.FloatField(null=True, blank=True)
     pitch_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='rad')
 
     #Roll of camera at time of image.
-    roll = models.FloatField()
+    roll = models.FloatField(null=True, blank=True)
     roll_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='rad')
 
     #Yaw of camera at time of image.
-    yaw = models.FloatField()
+    yaw = models.FloatField(null=True, blank=True)
     yaw_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='rad')
 
     #Altitude of camera at time of image.
-    altitude = models.FloatField()
+    altitude = models.FloatField(null=True, blank=True)
     altitude_unit = models.CharField(max_length=50, choices=UNITS_CHOICES, default='m')
 
 class ScientificMeasurementTypeManager(models.Manager):
