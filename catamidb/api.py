@@ -676,7 +676,10 @@ class GenericDeploymentResource(BackboneCompatibleResource):
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
     def dehydrate(self, bundle):
-        bundle.data['campaign_name'] = self.Meta.queryset[0].campaign.short_name
+        #may have more than one deployment pointing to the same campaign, but grab 1st instance
+        #as we only want to obtain campaign info.
+        dp = self.Meta.queryset.filter(id=bundle.data['id'])[0]; 
+        bundle.data['campaign_name'] = dp.campaign.short_name
         return bundle
 
 class DeploymentResource(ModelResource):
@@ -928,20 +931,49 @@ class GenericImageResource(BackboneCompatibleResource):
     class Meta:
         queryset = GenericImage.objects.all()
         resource_name = "generic_image"
-        excludes = ['archive_location']
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
         authorization = GenericImageAuthorization()
         filtering = {
-            'collection': ALL,
+            'deployment': ALL_WITH_RELATIONS,
         }
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+
+    #this gets called just before sending response
+    def alter_list_data_to_serialize(self, request, data):
+
+        #if flot is asking for the data, we need to package it up a bit
+        if request.GET.get("output") == "flot":
+            return self.package_series_for_flot_charts(data)
+
+        return data
+
+    #flot takes a two dimensional array of data, so we need to package the
+    #series up in this manner
+    def package_series_for_flot_charts(self, data):
+        data_table = []
+
+        #scale factors for reducing the data
+        list_length = len(data['objects'])
+        scale_factor = 4
+
+        #for index, bundle in enumerate(data['objects']):
+        #    data_table.append([index, bundle.obj.value])
+        for i in range(0, list_length, scale_factor):
+            data_table.append([i, data['objects'][i].data['depth']])
+
+        return {'data': data_table}
+
 
     def dehydrate(self, bundle):
         deploymentName = bundle.obj.deployment.short_name
         campaignName = bundle.obj.deployment.campaign.short_name
-        bundle.data['web_location'] = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "images","")
-        bundle.data['thumbnail_location'] = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "thumbnails","")
+        imageName = bundle.obj.image_name
+        imgNameNoExt, imgExt = os.path.splitext(imageName)
+        size = str(settings.THUMBNAIL_SIZE[0]) + "x" + str(settings.THUMBNAIL_SIZE[1])
+        thumbnailName = imgNameNoExt + "_" + size + imgExt        
+        bundle.data['web_location'] = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "images", imageName)
+        bundle.data['thumbnail_location'] = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "thumbnails", thumbnailName)
         return bundle
 
 class GenericCameraResource(BackboneCompatibleResource):   
@@ -964,6 +996,40 @@ class MeasurementsResource(BackboneCompatibleResource):
                                              ApiKeyAuthentication())
         authorization = MeasurementsAuthorization()
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+        filtering = {
+            'image': ALL_WITH_RELATIONS,
+        }
+
+    def alter_list_data_to_serialize(self, request, data):
+
+        #if flot is asking for the data, we need to package it up a bit
+        if request.GET.get("output") == "flot":
+            return self.package_series_for_flot_charts(data, request.GET.get("mtype"))
+
+        return data
+
+    #flot takes a two dimensional array of data, so we need to package the
+    #series up in this manner
+    def package_series_for_flot_charts(self, data, mtype):
+        data_table = []
+
+        #filter by measurement type
+        list_length = len(data['objects'])
+        filtered_table = []
+        for i in range(0, list_length,1):
+            if data['objects'][i].data[mtype] is not None:
+                filtered_table.append(data['objects'][i].data[mtype])
+
+        #scale factors for reducing the data
+        filtered_length = len(filtered_table)
+        scale_factor = 4
+
+        #for index, bundle in enumerate(data['objects']):
+        #    data_table.append([index, bundle.obj.value])
+        for i in range(0, filtered_length, scale_factor):
+            data_table.append([i, filtered_table[i]])
+
+        return {'data': data_table}
 
 class ScientificMeasurementTypeResource(ModelResource):
     class Meta:

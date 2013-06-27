@@ -76,15 +76,9 @@ urlpatterns = patterns(
 
     #plain data views
     url(r'^data/$', 'data'),
-    url(r'^data/auvdeployments/$', 'auvdeployments'),
-    url(r'^data/auvdeployments/map/$',
-        'auvdeployments_map'),
-    url(r'^data/auvdeployments/(?P<auvdeployment_id>\d+)/$',
-        'auvdeployment_detail'),
-
     url(r'^data/deployments/$', 'deployments'),
-    url(r'^data/deployments/map/$', 'deployments_map'),
-
+    url(r'^data/deployments/(?P<deployment_id>\d+)/$',
+        'deployment_detail'),
     url(r'^data/campaigns/$', 'campaigns'),
     url(r'^data/campaigns/(?P<campaign_id>\d+)/$',
         'campaign_detail'),
