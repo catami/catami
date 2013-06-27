@@ -215,21 +215,3 @@ class TestViews(TestCase):
         """
         response = self.client.get("/data/deployments/")
         self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/deployments/map/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_auvdeployments(self):
-        """@brief Test AUV deployment browser interfaces
-
-        """
-
-        response = self.client.get("/data/auvdeployments/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/auvdeployments/1/")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get("/data/auvdeployments/99999/")
-        self.assertEqual(response.status_code, 200)
-
