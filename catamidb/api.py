@@ -949,14 +949,14 @@ class GenericImageResource(BackboneCompatibleResource):
         }
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
-    #this gets called just before sending response
+    #this gets called just before sending response. Careful as we are overwritting the method defined in BackboneCompaitibleResource
     def alter_list_data_to_serialize(self, request, data):
 
         #if flot is asking for the data, we need to package it up a bit
         if request.GET.get("output") == "flot":
             return self.package_series_for_flot_charts(data)
 
-        return data
+        return data["objects"] #backbonejs requirement
 
     #flot takes a two dimensional array of data, so we need to package the
     #series up in this manner
@@ -1024,13 +1024,14 @@ class MeasurementsResource(BackboneCompatibleResource):
             'image': ALL_WITH_RELATIONS,
         }
 
+    #this gets called just before sending response. Careful as we are overwritting the method defined in BackboneCompaitibleResource
     def alter_list_data_to_serialize(self, request, data):
 
         #if flot is asking for the data, we need to package it up a bit
         if request.GET.get("output") == "flot":
             return self.package_series_for_flot_charts(data, request.GET.get("mtype"))
 
-        return data
+        return data["objects"] #backbonejs requirement
 
     #flot takes a two dimensional array of data, so we need to package the
     #series up in this manner
