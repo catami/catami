@@ -945,8 +945,6 @@ class GenericImageResource(BackboneCompatibleResource):
         authorization = GenericImageAuthorization()
         filtering = {
             'deployment': ALL_WITH_RELATIONS,
-            'collection': ALL,
-            'deployment': ALL,
             'date_time': ALL,
         }
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
