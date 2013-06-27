@@ -628,6 +628,7 @@ class ScientificImageMeasurementAuthorization(Authorization):
 # API configuration
 # ========================
 
+
 class CampaignResource(BackboneCompatibleResource):
     class Meta:
         queryset = Campaign.objects.all()
@@ -636,7 +637,12 @@ class CampaignResource(BackboneCompatibleResource):
                                              AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
         authorization = CampaignAuthorization()
-        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+        filtering = {
+            'short_name': ALL,
+            'date_start': ALL,
+        }
+
+        allowed_methods = ['get', 'post']  # allow post to create campaign via Backbonejs
         object_class = Campaign
 
     def hydrate(self, bundle):
@@ -661,23 +667,26 @@ class CampaignResource(BackboneCompatibleResource):
 
         return bundle
 
+
 class GenericDeploymentResource(BackboneCompatibleResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
-    
+
     class Meta:
         queryset = GenericDeployment.objects.prefetch_related("campaign").all()
         resource_name = "generic_deployment"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
-        authorization = GenericDeploymentAuthorization()        
+        authorization = GenericDeploymentAuthorization()
         filtering = {
+            'short_name': ALL,
             'campaign': ALL_WITH_RELATIONS,
         }
-        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+        allowed_methods = ['get', 'post']  # allow post to create campaign via Backbonejs
 
     def dehydrate(self, bundle):
         bundle.data['campaign_name'] = self.Meta.queryset[0].campaign.short_name
         return bundle
+
 
 class DeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
@@ -934,6 +943,8 @@ class GenericImageResource(BackboneCompatibleResource):
         authorization = GenericImageAuthorization()
         filtering = {
             'collection': ALL,
+            'deployment': ALL,
+            'date_time': ALL,
         }
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
@@ -952,6 +963,10 @@ class GenericCameraResource(BackboneCompatibleResource):
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
         authorization = GenericCameraAuthorization()
+        filtering = {
+            'id': ALL,
+            'name': ALL,
+        }
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
 
@@ -963,6 +978,16 @@ class MeasurementsResource(BackboneCompatibleResource):
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
         authorization = MeasurementsAuthorization()
+        filtering = {
+            'image': ALL,
+            'temperature': ALL,
+            'salinity': ALL,
+            'pitch': ALL,
+            'roll': ALL,
+            'yaw': ALL,
+            'altitude': ALL,
+            'id': ALL,
+        }
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
 class ScientificMeasurementTypeResource(ModelResource):
