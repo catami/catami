@@ -74,7 +74,7 @@ CreateCampaignView = Backbone.View.extend({
         this.$('.form1').hide();
     },
     doCreate: function (event) {
-        var data = $('form').serializeObject();
+        var data = $('form').catami_serializeObject();
         this.model.set(data);
         var isValid = this.model.isValid(true);
         if (isValid) {

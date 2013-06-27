@@ -255,8 +255,7 @@ class GenericImage(models.Model):
     """
 
     deployment = models.ForeignKey(GenericDeployment)
-    web_location = models.CharField(max_length=200)
-    archive_location = models.CharField(max_length=200)    
+    image_name = models.CharField(max_length=200)   
     date_time = models.DateTimeField()
     position = models.PointField()
     depth = models.FloatField()

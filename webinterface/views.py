@@ -16,7 +16,7 @@ import httplib2
 
 #not API compliant - to be removed after the views are compliant
 from catamidb.api import ImageResource
-from catamidb.models import Pose, Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment
+from catamidb.models import Pose, Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment, GenericDeployment
 from django.contrib.gis.geos import fromstr
 from django.db.models import Max, Min
 
@@ -382,64 +382,13 @@ def data(request):
 
 def deployments(request):
     """@brief Deployment list html for entire database
-
     """
-    auv_deployment_list = AUVDeployment.objects.all()
-    bruv_deployment_list = BRUVDeployment.objects.all()
-    dov_deployment_list = DOVDeployment.objects.all()
     return render_to_response(
-        'webinterface/Force_views/DeploymentIndex.html',
-        {'auv_deployment_list': auv_deployment_list,
-         'bruv_deployment_list': bruv_deployment_list,
-         'dov_deployment_list': dov_deployment_list},
+        'webinterface/Backbone_views/DeploymentIndex.html',
+        {'deployment_list': GenericDeployment.objects.all()},
         context_instance=RequestContext(request))
 
-
-def deployments_map(request):
-    """@brief Deployment map html for entire database
-
-    """
-    latest_deployment_list = Deployment.objects.all()
-    return render_to_response(
-        'webinterface/Force_views/DeploymentMap.html',
-        {'latest_deployment_list': latest_deployment_list},
-        context_instance=RequestContext(request))
-
-
-def auvdeployments(request):
-    """@brief AUV Deployment list html for entire database
-
-    """
-
-    latest_campaign_list = get_objects_for_user_wrapper(request.user, [
-        'catamidb.view_campaign'])
-
-    latest_auvdeployment_list = AUVDeployment.objects.filter(campaign__in=latest_campaign_list)
-
-    return render_to_response(
-        'webinterface/Force_views/auvDeploymentIndex.html',
-        {'latest_auvdeployment_list': latest_auvdeployment_list},
-        context_instance=RequestContext(request))
-
-
-def auvdeployments_map(request):
-    """@brief AUV Deployment map html for entire database
-
-    """
-
-    latest_campaign_list = get_objects_for_user_wrapper(request.user, [
-        'catamidb.view_campaign'])
-
-    latest_auvdeployment_list = AUVDeployment.objects.filter(
-        campaign__in=latest_campaign_list
-    )
-
-    return render_to_response(
-        'webinterface/Force_views/auvDeploymentMap.html',
-        {'latest_auvdeployment_list': latest_auvdeployment_list},
-        context_instance=RequestContext(request))
-
-def auvdeployment_detail(request, auvdeployment_id):
+def deployment_detail(request, deployment_id):
     """@brief AUV Deployment map and data plot for specifed AUV deployment
 
     """
@@ -447,22 +396,22 @@ def auvdeployment_detail(request, auvdeployment_id):
     latest_campaign_list = get_objects_for_user_wrapper(request.user, [
         'catamidb.view_campaign'])
 
-    auvdeployment_object = {}
+    deployment_object = {}
 
     try:
-        auvdeployment_object = list(AUVDeployment.objects.filter(
-            id=auvdeployment_id, campaign__in=latest_campaign_list))[0]
+        deployment_object = list(GenericDeployment.objects.filter(
+            id=deployment_id, campaign__in=latest_campaign_list))[0]
 
     #if it doesn't exist or we dont have permission then go back to the main list
     except Exception:
-        return auvdeployments(request)
+        return deployments(request)
 
     return render_to_response(
-        'webinterface/Force_views/auvdeploymentDetail.html',
-        {'auvdeployment_object': auvdeployment_object,
+        'webinterface/Backbone_views/DeploymentDetail.html',
+        {'deployment_object': deployment_object,
          'WMS_URL': settings.WMS_URL,
          'WMS_layer_name': settings.WMS_LAYER_NAME,
-         'deployment_id': auvdeployment_object.id},
+         'deployment_id': deployment_object.id},
         context_instance=RequestContext(request))
 
 def campaigns(request):

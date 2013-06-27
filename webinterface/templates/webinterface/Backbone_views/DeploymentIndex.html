@@ -1,0 +1,47 @@
+{% extends "base-nosidebar.html" %}
+
+{% block content_header %}
+  <ul class="breadcrumb">
+      <li><a href="/data">Data</a>
+          <li class="active"><span class="divider">></span> Deployment List</li>
+  </ul>
+{% endblock %}
+
+{% block content %}
+
+<div id="DeploymentListContainer"></div>
+
+<script type="text/template" id="DeploymentListTemplate">
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Name</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Min Depth</th>
+            <th>Max Depth</th>
+            <th>Related Campaign</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%=deployments%>
+    </tbody>
+</table>
+</script>
+
+<script type="text/template" id="DeploymentTemplate">
+    <tr>
+        <td><a href="<%= type_url %>"><%= type %></a></td>
+        <td><a href="<%= deployment_url %>"><%= short_name %></a></td>
+        <td><%= start_time %></td>
+        <td><%= end_time %></td>
+        <td><%= min_depth %></td>
+        <td><%= max_depth %></td>
+        <td><a href="<%= campaign_url %>"><%= campaign_name %></a></td>
+    </tr>
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/deploymentlist.js"></script>
+
+{% endblock %}
