@@ -56,7 +56,11 @@ urlpatterns = patterns(
     #dbadmin tool
     #url(r'^report/', include('dbadmintool.urls')),
 
-    # userena
+    # userena profile management
+    url(r'^accounts/(?P<username>[\.\w]+)/edit/$', userena_views.profile_edit,  {'template_name': 'accounts/profile_form.html'}, name='userena_profile_edit'),
+    url(r'^accounts/(?P<username>(?!signout|signup|signin)[\.\w]+)/$', userena_views.profile_detail, {'template_name': 'accounts/profile_detail.html'},  name='userena_profile_detail'),
+    
+    #userena signin/signup
     url(r'^accounts/signup/$', userena_views.signup, {'template_name': 'accounts/signup_form.html'}, name='userena_signup'),
     url(r'^accounts/signin/$', userena_views.signin, {'template_name': 'accounts/signin_form.html'}, name='userena_signin'),
     (r'^accounts/', include('userena.urls')),
