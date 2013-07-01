@@ -28,3 +28,4 @@ nose-exclude
 django-dajaxice
 django-dajax
 django-bootstrap-toolkit
+PIL
