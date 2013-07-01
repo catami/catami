@@ -57,8 +57,8 @@ urlpatterns = patterns(
     #url(r'^report/', include('dbadmintool.urls')),
 
     # userena
-    url(r'^userena/signup/$', userena_views.signup, {'signup_form': 'userena/signup_form.html'}, name='userena_signup'),
-    url(r'^userena/signin/$', userena_views.signin, {'signin_form': 'userena/signin_form.html'}),
+    url(r'^accounts/signup/$', userena_views.signup, {'template_name': 'accounts/signup_form.html'}, name='userena_signup'),
+    url(r'^accounts/signin/$', userena_views.signin, {'template_name': 'accounts/signin_form.html'}, name='userena_signin'),
     (r'^accounts/', include('userena.urls')),
     url(r'^logout/$', 'logout_view'),
 
