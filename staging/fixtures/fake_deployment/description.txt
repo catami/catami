@@ -1,3 +1,0 @@
-Fake deployment used to test generic still imagery importer.
-
-Uses a track from ACFR to Ultimo to verify coordinates are correct upon viewing.

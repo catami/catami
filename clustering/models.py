@@ -3,11 +3,9 @@
 Depends on Force.Image and Collection.Collection
 """
 from django.db import models
-from catamidb.models import Image
-from collection.models import Collection
 
 from django.core.validators import MaxValueValidator, MinValueValidator
-
+'''
 
 class ClusterRun(models.Model):
     """The clustering of a Collection with a certain tuning parameter."""
@@ -36,3 +34,4 @@ class ClusterLabel(models.Model):
         related_name='cluster_probabilities',
     )
     cluster_run = models.ForeignKey(ClusterRun)
+'''

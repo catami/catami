@@ -12,30 +12,16 @@ import logging
 
 #for the geoserver proxy
 from django.views.decorators.csrf import csrf_exempt
-import httplib2
-
-#not API compliant - to be removed after the views are compliant
-from catamidb.api import ImageResource
-from catamidb.models import Pose, Image, Campaign, AUVDeployment, BRUVDeployment, DOVDeployment, Deployment, TIDeployment, TVDeployment, GenericDeployment
+from catamidb.models import *
 from django.contrib.gis.geos import fromstr
 from django.db.models import Max, Min
-
-import simplejson
 from django.conf import settings
-from collection.api import CollectionResource
-from collection.models import Collection, CollectionManager
-
-from webinterface.forms import CreateWorksetAndAnnotationForm, CreateCollectionForm, CreateWorksetForm, CreateCollectionExploreForm, CreatePointAnnotationSetForm
-
-import HTMLParser
-
-# DajaxIce
-from dajaxice.decorators import dajaxice_register
-from dajax.core import Dajax
-
-
-#account management
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+
+import httplib2
+import simplejson
+import HTMLParser
 
 logger = logging.getLogger(__name__)
 
@@ -128,185 +114,9 @@ def project_annotate(request, project_id, annotation_set_id):
                               RequestContext(request))
 
 
-# Explore pages
-def explore(request):
-    """@brief Campaign list html for entire database
-
-    """
-    return render_to_response('webinterface/explore.html',
-                              {'WMS_URL': settings.WMS_URL,
-                               'WMS_layer_name': settings.WMS_LAYER_NAME},
-                              context_instance=RequestContext(request))
-
-
-# Explore pages
-def explore_campaign(request, campaign_id):
-    return render_to_response('webinterface/explore.html', {},
-                              context_instance=RequestContext(request))
-
-## view collection table views
-def public_collections_all(request):
-    collection_list = CollectionResource()
-    cl = collection_list.obj_get_list()
-    return render_to_response('webinterface/publiccollections.html', {"collections": cl, "listname":"cl_pub_all"}, RequestContext(request))
-
-
-
-@waffle_switch('Collections')
-def view_collection(request, collection_id):
-    wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random','n':100})
-    wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified','n':100})
-
-    workset_annotation_creation = CreateWorksetAndAnnotationForm(
-              initial = {'collection_id': collection_id,
-                         'image_selection_method': 'random',
-                         'image_count': 100,
-                         'owner': request.user.id,
-                         'annotation_point_count': 25,
-                         'randomize_workset': True, 
-                         'annotation_set_name': 'annotation_set',
-                         'annotation_methodology': 0
-                        }
-    )
-
-    asform = CreatePointAnnotationSetForm()
-
-    # check for optional get parameters
-    # This avoids needing to specify a new url and view for each optional parameter
-    workset_id = request.GET.get("wsid", "")
-    annotation_id = request.GET.get("asid", "")
-
-    #check change permissions
-    collection = Collection.objects.get(pk=collection_id)
-
-    change_collection = check_permission(request.user, 'collection.change_collection', collection)
-
-    return render_to_response('webinterface/viewcollection.html',
-#    return render_to_response('webinterface/viewcollectionalternative.html',
-                              {'wsform_rand' : wsform_rand,
-                               'wsform_strat' : wsform_strat,
-                               'workset_annotation_creation_form' : workset_annotation_creation,
-                               'asform' : asform,
-                               'collection_id': collection_id,
-                               'workset_id': workset_id,
-                               "annotation_id": annotation_id,
-                               'WMS_URL': settings.WMS_URL,
-                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME,
-                               'change_collection': change_collection},
-                              RequestContext(request))
-
-
-#@waffle_switch('Collections')
-#def view_workset(request, collection_id, workset_id):
-#    wsform_rand = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'random'})
-#    wsform_strat = CreateWorksetForm(initial={'c_id': collection_id, 'method': 'stratified'})
-#    asform = CreatePointAnnotationSet()
-#
-#
-#    #check change permissions
-#    collection = Collection.objects.get(pk=collection_id)
-#
-#    change_collection = check_permission(request.user, 'collection.change_collection', collection)
-#
-#    return render_to_response('webinterface/viewcollection.html',
-##    return render_to_response('webinterface/viewworkset.html',
-#                              {'wsform_rand' : wsform_rand,
-#                               'wsform_strat' : wsform_strat,
-#                               'asform' : asform,
-#                               'collection_id': collection_id,
-#                               'workset_id': workset_id,
-#                               'WMS_URL': settings.WMS_URL,
-#                               'WMS_layer_name': settings.WMS_COLLECTION_LAYER_NAME,
-#                               'change_collection': change_collection},
-#                              RequestContext(request))
-
-
-# view collection table views
-# def public_collections_all(request):
-#     collection_list = CollectionResource()
-#     cl = collection_list.obj_get_list()
-#     return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"pub_all"}, RequestContext(request))
-#
-# def public_collections_recent(request):
-#     collection_list = CollectionResource()
-#     cl = collection_list.obj_get_list()
-#     return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"pub_rec"}, RequestContext(request))
-#
-# def my_collections_all(request):
-#     collection_list = CollectionResource()
-#     cl = collection_list.obj_get_list(request,owner=request.user.id)
-#     return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_all"}, RequestContext(request))
-#
-# def my_collections_recent(request):
-#     collection_list = CollectionResource()
-#     cl = collection_list.obj_get_list(request,owner=request.user.id)
-#     return render_to_response('webinterface/dataviews/collectiontable.html', {"collections": cl, "listname":"my_rec"}, RequestContext(request))
-
-# collection object tasks
-@waffle_switch('Collections')
-def delete_collection(request):
-    return None
-
-
-@waffle_switch('Collections')
-def flip_public_collection(request):
-    return None
-
-
-# Subset pages
-@waffle_switch('Collections')
-def view_subset(request):
-    return render_to_response('webinterface/viewsubset.html', {},
-                              RequestContext(request))
-
-
-@waffle_switch('Collections')
-def all_subsets(request, collection_id):
-    return render_to_response('webinterface/allsubsets.html',
-                              {"collection_id": collection_id},
-                              RequestContext(request))
-
-
-@waffle_switch('Collections')
-def my_subsets(request):
-    return render_to_response('webinterface/mysubsets.html', {},
-                              RequestContext(request))
-
-
-@waffle_switch('Collections')
-def public_subsets(request):
-    return render_to_response('webinterface/publicsubsets.html', {},
-                              RequestContext(request))
-
-
 # Single image pages
 def image_view(request):
     return render_to_response('webinterface/imageview.html', {},
-                              RequestContext(request))
-
-
-def image_annotate(request,image_id):
-    apistring = request.GET.get("apistring", "")
-    offset = request.GET.get("offset", "")
-    annotation_id = request.GET.get("asid", "")
-
-    return render_to_response('webinterface/imageannotate.html',
-        {"image_id": image_id, "offset": offset, "apistring": apistring, "annotation_id": annotation_id},
-        RequestContext(request))
-
-
-def inline_image_annotate(request,image_id):
-    apistring = request.GET.get("apistring", "")
-    offset = request.GET.get("offset", "")
-    annotation_id = request.GET.get("asid", "")
-
-    return render_to_response('webinterface/inline_image_annotate.html',
-        {"image_id": image_id, "offset": offset, "apistring": apistring, "annotation_id": annotation_id},
-        RequestContext(request))
-
-
-def image_edit(request):
-    return render_to_response('webinterface/imageedit.html', {},
                               RequestContext(request))
 
 
@@ -350,6 +160,14 @@ def deployment_detail(request, deployment_id):
          'deployment_id': deployment_object.id},
         context_instance=RequestContext(request))
 
+
+@login_required
+def campaigncreate(request):
+    context = {}
+    rcon = RequestContext(request)
+
+    return render_to_response('webinterface/campaigncreate.html', context, rcon)
+
 def campaigns(request):
     """@brief Campaign list html for entire database
 
@@ -359,6 +177,7 @@ def campaigns(request):
         'catamidb.view_campaign']) #Campaign.objects.all()
     campaign_rects = list()
 
+    '''
     for campaign in latest_campaign_list:
         auv_deployment_list = AUVDeployment.objects.filter(campaign=campaign)
         bruv_deployment_list = BRUVDeployment.objects.filter(campaign=campaign)
@@ -373,12 +192,13 @@ def campaigns(request):
                 'MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(
                     campaign=campaign).extent())
             campaign_rects.append(sm.envelope.geojson)
-
+    '''
     return render_to_response(
         'webinterface/Force_views/campaignIndex.html',
         {'latest_campaign_list': latest_campaign_list,
          'campaign_rects': campaign_rects},
         context_instance=RequestContext(request))
+
 
 
 def campaign_detail(request, campaign_id):
@@ -401,6 +221,7 @@ def campaign_detail(request, campaign_id):
     campaign_rects = list()
     #djf = Django.Django(geodjango="extent", properties=[''])
 
+    '''
     auv_deployment_list = AUVDeployment.objects.filter(
         campaign=campaign_object)
     bruv_deployment_list = BRUVDeployment.objects.filter(
@@ -429,98 +250,19 @@ def campaign_detail(request, campaign_id):
         sm_envelope = sm.envelope.geojson
     except AttributeError:
         sm_envelope = ''
+    '''
 
     return render_to_response(
         'webinterface/Force_views/campaign_detail.html',
         {'campaign_object': campaign_object,
-         'auv_deployment_list': auv_deployment_list,
-         'bruv_deployment_list': bruv_deployment_list,
-         'dov_deployment_list': dov_deployment_list,
-         'ti_deployment_list': ti_deployment_list,
-         'tv_deployment_list': tv_deployment_list,
+         'auv_deployment_list': None,
+         'bruv_deployment_list': None,
+         'dov_deployment_list': None,
+         'ti_deployment_list': None,
+         'tv_deployment_list': None,
 
          'campaign_as_geojson': sm_envelope},
         context_instance=RequestContext(request))
-
-
-@csrf_exempt
-def get_multiple_deployment_extent(request):
-    if request.method == 'POST':  # If the form has been submitted...
-        deployment_ids = request.POST.get('deployment_ids')
-        deployment_ids = deployment_ids.__str__().split(",")
-        extent = Pose.objects.filter(
-            deployment_id__in=deployment_ids).extent().__str__()
-
-        response_data = {"extent": extent}
-        return HttpResponse(simplejson.dumps(response_data),
-                            mimetype="application/json")
-
-    return HttpResponse(
-        simplejson.dumps({"message": "GET operation invalid, must use POST."}),
-        mimetype="application/json")
-
-
-@csrf_exempt
-def get_collection_extent(request):
-    if request.method == 'POST':  # If the form has been submitted...
-        collection_id = request.POST.get('collection_id')
-        image_set = Collection.objects.get(id=collection_id).images.all()
-        pose_id_set = image_set.values_list("pose_id")
-
-        extent = Pose.objects.filter(id__in=pose_id_set).extent().__str__()
-
-        response_data = {"extent": extent}
-        return HttpResponse(simplejson.dumps(response_data),
-                            mimetype="application/json")
-
-    return HttpResponse(
-        simplejson.dumps({"message": "GET operation invalid, must use POST."}),
-        mimetype="application/json")
-
-
-@csrf_exempt
-def create_collection_from_deployments(request):
-
-    if request.method == 'POST':  # If the form has been submitted...
-        form = CreateCollectionForm(
-            request.POST)  # A form bound to the POST data
-
-        if form.is_valid():  # All validation rules pass
-            # make a new collection here from the deployment list
-            CollectionManager().collection_from_deployments_with_name(
-                request.user, request.POST.get('collection_name'),
-                request.POST.get('deployment_ids'))
-            return HttpResponseRedirect('/projects')  # Redirect after POST
-
-    return render(request, 'noworky.html', {'form': form, })
-
-@csrf_exempt
-def create_collection_from_explore(request):
-
-    if request.method == 'POST':  # If the form has been submitted...
-        form = CreateCollectionExploreForm(
-            request.POST)  # A form bound to the POST data
-        print "post"
-        print request._body
-        if form.is_valid():  # All validation rules pass
-            print "valid"
-            # make a new collection here from the deployment list
-            CollectionManager().collection_from_explore(
-                request.user, request.POST.get('collection_name'),
-                request.POST.get('deployment_ids'),
-                request.POST.get('depth__gte'),
-                request.POST.get('depth__lte'),
-                request.POST.get('temperature__gte'),
-                request.POST.get('temperature__lte'),
-                request.POST.get('salinity__gte'),
-                request.POST.get('salinity__lte'),
-                request.POST.get('altitude__gte'),
-                request.POST.get('altitude__lte')
-                )
-            return HttpResponseRedirect('/projects')  # Redirect after POST
-
-    return render(request, 'noworky.html', {'form': form, })
-
 
 @csrf_exempt
 def proxy(request):

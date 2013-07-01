@@ -166,37 +166,27 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    ''
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'django.contrib.gis',
-    'catamidb',
-    'staging',
-    'jsonapi',
-    'webinterface',
     'django_jenkins',
-    'dbadmintool',
-    'features',
     'south',
     'django_coverage',
     'accounts',
-    'collection',
     'guardian',
-    'easy_thumbnails',
-    'restthumbnails',
     'django_nose',
-    'clustering',
-    'annotations',
     'tastypie',
     'userena',
     'waffle',
-    #'dajaxice',
-    #'dajax',
     'bootstrap_toolkit',
-    'projects'
+    'projects',
+    'catamidb',
+    'jsonapi',
+    'webinterface',
+    #'dbadmintool',
+    #'clustering',
 )
+
 #    'haystack', # disabled 16th Jan 2013
 
 
@@ -210,15 +200,11 @@ JENKINS_TASKS = {
 
 PROJECT_APPS = (
     'catamidb',
-    'staging',
     'webinterface',
-    'dbadmintool',
+    #'dbadmintool',
     'accounts',
-    'annotations',
-    'collection',
-    'features',
     'jsonapi',
-    'clustering',
+    #'clustering',
     'projects'
 )
 
@@ -308,15 +294,11 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
         },
-        'dbadmintool': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-        },
+        #'dbadmintool': {
+        #    'handlers': ['console', 'file'],
+        #    'level': 'DEBUG',
+        #},
         'catamidb': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-        },
-        'features': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
         },

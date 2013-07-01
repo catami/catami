@@ -5,10 +5,7 @@ from django.conf.urls import patterns, url, include
 from django.conf import settings
 
 from django.contrib import admin
-from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 from django.views.generic.simple import direct_to_template
-
-dajaxice_autodiscover()
 
 
 admin.autodiscover()
@@ -33,8 +30,11 @@ urlpatterns = patterns(
     #url(r'^viewcollection$', 'viewcollection'),
 
     #Staging
-    url(r'^staging/', include('staging.urls')),
-
+    #url(r'^staging/', include('staging.urls')),
+    # campaign creating
+    url(r'^staging/campaign/create$', 'campaigncreate',
+                           name='staging_campaign_create'),
+   
     # Projects
     #url(r'^projects$', 'projects'),
     url(r'^projects/$', 'projects'),
@@ -42,36 +42,6 @@ urlpatterns = patterns(
     url(r'^projects/(?P<project_id>\d+)/configure/$', 'project_configure'),
     url(r'^projects/(?P<project_id>\d+)/configure/(?P<annotation_set_id>\d+)/$', 'project_annotate'),
 
-    #Collection detail Views
-    #url(r'^collections/(?P<collection_id>\d+)/$', 'view_collection'),
-#    url(
-#        r'^collections/(?P<collection_id>\d+)/workset/(?P<workset_id>\d+)/$',
-#        'view_workset'),
-    #url(r'^my_collections$', 'my_collections'),
-    #url(r'^my_collections_all$', 'my_collections_all'),
-    #url(r'^my_collections_recent$', 'my_collections_recent'),
-    #url(r'^public_collections$', 'public_collections'),
-    #url(r'^public_collections_all$', 'public_collections_all'),
-    #url(r'^public_collections_recent$', 'public_collections_recent'),
-
-    #Collection Object Views
-    url(r'^view_subset$', 'view_subset'),
-    url(r'^all_subsets/(?P<collection_id>\d+)/$',
-        'all_subsets'),
-    url(r'^my_subsets$', 'my_subsets'),
-    url(r'^public_subsets$', 'public_subsets'),
-    url(r'^imageview$', 'image_view'),
-#    url(r'^imageannotate$', 'image_annotate'),
-    url(r'^imageannotate/(?P<image_id>\d+)/$', 'image_annotate'),
-    url(r'^inlineimageannotate/(?P<image_id>\d+)/$', 'inline_image_annotate'),
-
-    url(r'^imageedit$', 'image_edit'),
-
-    #Collection Management
-    #url(r'^collections/create/$',
-    #    'create_collection_from_deployments'),
-    #url(r'^collections/create/$', 'create_collection_from_explore'),
-    #url(r'^collections/getcollectionextent$', 'get_collection_extent'),
 
     #plain data views
     url(r'^data/$', 'data'),
@@ -86,24 +56,11 @@ urlpatterns = patterns(
     url(r'^api/', include('jsonapi.urls')),
 
     #dbadmin tool
-    url(r'^report/', include('dbadmintool.urls')),
+    #url(r'^report/', include('dbadmintool.urls')),
 
     # userena
     (r'^accounts/', include('accounts.urls')),
     url(r'^logout/$', 'logout_view'),
-
-    # Dajaxice
-    #url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
-
-    url(r'^explore$', 'explore'),
-    url(r'^explore/getmapextent$',
-        'get_multiple_deployment_extent'),
-
-    url(r'^explore_campaign/(?P<campaign_id>\d+)/$',
-        'explore_campaign'),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     #admin interface
     url(r'^admin/', include(admin.site.urls)),
@@ -122,5 +79,5 @@ urlpatterns += patterns(
     #     {'document_root': settings.IMAGES_ROOT,
     #      'show_indexes': False}),
     # and the thumbnails...
-    url(r'^thumbnails/', include('restthumbnails.urls')),
+    #url(r'^thumbnails/', include('restthumbnails.urls')),
 )

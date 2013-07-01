@@ -66,7 +66,7 @@ CreateCampaignView = Backbone.View.extend({
         window.location = '/staging/campaign/create';
     },
     goBack: function (event) {
-        window.location = '/staging';
+        window.location = '/data/campaigns';
     },
     doHide: function (event) {
         this.$('.alert').hide();
