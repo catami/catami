@@ -57,9 +57,11 @@ urlpatterns = patterns(
     #url(r'^report/', include('dbadmintool.urls')),
 
     # userena profile management
+    url(r'^accounts/(?P<username>[\.\w]+)/email/$', userena_views.email_change, {'template_name': 'accounts/email_form.html'}, name='userena_email_change'),
+    url(r'^accounts/(?P<username>[\.\w]+)/password/$', userena_views.password_change,  {'template_name': 'accounts/password_reset_form.html'}, name='password_change'),
     url(r'^accounts/(?P<username>[\.\w]+)/edit/$', userena_views.profile_edit,  {'template_name': 'accounts/profile_form.html'}, name='userena_profile_edit'),
     url(r'^accounts/(?P<username>(?!signout|signup|signin)[\.\w]+)/$', userena_views.profile_detail, {'template_name': 'accounts/profile_detail.html'},  name='userena_profile_detail'),
-    
+
     #userena signin/signup
     url(r'^accounts/signup/$', userena_views.signup, {'template_name': 'accounts/signup_form.html'}, name='userena_signup'),
     url(r'^accounts/signin/$', userena_views.signin, {'template_name': 'accounts/signin_form.html'}, name='userena_signin'),
@@ -75,7 +77,7 @@ urlpatterns += patterns(
     '',
     #url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'userena/signin_form.html'}),
     # the raw original images
-    url(r'images/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.IMPORT_PATH, 'show_indexes': True}),
+    url(r'images/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.IMPORT_PATH, 'show_indexes': True}),
     # url(r'^{0}/(?P<path>.*)$'.format(settings.IMAGES_URL),
     #     'django.views.static.serve',
     #     {'document_root': settings.IMAGES_ROOT,
