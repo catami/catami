@@ -18,7 +18,6 @@ from tastypie.exceptions import Unauthorized, ImmediateHttpResponse
 from tastypie import http
 from tastypie.resources import ModelResource, Resource
 from .models import *
-from restthumbnails.helpers import get_thumbnail_proxy
 from catamidb import authorization
 
 import os, sys, shutil
