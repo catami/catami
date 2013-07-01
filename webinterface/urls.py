@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.views.generic.simple import direct_to_template
 
+from userena import views as userena_views
 
 admin.autodiscover()
 
@@ -25,16 +26,13 @@ urlpatterns = patterns(
     url(r'^about', 'about'),
     url(r'^proxy/$', 'proxy'),
 
-
-
     #url(r'^viewcollection$', 'viewcollection'),
 
     #Staging
     #url(r'^staging/', include('staging.urls')),
     # campaign creating
-    url(r'^staging/campaign/create$', 'campaigncreate',
-                           name='staging_campaign_create'),
-   
+    url(r'^staging/campaign/create$', 'campaigncreate', name='staging_campaign_create'),
+
     # Projects
     #url(r'^projects$', 'projects'),
     url(r'^projects/$', 'projects'),
@@ -59,7 +57,9 @@ urlpatterns = patterns(
     #url(r'^report/', include('dbadmintool.urls')),
 
     # userena
-    (r'^accounts/', include('accounts.urls')),
+    url(r'^userena/signup/$', userena_views.signup, {'signup_form': 'userena/signup_form.html'}, name='userena_signup'),
+    url(r'^userena/signin/$', userena_views.signin, {'signin_form': 'userena/signin_form.html'}),
+    (r'^accounts/', include('userena.urls')),
     url(r'^logout/$', 'logout_view'),
 
     #admin interface
@@ -69,11 +69,9 @@ urlpatterns = patterns(
 
 urlpatterns += patterns(
     '',
-    url(r'^accounts/login/$',
-        'django.contrib.auth.views.login',
-        {'template_name': 'registration/login.html'}),
+    #url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'userena/signin_form.html'}),
     # the raw original images
-    url(r'images/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.IMAGES_ROOT, 'show_indexes': True}),
+    url(r'images/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.IMAGES_ROOT, 'show_indexes': True}),
     # url(r'^{0}/(?P<path>.*)$'.format(settings.IMAGES_URL),
     #     'django.views.static.serve',
     #     {'document_root': settings.IMAGES_ROOT,

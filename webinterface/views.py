@@ -54,8 +54,9 @@ def index(request):
     """@brief returns root catami html
     """
     return render_to_response('webinterface/index.html',
-
                               RequestContext(request))
+
+
 # Account stuff
 def logout_view(request):
     """@brief returns user to html calling the logout action
@@ -91,9 +92,11 @@ def howto(request):
 
                               RequestContext(request))
 
+
 # Projects page
 def projects(request):
     return render_to_response('webinterface/projects-new.html', {}, RequestContext(request))
+
 
 def project_view(request, project_id):
     return render_to_response('webinterface/project-view.html',
@@ -102,10 +105,12 @@ def project_view(request, project_id):
                                'WMS_layer_name': settings.WMS_PROJECTS_LAYER_NAME},
                               RequestContext(request))
 
+
 def project_configure(request, project_id):
     return render_to_response('webinterface/project-configure.html',
                               {"project_id": project_id},
                               RequestContext(request))
+
 
 def project_annotate(request, project_id, annotation_set_id):
     return render_to_response('webinterface/project-annotate.html',
@@ -133,6 +138,7 @@ def deployments(request):
         'webinterface/Backbone_views/DeploymentIndex.html',
         {'deployment_list': GenericDeployment.objects.all()},
         context_instance=RequestContext(request))
+
 
 def deployment_detail(request, deployment_id):
     """@brief AUV Deployment map and data plot for specifed AUV deployment
@@ -168,13 +174,14 @@ def campaigncreate(request):
 
     return render_to_response('webinterface/campaigncreate.html', context, rcon)
 
+
 def campaigns(request):
     """@brief Campaign list html for entire database
 
     """
 
     latest_campaign_list = get_objects_for_user_wrapper(request.user, [
-        'catamidb.view_campaign']) #Campaign.objects.all()
+        'catamidb.view_campaign'])  # Campaign.objects.all()
     campaign_rects = list()
 
     '''
@@ -198,7 +205,6 @@ def campaigns(request):
         {'latest_campaign_list': latest_campaign_list,
          'campaign_rects': campaign_rects},
         context_instance=RequestContext(request))
-
 
 
 def campaign_detail(request, campaign_id):
@@ -263,6 +269,7 @@ def campaign_detail(request, campaign_id):
 
          'campaign_as_geojson': sm_envelope},
         context_instance=RequestContext(request))
+
 
 @csrf_exempt
 def proxy(request):
