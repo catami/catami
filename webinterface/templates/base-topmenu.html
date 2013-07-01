@@ -1,5 +1,5 @@
 {% load waffle_tags %}
-{% load dajaxice_templatetags %}
+{% comment %}{% load dajaxice_templatetags %} {% endcomment %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,6 +11,9 @@
     <meta name="description" content="">
 
     <!-- styles -->
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/jpages/css/style.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/jpages/css/jPages.css">
 
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/jquery-ui-1.8.23.custom.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/bootstrap.css" type="text/css">
@@ -42,8 +45,8 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    {% dajaxice_js_import %}
-    <script type="text/javascript" src="{{ STATIC_URL }}dajax/jquery.dajax.core.js" charset="UTF-8"></script>
+    {% comment %}{% dajaxice_js_import %} {% endcomment %}
+    <!--<script type="text/javascript" src="{{ STATIC_URL }}dajax/jquery.dajax.core.js" charset="UTF-8"></script>-->
 
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="{{ STATIC_URL }}assets/ico/favicon.ico">
@@ -93,8 +96,8 @@
                     <li><a href="/staging/"><i class="icon-cloud-upload"></i> Import </a></li>
                     {% endif %}
 
-                    <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}"><a
-                            href="{% url webinterface.views.explore %}"><i class="icon-search "></i> Explore</a>
+                    <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}">
+                        <a href="#"><i class="icon-search "></i> Explore</a>
 
                             <ul class="dropdown-menu">
                                 <li class="{% ifequal request.path "/data/campaigns" %}

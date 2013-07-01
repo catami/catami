@@ -1,5 +1,6 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
+from catamidb.models import GenericImage
 from projects.models import (Project,
                              GenericAnnotationSet,
                              GenericPointAnnotation,
@@ -19,6 +20,11 @@ from jsonapi.api import UserResource
 from jsonapi.security import get_real_user_object
 from projects import authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from datetime import datetime
+from random import sample
+from tastypie.exceptions import ImmediateHttpResponse
+from tastypie.http import HttpNotImplemented
+import random
 import logging
 
 logger = logging.getLogger(__name__)
@@ -110,6 +116,7 @@ class ProjectAuthorization(Authorization):
         """
         # the original can be found in object_list
         #original = object_list.get(id=bundle.obj.id)
+
         user = get_real_user_object(bundle.request.user)
         if user.has_perm('projects.change_project', bundle.obj):
             # the user has permission to edit
@@ -159,7 +166,7 @@ class GenericAnnotationSetAuthorization(Authorization):
         """Currently do not permit deletion of any GenericAnnotationSet list.
         """
         raise Unauthorized(
-            "You do not have permission to delete these project.")
+            "You do not have permission to delete these annotation sets.")
 
     def delete_detail(self, object_list, bundle):
         """
@@ -186,7 +193,7 @@ class GenericAnnotationSetAuthorization(Authorization):
             return True
         else:
             raise Unauthorized(
-                "You don't have permission to edit this project"
+                "You don't have permission to edit this annotation set"
             )
 
 
@@ -277,7 +284,8 @@ class GenericPointAnnotationAuthorization(Authorization):
 
 
 class ProjectResource(BackboneCompatibleResource):
-    #owner = fields.ForeignKey(UserResource, 'owner', full=True)
+    owner = fields.ForeignKey(UserResource, 'owner', full=True)
+    generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', full=True)
 
     class Meta:
         queryset = Project.objects.all()
@@ -289,10 +297,12 @@ class ProjectResource(BackboneCompatibleResource):
         detail_allowed_methods = ['get', 'post', 'put', 'delete']
         list_allowed_methods = ['get', 'post', 'put', 'delete']
         filtering = {
-            'name': 'exact',
-            'owner': 'exact',
+            'name': ALL,
+            'owner': ALL,
+            'generic_images': ALL_WITH_RELATIONS,
             'id': 'exact'
         }
+        #excludes = ['owner', 'creation_date', 'modified_date']
 
     def obj_create(self, bundle, **kwargs):
         """
@@ -304,6 +314,14 @@ class ProjectResource(BackboneCompatibleResource):
         # get real user
         user = get_real_user_object(bundle.request.user)
 
+        #put the created and modified dates on the object
+        create_modified_date = datetime.now()
+        bundle.data['creation_date'] = create_modified_date
+        bundle.data['modified_date'] = create_modified_date
+
+        #attach current user as the owner
+        bundle.data['owner'] = user
+
         #create the bundle
         super(ProjectResource, self).obj_create(bundle)
 
@@ -313,15 +331,25 @@ class ProjectResource(BackboneCompatibleResource):
         return bundle
 
     def dehydrate(self, bundle):
-        """Add an image_count field to ProjectResource."""
+        # Add an image_count field to ProjectResource.
         bundle.data['image_count'] = Project.objects.get(pk=bundle.data[
             'id']).generic_images.count()
+
+        # Add the map_extent of all the images in this project
+        images = Project.objects.get(id=bundle.obj.id).generic_images.all()
+        images = GenericImage.objects.filter(id__in=images)
+        map_extent = ""
+        if len(images) != 0:
+            map_extent = images.extent().__str__()
+
+        bundle.data['map_extent'] = map_extent
 
         return bundle
 
 
 class GenericAnnotationSetResource(BackboneCompatibleResource):
     project = fields.ForeignKey(ProjectResource, 'project', full=True)
+    generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', full=True, blank=True, null=True)
 
     class Meta:
         queryset = GenericAnnotationSet.objects.all()
@@ -339,18 +367,105 @@ class GenericAnnotationSetResource(BackboneCompatibleResource):
             'id': 'exact'
         }
 
+    def random_sample_images(self, project, sample_size):
+        """ Randomly sample images from the parent project and
+            attach them to this annotation set. """
+
+        project_images = project.generic_images.all()
+        sampled_images = sample(project_images, int(sample_size))
+
+        return sampled_images
+
+    def stratified_sample_images(self, project, sample_size):
+        """ Stratified sample images from the parent project and
+            attach them to this resource. """
+
+        project_images = project.generic_images.all()
+        every_nth = project_images.count()/int(sample_size)
+
+        sampled_images = project_images[0:project_images.count():every_nth]
+
+        return sampled_images
+
+    def apply_random_sampled_points(self, annotation_set, sample_size):
+        """ Randomly apply points to the images attached to this annotation
+            set """
+
+        images = annotation_set.generic_images.all()
+
+        # iterate through the images and create points
+        for image in images:
+            for i in range(int(sample_size)):
+                x = random.random()
+                y = random.random()
+
+                point_annotation = GenericPointAnnotation()
+
+                point_annotation.generic_annotation_set = annotation_set
+                point_annotation.image = image
+                point_annotation.owner = annotation_set.owner
+                point_annotation.x = x
+                point_annotation.y = y
+
+                point_annotation.annotation_caab_code = "00000000" # not considered
+                point_annotation.qualifier_short_name = "" # not considered
+
+                point_annotation.save()
+
+    def apply_stratified_sampled_points(self, annotation_set, sample_size):
+        """ Apply points to the images attached to this annotation set using
+            stratified sampling """
+
+        #TODO: implement
+        return None
+
+    def do_sampling_operations(self, bundle):
+        """ Helper function to hold all the sampling logic """
+
+        # subsample and set the images
+        image_sample_size = bundle.data['image_sample_size']
+        image_sampling_methodology = bundle.data['image_sampling_methodology']
+
+        if image_sampling_methodology == '0':
+            bundle.obj.generic_images = self.random_sample_images(bundle.obj.project, image_sample_size)
+        elif image_sampling_methodology == '1':
+            bundle.obj.generic_images = self.stratified_sample_images(bundle.obj.project, image_sample_size)
+        else:
+            raise Exception("Image sampling method not implemented.")
+
+        #save the object with the new images on it
+        bundle.obj.save()
+
+        # subsample points based on methodologies
+        point_sample_size = bundle.data['point_sample_size']
+        annotation_methodology = bundle.data['annotation_methodology']
+
+        if annotation_methodology == '0':
+            self.apply_random_sampled_points(bundle.obj, point_sample_size)
+        else:
+            raise Exception("Point sampling method not implemented.")
+
     def obj_create(self, bundle, **kwargs):
         """
         We are overiding this function so we can get access to the newly
         created GenericAnnotationSet. Once we have reference to it, we can apply
         object level permissions to the object.
         """
-
         # get real user
         user = get_real_user_object(bundle.request.user)
 
         #create the bundle
         super(GenericAnnotationSetResource, self).obj_create(bundle)
+
+        #generate image subsamples and points
+        try:
+            self.do_sampling_operations(bundle)
+        except Exception:
+            #delete the object that was created
+            bundle.obj.delete()
+
+            #return not implemented response
+            raise ImmediateHttpResponse(HttpNotImplemented("Unable to create annotation set."))
 
         #make sure we apply permissions to this newly created object
         authorization.apply_generic_annotation_set_permissions(user, bundle.obj)

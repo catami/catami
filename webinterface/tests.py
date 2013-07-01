@@ -103,36 +103,6 @@ class TestViews(TestCase):
         '''Verify environment is tore down properly'''  # Printed if test fails
         pass
 
-    def test_get_multiple_deployment_extent(self):
-        # test OK
-        post_data = {"deployment_ids": self.deployment1.id.__str__() + "," +
-                                       self.deployment2.id.__str__()}
-        response = self.client.post("/explore/getmapextent", post_data)
-        self.assertEqual(response.content.__str__(),
-                         "{\"extent\": \"(12.4604, 43.942, 12.4604, 43.942)\"}")
-
-        # test with GET
-        response = self.client.get("/explore/getmapextent")
-        self.assertEqual(response.content.__str__(),
-                         "{\"message\": \"GET operation invalid, must use POST.\"}")
-
-    def test_get_collection_extent(self):
-        # post_data = {"deployment_ids": self.deployment1.id,
-        # "collection_name": "collection_testname"} response =
-        # self.client.post("/collections/create", post_data)
-        # self.assertEqual(response.status_code, 301) response =
-        # self.client.get("/collections/1/")
-        # self.assertEqual(response.status_code, 200)  test OK
-        post_data = {"collection_id": self.collection_01.id}
-        response = self.client.post("/collections/getcollectionextent",
-                                    post_data)
-        self.assertEqual(response.content.__str__(),
-                         "{\"extent\": \"(12.4604, 43.942, 12.4604, 43.942)\"}")
-
-        # test with GET
-        response = self.client.get("/collections/getcollectionextent")
-        self.assertEqual(response.content.__str__(),
-                         "{\"message\": \"GET operation invalid, must use POST.\"}")
 
     #==================================================#
     # Add unittests here
@@ -144,49 +114,7 @@ class TestViews(TestCase):
         response = self.client.get("/data/")
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.get("/explore")
-        self.assertEqual(response.status_code, 200)
-
         response = self.client.get("/api/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_collections(self):
-        """@brief Test collection and workset views
-
-        """
-        response = self.client.get("/projects")
-        self.assertEqual(response.status_code, 200)
-
-        #        response = self.client.get("/my_collections")
-        #        self.assertEqual(response.status_code, 200)
-
-        #        response = self.client.get("/public_collections")
-        #        self.assertEqual(response.status_code, 200)
-
-        #make a collection from a deployment
-        post_data = {"deployment_ids": self.deployment1.id, "collection_name":
-            "collection_testname"}
-        response = self.client.post("/collections/create", post_data)
-        self.assertEqual(response.status_code, 301)
-
-        response = self.client.get("/collections/"+self.collection_01.id.__str__()+"/")
-        self.assertEqual(response.status_code, 200)
-
-#        #make a collection from a deployment using random
-#        post_data = {"name": "TEST_RAND", "n": "50", "ispublic": "true", "description": "test description", "c_id": "1"}
-#        response = self.client.post("/collections/createworkset/random", post_data)
-#        self.assertEqual(response.status_code, 301)
-
-        response = self.client.get("/collections/"+self.collection_01.id.__str__()+"/?wsid=1")
-        self.assertEqual(response.status_code, 200)
-
-#        #make a collection from a deployment using random
-#        post_data = {"name": "TEST_STRAT", "n": "50", "ispublic": "true", "description": "test description",
-#                     "c_id": "1"}
-#        response = self.client.post("/collections/createworkset/stratified", post_data)
-#        self.assertEqual(response.status_code, 301)
-
-        response = self.client.get("/collections/"+self.collection_01.id.__str__()+"/?wsid=2")
         self.assertEqual(response.status_code, 200)
 
 

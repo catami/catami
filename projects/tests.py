@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 import guardian
 from guardian.core import ObjectPermissionChecker
-from guardian.shortcuts import assign
+from guardian.shortcuts import assign_perm
 from model_mommy import mommy
 from tastypie.test import ResourceTestCase, TestApiClient
 from datetime import datetime
@@ -36,12 +36,18 @@ def create_setup(self):
         transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
         campaign=self.campaign_one)
 
-    self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
+    #self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
     self.mock_image_one = mommy.make_recipe('projects.genericImage1', deployment=self.deployment_one)
     self.mock_image_two = mommy.make_recipe('projects.genericImage2', deployment=self.deployment_two)
 
     self.camera_one = mommy.make_one('catamidb.GenericCamera', image=self.mock_image_one)
     self.camera_two = mommy.make_one('catamidb.GenericCamera', image=self.mock_image_two)
+
+    self.mock_image_list = []
+
+    for i in xrange(20):
+        mock_image = mommy.make_recipe('projects.genericImage1', deployment=self.deployment_one, date_time=datetime.now())
+        self.mock_image_list.append(mock_image)
 
 
 class TestProjectResource(ResourceTestCase):
@@ -72,6 +78,10 @@ class TestProjectResource(ResourceTestCase):
 
         self.bob_api_client.client.login(username='bob', password='bob')
         self.bill_api_client.client.login(username='bill', password='bill')
+
+        #need these permissions for bill and bob to attach images to projects
+        catamidbauthorization.apply_campaign_permissions(self.user_bob, self.campaign_one)
+        catamidbauthorization.apply_campaign_permissions(self.user_bill, self.campaign_one)
 
         #assign users to the Public group
         public_group, created = Group.objects.get_or_create(name='Public')
@@ -136,7 +146,7 @@ class TestProjectResource(ResourceTestCase):
                                         modified_date=datetime.now(),
                                         generic_images=[self.mock_image_one, self.mock_image_two])
 
-        assign('view_project', self.user_bill, bills_project)
+        assign_perm('view_project', self.user_bill, bills_project)
 
         # check that bill can see via the API
         response = self.bill_api_client.get(self.project_url, format='json')
@@ -173,11 +183,8 @@ class TestProjectResource(ResourceTestCase):
         #some post data for testing project creation
         self.bill_post_data = {'name': 'myName',
                                'description': 'my description',
-                               'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
-                               'creation_date': '2012-05-01',
-                               'modified_date': '2012-05-01',
-                               'generic_images': '',
-                               'creation_info': 'some info' }
+                               'generic_images': ''
+                               }
 
         response = self.bill_api_client.post(
                 self.project_url,
@@ -199,11 +206,13 @@ class TestProjectResource(ResourceTestCase):
         new_project_id = self.deserialize(response)[0]['id'].__str__()
 
         #check we can modify it - add images
-        self.bill_put_data = {'generic_images' : [self.mock_image_one.id.__str__(), self.mock_image_two.__str__()]}
+        self.bill_put_data = {'generic_images' : ["/api/dev/generic_image/" + self.mock_image_one.id.__str__() + "/",
+                                                  "/api/dev/generic_image/" + self.mock_image_two.id.__str__() + "/"]}
         response = self.bill_api_client.put(
                 self.project_url + new_project_id + "/",
                 format='json',
                 data=self.bill_put_data)
+
         self.assertHttpAccepted(response)
 
         response = self.bill_api_client.get(self.project_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
@@ -251,6 +260,10 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
         self.bob_api_client.client.login(username='bob', password='bob')
         self.bill_api_client.client.login(username='bill', password='bill')
 
+        #need these permissions for bill and bob to attach images to projects
+        catamidbauthorization.apply_campaign_permissions(self.user_bob, self.campaign_one)
+        catamidbauthorization.apply_campaign_permissions(self.user_bill, self.campaign_one)
+
         #assign users to the Public group
         public_group, created = Group.objects.get_or_create(name='Public')
         self.user_bob.groups.add(public_group)
@@ -285,7 +298,8 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             generic_images=[self.mock_image_one, self.mock_image_two],
-                                            methodology=0)
+                                            annotation_methodology=0,
+                                            image_sampling_methodology=0)
 
         self.generic_annotation_set_bills = mommy.make_one(GenericAnnotationSet,
                                             project=self.project_bills,
@@ -293,7 +307,8 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             generic_images=[self.mock_image_one, self.mock_image_two],
-                                            methodology=1)
+                                            annotation_methodology=1,
+                                            image_sampling_methodology=0)
 
         #assign this one to bob
         authorization.apply_generic_annotation_set_permissions(
@@ -303,8 +318,20 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
         authorization.apply_generic_annotation_set_permissions(
             self.user_bill, self.generic_annotation_set_bills)
 
-        #the API url for campaigns
+
+        #create a big project with 20 images
+        self.project_bills_big = mommy.make_one(Project,
+                                            owner=self.user_bill,
+                                            creation_date=datetime.now(),
+                                            modified_date=datetime.now(),
+                                            generic_images=self.mock_image_list)
+        #assign this one to bill
+        authorization.apply_project_permissions(
+            self.user_bill, self.project_bills_big)
+
+        #the API url for resources
         self.generic_annotation_set_url = '/api/dev/generic_annotation_set/'
+        self.generic_point_annotation_url = '/api/dev/generic_point_annotation/'
 
     def test_project_operations_disabled(self):
 
@@ -313,7 +340,7 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
             self.anon_api_client.post(
                 self.generic_annotation_set_url,
                 format='json',
-                data={})
+                data={'image_sample_size': '20'})
         )
 
         self.assertHttpUnauthorized(
@@ -337,9 +364,10 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             generic_images=[self.mock_image_one, self.mock_image_two],
-                                            methodology=2)
+                                            annotation_methodology=2,
+                                            image_sampling_methodology=0)
 
-        assign('view_genericannotationset', self.user_bill, bills_generic_annotation_set)
+        assign_perm('view_genericannotationset', self.user_bill, bills_generic_annotation_set)
 
         # check that bill can see via the API
         response = self.bill_api_client.get(self.generic_annotation_set_url, format='json')
@@ -374,14 +402,19 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
 
         #check bill can POST
         #some post data for testing project creation
-        self.bill_post_data = {'project':'/api/dev/project/' + self.project_bills.id.__str__() + '/',
-                               'name': 'myName',
+        self.bill_post_data = {'project':'/api/dev/project/' + self.project_bills_big.id.__str__() + '/',
+                               'name': 'myName2',
                                'description': 'my description',
                                'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
                                'creation_date': '2012-05-01',
                                'modified_date': '2012-05-01',
-                               'generic_images': [self.mock_image_one.id.__str__(), self.mock_image_two.__str__()],
-                               'methodology':'4',
+                               #'generic_images': [ "/api/dev/generic_image/" + self.mock_image_one.id.__str__() + "/",
+                               #                    "/api/dev/generic_image/" + self.mock_image_two.id.__str__() + "/"],
+                               'generic_images': '',
+                               'annotation_methodology': '0',
+                               'image_sampling_methodology': '0',
+                               'image_sample_size': '10',
+                               'point_sample_size': '15'
                                 }
 
         response = self.bill_api_client.post(
@@ -397,7 +430,7 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
         self.assertEqual(len(self.deserialize(response)), 4)
 
         # check that bill can get to the object itself
-        response = self.bill_api_client.get(self.generic_annotation_set_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
+        response = self.bill_api_client.get(self.generic_annotation_set_url + "?name=myName2&owner=" + self.user_bill.id.__str__(),
                                             format='json')
         self.assertValidJSONResponse(response)
 
@@ -409,6 +442,7 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
                 self.generic_annotation_set_url + new_annotationset_id + "/",
                 format='json',
                 data=self.bill_put_data)
+
         self.assertHttpAccepted(response)
 
         response = self.bill_api_client.get(self.generic_annotation_set_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
@@ -426,6 +460,99 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
         self.assertValidJSONResponse(response)
         self.assertEqual(len(self.deserialize(response)), 3)
 
+    def test_annotation_set_creation_random(self):
+        #some post data for testing project creation
+        self.bill_post_data = {'project':'/api/dev/project/' + self.project_bills_big.id.__str__() + '/',
+                               'name': 'myName',
+                               'description': 'my description',
+                               'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
+                               'creation_date': '2012-05-01',
+                               'modified_date': '2012-05-01',
+                               'generic_images': '',
+                               'annotation_methodology': '0',
+                               'image_sampling_methodology': '0',
+                               'image_sample_size': '10',
+                               'point_sample_size': '15'
+                                }
+
+        response = self.bill_api_client.post(
+                self.generic_annotation_set_url,
+                format='json',
+                data=self.bill_post_data)
+
+        self.assertHttpCreated(response)
+
+        # check that bill can get to the object itself
+        response = self.bill_api_client.get(self.generic_annotation_set_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
+                                            format='json')
+
+        # check that the API did indeed samle 10 images
+        generic_images = self.deserialize(response)[0]['generic_images']
+        self.assertEqual(len(generic_images), 10)
+
+        # check that the API set 15 points per image
+        for image in generic_images:
+            response = self.bill_api_client.get(self.generic_point_annotation_url + "?image=" + image['id'].__str__(),
+                                            format='json')
+            self.assertEqual(len(self.deserialize(response)), 15)
+
+    def test_annotation_set_creation_stratified(self):
+        #some post data for testing project creation
+        self.bill_post_data = {'project':'/api/dev/project/' + self.project_bills_big.id.__str__() + '/',
+                               'name': 'myName',
+                               'description': 'my description',
+                               'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
+                               'creation_date': '2012-05-01',
+                               'modified_date': '2012-05-01',
+                               'generic_images': '',
+                               'annotation_methodology': '0',
+                               'image_sampling_methodology': '1',
+                               'image_sample_size': '10',
+                               'point_sample_size': '5'
+                                }
+
+        response = self.bill_api_client.post(
+                self.generic_annotation_set_url,
+                format='json',
+                data=self.bill_post_data)
+
+        self.assertHttpCreated(response)
+
+        # check that bill can get to the object itself
+        response = self.bill_api_client.get(self.generic_annotation_set_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
+                                            format='json')
+
+        # check that the API did indeed samle 10 images
+        generic_images = self.deserialize(response)[0]['generic_images']
+        self.assertEqual(len(generic_images), 10)
+
+        # check that the API set 5 points per image
+        for image in generic_images:
+            response = self.bill_api_client.get(self.generic_point_annotation_url + "?image=" + image['id'].__str__(),
+                                            format='json')
+            self.assertEqual(len(self.deserialize(response)), 5)
+
+    def test_annotation_set_creation_unimplemented(self):
+        #some post data for testing project creation
+        self.bill_post_data = {'project':'/api/dev/project/' + self.project_bills_big.id.__str__() + '/',
+                               'name': 'myName2',
+                               'description': 'my description',
+                               'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
+                               'creation_date': '2012-05-01',
+                               'modified_date': '2012-05-01',
+                               'generic_images': '',
+                               'annotation_methodology': '4',
+                               'image_sampling_methodology': '4',
+                               'image_sample_size': '10',
+                               'point_sample_size': '5'
+                                }
+
+        response = self.bill_api_client.post(
+                self.generic_annotation_set_url,
+                format='json',
+                data=self.bill_post_data)
+
+        self.assertHttpNotImplemented(response)
 
 class TestGenericPointAnnotationResource(ResourceTestCase):
 
@@ -494,7 +621,8 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             generic_images=[self.mock_image_one, self.mock_image_two],
-                                            methodology=0)
+                                            annotation_methodology=0,
+                                            image_sampling_methodology=0)
 
         self.generic_annotation_set_bills = mommy.make_one(GenericAnnotationSet,
                                             project=self.project_bills,
@@ -502,7 +630,8 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             generic_images=[self.mock_image_one, self.mock_image_two],
-                                            methodology=1)
+                                            annotation_methodology=1,
+                                            image_sampling_methodology=0)
 
         #assign this one to bob
         authorization.apply_generic_annotation_set_permissions(
@@ -558,9 +687,10 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             generic_images=[self.mock_image_one, self.mock_image_two],
-                                            methodology=2)
+                                            annotation_methodology=2,
+                                            image_sampling_methodology=0)
 
-        assign('view_genericannotationset', self.user_bill, bills_private_generic_annotation_set)
+        assign_perm('view_genericannotationset', self.user_bill, bills_private_generic_annotation_set)
 
         bills_private_point_annotation = mommy.make_one(GenericPointAnnotation,
                                             generic_annotation_set=bills_private_generic_annotation_set,
@@ -618,7 +748,7 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
                 format='json',
                 data=self.bill_post_data)
 
-        print response.__str__()
+
 
         self.assertHttpCreated(response)
 
@@ -640,6 +770,7 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
                 self.point_annotation_url + new_pointannotation_id + "/",
                 format='json',
                 data=self.bill_put_data)
+
         self.assertHttpAccepted(response)
 
         response = self.bill_api_client.get(self.point_annotation_url + "?image=" + self.mock_image_one.id.__str__(),

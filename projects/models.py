@@ -60,7 +60,6 @@ class Project(models.Model):
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()
     generic_images = models.ManyToManyField(GenericImage, null=True)
-    creation_info = models.CharField(max_length=200)
 
     class Meta:
         unique_together = (('owner', 'name', 'creation_date'), )
@@ -68,16 +67,19 @@ class Project(models.Model):
             ('view_project', 'View the project.'),
         )
 
-    def __unicode__(self):
-        description = u"Project: {0}".format(self.name)
-
 
 class GenericAnnotationSet(models.Model):
     """
     An annotated set is used to contain a set of images to be annotated.
     """
 
-    METHODOLOGY_CHOICES = (
+    IMAGE_SAMPLING_METHODOLOGY_CHOICES = (
+        (0, 'Random'),
+        (1, 'Stratified'),
+        (2, 'Spatial'),
+    )
+
+    ANNOTATATION_SAMPLING_METHODOLOGY_CHOICES = (
         (0, 'Random Point'),
         (1, 'Stratified'),
         (2, 'Fixed 5 Point'),
@@ -91,7 +93,8 @@ class GenericAnnotationSet(models.Model):
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()
     generic_images = models.ManyToManyField(GenericImage, related_name='projects')
-    methodology = models.IntegerField(choices=METHODOLOGY_CHOICES)
+    image_sampling_methodology = models.IntegerField(choices=IMAGE_SAMPLING_METHODOLOGY_CHOICES)
+    annotation_methodology = models.IntegerField(choices=ANNOTATATION_SAMPLING_METHODOLOGY_CHOICES)
 
     class Meta:
         unique_together = (('owner', 'name', 'creation_date'), )

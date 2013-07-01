@@ -73,7 +73,7 @@ function BaseMap(wmsUrl, wmsLayerName, divName) {
         sphericalMercator: true
     });
     this.mapInstance.addLayer(osm);
-
+    console.log("1");
     //this is the layer for our points to be displayed with
     var imagePointsLayer = new OpenLayers.Layer.WMS("Images",
         this.wmsUrl,
@@ -121,8 +121,8 @@ function BaseMap(wmsUrl, wmsLayerName, divName) {
     var loadingPanel = new OpenLayers.Control.LoadingPanel();
     this.loadingPanel = loadingPanel;
     this.mapInstance.addControl(this.loadingPanel);
-
     this.zoomToInitialExtent();
+    console.log("2");
 };
 
 /**
@@ -350,6 +350,56 @@ ExploreMap.prototype.updateMapBoundsForDeployments = function(deploymentIds) {
     });
 };
 
+/**
+ *
+ * Openlayers map for the projects page
+ *
+ * @param wmsUrl
+ * @param wmsLayerName
+ * @param divName
+ * @constructor
+ * @param extentUrl - this is the URL in which to query the extent of a collection
+ */
+function NewProjectsMap(wmsUrl, wmsLayerName, divName, extent) {
+    this.BaseMap = BaseMap;
+    this.BaseMap(wmsUrl, wmsLayerName, divName);
+    this.extent = extent;
+}
 
+/**
+ * Extend from the BaseMap
+ * @type {BaseMap}
+ */
+NewProjectsMap.prototype = new BaseMap;
 
+/**
+ *
+ * Will take a collectionId and update the map
+ *
+ * @param collectionId
+ */
+NewProjectsMap.prototype.updateMapForSelectedProject = function(projectId) {
+    var filter_array = [];
 
+    filter_array.push(new OpenLayers.Filter.Comparison({
+        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+        property: "project_id",
+        value: projectId
+    }));
+
+    this.updateMapUsingFilter(filter_array);
+};
+
+/**
+ * Zoom to extent
+ */
+NewProjectsMap.prototype.zoomToExtent = function() {
+    var mapInstance = this.mapInstance;
+    var boundsArr = this.extent.replace("(", "").replace(")", "").split(",");
+    var bounds = new OpenLayers.Bounds();
+    bounds.extend(new OpenLayers.LonLat(boundsArr[0], boundsArr[1]));
+    bounds.extend(new OpenLayers.LonLat(boundsArr[2], boundsArr[3]));
+    var geographic = new OpenLayers.Projection("EPSG:4326");
+    var mercator = new OpenLayers.Projection("EPSG:900913");
+    mapInstance.zoomToExtent(bounds.transform(geographic, mercator));
+};

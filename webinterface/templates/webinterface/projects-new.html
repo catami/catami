@@ -1,0 +1,61 @@
+{% extends "base-topmenu.html" %}
+{% block title %}Catami Project - Project List {% endblock %}
+
+
+{% block content %}
+
+    <div id="ProjectListContainer"></div>
+
+    <script type="text/template" id="ProjectListTemplate">
+        <ul class="breadcrumb">
+            <li><a href="/projects/">Projects</a></li>
+        </ul>
+
+        <p>
+            <button class="btn btn-large btn-primary" type="button" id="create_button">Create New Project</button>
+        </p>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%=projects%>
+            </tbody>
+        </table>
+
+    </script>
+
+    <script type="text/template" id="ProjectTemplate">
+        <tr>
+            <td><a href="<%= id %>"><%= name %></a></td>
+            <td><%= owner %></td>
+        </tr>
+    </script>
+
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/projects.js"></script>
+    <script type="text/javascript">
+
+        var projects = new Projects();
+
+        // Make a call to the server to populate the collection
+        projects.fetch({
+
+            success: function (model, response, options) {
+                var Project_view = new ProjectCollectionView({
+                    el: $("#ProjectListContainer"),
+                    collection: Projects
+                });
+            },
+            error: function (model, response, options) {
+                alert('Fetch failed: ' + response.status);
+            }
+
+        });
+
+    </script>
+
+{% endblock %}

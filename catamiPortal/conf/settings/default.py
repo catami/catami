@@ -23,6 +23,7 @@ NOSE_ARGS = [
 WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
 WMS_LAYER_NAME = "catami:catamidb_images"
 WMS_COLLECTION_LAYER_NAME = "catami:collection_images"
+WMS_PROJECTS_LAYER_NAME = "catami:project_images"
 
 ADMINS = (
     ('Mark Gray', 'mark.gray@ivec.org'),
@@ -107,7 +108,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    'dajaxice.finders.DajaxiceFinder', # Dajaxice
+    #'dajaxice.finders.DajaxiceFinder', # Dajaxice
 )
 
 # Make this unique, and don't share it with anybody.
@@ -117,7 +118,7 @@ SECRET_KEY = 'd7jk#mjzc!qsz*+j)lnx*j0f+g%a0bej-n=&amp;0)7&amp;g=n!^1iaaf'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-    'django.template.loaders.eggs.Loader', # Dajaxice
+    #'django.template.loaders.eggs.Loader', # Dajaxice
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
@@ -191,8 +192,8 @@ INSTALLED_APPS = (
     'tastypie',
     'userena',
     'waffle',
-    'dajaxice',
-    'dajax',
+    #'dajaxice',
+    #'dajax',
     'bootstrap_toolkit',
     'projects'
 )

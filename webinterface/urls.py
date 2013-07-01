@@ -6,6 +6,7 @@ from django.conf import settings
 
 from django.contrib import admin
 from dajaxice.core import dajaxice_autodiscover, dajaxice_config
+from django.views.generic.simple import direct_to_template
 
 dajaxice_autodiscover()
 
@@ -27,12 +28,7 @@ urlpatterns = patterns(
     url(r'^about', 'about'),
     url(r'^proxy/$', 'proxy'),
 
-    url(r'^explore$', 'explore'),
-    url(r'^explore/getmapextent$',
-        'get_multiple_deployment_extent'),
 
-    url(r'^explore_campaign/(?P<campaign_id>\d+)/$',
-        'explore_campaign'),
 
     #url(r'^viewcollection$', 'viewcollection'),
 
@@ -40,11 +36,14 @@ urlpatterns = patterns(
     url(r'^staging/', include('staging.urls')),
 
     # Projects
-    url(r'^projects$', 'projects'),
+    #url(r'^projects$', 'projects'),
+    url(r'^projects/$', 'projects'),
+    url(r'^projects/(?P<project_id>\d+)/$', 'project_view'),
+    url(r'^projects/(?P<project_id>\d+)/configure/$', 'project_configure'),
+    url(r'^projects/(?P<project_id>\d+)/configure/(?P<annotation_set_id>\d+)/$', 'project_annotate'),
 
     #Collection detail Views
-    url(r'^collections/(?P<collection_id>\d+)/$',
-        'view_collection'),
+    #url(r'^collections/(?P<collection_id>\d+)/$', 'view_collection'),
 #    url(
 #        r'^collections/(?P<collection_id>\d+)/workset/(?P<workset_id>\d+)/$',
 #        'view_workset'),
@@ -71,8 +70,8 @@ urlpatterns = patterns(
     #Collection Management
     #url(r'^collections/create/$',
     #    'create_collection_from_deployments'),
-    url(r'^collections/create/$', 'create_collection_from_explore'),
-    url(r'^collections/getcollectionextent$', 'get_collection_extent'),
+    #url(r'^collections/create/$', 'create_collection_from_explore'),
+    #url(r'^collections/getcollectionextent$', 'get_collection_extent'),
 
     #plain data views
     url(r'^data/$', 'data'),
@@ -94,7 +93,14 @@ urlpatterns = patterns(
     url(r'^logout/$', 'logout_view'),
 
     # Dajaxice
-    url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
+    #url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
+
+    url(r'^explore$', 'explore'),
+    url(r'^explore/getmapextent$',
+        'get_multiple_deployment_extent'),
+
+    url(r'^explore_campaign/(?P<campaign_id>\d+)/$',
+        'explore_campaign'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

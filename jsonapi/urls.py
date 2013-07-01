@@ -45,10 +45,10 @@ dev_api.register(jsonapi.api.UserResource())
 
 dev_api.register(staging.api.StagingFilesResource())
 
-dev_api.register(annotations.api.AnnotationCodeResource())
-dev_api.register(annotations.api.QualifierCodeResource())
-dev_api.register(annotations.api.PointAnnotationSetResource())
-dev_api.register(annotations.api.PointAnnotationResource())
+#dev_api.register(annotations.api.AnnotationCodeResource())
+#dev_api.register(annotations.api.QualifierCodeResource())
+#dev_api.register(annotations.api.PointAnnotationSetResource())
+#dev_api.register(annotations.api.PointAnnotationResource())
 
 dev_api.register(projects.api.ProjectResource())
 dev_api.register(projects.api.GenericAnnotationSetResource())

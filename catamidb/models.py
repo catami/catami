@@ -259,6 +259,7 @@ class GenericImage(models.Model):
     date_time = models.DateTimeField()
     position = models.PointField()
     depth = models.FloatField()
+    objects = models.GeoManager()
 
     class Meta:
         """Defines Metaparameters of the model."""

@@ -14,7 +14,7 @@ mock
 python-dateutil
 django_coverage
 django-userena
-django-guardian
+django-guardian==1.1.1
 django-nose
 python-memcached
 django-memcached
