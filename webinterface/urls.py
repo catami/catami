@@ -71,7 +71,7 @@ urlpatterns += patterns(
     '',
     #url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'userena/signin_form.html'}),
     # the raw original images
-    url(r'images/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.IMAGES_ROOT, 'show_indexes': True}),
+    url(r'images/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.IMPORT_PATH, 'show_indexes': True}),
     # url(r'^{0}/(?P<path>.*)$'.format(settings.IMAGES_URL),
     #     'django.views.static.serve',
     #     {'document_root': settings.IMAGES_ROOT,

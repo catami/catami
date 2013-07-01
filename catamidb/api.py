@@ -575,8 +575,8 @@ class GenericImageResource(BackboneCompatibleResource):
         imgNameNoExt, imgExt = os.path.splitext(imageName)
         size = str(settings.THUMBNAIL_SIZE[0]) + "x" + str(settings.THUMBNAIL_SIZE[1])
         thumbnailName = imgNameNoExt + "_" + size + imgExt        
-        bundle.data['web_location'] = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "images", imageName)
-        bundle.data['thumbnail_location'] = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "thumbnails", thumbnailName)
+        bundle.data['web_location'] = "/images/" + campaignName + "/" + deploymentName + "/images/" + imageName
+        bundle.data['thumbnail_location'] = "/images/" + campaignName + "/" + deploymentName + "/thumbnails/" + thumbnailName
         return bundle
 
 
