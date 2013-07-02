@@ -1,9 +1,5 @@
-var Campaign = window.TastypieModel.extend({
-    url : function() {
-        // Important! It's got to know where to send its REST calls.
-        // In this case, POST to '/api/dev/campaign/' and PUT to '/api/dev/campaign/:id'
-        return this.id ? '/api/dev/campaign/' + this.id : '/api/dev/campaign/';
-    },
+var Campaign = Backbone.Tastypie.Model.extend({
+    urlRoot: "/api/dev/campaign",
     validation: {
         short_name: {
             required: true,
@@ -74,8 +70,8 @@ CreateCampaignView = Backbone.View.extend({
         this.$('.form1').hide();
     },
     doCreate: function (event) {
-        var data = $('form').catami_serializeObject();
-        this.model.set(data);
+        var data = $('form').catami_serializeObject();       
+        this.model.set(data);       
         var isValid = this.model.isValid(true);
         if (isValid) {
             this.model.save(null, {
@@ -85,6 +81,7 @@ CreateCampaignView = Backbone.View.extend({
                     this.$('.alert-success').fadeIn();
                 },
                 error: function (model, xhr, options) {
+                    alert('xhr: ' + xhr.toSource());
                     this.$('.alert').hide();                                       
                     /* XXX
                        Backbone save() implementation triggers  error callback even when 201 (Created) and 202 (Accepted) status code is returned

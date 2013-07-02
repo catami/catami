@@ -29,19 +29,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 # ==============================
-# Integration of Backbone and tastypie.
-# Usage: extend this resource to make model compatibile with Backbonejs
-# ==============================
-
-class BackboneCompatibleResource(ModelResource):
-    class Meta:
-        always_return_data = True
-
-    def alter_list_data_to_serialize(self, request, data):
-        return data["objects"]
-
-
-# ==============================
 # Auth configuration for the API
 # ==============================
 
@@ -369,8 +356,9 @@ class MeasurementsAuthorization(Authorization):
 # ========================
 
 
-class CampaignResource(BackboneCompatibleResource):
+class CampaignResource(ModelResource):
     class Meta:
+        always_return_data = True,
         queryset = Campaign.objects.all()
         resource_name = "campaign"
         authentication = MultiAuthentication(SessionAuthentication(),
@@ -408,10 +396,11 @@ class CampaignResource(BackboneCompatibleResource):
         return bundle
 
 
-class GenericDeploymentResource(BackboneCompatibleResource):
+class GenericDeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
 
     class Meta:
+        always_return_data = True,
         queryset = GenericDeployment.objects.prefetch_related("campaign").all()
         resource_name = "generic_deployment"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
@@ -431,10 +420,11 @@ class GenericDeploymentResource(BackboneCompatibleResource):
         return bundle
 
 
-class ImageUploadResource(BackboneCompatibleResource):
+class ImageUploadResource(ModelResource):
     img = fields.FileField(attribute="img", null=True, blank=True)
 
     class Meta:
+        always_return_data = True
         queryset = ImageUpload.objects.all()
         deployments = GenericDeployment.objects.all()
         resource_name = "image_upload"
@@ -527,10 +517,11 @@ class ImageUploadResource(BackboneCompatibleResource):
         return bundle
 
 
-class GenericImageResource(BackboneCompatibleResource):   
+class GenericImageResource(ModelResource):   
     deployment = fields.ToOneField('catamidb.api.GenericDeploymentResource', 'deployment')
 
     class Meta:
+        always_return_data = True
         queryset = GenericImage.objects.all()
         resource_name = "generic_image"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
@@ -549,7 +540,7 @@ class GenericImageResource(BackboneCompatibleResource):
         if request.GET.get("output") == "flot":
             return self.package_series_for_flot_charts(data)
 
-        return data["objects"] #backbonejs requirement
+        return data
 
     #flot takes a two dimensional array of data, so we need to package the
     #series up in this manner
@@ -580,9 +571,10 @@ class GenericImageResource(BackboneCompatibleResource):
         return bundle
 
 
-class GenericCameraResource(BackboneCompatibleResource):   
+class GenericCameraResource(ModelResource):   
     image = fields.ToOneField('catamidb.api.GenericImageResource', 'image')    
     class Meta:
+        always_return_data = True
         queryset = GenericCamera.objects.all()
         resource_name = "generic_camera"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
@@ -595,9 +587,10 @@ class GenericCameraResource(BackboneCompatibleResource):
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 
 
-class MeasurementsResource(BackboneCompatibleResource):     
+class MeasurementsResource(ModelResource):     
     image = fields.ToOneField('catamidb.api.GenericImageResource', 'image')   
     class Meta:
+        always_return_data = True
         queryset = Measurements.objects.all()
         resource_name = "measurements"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
@@ -625,7 +618,7 @@ class MeasurementsResource(BackboneCompatibleResource):
         if request.GET.get("output") == "flot":
             return self.package_series_for_flot_charts(data, request.GET.get("mtype"))
 
-        return data["objects"] #backbonejs requirement
+        return data
 
     #flot takes a two dimensional array of data, so we need to package the
     #series up in this manner

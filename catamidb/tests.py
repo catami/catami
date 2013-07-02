@@ -214,7 +214,7 @@ class TestCampaignResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.campaign_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.campaign_url + bills_campaign.id.__str__() +"/",
@@ -225,7 +225,7 @@ class TestCampaignResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.campaign_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.campaign_url + bills_campaign.id.__str__() +"/",
@@ -235,7 +235,7 @@ class TestCampaignResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.campaign_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.campaign_url + bills_campaign.id.__str__() +"/",
@@ -264,12 +264,12 @@ class TestCampaignResource(ResourceTestCase):
         #check that ones we created via API are there
         response = self.bill_api_client.get(self.campaign_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 4)
+        self.assertEqual(len(self.deserialize(response)['objects']), 4)
 
         #check public can see it too
         response = self.anon_api_client.get(self.campaign_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
 
 class TestGenericDeploymentResource(ResourceTestCase):
@@ -387,7 +387,7 @@ class TestGenericDeploymentResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.deployment_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.deployment_url + "3/",
@@ -398,7 +398,7 @@ class TestGenericDeploymentResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.deployment_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.deployment_url + "3/",
@@ -408,7 +408,7 @@ class TestGenericDeploymentResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.deployment_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.deployment_url + "3/",
@@ -542,7 +542,7 @@ class TestGenericImageResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.image_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.image_url + "3/",
@@ -553,7 +553,7 @@ class TestGenericImageResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.image_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.image_url + "3/",
@@ -563,7 +563,7 @@ class TestGenericImageResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.image_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.image_url + "3/",
@@ -715,7 +715,7 @@ class TestGenericCameraResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.camera_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.camera_url + "3/",
@@ -726,7 +726,7 @@ class TestGenericCameraResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.camera_url, format='json')       
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.camera_url + "3/",
@@ -736,7 +736,7 @@ class TestGenericCameraResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.camera_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.camera_url + "3/",
@@ -886,7 +886,7 @@ class TestMeasurementsResource(ResourceTestCase):
         response = self.bill_api_client.get(self.image_measurement_url,
                                             format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.image_measurement_url + "3/",
@@ -899,7 +899,7 @@ class TestMeasurementsResource(ResourceTestCase):
                                            format='json')
 
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.image_measurement_url + "3/",
@@ -910,7 +910,7 @@ class TestMeasurementsResource(ResourceTestCase):
         response = self.anon_api_client.get(self.image_measurement_url,
                                             format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.image_measurement_url + "3/",

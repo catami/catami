@@ -1,8 +1,5 @@
-var Deployment = window.TastypieModel.extend({
-    url: function () {
-        // Important! It's got to know where to send its REST calls.
-        return this.id ? '/api/dev/generic_deployment/' + this.id : '/api/dev/generic_deployment/';
-    }
+var Deployment = Backbone.Tastypie.Model.extend({
+    urlRoot: "/api/dev/generic_deployment",
 });
 
 DeploymentDetailView = Backbone.View.extend({
