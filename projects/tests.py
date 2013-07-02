@@ -155,7 +155,7 @@ class TestProjectResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.project_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.project_url + bills_project.id.__str__() + "/",
@@ -166,7 +166,7 @@ class TestProjectResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.project_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.project_url + bills_project.id.__str__() + "/",
@@ -176,7 +176,7 @@ class TestProjectResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.project_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.project_url + bills_project.id.__str__() + "/",
@@ -200,14 +200,14 @@ class TestProjectResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.project_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 4)
+        self.assertEqual(len(self.deserialize(response)['objects']), 4)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.project_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
                                             format='json')
         self.assertValidJSONResponse(response)
 
-        new_project_id = self.deserialize(response)[0]['id'].__str__()
+        new_project_id = self.deserialize(response)['objects'][0]['id'].__str__()
 
         #check we can modify it - add images
         self.bill_put_data = {'generic_images' : ["/api/dev/generic_image/" + self.mock_image_one.id.__str__() + "/",
@@ -236,7 +236,7 @@ class TestProjectResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.project_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
 
 class TestGenericAnnotationSetResource(ResourceTestCase):
@@ -380,7 +380,7 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.generic_annotation_set_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.generic_annotation_set_url + bills_generic_annotation_set.id.__str__() + "/",
@@ -391,7 +391,7 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.generic_annotation_set_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.generic_annotation_set_url + bills_generic_annotation_set.id.__str__() + "/",
@@ -401,7 +401,7 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.generic_annotation_set_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.generic_annotation_set_url + bills_generic_annotation_set.id.__str__() + "/",
@@ -435,14 +435,14 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.generic_annotation_set_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 4)
+        self.assertEqual(len(self.deserialize(response)['objects']), 4)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.generic_annotation_set_url + "?name=myName2&owner=" + self.user_bill.id.__str__(),
                                             format='json')
         self.assertValidJSONResponse(response)
 
-        new_annotationset_id = self.deserialize(response)[0]['id'].__str__()
+        new_annotationset_id = self.deserialize(response)['objects'][0]['id'].__str__()
 
         #check we can modify it - add images
         self.bill_put_data = {'description' : 'my new description'}
@@ -466,7 +466,7 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.generic_annotation_set_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
     def test_annotation_set_creation_random(self):
         #some post data for testing project creation
@@ -495,14 +495,14 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
                                             format='json')
 
         # check that the API did indeed samle 10 images
-        generic_images = self.deserialize(response)[0]['generic_images']
+        generic_images = self.deserialize(response)['objects'][0]['generic_images']
         self.assertEqual(len(generic_images), 10)
 
         # check that the API set 15 points per image
         for image in generic_images:
             response = self.bill_api_client.get(self.generic_point_annotation_url + "?image=" + image['id'].__str__(),
                                             format='json')
-            self.assertEqual(len(self.deserialize(response)), 15)
+            self.assertEqual(len(self.deserialize(response)['objects']), 15)
 
     def test_annotation_set_creation_stratified(self):
         #some post data for testing project creation
@@ -531,14 +531,14 @@ class TestGenericAnnotationSetResource(ResourceTestCase):
                                             format='json')
 
         # check that the API did indeed samle 10 images
-        generic_images = self.deserialize(response)[0]['generic_images']
+        generic_images = self.deserialize(response)['objects'][0]['generic_images']
         self.assertEqual(len(generic_images), 10)
 
         # check that the API set 5 points per image
         for image in generic_images:
             response = self.bill_api_client.get(self.generic_point_annotation_url + "?image=" + image['id'].__str__(),
                                             format='json')
-            self.assertEqual(len(self.deserialize(response)), 5)
+            self.assertEqual(len(self.deserialize(response)['objects']), 5)
 
     def test_annotation_set_creation_unimplemented(self):
         #some post data for testing project creation
@@ -711,7 +711,7 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.point_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.point_annotation_url + bills_private_point_annotation.id.__str__() + "/",
@@ -722,7 +722,7 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.point_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.point_annotation_url + bills_private_point_annotation.id.__str__() + "/",
@@ -732,7 +732,7 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.point_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.point_annotation_url + bills_private_point_annotation.id.__str__() + "/",
@@ -761,14 +761,14 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.point_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 4)
+        self.assertEqual(len(self.deserialize(response)['objects']), 4)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.point_annotation_url + "?annotation_caab_code=caab1",
                                             format='json')
         self.assertValidJSONResponse(response)
 
-        new_pointannotation_id = self.deserialize(response)[0]['id'].__str__()
+        new_pointannotation_id = self.deserialize(response)['objects'][0]['id'].__str__()
 
         #check we can modify it - add images
         self.bill_put_data = {'annotation_caab_code' : 'caab2'}
@@ -792,7 +792,7 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.point_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
 
 class TestAnnotationCodesResource(ResourceTestCase):
@@ -824,7 +824,7 @@ class TestAnnotationCodesResource(ResourceTestCase):
         #check annon can get all the codes
         response = self.anon_api_client.get(self.annotation_code_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), len(self.codes))
+        self.assertEqual(len(self.deserialize(response)['objects']), len(self.codes))
 
         #check annon can get the real code value
         for code in self.codes:
@@ -836,7 +836,7 @@ class TestAnnotationCodesResource(ResourceTestCase):
         #check bob can get all the codes
         response = self.bob_api_client.get(self.annotation_code_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)), len(self.codes))
+        self.assertEqual(len(self.deserialize(response)['objects']), len(self.codes))
 
         #check bob can get the real code value
         for code in self.codes:

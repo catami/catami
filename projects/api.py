@@ -31,18 +31,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# ==============================
-# Integration of Backbone and tastypie.
-# Usage: extend this resource to make model compatibile with Backbonejs
-# ==============================
-class BackboneCompatibleResource(ModelResource):
-    class Meta:
-        always_return_data = True
-
-    def alter_list_data_to_serialize(self, request, data):
-        return data["objects"]
-
-
 # Used to allow authent of anonymous users for GET requests
 class AnonymousGetAuthentication(SessionAuthentication):
     def is_authenticated(self, request, **kwargs):
@@ -290,7 +278,7 @@ class GenericPointAnnotationAuthorization(Authorization):
         raise Unauthorized("You don't have permission to edit this annotation point.")
 
 
-class ProjectResource(BackboneCompatibleResource):
+class ProjectResource(ModelResource):
     owner = fields.ForeignKey(UserResource, 'owner', full=True)
     generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', full=True)
 
@@ -362,7 +350,7 @@ class ProjectResource(BackboneCompatibleResource):
         return bundle
 
 
-class GenericAnnotationSetResource(BackboneCompatibleResource):
+class GenericAnnotationSetResource(ModelResource):
     project = fields.ForeignKey(ProjectResource, 'project', full=True)
     generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', full=True, blank=True, null=True)
 
@@ -488,7 +476,7 @@ class GenericAnnotationSetResource(BackboneCompatibleResource):
         return bundle
 
 
-class GenericPointAnnotationResource(BackboneCompatibleResource):
+class GenericPointAnnotationResource(ModelResource):
     generic_annotation_set = fields.ForeignKey(GenericAnnotationSetResource, 'generic_annotation_set', full=True)
     image = fields.ForeignKey(GenericImageResource, 'image', full=True)
 
@@ -532,7 +520,7 @@ class GenericPointAnnotationResource(BackboneCompatibleResource):
         return bundle
 
 
-class GenericWholeImageAnnotationResource(BackboneCompatibleResource):
+class GenericWholeImageAnnotationResource(ModelResource):
     generic_annotation_set = fields.ForeignKey(GenericAnnotationSet, 'generic_annotation_set', full=True)
     image = fields.ForeignKey(GenericImageResource, 'image', full=True)
 
@@ -555,7 +543,7 @@ class GenericWholeImageAnnotationResource(BackboneCompatibleResource):
         }
 
 
-class AnnotationCodesResource(BackboneCompatibleResource):
+class AnnotationCodesResource(ModelResource):
     parent = fields.ForeignKey('projects.api.AnnotationCodesResource', 'parent', null=True)
 
     class Meta:
@@ -575,7 +563,7 @@ class AnnotationCodesResource(BackboneCompatibleResource):
         }
 
 
-class QualifierCodesResource(BackboneCompatibleResource):
+class QualifierCodesResource(ModelResource):
     parent = fields.ForeignKey('projects.api.QualifierCodesResource', 'parent', full=True)
 
     class Meta:
