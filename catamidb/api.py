@@ -197,6 +197,8 @@ class GenericImageAuthorization(Authorization):
                          bundle.obj.deployment.campaign):
             return True
 
+        print "should not see this"
+
         raise Unauthorized()
 
     def create_list(self, object_list, bundle):
