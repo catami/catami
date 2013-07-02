@@ -92,12 +92,15 @@ class TestProjectResource(ResourceTestCase):
         #make a couple of projects and save
         #self.project_bobs = mommy.make_recipe('project.project1', id=1, owner=self.user_bob)
         #self.project_bills = mommy.make_recipe('project.project2', id=2, owner=self.user_bill)
-        self.project_bobs = mommy.make_one(Project, owner=self.user_bob,
+        self.project_bobs = mommy.make_one(Project,
+                                           name="one",
+                                           owner=self.user_bob,
                                            creation_date=datetime.now(),
                                            modified_date=datetime.now(),
                                            generic_images=[self.mock_image_one, self.mock_image_two])
 
         self.project_bills = mommy.make_one(Project,
+                                            name="two",
                                             owner=self.user_bill,
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
@@ -141,6 +144,7 @@ class TestProjectResource(ResourceTestCase):
     def test_projects_operations_as_authorised_users(self):
         # create a campaign that only bill can see
         bills_project = mommy.make_one(Project,
+                                        name="three",
                                         owner=self.user_bill,
                                         creation_date=datetime.now(),
                                         modified_date=datetime.now(),
