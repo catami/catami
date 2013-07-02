@@ -16,11 +16,8 @@ $.fn.serializeObject = function()
    return o;
 };
 
-var Project = window.TastypieModel.extend({
-    url: function () {
-        // Important! It's got to know where to send its REST calls.
-        return this.id ? '/api/dev/project/' + this.id + "/" : '/api/dev/project/';
-    },
+var Project = Backbone.Model.extend({
+    urlRoot: "/api/dev/project/",
     validation: {
         name: {
             required: true,
@@ -32,10 +29,10 @@ var Project = window.TastypieModel.extend({
         }
     }
 });
- 
-var Projects = Backbone.Collection.extend({
-    model: Project,
-    url: "/api/dev/project/"
+
+var Projects = Backbone.Tastypie.Collection.extend({
+    urlRoot: "/api/dev/project/",
+    model: Project
 });
 
 ProjectCollectionView = Backbone.View.extend({
@@ -87,6 +84,9 @@ ProjectCollectionView = Backbone.View.extend({
                     var splitURI = projectResourceURI.split("/");
                     var projectId = splitURI[splitURI.length-2];
 
+                    //alert("Success")
+                    alert(xhr);
+
                     //redirect to the page for the project
                     window.location.replace("/projects/" + projectId + "/configure");
                 },
@@ -105,6 +105,9 @@ ProjectCollectionView = Backbone.View.extend({
                         var splitURI = projectResourceURI.split("/");
                         var projectId = splitURI[splitURI.length-2];
 
+                        alert("201 202")
+                        alert(xhr.toSource());
+
                         //redirect to the page for the project
                         window.location.replace("/projects/" + projectId + "/configure");
                     }
@@ -119,6 +122,7 @@ ProjectCollectionView = Backbone.View.extend({
 });
 
 ProjectView = Backbone.View.extend({
+    model: Project,
     el: $('div'),
     initialize: function () {
         this.render();
@@ -127,7 +131,8 @@ ProjectView = Backbone.View.extend({
 
         //ge tall the images to be rendered
         var imageTemplate = "";
-        var images = project.get("generic_images")
+        //var images = project.get("objects")[0].generic_images;
+        var images = project.get("generic_images");
 
         for(var i=0; i < images.length; i++) {
             var imageVariables = {
@@ -179,7 +184,7 @@ ProjectConfigureView = Backbone.View.extend({
         var projectVariables = {
             "name": project.get("name"),
             "description": project.get("description"),
-            "id": project.get("id"),
+            "id": project.get("id")
         };
 
         var projectTemplate = _.template($("#ProjectConfigureTemplate").html(), projectVariables);

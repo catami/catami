@@ -283,6 +283,7 @@ class ProjectResource(ModelResource):
     generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', full=True)
 
     class Meta:
+        always_return_data = True,
         queryset = Project.objects.all()
         resource_name = "project"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),

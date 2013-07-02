@@ -4,23 +4,7 @@
     };
 
     Backbone.Tastypie.Model = Backbone.Model.extend({
-        idAttribute: 'resource_uri',
 
-        url: function () {
-            var url = getValue(this, 'urlRoot') || getValue(this.collection, 'urlRoot') || urlError();
-            url = (url.charAt(url.length - 1) == '/' ? url : url + '/'); //appends "/" which is needed when making a POST
-
-            if (this.isNew())
-                return url;
-
-            return this.get('resource_uri');
-        },
-        _getId: function () {
-            if (this.has('id'))
-                return this.get('id');
-
-            return _.chain(this.get('resource_uri').split('/')).compact().last().value();
-        }
     });
 
     Backbone.Tastypie.Collection = Backbone.Collection.extend({
@@ -93,6 +77,7 @@
     // Helper function from Backbone to get a value from a Backbone
     // object as a property or as a function.
     var getValue = function (object, prop) {
+        console.log("getting property");
         if ((object && object[prop]))
             return _.isFunction(object[prop]) ? object[prop]() : object[prop];
     };

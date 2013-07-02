@@ -136,19 +136,19 @@
         project.fetch({
 
             success: function (model, response, options) {
+                console.log(project);
+
                 var imageCount = project.get("image_count");
                 var mapExtent = project.get("map_extent");
 
                 //if there are no images for this project, we need the user to configure the project
                 if (imageCount == 0) {
-                    /*var projectConfigureView = new ProjectConfigureView({
-                        el: $("#ProjectDashboardContainer")
-                    });*/
                     window.location.replace("/projects/" + model.get("id") + "/configure");
                 } else {
                     //load the project
                     var projectView = new ProjectView({
-                        el: $("#ProjectDashboardContainer")
+                        el: $("#ProjectDashboardContainer"),
+                        model : project
                     });
 
                     //populate thumbnails
@@ -157,12 +157,9 @@
                         perPage: 12
                     });
 
-                    console.log("x");
                     //create the map
                     var map = new NewProjectsMap(wmsUrl, wmsLayerName, 'map', mapExtent);
-                    console.log("y");
                     map.updateMapForSelectedProject(projectId);
-                    console.log("z");
                     map.zoomToExtent();
                 }
             },
