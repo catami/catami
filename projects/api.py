@@ -15,7 +15,7 @@ from tastypie.authentication import (Authentication,
 from tastypie.authorization import Authorization
 from tastypie.exceptions import Unauthorized
 from guardian.shortcuts import (get_objects_for_user, get_perms_for_model,
-    get_users_with_perms, get_groups_with_perms)
+    get_users_with_perms, get_groups_with_perms, get_perms)
 from jsonapi.api import UserResource
 from jsonapi.security import get_real_user_object
 from projects import authorization
