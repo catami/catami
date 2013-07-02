@@ -230,6 +230,7 @@ AUTH_PROFILE_MODULE = 'accounts.MyProfile'
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
+USERENA_REDIRECT_ON_SIGNOUT = '/'
 
 USERENA_ACTIVATION_REQUIRED = 0
 
