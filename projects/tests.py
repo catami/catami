@@ -217,6 +217,7 @@ class TestProjectResource(ResourceTestCase):
                 format='json',
                 data=self.bill_put_data)
 
+        print new_project_id
         print "---------*****"
         print response.status_code
 

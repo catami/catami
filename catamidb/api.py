@@ -174,11 +174,6 @@ class GenericImageAuthorization(Authorization):
         # get real user
         user = get_real_user_object(bundle.request.user)
 
-        print "image perms"
-        print get_perms(user, bundle.obj.deployment.campaign)
-        print bundle.obj.id
-        print "end image perms"
-
         # check the user has permission to view this object
         if user.has_perm('catamidb.view_campaign',
                          bundle.obj.deployment.campaign):

@@ -336,7 +336,7 @@ class ProjectResource(BackboneCompatibleResource):
         authorization.apply_project_permissions(user, bundle.obj)
 
         return bundle
-
+    '''
     def obj_update(self, bundle, **qwargs):
 
         try:
@@ -344,7 +344,7 @@ class ProjectResource(BackboneCompatibleResource):
         except Exception, e:
             traceback.print_exc()
             raise e
-
+    '''
     def dehydrate(self, bundle):
         # Add an image_count field to ProjectResource.
         bundle.data['image_count'] = Project.objects.get(pk=bundle.data[
