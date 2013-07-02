@@ -126,8 +126,8 @@ class ProjectAuthorization(Authorization):
         if user.has_perm('projects.change_project', bundle.obj):
             # the user has permission to edit
             return True
-
         else:
+            print "should not see this proj"
             raise Unauthorized(
                 "You don't have permission to edit this project"
             )
