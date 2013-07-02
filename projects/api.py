@@ -1,3 +1,4 @@
+import traceback
 from tastypie import fields
 from tastypie.resources import ModelResource
 from catamidb.models import GenericImage
@@ -335,6 +336,13 @@ class ProjectResource(BackboneCompatibleResource):
         authorization.apply_project_permissions(user, bundle.obj)
 
         return bundle
+
+    def obj_update(self, bundle, **qwargs):
+
+        try:
+            super(ProjectResource, self).obj_update(bundle)
+        except Exception:
+            traceback.print_exc()
 
     def dehydrate(self, bundle):
         # Add an image_count field to ProjectResource.
