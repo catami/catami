@@ -341,8 +341,9 @@ class ProjectResource(BackboneCompatibleResource):
 
         try:
             super(ProjectResource, self).obj_update(bundle)
-        except Exception:
+        except Exception, e:
             traceback.print_exc()
+            raise e
 
     def dehydrate(self, bundle):
         # Add an image_count field to ProjectResource.
