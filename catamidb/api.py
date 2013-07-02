@@ -5,7 +5,7 @@ from django.conf import settings
 
 import guardian
 from guardian.shortcuts import (get_objects_for_user, get_perms_for_model,
-                                get_users_with_perms, get_groups_with_perms)
+                                get_users_with_perms, get_groups_with_perms, get_perms)
 from tastypie import fields
 from tastypie.authentication import (MultiAuthentication,
                                      SessionAuthentication,
@@ -186,6 +186,11 @@ class GenericImageAuthorization(Authorization):
     def read_detail(self, object_list, bundle):
         # get real user
         user = get_real_user_object(bundle.request.user)
+
+        print "image perms"
+        print get_perms(user, bundle.obj.deployment.campaign)
+        print bundle.obj.id
+        print "end image perms"
 
         # check the user has permission to view this object
         if user.has_perm('catamidb.view_campaign',
