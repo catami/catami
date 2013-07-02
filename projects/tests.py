@@ -213,6 +213,9 @@ class TestProjectResource(ResourceTestCase):
                 format='json',
                 data=self.bill_put_data)
 
+        print "---------*****"
+        print response.status_code
+
         self.assertHttpAccepted(response)
 
         response = self.bill_api_client.get(self.project_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
