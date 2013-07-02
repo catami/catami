@@ -1,2 +1,0 @@
-{{ object.short_name }}
-{{ object.mission_aim }}

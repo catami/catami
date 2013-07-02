@@ -1,3 +1,4 @@
+import traceback
 from tastypie import fields
 from tastypie.resources import ModelResource
 from catamidb.models import GenericImage
@@ -15,7 +16,7 @@ from tastypie.authentication import (Authentication,
 from tastypie.authorization import Authorization
 from tastypie.exceptions import Unauthorized
 from guardian.shortcuts import (get_objects_for_user, get_perms_for_model,
-    get_users_with_perms, get_groups_with_perms)
+    get_users_with_perms, get_groups_with_perms, get_perms)
 from jsonapi.api import UserResource
 from jsonapi.security import get_real_user_object
 from projects import authorization
@@ -118,10 +119,16 @@ class ProjectAuthorization(Authorization):
         #original = object_list.get(id=bundle.obj.id)
 
         user = get_real_user_object(bundle.request.user)
+
+        print get_perms(user, bundle.obj)
+        print bundle.obj.name
+        print bundle.obj.owner
+
         if user.has_perm('projects.change_project', bundle.obj):
             # the user has permission to edit
             return True
         else:
+            print "should not see this proj"
             raise Unauthorized(
                 "You don't have permission to edit this project"
             )
@@ -329,6 +336,13 @@ class ProjectResource(BackboneCompatibleResource):
         authorization.apply_project_permissions(user, bundle.obj)
 
         return bundle
+
+    def obj_update(self, bundle, **qwargs):
+
+        try:
+            super(ProjectResource, self).obj_update(bundle)
+        except Exception:
+            traceback.print_exc()
 
     def dehydrate(self, bundle):
         # Add an image_count field to ProjectResource.

@@ -5,7 +5,7 @@ from django.conf import settings
 
 import guardian
 from guardian.shortcuts import (get_objects_for_user, get_perms_for_model,
-                                get_users_with_perms, get_groups_with_perms)
+                                get_users_with_perms, get_groups_with_perms, get_perms)
 from tastypie import fields
 from tastypie.authentication import (MultiAuthentication,
                                      SessionAuthentication,
@@ -18,7 +18,6 @@ from tastypie.exceptions import Unauthorized, ImmediateHttpResponse
 from tastypie import http
 from tastypie.resources import ModelResource, Resource
 from .models import *
-from restthumbnails.helpers import get_thumbnail_proxy
 from catamidb import authorization
 
 import os, sys, shutil
@@ -175,10 +174,17 @@ class GenericImageAuthorization(Authorization):
         # get real user
         user = get_real_user_object(bundle.request.user)
 
+        print "image perms"
+        print get_perms(user, bundle.obj.deployment.campaign)
+        print bundle.obj.id
+        print "end image perms"
+
         # check the user has permission to view this object
         if user.has_perm('catamidb.view_campaign',
                          bundle.obj.deployment.campaign):
             return True
+
+        print "should not see this"
 
         raise Unauthorized()
 
@@ -566,8 +572,8 @@ class GenericImageResource(ModelResource):
         imgNameNoExt, imgExt = os.path.splitext(imageName)
         size = str(settings.THUMBNAIL_SIZE[0]) + "x" + str(settings.THUMBNAIL_SIZE[1])
         thumbnailName = imgNameNoExt + "_" + size + imgExt        
-        bundle.data['web_location'] = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "images", imageName)
-        bundle.data['thumbnail_location'] = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName, "thumbnails", thumbnailName)
+        bundle.data['web_location'] = "/images/" + campaignName + "/" + deploymentName + "/images/" + imageName
+        bundle.data['thumbnail_location'] = "/images/" + campaignName + "/" + deploymentName + "/thumbnails/" + thumbnailName
         return bundle
 
 

@@ -213,6 +213,9 @@ class TestProjectResource(ResourceTestCase):
                 format='json',
                 data=self.bill_put_data)
 
+        print "---------*****"
+        print response.status_code
+
         self.assertHttpAccepted(response)
 
         response = self.bill_api_client.get(self.project_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
@@ -626,7 +629,7 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
 
         self.generic_annotation_set_bills = mommy.make_one(GenericAnnotationSet,
                                             project=self.project_bills,
-                                            owner=self.user_bob,
+                                            owner=self.user_bill,
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             generic_images=[self.mock_image_one, self.mock_image_two],
@@ -748,8 +751,6 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
                 format='json',
                 data=self.bill_post_data)
 
-
-
         self.assertHttpCreated(response)
 
         # check that bill can see via the API
@@ -758,7 +759,7 @@ class TestGenericPointAnnotationResource(ResourceTestCase):
         self.assertEqual(len(self.deserialize(response)), 4)
 
         # check that bill can get to the object itself
-        response = self.bill_api_client.get(self.point_annotation_url + "?image=" + self.mock_image_one.id.__str__(),
+        response = self.bill_api_client.get(self.point_annotation_url + "?annotation_caab_code=caab1",
                                             format='json')
         self.assertValidJSONResponse(response)
 
