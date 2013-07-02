@@ -118,9 +118,15 @@ class ProjectAuthorization(Authorization):
         #original = object_list.get(id=bundle.obj.id)
 
         user = get_real_user_object(bundle.request.user)
+
+        print get_perms(user, bundle.obj)
+        print bundle.obj.name
+        print bundle.obj.owner
+
         if user.has_perm('projects.change_project', bundle.obj):
             # the user has permission to edit
             return True
+
         else:
             raise Unauthorized(
                 "You don't have permission to edit this project"
