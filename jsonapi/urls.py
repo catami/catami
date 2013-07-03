@@ -29,6 +29,7 @@ dev_api.register(catamidb.api.MeasurementsResource())
 dev_api.register(jsonapi.api.UserResource())
 
 dev_api.register(projects.api.ProjectResource())
+dev_api.register(projects.api.ProjectResourceLite())
 dev_api.register(projects.api.GenericAnnotationSetResource())
 dev_api.register(projects.api.GenericPointAnnotationResource())
 dev_api.register(projects.api.GenericWholeImageAnnotationResource())

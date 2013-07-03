@@ -95,7 +95,7 @@ def howto(request):
 
 # Projects page
 def projects(request):
-    return render_to_response('webinterface/projects-new.html', {}, RequestContext(request))
+    return render_to_response('webinterface/project-list.html', {}, RequestContext(request))
 
 
 def project_view(request, project_id):

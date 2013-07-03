@@ -278,6 +278,30 @@ class GenericPointAnnotationAuthorization(Authorization):
         raise Unauthorized("You don't have permission to edit this annotation point.")
 
 
+class ProjectResourceLite(ModelResource):
+    """
+    This is a light resource for use in lists. Packing all the images in the response
+    slows things down.
+    """
+    owner = fields.ForeignKey(UserResource, 'owner', full=True)
+
+    class Meta:
+        always_return_data = True,
+        queryset = Project.objects.all()
+        resource_name = "project_lite"
+        authentication = MultiAuthentication(AnonymousGetAuthentication(),
+                                             ApiKeyAuthentication(),
+                                             Authentication())
+        authorization = ProjectAuthorization()
+        detail_allowed_methods = ['get']
+        list_allowed_methods = ['get']
+        filtering = {
+            'name': ALL,
+            'owner': ALL,
+            'id': 'exact'
+        }
+
+
 class ProjectResource(ModelResource):
     owner = fields.ForeignKey(UserResource, 'owner', full=True)
     generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', full=True)
@@ -325,15 +349,7 @@ class ProjectResource(ModelResource):
         authorization.apply_project_permissions(user, bundle.obj)
 
         return bundle
-    '''
-    def obj_update(self, bundle, **qwargs):
 
-        try:
-            super(ProjectResource, self).obj_update(bundle)
-        except Exception, e:
-            traceback.print_exc()
-            raise e
-    '''
     def dehydrate(self, bundle):
         # Add an image_count field to ProjectResource.
         bundle.data['image_count'] = Project.objects.get(pk=bundle.data[
