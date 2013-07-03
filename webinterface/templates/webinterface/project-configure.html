@@ -60,6 +60,55 @@
                         </div>
                     </div>
 
+                    <legend>Annotation methodology</legend>
+
+                    <div class="control-group">
+                        <label class="control-label" for="image_sampling_methodology">
+                            Image Sampling:</label>
+
+                        <div class="controls">
+                            <select class="input-xlarge" id="image_sampling_methodology" name="image_sampling_methodology">
+                               <option value="0">Random</option>
+                               <option value="1">Stratified</option>
+                             </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="image_sample_size">
+                            Number of Images:</label>
+
+                        <div class="controls">
+                            <input type="number" class="input-xlarge"
+                                   id="image_sample_size" name="image_sample_size"
+                                   data-error-style="inline"
+                                   >
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="point_sampling_methodology">
+                            Point Sampling:</label>
+
+                        <div class="controls">
+                            <select class="input-xlarge" id="point_sampling_methodology" name="point_sampling_methodology">
+                               <option value="0">Random</option>
+                             </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="point_sample_size">
+                            Number of Points (per image):</label>
+
+                        <div class="controls">
+                            <input type="number" class="input-xlarge"
+                                   id="point_sample_size" name="point_sample_size"
+                                   data-error-style="inline"
+                                   >
+                        </div>
+                    </div>
+
                     <div style="margin-left: 374px;">
                         <button type="button" class="btn btn-primary btn-large"
                                 id="save_button">
@@ -78,6 +127,7 @@
 
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/projects.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
     <script type="text/javascript">
 
         var projectId = "{{ project_id }}";
@@ -85,7 +135,6 @@
         var project = new Project({id: projectId});
         project.fetch({
             success: function (model, response, options) {
-
                 var projectConfigureView = new ProjectConfigureView({
                     el: $("#ProjectConfigureContainer")
                 });
@@ -93,7 +142,6 @@
             error: function (model, response, options) {
                 alert('Fetch failed: ' + response.status);
             }
-
         });
 
     </script>

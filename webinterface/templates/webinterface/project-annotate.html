@@ -3,6 +3,73 @@
 
 {% block content %}
 
-    Stuff in here
+    <div id="ProjectAnnotateContainer"></div>
+
+    <script type="text/template" id="ProjectAnnotateTemplate">
+
+    <!--
+    <div class="row-fluid">
+        <div class="span12">
+            <ul class="breadcrumb">
+
+                <li><a href="/projects/">Projects</a> <span
+                        class="divider">></span></li>
+                <li class="active"><%= name %></li>
+
+            </ul>
+        </div>
+    </div>
+    -->
+
+    <div class="row-fluid">
+
+        <div id="content" class="defaults span6">
+
+            <!-- Future navigation panel -->
+            <div class="holder" ></div>
+
+            <!-- Item container (doesn't need to be an UL) -->
+            <ul id="itemContainer" >
+                <%=images%>
+            </ul>
+        </div>
+
+    </div>
+
+    </script>
+
+    <script type="text/template" id="ImageTemplate">
+        <li><img src="<%= thumbnail_location %>"></li>
+    </script>
+
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-model.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-annotate-view.js"></script>
+    <script type="text/javascript">
+
+        var projectId = "{{ project_id }}";
+        var annotationSets = new AnnotationSets();
+        annotationSets.fetch({
+            data: { project: projectId },
+            success: function (model, response, options) {
+                //load the view
+                var projectAnnotateView = new ProjectAnnotateView({
+                    el: $("#ProjectAnnotateContainer"),
+                    model : annotationSets
+                });
+
+                //populate thumbnails
+                $("div.holder").jPages({
+                    containerID: "itemContainer",
+                    perPage: 12
+                });
+            },
+            error: function (model, response, options) {
+                alert('Fetch failed: ' + response.status);
+            }
+        });
+
+    </script>
 
 {% endblock %}

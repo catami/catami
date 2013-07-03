@@ -178,41 +178,7 @@ ProjectView = Backbone.View.extend({
         window.location.replace("/projects/" + project.get("id") + "/configure");
     },
     doStartAnnotating: function(event) {
-        var newAnnotationSet = new AnnotationSet({
-            project: project.get("resource_uri"),
-            name: '',
-            description: '',
-            annotation_methodology: '0',
-            image_sampling_methodology: '1',
-            image_sample_size: '10',
-            point_sample_size: '5'
-        });
-
-        var theXHR = newAnnotationSet.save({}, {
-                success: function (model, xhr, options) {
-                    //redirect to the page for the annotation
-                    window.location.replace("/projects/" + project.get("id") + "/annotate");
-                },
-                error: function (model, xhr, options) {
-                    /* XXX
-                       Backbone save() implementation triggers  error callback even when 201 (Created) and 202 (Accepted) status code is returned
-                       http://documentcloud.github.io/backbone/#Model-save
-                       Save() accepts success and error callbacks in the options hash,
-                       which are passed (model, response, options) and (model, xhr, options) as arguments, respectively.
-                       If a server-side validation fails, return a non-200 HTTP response code, along with an error response in text or JSON.
-
-                    */
-                    if (xhr.status == "201" || xhr.status == "202") {
-                        //redirect to the page for the annotation
-                        window.location.replace("/projects/" + project.get("id") + "/annotate");
-                    }
-                    else {
-                        $('#error_message1').text("Project creation failed!");
-                        $('#error_message2').text("Error status: " + xhr.status + " (" + jQuery.parseJSON(xhr.responseText).error_message + ")");
-                        this.$('.alert-error').fadeIn();
-                    }
-                }
-            });
+        window.location.replace("/projects/" + project.get("id") + "/annotate");
     }
 });
 
@@ -260,6 +226,7 @@ ProjectConfigureView = Backbone.View.extend({
         "click #save_button": "doSave"
     },
     doSave: function (event) {
+        var configureView = this;
         var data = $('form').serializeObject();
         this.model.set(data);
         var isValid = this.model.isValid(true);
@@ -279,10 +246,14 @@ ProjectConfigureView = Backbone.View.extend({
             this.model.set({generic_images: daImages});
 
             //save away
-            this.model.save(null, {
+            var theXHR = this.model.save(null, {
                 success: function (model, xhr, options) {
+                    //now create an annotation set for the project
+                    //var projectResourceURI  = theXHR.getResponseHeader('Location');
+                    configureView.doCreateAnnotationSet(model.get("resource_uri"),  model.get("id"), data);
+
                     //refresh page back to this project
-                    window.location.replace("/projects/" + model.get("id"));
+                    //window.location.replace("/projects/" + model.get("id"));
                 },
                 error: function (model, xhr, options) {
                     this.$('.alert').hide();
@@ -307,6 +278,43 @@ ProjectConfigureView = Backbone.View.extend({
                 }
             })
         }
+    },
+    doCreateAnnotationSet: function(projectResourceURI, projectId, formData) {
+        var newAnnotationSet = new AnnotationSet({
+            project: projectResourceURI,
+            name: '',
+            description: '',
+            annotation_methodology: formData.point_sampling_methodology,
+            image_sampling_methodology: formData.image_sampling_methodology,
+            image_sample_size: formData.image_sample_size,
+            point_sample_size: formData.point_sample_size
+        });
+
+        var theXHR = newAnnotationSet.save({}, {
+            success: function (model, xhr, options) {
+                //redirect to the page for the annotation
+                window.location.replace("/projects/" + projectId );
+            },
+            error: function (model, xhr, options) {
+                /* XXX
+                   Backbone save() implementation triggers  error callback even when 201 (Created) and 202 (Accepted) status code is returned
+                   http://documentcloud.github.io/backbone/#Model-save
+                   Save() accepts success and error callbacks in the options hash,
+                   which are passed (model, response, options) and (model, xhr, options) as arguments, respectively.
+                   If a server-side validation fails, return a non-200 HTTP response code, along with an error response in text or JSON.
+
+                */
+                if (xhr.status == "201" || xhr.status == "202") {
+                    //redirect to the page for the annotation
+                    window.location.replace("/projects/" + project.get("id") + "/annotate");
+                }
+                else {
+                    $('#error_message1').text("Project creation failed!");
+                    $('#error_message2').text("Error status: " + xhr.status + " (" + jQuery.parseJSON(xhr.responseText).error_message + ")");
+                    this.$('.alert-error').fadeIn();
+                }
+            }
+        });
     },
     valid: function (view, attr) {
     },

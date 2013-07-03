@@ -352,7 +352,7 @@ class ProjectResource(ModelResource):
 
 
 class GenericAnnotationSetResource(ModelResource):
-    project = fields.ForeignKey(ProjectResource, 'project', full=True)
+    project = fields.ForeignKey(ProjectResource, 'project')
     generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', full=True, blank=True, null=True)
 
     class Meta:
