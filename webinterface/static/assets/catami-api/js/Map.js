@@ -10,11 +10,12 @@ OpenLayers.ProxyHost = "/proxy/?url=";
  * @constructor
  */
 
-function BaseMap(wmsUrl, wmsLayerName, divName) {
+function BaseMap(wmsUrl, wmsLayerName, divName, extent) {
     //Map view code to get moved out later.
     //prep some data we need to use to display the points
     this.wmsUrl = wmsUrl;
     this.wmsLayerName = wmsLayerName;
+    this.extent = extent;
 
     /* Filter based on the deployment id */
 
@@ -181,6 +182,20 @@ BaseMap.prototype.clearMap = function() {
 
     this.currentFilter = [];
 }
+
+/**
+ * Zoom to extent
+ */
+BaseMap.prototype.zoomToExtent = function() {
+    var mapInstance = this.mapInstance;
+    var boundsArr = this.extent.replace("(", "").replace(")", "").split(",");
+    var bounds = new OpenLayers.Bounds();
+    bounds.extend(new OpenLayers.LonLat(boundsArr[0], boundsArr[1]));
+    bounds.extend(new OpenLayers.LonLat(boundsArr[2], boundsArr[3]));
+    var geographic = new OpenLayers.Projection("EPSG:4326");
+    var mercator = new OpenLayers.Projection("EPSG:900913");
+    mapInstance.zoomToExtent(bounds.transform(geographic, mercator));
+};
 
 /**
  *

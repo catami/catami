@@ -19,21 +19,24 @@ DeploymentDetailView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(deploymentDetailTemplate);
                
-        var did = deployment.get("id");
+        var deploymentId = deployment.get("id");
+        var mapExtent = deployment.get("map_extent");
+
         //instantiate openlayer map via Geoserver
-        var map = new BaseMap(WMS_URL, WMSLayerName, "deployment-map");
+        var map = new BaseMap(WMS_URL, WMSLayerName, "deployment-map", mapExtent);
         //load layer and filter by deployment id
         filter_array = []
         filter_array.push(new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
             property: "deployment_id",
-            value: did
+            value: deploymentId
         }));
         map.updateMapUsingFilter(filter_array);
-    
-        plotMeasurement("/api/dev/generic_image/?format=json&deployment=" + did + "&output=flot&limit=10000", "#placeholder_01", "Depth (m)")
-        plotMeasurement("/api/dev/measurements/?format=json&image__deployment=" + did + "&mtype=salinity&limit=10000&output=flot", "#placeholder_02", "Salinity (psu)")
-        plotMeasurement("/api/dev/measurements/?format=json&image__deployment=" + did + "&mtype=temperature&limit=10000&output=flot", "#placeholder_03", "Temperature (cel)")
+        map.zoomToExtent();
+
+        plotMeasurement("/api/dev/generic_image/?format=json&deployment=" + deploymentId + "&output=flot&limit=10000", "#placeholder_01", "Depth (m)")
+        plotMeasurement("/api/dev/measurements/?format=json&image__deployment=" + deploymentId + "&mtype=salinity&limit=10000&output=flot", "#placeholder_02", "Salinity (psu)")
+        plotMeasurement("/api/dev/measurements/?format=json&image__deployment=" + deploymentId + "&mtype=temperature&limit=10000&output=flot", "#placeholder_03", "Temperature (cel)")
            
         return this;
     }

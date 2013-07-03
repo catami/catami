@@ -418,6 +418,15 @@ class GenericDeploymentResource(ModelResource):
         #as we only want to obtain campaign info.
         dp = self.Meta.queryset.filter(id=bundle.data['id'])[0]; 
         bundle.data['campaign_name'] = dp.campaign.short_name
+
+        # Add the map_extent of all the images in this project
+        images = GenericImage.objects.filter(deployment=bundle.obj.id)
+        map_extent = ""
+        if len(images) != 0:
+            map_extent = images.extent().__str__()
+
+        bundle.data['map_extent'] = map_extent
+
         return bundle
 
 
