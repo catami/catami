@@ -73,7 +73,7 @@ function BaseMap(wmsUrl, wmsLayerName, divName) {
         sphericalMercator: true
     });
     this.mapInstance.addLayer(osm);
-    console.log("1");
+
     //this is the layer for our points to be displayed with
     var imagePointsLayer = new OpenLayers.Layer.WMS("Images",
         this.wmsUrl,
@@ -122,7 +122,6 @@ function BaseMap(wmsUrl, wmsLayerName, divName) {
     this.loadingPanel = loadingPanel;
     this.mapInstance.addControl(this.loadingPanel);
     this.zoomToInitialExtent();
-    console.log("2");
 };
 
 /**
@@ -144,7 +143,6 @@ BaseMap.prototype.zoomToInitialExtent = function() {
  * @param filterArray
  */
 BaseMap.prototype.updateMapUsingFilter = function(filterArray) {
-    console.log("Applying map filter");
     //this.loadingPanel.maximizeControl();
     // the images layer may have been removed by a clear call, so re make it
     if(this.mapInstance.getLayersByName("Images")[0] == null) {

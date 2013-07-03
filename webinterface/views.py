@@ -112,9 +112,9 @@ def project_configure(request, project_id):
                               RequestContext(request))
 
 
-def project_annotate(request, project_id, annotation_set_id):
+def project_annotate(request, project_id):
     return render_to_response('webinterface/project-annotate.html',
-                              {"annotation_set_id": annotation_set_id
+                              {"project_id": project_id
                                },
                               RequestContext(request))
 

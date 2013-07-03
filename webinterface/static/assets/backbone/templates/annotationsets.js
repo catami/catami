@@ -1,11 +1,9 @@
-var AnnotationSet = window.TastypieModel.extend({
-    url: function () {
-        // Important! It's got to know where to send its REST calls.
-        return this.id ? '/api/dev/annotation_set/' + this.id + "/" : '/api/dev/annotation_set/';
-    }
+var AnnotationSet = Backbone.Model.extend({
+    urlRoot: "/api/dev/generic_annotation_set/"
 });
 
-var AnnotationSet = Backbone.Collection.extend({
-    model: Project,
-    url: "/api/dev/annotation_set/"
+var AnnotationSets = Backbone.Tastypie.Collection.extend({
+    model: AnnotationSet,
+    url: "/api/dev/generic_annotation_set/"
 });
+

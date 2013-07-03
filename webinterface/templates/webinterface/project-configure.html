@@ -15,8 +15,9 @@
 
         <form class="form-horizontal" id="form">
             <fieldset>
-                <legend>Configure Project</legend>
                 <div class="configure_project_form">
+                    <legend>Project Details</legend>
+
                     <div class="alert alert-error" style="display: none">
                         <strong>
                             <span id="error_message1"> Error Message 1</span>
@@ -46,6 +47,19 @@
                         </div>
                     </div>
 
+                    <legend>Deployment to work on</legend>
+
+                    <div class="control-group">
+                        <label class="control-label" for="deployment">
+                            Deployment:</label>
+
+                        <div class="controls">
+                            <select class="input-xlarge" id="deployment" name="deployment">
+                               <%=deployments%>
+                             </select>
+                        </div>
+                    </div>
+
                     <div style="margin-left: 374px;">
                         <button type="button" class="btn btn-primary btn-large"
                                 id="save_button">
@@ -58,6 +72,10 @@
 
     </script>
 
+    <script type="text/template" id="DeploymentTemplate">
+        <option value="<%=id%>"><%=short_name%></option>
+    </script>
+
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/projects.js"></script>
     <script type="text/javascript">
@@ -66,12 +84,8 @@
 
         var project = new Project({id: projectId});
         project.fetch({
-
             success: function (model, response, options) {
-                //var imageCount = project.get("image_count");
 
-                //if there are no images for this project, we need the user to configure the project
-                //if (imageCount == 0) {
                 var projectConfigureView = new ProjectConfigureView({
                     el: $("#ProjectConfigureContainer")
                 });

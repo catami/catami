@@ -16,6 +16,24 @@ $.fn.serializeObject = function()
    return o;
 };
 
+var Deployment = Backbone.Tastypie.Model.extend({
+    urlRoot: "/api/dev/generic_deployment"
+});
+
+var Deployments = Backbone.Tastypie.Collection.extend({
+    urlRoot: "/api/dev/generic_deployment",
+    model: Deployment
+});
+
+var Image = Backbone.Tastypie.Model.extend({
+    urlRoot: "/api/dev/generic_image"
+});
+
+var Images = Backbone.Tastypie.Collection.extend({
+    urlRoot: "/api/dev/generic_image",
+    model: Image
+});
+
 var Project = Backbone.Model.extend({
     urlRoot: "/api/dev/project/",
     validation: {
@@ -76,16 +94,13 @@ ProjectCollectionView = Backbone.View.extend({
           generic_images: []
         });
 
-        theXHR = newProject.save({}, {
+        var theXHR = newProject.save({}, {
                 success: function (model, xhr, options) {
 
                     //get the id of the project from teh reponse headers
                     var projectResourceURI  = theXHR.getResponseHeader('Location');
                     var splitURI = projectResourceURI.split("/");
                     var projectId = splitURI[splitURI.length-2];
-
-                    //alert("Success")
-                    alert(xhr);
 
                     //redirect to the page for the project
                     window.location.replace("/projects/" + projectId + "/configure");
@@ -105,9 +120,6 @@ ProjectCollectionView = Backbone.View.extend({
                         var splitURI = projectResourceURI.split("/");
                         var projectId = splitURI[splitURI.length-2];
 
-                        alert("201 202")
-                        alert(xhr.toSource());
-
                         //redirect to the page for the project
                         window.location.replace("/projects/" + projectId + "/configure");
                     }
@@ -117,7 +129,7 @@ ProjectCollectionView = Backbone.View.extend({
                         this.$('.alert-error').fadeIn();
                     }
                 }
-            })
+            });
     }
 });
 
@@ -166,7 +178,41 @@ ProjectView = Backbone.View.extend({
         window.location.replace("/projects/" + project.get("id") + "/configure");
     },
     doStartAnnotating: function(event) {
+        var newAnnotationSet = new AnnotationSet({
+            project: project.get("resource_uri"),
+            name: '',
+            description: '',
+            annotation_methodology: '0',
+            image_sampling_methodology: '1',
+            image_sample_size: '10',
+            point_sample_size: '5'
+        });
 
+        var theXHR = newAnnotationSet.save({}, {
+                success: function (model, xhr, options) {
+                    //redirect to the page for the annotation
+                    window.location.replace("/projects/" + project.get("id") + "/annotate");
+                },
+                error: function (model, xhr, options) {
+                    /* XXX
+                       Backbone save() implementation triggers  error callback even when 201 (Created) and 202 (Accepted) status code is returned
+                       http://documentcloud.github.io/backbone/#Model-save
+                       Save() accepts success and error callbacks in the options hash,
+                       which are passed (model, response, options) and (model, xhr, options) as arguments, respectively.
+                       If a server-side validation fails, return a non-200 HTTP response code, along with an error response in text or JSON.
+
+                    */
+                    if (xhr.status == "201" || xhr.status == "202") {
+                        //redirect to the page for the annotation
+                        window.location.replace("/projects/" + project.get("id") + "/annotate");
+                    }
+                    else {
+                        $('#error_message1').text("Project creation failed!");
+                        $('#error_message2').text("Error status: " + xhr.status + " (" + jQuery.parseJSON(xhr.responseText).error_message + ")");
+                        this.$('.alert-error').fadeIn();
+                    }
+                }
+            });
     }
 });
 
@@ -181,10 +227,26 @@ ProjectConfigureView = Backbone.View.extend({
         this.model.on('validated:valid', this.valid, this);
         this.model.on('validated:invalid', this.invalid, this);
 
+        //get all the deployments to be rendered
+        var deploymentTemplate = "";
+
+        var deployments = new Deployments();
+        deployments.fetch({async:false});
+
+        deployments.each(function (deployment) {
+            var deploymentVariables = {
+                "short_name": deployment.get("short_name"),
+                "id": deployment.get("id")
+            };
+
+            deploymentTemplate += _.template($("#DeploymentTemplate").html(), deploymentVariables);
+        });
+
         var projectVariables = {
             "name": project.get("name"),
             "description": project.get("description"),
-            "id": project.get("id")
+            "id": project.get("id"),
+            "deployments": deploymentTemplate
         };
 
         var projectTemplate = _.template($("#ProjectConfigureTemplate").html(), projectVariables);
@@ -206,12 +268,13 @@ ProjectConfigureView = Backbone.View.extend({
             this.model.set({id: project.get("id")});
 
             //get the images for the deployment we want and assign them
-            var daImages = [];
-            for(var i=10; i< 500; i++) {
-                daImages.push("/api/dev/generic_image/"+ i +"/");
-            }
+            var apiImages = new Images({deployment: data.deployment});
+            apiImages.fetch({async:false, data: { limit : 10000 }});
 
-            console.log(daImages);
+            var daImages = [];
+            apiImages.each(function (image) {
+                daImages.push(image.get('resource_uri'));
+            });
 
             this.model.set({generic_images: daImages});
 

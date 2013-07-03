@@ -458,6 +458,16 @@ class GenericAnnotationSetResource(ModelResource):
         # get real user
         user = get_real_user_object(bundle.request.user)
 
+        #put the created and modified dates on the object
+        create_modified_date = datetime.now()
+        bundle.data['creation_date'] = create_modified_date
+        bundle.data['modified_date'] = create_modified_date
+
+        bundle.data['generic_images'] = ''
+
+        #attach current user as the owner
+        bundle.data['owner'] = user
+
         #create the bundle
         super(GenericAnnotationSetResource, self).obj_create(bundle)
 

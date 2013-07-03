@@ -40,7 +40,7 @@ urlpatterns = patterns(
     url(r'^projects/$', 'projects'),
     url(r'^projects/(?P<project_id>\d+)/$', 'project_view'),
     url(r'^projects/(?P<project_id>\d+)/configure/$', 'project_configure'),
-    url(r'^projects/(?P<project_id>\d+)/configure/(?P<annotation_set_id>\d+)/$', 'project_annotate'),
+    url(r'^projects/(?P<project_id>\d+)/annotate/$', 'project_annotate'),
 
 
     #plain data views
