@@ -135,7 +135,7 @@ def deployments(request):
     """@brief Deployment list html for entire database
     """
     return render_to_response(
-        'webinterface/Backbone_views/DeploymentIndex.html',
+        'webinterface/deployment-list.html',
         {'deployment_list': GenericDeployment.objects.all()},
         context_instance=RequestContext(request))
 
@@ -159,7 +159,7 @@ def deployment_detail(request, deployment_id):
         return deployments(request)
 
     return render_to_response(
-        'webinterface/Backbone_views/DeploymentDetail.html',
+        'webinterface/deployment-view.html',
         {'deployment_object': deployment_object,
          'WMS_URL': settings.WMS_URL,
          'WMS_layer_name': settings.WMS_LAYER_NAME,

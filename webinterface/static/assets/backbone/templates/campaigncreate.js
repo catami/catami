@@ -1,4 +1,4 @@
-var Campaign = Backbone.Tastypie.Model.extend({
+var Campaign = Backbone.Model.extend({
     urlRoot: "/api/dev/campaign/",
     validation: {
         short_name: {

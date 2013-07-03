@@ -3,18 +3,14 @@
         defaultLimit: 20
     };
 
-    Backbone.Tastypie.Model = Backbone.Model.extend({
-
-    });
-
     Backbone.Tastypie.Collection = Backbone.Collection.extend({
         constructor: function (models, options) {
             Backbone.Collection.prototype.constructor.apply(this, arguments);
 
             this.meta = {};
             this.filters = {
-                limit: Backbone.Tastypie.defaultLimit,
-                offset: 0
+                limit: Backbone.Tastypie.defaultLimit//,
+                //offset: 0
             };
 
             if (options && options.filters)
@@ -38,7 +34,7 @@
                 this.meta = response.meta;
 
             return response && response.objects;
-        },
+        },/*
         fetchNext: function (options) {
             options = options || {};
             options.add = true;
@@ -65,7 +61,7 @@
             }
 
             return this.fetch.call(this, options);
-        },
+        },*/
         _getQueryString: function () {
             if (!this.filters)
                 return '';

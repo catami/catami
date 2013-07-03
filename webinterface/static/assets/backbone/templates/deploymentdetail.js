@@ -1,5 +1,5 @@
-var Deployment = Backbone.Tastypie.Model.extend({
-    urlRoot: "/api/dev/generic_deployment",
+var Deployment = Backbone.Model.extend({
+    urlRoot: "/api/dev/generic_deployment/",
 });
 
 DeploymentDetailView = Backbone.View.extend({

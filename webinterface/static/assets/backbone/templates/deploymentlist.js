@@ -1,24 +1,25 @@
-var Deployment = Backbone.Tastypie.Model.extend({
-    urlRoot: "/api/dev/generic_deployment",
+var Deployment = Backbone.Model.extend({
+    urlRoot: "/api/dev/generic_deployment/",
 });
 
 var Deployments = Backbone.Tastypie.Collection.extend({
-    urlRoot: "/api/dev/generic_deployment",
+    urlRoot: "/api/dev/generic_deployment/",
     model: Deployment
 });
 
-
 DeploymentCollectionView = Backbone.View.extend({   
     el: $('div'),
-    initialize: function () {
+    meta: {},
+    initialize: function (options) {
+        this.meta = options['meta']; //assign specified metadata to local var
         this.render();
     },
     render: function () {
         var deploymentTemplate = "";
         // Compile the template using underscore       
-        var deploymentType = catami_getURLParameter("type");
-
-        deployments.each(function (deployment) {
+        var deploymentType = catami_getURLParameter("type");       
+        
+        deployments.each(function (deployment) {                        
             var type = deployment.get("type").toUpperCase();
             //if type is not specified, list everything, else filter by type
             if (deploymentType == "null" || deploymentType.toUpperCase() == type) {
@@ -44,27 +45,35 @@ DeploymentCollectionView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
 
         this.$el.html(deploymentListTemplate);
+
+        //Create pagination
+        var options = catami_generatePaginationOptions(this.meta);
+        $('#pagination').bootstrapPaginator(options);
+
         return this;
     }
 });
 
-
-var deployments = new Deployments;
-
-// Make a call to the server to populate the collection 
-deployments.fetch({
-    success: function (model, response, options) {
-        var deployment_view = new DeploymentCollectionView({
-            el: $("#DeploymentListContainer"),
-            collection: deployments
-        });
-    },
-    error: function (model, response, options) {
-        alert('fetch failed: ' + response.status);
-    }
-
-});
+var deployments = new Deployments();
+loadPage();
 
 
-
+function loadPage(offset) {
+    var off = {}
+    if (offset) off = offset;
+    // Make a call to the server to populate the collection 
+    deployments.fetch({
+        data: { offset: off },
+        success: function (model, response, options) {
+            var deployment_view = new DeploymentCollectionView({
+                el: $("#DeploymentListContainer"),
+                collection: deployments,
+                meta: deployments.meta //read from initiaisation method's "option" variable
+            });
+        },
+        error: function (model, response, options) {
+            alert('fetch failed: ' + response.status);
+        }
+    });
+}
 
