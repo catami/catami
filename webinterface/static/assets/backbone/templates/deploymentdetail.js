@@ -42,7 +42,7 @@ DeploymentDetailView = Backbone.View.extend({
     }
 });
 
-deployment = new Deployment({ id: catami_getDeploymentId() });
+deployment = new Deployment({ id: catami_getIdFromUrl() });
 deployment.fetch({
     success: function (model, response, options) {
         var deploymentdetail_view = new DeploymentDetailView({

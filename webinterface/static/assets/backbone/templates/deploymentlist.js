@@ -32,7 +32,7 @@ DeploymentCollectionView = Backbone.View.extend({
                     "end_time": deployment.get("end_time_stamp"),
                     "min_depth": deployment.get("min_depth"),
                     "max_depth": deployment.get("max_depth"),               
-                    "campaign_url": deployment.get("campaign"),
+                    "campaign_url": CampaignListUrl + catami_getIdFromUrl(deployment.get("campaign")) + "/",
                     "campaign_name": deployment.get("campaign_name")
                 };
                 deploymentTemplate += _.template($("#DeploymentTemplate").html(), deploymentVariables);

@@ -47,9 +47,11 @@ catami_getURLParameter = function(name) {
     );
 }
 
-//function that gets deploymentID from url
-catami_getDeploymentId = function () {
-    var v = location.pathname.split("/");
+//function that gets ID from specified url, if none specified, get it from current location
+catami_getIdFromUrl = function (url) {
+    var v;
+    if(url) v = url
+    else v = location.pathname.split("/");
     //check url if it ends with a "/"
     var index = v.length - (endsWith(location.pathname, "/") ? 2 : 1);
     return v[index];
