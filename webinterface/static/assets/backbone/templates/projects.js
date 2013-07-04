@@ -16,7 +16,7 @@ $.fn.serializeObject = function()
    return o;
 };
 
-var Deployment = Backbone.Tastypie.Model.extend({
+var Deployment = Backbone.Model.extend({
     urlRoot: "/api/dev/generic_deployment"
 });
 
@@ -25,7 +25,7 @@ var Deployments = Backbone.Tastypie.Collection.extend({
     model: Deployment
 });
 
-var Image = Backbone.Tastypie.Model.extend({
+var Image = Backbone.Model.extend({
     urlRoot: "/api/dev/generic_image"
 });
 
@@ -102,148 +102,6 @@ ProjectView = Backbone.View.extend({
     }
 });
 
-ProjectConfigureView = Backbone.View.extend({
-    model: new Project(),
-    el: $('div'),
-    initialize: function () {
-        this.render();
-    },
-    render: function () {
-        Backbone.Validation.bind(this);
-        this.model.on('validated:valid', this.valid, this);
-        this.model.on('validated:invalid', this.invalid, this);
 
-        //get all the deployments to be rendered
-        var deploymentTemplate = "";
-
-        var deployments = new Deployments();
-        deployments.fetch({async:false});
-
-        deployments.each(function (deployment) {
-            var deploymentVariables = {
-                "short_name": deployment.get("short_name"),
-                "id": deployment.get("id")
-            };
-
-            deploymentTemplate += _.template($("#DeploymentTemplate").html(), deploymentVariables);
-        });
-
-        var projectVariables = {
-            "name": project.get("name"),
-            "description": project.get("description"),
-            "id": project.get("id"),
-            "deployments": deploymentTemplate
-        };
-
-        var projectTemplate = _.template($("#ProjectConfigureTemplate").html(), projectVariables);
-
-        // Load the compiled HTML into the Backbone "el"
-        this.$el.html(projectTemplate);
-
-        return this;
-    },
-    events: {
-        "click #save_button": "doSave"
-    },
-    doSave: function (event) {
-        var configureView = this;
-        var data = $('form').serializeObject();
-        this.model.set(data);
-        var isValid = this.model.isValid(true);
-        if (isValid) {
-            //assign the id of the project we are looking at
-            this.model.set({id: project.get("id")});
-
-            //get the images for the deployment we want and assign them
-            var apiImages = new Images({deployment: data.deployment});
-            apiImages.fetch({async:false, data: { limit : 10000 }});
-
-            var daImages = [];
-            apiImages.each(function (image) {
-                daImages.push(image.get('resource_uri'));
-            });
-
-            this.model.set({generic_images: daImages});
-
-            //save away
-            var theXHR = this.model.save(null, {
-                success: function (model, xhr, options) {
-                    //now create an annotation set for the project
-                    //var projectResourceURI  = theXHR.getResponseHeader('Location');
-                    configureView.doCreateAnnotationSet(model.get("resource_uri"),  model.get("id"), data);
-
-                    //refresh page back to this project
-                    //window.location.replace("/projects/" + model.get("id"));
-                },
-                error: function (model, xhr, options) {
-                    this.$('.alert').hide();
-                    /* XXX
-                       Backbone save() implementation triggers  error callback even when 201 (Created) and 202 (Accepted) status code is returned
-                       http://documentcloud.github.io/backbone/#Model-save
-                       Save() accepts success and error callbacks in the options hash,
-                       which are passed (model, response, options) and (model, xhr, options) as arguments, respectively.
-                       If a server-side validation fails, return a non-200 HTTP response code, along with an error response in text or JSON.
-
-                    */
-                    if (xhr.status == "201" || xhr.status == "202") {
-                        this.$('.alert').hide();
-                        this.$('.form1').hide();
-                        this.$('.alert-success').fadeIn();
-                    }
-                    else {
-                        $('#error_message1').text("Campaign creation failed!");
-                        $('#error_message2').text("Error status: " + xhr.status + " (" + jQuery.parseJSON(xhr.responseText).error_message + ")");
-                        this.$('.alert-error').fadeIn();
-                    }
-                }
-            })
-        }
-    },
-    doCreateAnnotationSet: function(projectResourceURI, projectId, formData) {
-        var newAnnotationSet = new AnnotationSet({
-            project: projectResourceURI,
-            name: '',
-            description: '',
-            annotation_methodology: formData.point_sampling_methodology,
-            image_sampling_methodology: formData.image_sampling_methodology,
-            image_sample_size: formData.image_sample_size,
-            point_sample_size: formData.point_sample_size
-        });
-
-        var theXHR = newAnnotationSet.save({}, {
-            success: function (model, xhr, options) {
-                //redirect to the page for the annotation
-                window.location.replace("/projects/" + projectId );
-            },
-            error: function (model, xhr, options) {
-                /* XXX
-                   Backbone save() implementation triggers  error callback even when 201 (Created) and 202 (Accepted) status code is returned
-                   http://documentcloud.github.io/backbone/#Model-save
-                   Save() accepts success and error callbacks in the options hash,
-                   which are passed (model, response, options) and (model, xhr, options) as arguments, respectively.
-                   If a server-side validation fails, return a non-200 HTTP response code, along with an error response in text or JSON.
-
-                */
-                if (xhr.status == "201" || xhr.status == "202") {
-                    //redirect to the page for the annotation
-                    window.location.replace("/projects/" + project.get("id") + "/annotate");
-                }
-                else {
-                    $('#error_message1').text("Project creation failed!");
-                    $('#error_message2').text("Error status: " + xhr.status + " (" + jQuery.parseJSON(xhr.responseText).error_message + ")");
-                    this.$('.alert-error').fadeIn();
-                }
-            }
-        });
-    },
-    valid: function (view, attr) {
-    },
-    invalid: function (view, attr, error) {
-        $('#error_message1').text("Form incomplete!");
-        $('#error_message2').text("The following fields are required:");
-        this.$('.alert').hide();
-        this.$('.alert-error').fadeIn();
-    }
-});
 
  

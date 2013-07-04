@@ -81,7 +81,7 @@ class GenericAnnotationSet(models.Model):
 
     ANNOTATATION_SAMPLING_METHODOLOGY_CHOICES = (
         (0, 'Random Point'),
-        (1, 'Stratified'),
+        (1, 'Stratified Point'),
         (2, 'Fixed 5 Point'),
         (3, 'Percentage Cover'),
     )

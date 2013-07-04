@@ -105,6 +105,10 @@ def project_view(request, project_id):
                                'WMS_layer_name': settings.WMS_PROJECTS_LAYER_NAME},
                               RequestContext(request))
 
+def project_create(request):
+    return render_to_response('webinterface/project-create.html',
+                              {},
+                              RequestContext(request))
 
 def project_configure(request, project_id):
     return render_to_response('webinterface/project-configure.html',

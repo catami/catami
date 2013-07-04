@@ -1,6 +1,12 @@
 import traceback
+from django.conf.urls import url
+from django.http import HttpResponse
+from django.utils import simplejson
 from tastypie import fields
+import tastypie
+from tastypie.bundle import Bundle
 from tastypie.resources import ModelResource
+from tastypie.utils import trailing_slash
 from catamidb.models import GenericImage
 from projects.models import (Project,
                              GenericAnnotationSet,
@@ -24,7 +30,7 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from datetime import datetime
 from random import sample
 from tastypie.exceptions import ImmediateHttpResponse
-from tastypie.http import HttpNotImplemented
+from tastypie.http import HttpNotImplemented, HttpBadRequest
 import random
 import logging
 
@@ -108,15 +114,10 @@ class ProjectAuthorization(Authorization):
 
         user = get_real_user_object(bundle.request.user)
 
-        print get_perms(user, bundle.obj)
-        print bundle.obj.name
-        print bundle.obj.owner
-
         if user.has_perm('projects.change_project', bundle.obj):
             # the user has permission to edit
             return True
         else:
-            print "should not see this proj"
             raise Unauthorized(
                 "You don't have permission to edit this project"
             )
@@ -304,7 +305,7 @@ class ProjectResourceLite(ModelResource):
 
 class ProjectResource(ModelResource):
     owner = fields.ForeignKey(UserResource, 'owner', full=True)
-    generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', full=True)
+    generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', full=True, blank=True)
 
     class Meta:
         always_return_data = True,
@@ -314,8 +315,8 @@ class ProjectResource(ModelResource):
                                              ApiKeyAuthentication(),
                                              Authentication())
         authorization = ProjectAuthorization()
-        detail_allowed_methods = ['get', 'post', 'put', 'delete']
-        list_allowed_methods = ['get', 'post', 'put', 'delete']
+        detail_allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
+        list_allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
         filtering = {
             'name': ALL,
             'owner': ALL,
@@ -323,6 +324,63 @@ class ProjectResource(ModelResource):
             'id': 'exact'
         }
         #excludes = ['owner', 'creation_date', 'modified_date']
+
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<project>%s)/create_project%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('create_project'), name="create_project"),
+        ]
+
+    def create_project(self, request, **kwargs):
+        """
+        Special handler function to create a project based on search criteria from images
+        """
+
+        json_data = simplejson.loads(request.body)
+
+        #pull the query parameters out
+        name = json_data['name']
+        description = json_data['description']
+        deployment_id = json_data['deployment_id']
+        image_sampling_methodology = json_data['image_sampling_methodology']
+        image_sample_size = json_data['image_sample_size']
+        annotation_methodology = json_data['annotation_methodology']
+        point_sample_size = json_data['point_sample_size']
+
+        #only proceed with all parameters
+        if (name and description and deployment_id and image_sampling_methodology and
+            image_sample_size and annotation_methodology and point_sample_size) is not None:
+
+            #get the images we are interested in
+            image_bundle = Bundle()
+            image_bundle.request = request
+            image_bundle.data = dict(deployment=deployment_id)
+            images = GenericImageResource().obj_get_list(image_bundle)
+
+            #create the project
+            project_bundle = Bundle()
+            project_bundle.request = request
+            project_bundle.data = dict(name=name, description=description, generic_images=images)
+            new_project = self.obj_create(project_bundle)
+
+            #create the annotation set for the project
+            annotation_set_bundle = Bundle()
+            annotation_set_bundle.request = request
+            annotation_set_bundle.data = dict(project=new_project, name="", description="",
+                                              image_sampling_methodology=image_sampling_methodology,
+                                              image_sample_size=image_sample_size,
+                                              annotation_methodology=annotation_methodology,
+                                              point_sample_size=point_sample_size)
+            GenericAnnotationSetResource().obj_create(annotation_set_bundle)
+
+            # build up a response with a 'Location', so the client knows the project id which is created
+            kwargs = dict (resource_name=self._meta.resource_name,
+                            pk=new_project.obj.id,
+                            api_name=self._meta.api_name)
+            response = HttpResponse(content_type='application/json')
+            response['Location'] = self._build_reverse_url('api_dispatch_detail', kwargs = kwargs)
+            return response
+
+        return self.create_response(request, "Not all fields were provided.", response_class=HttpBadRequest())
 
     def obj_create(self, bundle, **kwargs):
         """

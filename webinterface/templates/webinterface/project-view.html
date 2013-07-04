@@ -22,7 +22,7 @@
     <div class="hero-unit">
         <div class="row-fluid">
 
-            <div class="span4">
+            <div class="span3">
                 <h2><%= name %></h2>
                 <p><%= description %></p>
                 <p><b>Shared With: </b> bob, jayne, jill </p>
@@ -31,10 +31,15 @@
                 </p>
             </div>
 
-            <div class="span8">
-                <a class="btn btn-primary btn-large" id="start_annotating_button">
+            <div class="span9" style="vertical-align: bottom;">
+                <a class="btn btn-primary btn-large pull-right" id="start_annotating_button">
                     Start Annotating
                 </a>
+
+                <div class="progress progress-success">
+                  <div class="bar" style="width:50%;"> 0% Complete </div>
+                </div>
+
             </div>
 
         </div>
@@ -139,30 +144,25 @@
             success: function (model, response, options) {
                 console.log(project);
 
-                var imageCount = project.get("image_count");
                 var mapExtent = project.get("map_extent");
 
-                //if there are no images for this project, we need the user to configure the project
-                if (imageCount == 0) {
-                    window.location.replace("/projects/" + model.get("id") + "/configure");
-                } else {
-                    //load the project
-                    var projectView = new ProjectView({
-                        el: $("#ProjectDashboardContainer"),
-                        model : project
-                    });
+                //load the project
+                var projectView = new ProjectView({
+                    el: $("#ProjectDashboardContainer"),
+                    model : project
+                });
 
-                    //populate thumbnails
-                    $("div.holder").jPages({
-                        containerID: "itemContainer",
-                        perPage: 12
-                    });
+                //populate thumbnails
+                $("div.holder").jPages({
+                    containerID: "itemContainer",
+                    perPage: 12
+                });
 
-                    //create the map
-                    var map = new NewProjectsMap(wmsUrl, wmsLayerName, 'map', mapExtent);
-                    map.updateMapForSelectedProject(projectId);
-                    map.zoomToExtent();
-                }
+                //create the map
+                var map = new NewProjectsMap(wmsUrl, wmsLayerName, 'map', mapExtent);
+                map.updateMapForSelectedProject(projectId);
+                map.zoomToExtent();
+
             },
             error: function (model, response, options) {
                 alert('Fetch failed: ' + response.status);
@@ -171,5 +171,7 @@
         });
 
     </script>
+
+
 
 {% endblock %}

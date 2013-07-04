@@ -72,49 +72,6 @@ ProjectCollectionView = Backbone.View.extend({
         "click #create_button": "doCreate"
     },
     doCreate: function (event) {
-        var projectView = this;
-
-        var newProject = new Project({
-          name: "Untitled",
-          description: "",
-          generic_images: []
-        });
-
-        var theXHR = newProject.save({}, {
-                success: function (model, xhr, options) {
-
-                    //get the id of the project from teh reponse headers
-                    var projectResourceURI  = theXHR.getResponseHeader('Location');
-                    var splitURI = projectResourceURI.split("/");
-                    var projectId = splitURI[splitURI.length-2];
-
-                    //redirect to the page for the project
-                    window.location.replace("/projects/" + projectId + "/configure");
-                },
-                error: function (model, xhr, options) {
-                    /* XXX
-                       Backbone save() implementation triggers  error callback even when 201 (Created) and 202 (Accepted) status code is returned
-                       http://documentcloud.github.io/backbone/#Model-save
-                       Save() accepts success and error callbacks in the options hash,
-                       which are passed (model, response, options) and (model, xhr, options) as arguments, respectively.
-                       If a server-side validation fails, return a non-200 HTTP response code, along with an error response in text or JSON.
-
-                    */
-                    if (xhr.status == "201" || xhr.status == "202") {
-                        //get the id of the project from teh reponse headers
-                        var projectResourceURI  = theXHR.getResponseHeader('Location');
-                        var splitURI = projectResourceURI.split("/");
-                        var projectId = splitURI[splitURI.length-2];
-
-                        //redirect to the page for the project
-                        window.location.replace("/projects/" + projectId + "/configure");
-                    }
-                    else {
-                        $('#error_message1').text("Project creation failed!");
-                        $('#error_message2').text("Error status: " + xhr.status + " (" + jQuery.parseJSON(xhr.responseText).error_message + ")");
-                        this.$('.alert-error').fadeIn();
-                    }
-                }
-            });
+        window.location.replace("/projects/create");
     }
 });

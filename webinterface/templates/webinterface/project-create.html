@@ -1,0 +1,139 @@
+{% extends "base-topmenu.html" %}
+{% block title %}Catami Project - Project List {% endblock %}
+
+{% block content %}
+
+    <div id="ProjectCreateContainer"></div>
+
+    <script type="text/template" id="ProjectCreateTemplate">
+
+        <ul class="breadcrumb">
+            <li> <a href="/projects/">Projects</a> <spanclass="divider">></span> </li>
+            <li class="active">Create</li>
+        </ul>
+
+        <form class="form-horizontal" id="form">
+            <fieldset>
+                <div class="create_project_form">
+                    <legend>Project Details</legend>
+
+                    <div class="alert alert-error" style="display: none">
+                        <strong>
+                            <span id="error_message1"> Error Message 1</span>
+                        </strong>
+                        <span>id="error_message2">Error Message 2</span>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="short_name">
+                            Name:</label>
+
+                        <div class="controls">
+                            <input type="text" class="input-xlarge"
+                                   id="name" name="name"
+                                   data-error-style="inline"
+                                   value="">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="description">
+                            Description:</label>
+
+                        <div class="controls">
+                            <textarea class="input-xlarge" id="description"
+                                      name="description" rows="3"
+                                      data-error-style="inline"></textarea>
+                        </div>
+                    </div>
+
+                    <legend>Deployment to work on</legend>
+
+                    <div class="control-group">
+                        <label class="control-label" for="deployment_id">
+                            Deployment:</label>
+
+                        <div class="controls">
+                            <select class="input-xlarge" id="deployment_id" name="deployment_id">
+                               <%=deployments%>
+                             </select>
+                        </div>
+                    </div>
+
+                    <legend>Annotation methodology</legend>
+
+                    <div class="control-group">
+                        <label class="control-label" for="image_sampling_methodology">
+                            Image Sampling:</label>
+
+                        <div class="controls">
+                            <select class="input-xlarge" id="image_sampling_methodology" name="image_sampling_methodology">
+                               <option value="0">Random</option>
+                               <option value="1">Stratified</option>
+                             </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="image_sample_size">
+                            Number of Images:</label>
+
+                        <div class="controls">
+                            <input type="number" class="input-xlarge"
+                                   id="image_sample_size" name="image_sample_size"
+                                   data-error-style="inline"
+                                   >
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="annotation_methodology">
+                            Point Sampling:</label>
+
+                        <div class="controls">
+                            <select class="input-xlarge" id="annotation_methodology" name="annotation_methodology">
+                               <option value="0">Random</option>
+                             </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="point_sample_size">
+                            Number of Points (per image):</label>
+
+                        <div class="controls">
+                            <input type="number" class="input-xlarge"
+                                   id="point_sample_size" name="point_sample_size"
+                                   data-error-style="inline"
+                                   >
+                        </div>
+                    </div>
+
+                    <div style="margin-left: 374px;">
+                        <button type="button" class="btn btn-primary btn-large"
+                                id="create_button">
+                            Create
+                        </button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+    </script>
+
+    <script type="text/template" id="DeploymentTemplate">
+        <option value="<%=id%>"><%=short_name%></option>
+    </script>
+
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-create-view.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
+    <script type="text/javascript">
+
+        var projectCreate = new ProjectCreate();
+        var projectConfigureView = new ProjectCreateView({
+            el: $("#ProjectCreateContainer"),
+            model: projectCreate
+        });
+
+    </script>
+
+{% endblock %}
