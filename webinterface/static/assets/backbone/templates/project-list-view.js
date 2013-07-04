@@ -53,6 +53,7 @@ ProjectCollectionView = Backbone.View.extend({
         projects.each(function (project) {
             var projectVariables = {
                 "name": project.get("name"),
+                "description": project.get("description"),
                 "owner": project.get("owner").username,
                 "id": project.get("id")
             };
