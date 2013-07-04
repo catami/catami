@@ -3,6 +3,9 @@
 
 {% block content %}
 
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/elastislide.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
+
     <div id="ProjectAnnotateContainer"></div>
 
     <script type="text/template" id="ProjectAnnotateTemplate">
@@ -21,31 +24,29 @@
     </div>
     -->
 
-    <div class="row-fluid">
-
-        <div id="content" class="defaults span6">
-
-            <!-- Future navigation panel -->
-            <div class="holder" ></div>
-
-            <!-- Item container (doesn't need to be an UL) -->
-            <ul id="itemContainer" >
+    <div class='row-fluid'>
+        <div class="span12 thumbnail-pane catami-slide" id ="thumbnail-pane">
+            <ul id='carousel' class='elastislide-list'>
                 <%=images%>
             </ul>
         </div>
-
     </div>
+
 
     </script>
 
     <script type="text/template" id="ImageTemplate">
-        <li><img src="<%= thumbnail_location %>"></li>
+        <li><div class='wrapper'><a href='#'><div class='description'></div><img src='<%= thumbnail_location %>' data-src='<%= thumbnail_location %>' alt='image'></a></div></li>
     </script>
 
+    <script src="{{ STATIC_URL }}assets/jquery/modernizr.custom.17475.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.elastislide.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-annotate-view.js"></script>
+
+
     <script type="text/javascript">
 
         var projectId = "{{ project_id }}";
@@ -59,11 +60,11 @@
                     model : annotationSets
                 });
 
-                //populate thumbnails
-                $("div.holder").jPages({
-                    containerID: "itemContainer",
-                    perPage: 12
-                });
+                $( '#carousel' ).elastislide( {
+                    orientation : 'horizontal',
+                    minItems : 5,
+                    onClick : function( el, position, evt ) {selectImageFromList(position);}
+                } );
             },
             error: function (model, response, options) {
                 alert('Fetch failed: ' + response.status);
