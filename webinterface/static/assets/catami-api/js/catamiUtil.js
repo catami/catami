@@ -51,7 +51,8 @@ catami_getURLParameter = function(name) {
 catami_getIdFromUrl = function (url) {
     var v;
     if(url) v = url
-    else v = location.pathname.split("/");
+    else v = location.pathname;
+    v = v.split("/");
     //check url if it ends with a "/"
     var index = v.length - (endsWith(location.pathname, "/") ? 2 : 1);
     return v[index];
