@@ -44,6 +44,7 @@ function classificationTreeBuilder(jsonData){
   }
 
   //list is now ordererd so we build the tree starting at the bottom and working up
+
   for (index = lookup.length - 1; index > 0; index--){
     // get the ID of the parent from the parent url
     if (lookup[index].parent !== null) {
@@ -58,7 +59,10 @@ function classificationTreeBuilder(jsonData){
   // we accululated the children to parent nodes from the bottom up. So
   // everything ends up the top node
 
+  generate_fullnames_for_tree(new_array[0]);
+
   return new_array[0];
+
 }
 
 function caab_as_icicle_node(object){
@@ -76,14 +80,27 @@ function caab_as_icicle_node(object){
   return icicle_node;
 }
 
-function fullname_for_caabcode(caabcode){
-  return 'code: '+caabcode;
+function fullname_for_caabcode(caabname, caabcode){
+  return caabname+':'+caabcode;
+}
+
+
+function generate_fullnames_for_tree(code_tree){
+  //recurse through the tree to make fullnames
+  //code_tree.data.fullname = code_tree.name;
+
+  for (var i = 0; i < code_tree.children.length; i++){
+    if(code_tree.data.fullname){
+      code_tree.children[i].data.fullname = code_tree.data.fullname+': '+code_tree.children[i].name;
+    } else {
+      code_tree.children[i].data.fullname = code_tree.children[i].name;
+    }
+    generate_fullnames_for_tree(code_tree.children[i]);
+  }
 }
 
 function start_icicle_view(){
   var json;
-
-  console.log('starting that icicle goodness');
 
   new_array = [];
 
@@ -103,7 +120,6 @@ function start_icicle_view(){
          child_based_tree = json;
       }
   });
-  console.log('start icicle init');
   // init Icicle
   icicle = new $jit.Icicle({
     // id of the visualization container
@@ -158,7 +174,8 @@ function start_icicle_view(){
             this.onMouseLeave(icicle.events.hovered);
           //perform the enter animation
           icicle.enter(node);
-          currentSelection = fullname_for_caabcode(node.data.caabcode);
+          currentSelection = fullname_for_caabcode(node.data.fullname,node.id);
+
           GlobalEvent.trigger("annotation_chosen",currentSelection);
         }
       },
@@ -223,23 +240,5 @@ function controls() {
   jit.util.addEvent(gotoparent, 'click', function() {
     icicle.out();
   });
-
-  // var select = jit.id('s-orientation');
-  // jit.util.addEvent(select, 'change', function () {
-  //   icicle.layout.orientation = select[select.selectedIndex].value;
-  //   icicle.refresh();
-  // });
-  
-  // var levelsToShowSelect = jit.id('i-levels-to-show');
-  // jit.util.addEvent(levelsToShowSelect, 'change', function () {
-  //   var index = levelsToShowSelect.selectedIndex;
-  //   if(index === 0) {
-  //     icicle.config.constrained = false;
-  //   } else {
-  //     icicle.config.constrained = true;
-  //     icicle.config.levelsToShow = index;
-  //   }
-  //   icicle.refresh();
-  // });
 }
 //end
