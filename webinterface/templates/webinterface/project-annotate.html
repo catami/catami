@@ -70,23 +70,75 @@
     </script>
 
     <script type="text/template" id="ImageTemplate">
-        <img src='<%= web_location %>' data-src='<%= web_location %>' alt='image'>
+        <img id="Image" src='<%= web_location %>' data-src='<%= web_location %>' alt='image'>
+
+        </img>
+    </script>
+
+    <script type="text/template" id="PointTemplate">
+        <img src='http://localhost:8000{{ STATIC_URL }}images/annotationPointOverlay.png' alt='image'
+                style="">
     </script>
 
     <script src="{{ STATIC_URL }}assets/jquery/modernizr.custom.17475.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.elastislide.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-model.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/point-annotation-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-annotate-view.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.imagesloaded.min.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}assets/jit/js/jit.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}assets/jit/js/catami-icicle.js"></script>
 
+    <!--<style>
+        #Image { position: relative; cursor: pointer; width: 100%; }
+		span.sparkle { background: url(/playground/images/playground/gold-unicorn.gif) no-repeat; width: 136px; height: 161px; }
+		div.highlight { margin-bottom: 18px; }
+
+        /* Note styles */
+		span.note { display: block; position: absolute; top: -2px; left: 0; z-index: 10; background: url(http://zurb.com/playground/playground/awesome-overlays/notes-bg.png) no-repeat 0 0; width: 25px; height: 25px; font-size: 12px; font-weight: bold; line-height: 25px; letter-spacing: -1px; text-align: center; color: #fff; text-decoration: none; text-shadow: 0 1px 1px rgba(0,0,0,.15); }
+		span.note.black { background-position: -150px 0; }
+
+		span.set-label { display: block; width: 69px; height: 34px; position: absolute; }
+
+		span.wrap { padding: 10px; }
+
+    </style>
+-->
+
+    <style>
+
+        #ImageContainer {
+            position: relative;
+            margin:10px 0px;
+        }
+
+        #ImageContainer span {
+            position: absolute;
+            margin: 0px;
+        }
+
+        #Image {
+            /*display: block;*/
+            margin: 0px;
+            position: absolute;
+        }
+
+        .annotatedPoint {
+            background: url('{{ STATIC_URL }}images/annotationPointOverlayScored.png') no-repeat 0 0;
+            width: 10px;
+            height: 10px;
+        }
+
+    </style>
     <script type="text/javascript">
 
         var projectId = "{{ project_id }}";
 
+        var points = new PointAnnotations();
         var annotationSets = new AnnotationSets();
+
         annotationSets.fetch({
             data: { project: projectId },
             success: function (model, response, options) {
@@ -100,9 +152,10 @@
                     el: $("#ImageContainer"),
                     model : annotationSets
                 });
-                
-                //trigger an event for selecting the first thumbnail in the list
+
+                //trigger an event for selecting the first thumbanil in the list
                 GlobalEvent.trigger("thumbnail_selected", 0);
+
             },
             error: function (model, response, options) {
                 alert('Fetch failed: ' + response.status);
