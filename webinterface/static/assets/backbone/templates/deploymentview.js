@@ -92,7 +92,7 @@ function loadPage(offset) {
     if (offset) off = offset;
     // Make a call to the server to populate the collection
     images.fetch({
-        data: { offset: off },
+        data: { offset: off, deployment: catami_getIdFromUrl() },
         success: function (model, response, options) {
             var thumbnailView = new DeploymentThumbanilView({
                 el: $("#ThumbnailListContainer"),
