@@ -1,0 +1,105 @@
+{% extends "base-topmenu.html" %}
+
+{% block content %}
+<div id="CampaignViewContainer"></div>
+
+<script type="text/template" id="CampaignViewTemplate">
+
+    <div class="row-fluid">
+
+        <ul class="breadcrumb">
+            <li><a href="<%= campaignlist_url %>">Campaign List</a> <span class="divider">
+                ></span></li>
+            <li><a href="<%= campaign_url%>"><%= campaign_name%></a>
+                
+        </ul>
+    </div>
+
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Researchers</th>
+            <th>Publications</th>
+            <th>Grant</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><%= start_date %></td>
+            <td><%= end_date %></td>
+            <td><%= researchers %></td>
+            <td><%= publications %></td>
+            <td><%= grant %></td>
+            <td><%= description %></td>
+        </tr>
+    </tbody>
+    </table>
+    <!--
+    <div id='deployment-map' style="height: 300px; width:100%; border: 2px>
+    </div>-->
+    
+    <div>
+        <%= deploymentlist %>
+    </div>
+</script>
+
+<script type="text/template" id="DeploymentListTemplate">
+    <h3>Deployments in <%= campaign_name%></h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>            
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Min Depth</th>
+            <th>Max Depth</th>
+        </tr>
+        </thead>
+        <tbody>
+            <%=deployments%>
+        </tbody>
+    </table>
+
+    <div id="pagination"></div>
+
+</script>
+
+<script type="text/template" id="DeploymentTemplate">
+    <tr>
+        <td><a href="<%= deployment_url %>"><%= short_name %></a></td>
+        <td><%= type %></td>        
+        <!--<td><a href="<%= type_url %>"><%= type %></a></td>-->
+        <td><%= start_time %></td>
+        <td><%= end_time %></td>
+        <td><%= min_depth %></td>
+        <td><%= max_depth %></td>
+    </tr>
+</script>
+
+{% endblock %}
+
+{% block add_script %}
+<script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
+<script src="{{ STATIC_URL }}assets/OpenLayers/LoadingPanel.js"></script>
+<script src='{{ STATIC_URL }}assets/catami-api/js/Map.js'></script>
+
+
+<script type="text/javascript">
+    //Init js variables which is used by Backbone to render html template
+    var WMS_URL = "{{ WMS_URL }}";
+    var WMS_DEPLOYMENTS = "{{ WMS_DEPLOYMENTS }}";
+    var DeploymentListUrl = "{% url webinterface.views.deployment_list %}"
+    var CampaignListUrl = "{% url webinterface.views.campaign_list %}"
+    var CampaignUrl = "#";      
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/campaignview.js"></script>
+<script type="text/javascript">
+    //alert('campaign_id: ' + campaign_id);
+</script>
+
+
+{% endblock %}

@@ -1,13 +1,9 @@
 {% extends "base-topmenu.html" %}
-
-{% block content_header %}
-  <ul class="breadcrumb">
-      <li><a href="/data">Data</a>
-          <li class="active"><span class="divider">></span> Deployment List</li>
-  </ul>
-{% endblock %}
-
 {% block content %}
+ <ul class="breadcrumb">
+    <li><a href="/data">Data</a>
+    <li class="active"><span class="divider">></span> Deployment List</li>
+ </ul>
 
 <div id="DeploymentListContainer"></div>
 
@@ -47,7 +43,7 @@
 
 <script type="text/javascript">
     //Init js variables which is used by Backbone to render html template
-    var CampaignListUrl = "{% url webinterface.views.campaigns %}"
+    var CampaignListUrl = "{% url webinterface.views.campaign_list %}"
 </script>
 
 <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/deploymentlist.js"></script>

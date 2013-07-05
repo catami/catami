@@ -102,9 +102,9 @@
 
                             <ul class="dropdown-menu">
                                 <li class="{% ifequal request.path "/data/campaigns" %}
-                            active{% endifequal %}"><a href="{% url webinterface.views.campaigns %}"> Campaigns</a></li>
+                            active{% endifequal %}"><a href="{% url webinterface.views.campaign_list %}"> Campaigns</a></li>
                                 <li class="{% ifequal request.path "/data/deployments" %}
-                            active{% endifequal %}"><a href="{% url webinterface.views.deployments %}"> Deployments</a></li>
+                            active{% endifequal %}"><a href="{% url webinterface.views.deployment_list %}"> Deployments</a></li>
 
                             </ul>
 

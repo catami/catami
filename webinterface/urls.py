@@ -46,12 +46,13 @@ urlpatterns = patterns(
 
     #plain data views
     url(r'^data/$', 'data'),
-    url(r'^data/deployments/$', 'deployments'),
+    url(r'^data/deployments/$', 'deployment_list'),
     url(r'^data/deployments/(?P<deployment_id>\d+)/$',
-        'deployment_detail'),
-    url(r'^data/campaigns/$', 'campaigns'),
+        'deployment_view'),
+    url(r'^data/campaigns_old/$', 'campaigns'),
+    url(r'^data/campaigns/$', 'campaign_list'),
     url(r'^data/campaigns/(?P<campaign_id>\d+)/$',
-        'campaign_detail'),
+        'campaign_view'),
 
     #API docs
     url(r'^api/', include('jsonapi.urls')),

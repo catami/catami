@@ -40,7 +40,7 @@
 
             {% for campaign in latest_campaign_list %}
                 <tr>
-                    <td colspan=8><a href="{% url webinterface.views.campaign_detail campaign.id %}"><p class="lead">
+                    <td colspan=8><a href="{% url webinterface.views.campaign_view campaign.id %}"><p class="lead">
 
                         {{ campaign.short_name }}<p></a></td>
                 </tr>

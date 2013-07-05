@@ -396,6 +396,10 @@ class CampaignResource(ModelResource):
 
         return bundle
 
+    def dehydrate(self, bundle):                   
+        dps = GenericDeployment.objects.filter(campaign=bundle.obj.id)
+        bundle.data['deployment_count'] = len(dps)
+        return bundle
 
 class GenericDeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')

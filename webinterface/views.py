@@ -135,7 +135,7 @@ def data(request):
                               RequestContext(request))
 
 
-def deployments(request):
+def deployment_list(request):
     """@brief Deployment list html for entire database
     """
     return render_to_response(
@@ -144,7 +144,7 @@ def deployments(request):
         context_instance=RequestContext(request))
 
 
-def deployment_detail(request, deployment_id):
+def deployment_view(request, deployment_id):
     """@brief AUV Deployment map and data plot for specifed AUV deployment
 
     """
@@ -166,7 +166,7 @@ def deployment_detail(request, deployment_id):
         'webinterface/deployment-view.html',
         {'deployment_object': deployment_object,
          'WMS_URL': settings.WMS_URL,
-         'WMS_layer_name': settings.WMS_LAYER_NAME,
+         'WMS_LAYER_NAME': settings.WMS_LAYER_NAME,
          'deployment_id': deployment_object.id},
         context_instance=RequestContext(request))
 
@@ -211,67 +211,40 @@ def campaigns(request):
         context_instance=RequestContext(request))
 
 
-def campaign_detail(request, campaign_id):
-    """@brief Campaign html for a specifed campaign object
+def campaign_list(request):
+    """@brief Campaign list html for entire database
 
     """
 
-    try:
-        campaign_object = Campaign.objects.get(id=campaign_id)
+    campaign_list = get_objects_for_user_wrapper(request.user, [
+        'catamidb.view_campaign'])  # Campaign.objects.all()
 
+    return render_to_response(
+        'webinterface/campaign-list.html',
+        {'campaign_list': campaign_list},
+        context_instance=RequestContext(request))
+
+
+def campaign_view(request, campaign_id):
+    """@brief Campaign html for a specifed campaign object
+
+    """
+    try:
+        campaign_object = Campaign.objects.get(id=campaign_id)  
+        #deployments = GenericDeployment.objects.filter(campaign=campaign_id)     
         #check for permissions
         if not check_permission(request.user, 'catamidb.view_campaign', campaign_object):
             raise Campaign.DoesNotExist
-
     except Campaign.DoesNotExist:
         error_string = 'This is the error_string'
         return render_to_response(
             'webinterface/Force_views/data_missing.html',
             context_instance=RequestContext(request))
-    campaign_rects = list()
-    #djf = Django.Django(geodjango="extent", properties=[''])
-
-    '''
-    auv_deployment_list = AUVDeployment.objects.filter(
-        campaign=campaign_object)
-    bruv_deployment_list = BRUVDeployment.objects.filter(
-        campaign=campaign_object)
-    dov_deployment_list = DOVDeployment.objects.filter(
-        campaign=campaign_object)
-    ti_deployment_list = TIDeployment.objects.filter(campaign=campaign_object)
-    tv_deployment_list = TVDeployment.objects.filter(campaign=campaign_object)
-    #geoj = GeoJSON.GeoJSON()
-    #sm = AUVDeployment.objects.filter(transect_shape__bbcontains=pnt_wkt)
-    #sm = AUVDeployment.objects.all().extent
-    #sm = fromstr('MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(campaign=campaign_object).extent())
-
-    sm = ' '
-    if len(auv_deployment_list) > 0:
-        sm = fromstr(
-            'MULTIPOINT (%s %s, %s %s)' % AUVDeployment.objects.filter(
-                campaign=campaign_object).extent())
-        campaign_rects.append(sm.envelope.geojson)
-    if len(bruv_deployment_list) > 0:
-        sm = fromstr(
-            'MULTIPOINT (%s %s, %s %s)' % BRUVDeployment.objects.filter(
-                campaign=campaign_object).extent())
-        campaign_rects.append(sm.envelope.geojson)
-    try:
-        sm_envelope = sm.envelope.geojson
-    except AttributeError:
-        sm_envelope = ''
-    '''
-
     return render_to_response(
-        'webinterface/Force_views/campaign_detail.html',
-        {'campaign_object': campaign_object,
-         'auv_deployment_list': None,
-         'bruv_deployment_list': None,
-         'dov_deployment_list': None,
-         'ti_deployment_list': None,
-         'tv_deployment_list': None,
-
-         'campaign_as_geojson': sm_envelope},
+        'webinterface/campaign-view.html',
+        {'campaign_object': campaign_object, 
+         'WMS_URL': settings.WMS_URL,
+         'WMS_DEPLOYMENTS': settings.WMS_DEPLOYMENTS},
         context_instance=RequestContext(request))
 
 
