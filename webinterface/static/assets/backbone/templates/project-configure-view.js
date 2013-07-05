@@ -106,8 +106,8 @@ ProjectConfigureView = Backbone.View.extend({
                         this.$('.alert-success').fadeIn();
                     }
                     else {
-                        $('#error_message1').text("Campaign creation failed!");
-                        $('#error_message2').text("Error status: " + xhr.status + " (" + jQuery.parseJSON(xhr.responseText).error_message + ")");
+                        $('#error_message1').text("Project creation failed!");
+                        $('#error_message2').text("Error message: " + jQuery.parseJSON(theXHR.responseText).error_message );
                         this.$('.alert-error').fadeIn();
                     }
                 }

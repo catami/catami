@@ -356,6 +356,12 @@ class ProjectResource(ModelResource):
             image_bundle.data = dict(deployment=deployment_id)
             images = GenericImageResource().obj_get_list(image_bundle)
 
+            #check the the sample size is not larger than the number of images in our image list
+            if int(image_sample_size) > len(images):
+                return HttpResponse(content="{\"error_message\": \"Your image sample size is larger than the number of images in the Deployment. Pick a smaller number.\"}",
+                                    status=400,
+                                    content_type='application/json')
+
             #create the project
             project_bundle = Bundle()
             project_bundle.request = request
