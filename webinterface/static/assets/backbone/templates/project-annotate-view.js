@@ -68,10 +68,12 @@ ImageAnnotateView = Backbone.View.extend({
     model: AnnotationSets,
     el: $('div'),
     initialize: function () {
+
+
         //bind to the blobal event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
     },
-    renderSelected: function (selected) {
+    renderSelectedImage: function (selected) {
         //ge tall the images to be rendered
         var imageTemplate = "";
 
@@ -90,12 +92,57 @@ ImageAnnotateView = Backbone.View.extend({
 
         return this;
     },
+    renderPointsForImage: function(selected) {
+        //get the selected image
+        var annotationSet = annotationSets.at(0);
+        var image = annotationSet.get("generic_images")[selected];
+
+        //based on that image query the API for the points
+
+        points.fetch({
+            data: { image: image.id, annotation_set: annotationSet.get('id') },
+            success: function (model, response, options) {
+
+                //loop through the points and apply them to the image
+                points.each(function (point) {
+
+                    //var imgsrc = '{{ STATIC_URL }}images/annotationPointOverlayScored.png';
+                    var img = $('<span>');
+                    img.attr('id', point.get('id'));
+                    img.attr('class', 'annotatedPoint');
+                    img.css('top', point.get('y')*$('#Image').height());
+                    img.css('left', point.get('x')*$('#Image').width());
+                    //img.css('z-index', "1000");
+
+                    img.attr('src', '');
+                    img.attr('selected', false);
+                    img.attr('data-toggle', 'tooltip');
+                    img.attr('title', "something");
+
+                    img.appendTo('#ImageContainer');
+
+                });
+
+            },
+            error: function (model, response, options) {
+                alert('Fetch failed: ' + response.status);
+            }
+        });
+    },
     events: {
-        "thumbnail_selected": "thumbnailSelected"
+        "thumbnail_selected": "thumbnailSelected",
     },
     thumbnailSelected: function(selectedPosition) {
-        this.renderSelected(selectedPosition);
+        this.renderSelectedImage(selectedPosition);
+        this.renderPointsForImage(selectedPosition);
     }
 });
+
+function blackNote() {
+    alert("clicked");
+  return $(document.createElement('span')).addClass('black note')
+}
+
+
 
 

@@ -562,8 +562,8 @@ class GenericAnnotationSetResource(ModelResource):
 
 
 class GenericPointAnnotationResource(ModelResource):
-    generic_annotation_set = fields.ForeignKey(GenericAnnotationSetResource, 'generic_annotation_set', full=True)
-    image = fields.ForeignKey(GenericImageResource, 'image', full=True)
+    generic_annotation_set = fields.ForeignKey(GenericAnnotationSetResource, 'generic_annotation_set')
+    image = fields.ForeignKey(GenericImageResource, 'image')
 
     class Meta:
         queryset = GenericPointAnnotation.objects.all()
