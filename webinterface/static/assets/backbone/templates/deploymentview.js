@@ -1,5 +1,14 @@
+var Image = Backbone.Model.extend({
+    urlRoot: "/api/dev/generic_image/"
+});
+
+var Images = Backbone.Tastypie.Collection.extend({
+    urlRoot: "/api/dev/generic_image/",
+    model: Image
+});
+
 var Deployment = Backbone.Model.extend({
-    urlRoot: "/api/dev/generic_deployment/",
+    urlRoot: "/api/dev/generic_deployment/"
 });
 
 DeploymentView = Backbone.View.extend({
@@ -40,6 +49,62 @@ DeploymentView = Backbone.View.extend({
         return this;
     }
 });
+
+DeploymentThumbanilView = Backbone.View.extend({
+    el: $('div'),
+    meta: {},
+    initialize: function (options) {
+        this.meta = options['meta']; //assign specified metadata to local var
+        this.render();
+    },
+    render: function () {
+        //ge tall the images to be rendered
+        var imageTemplate = "";
+
+        images.each(function (image) {
+            var imageVariables = {
+                "thumbnail_location": image.get('thumbnail_location')
+            };
+            imageTemplate += _.template($("#ImageTemplate").html(), imageVariables);
+        });
+
+        var thumbnailListVariables = { "images": imageTemplate };
+        // Compile the template using underscore
+        var thumbnailListTemplate = _.template($("#ThumbnailListTemplate").html(), thumbnailListVariables);
+        // Load the compiled HTML into the Backbone "el"
+
+        this.$el.html(thumbnailListTemplate);
+
+        //Create pagination
+        var options = catami_generatePaginationOptions(this.meta);
+        $('#pagination').bootstrapPaginator(options);
+
+        return this;
+    }
+});
+
+var images = new Images();
+
+loadPage();
+
+function loadPage(offset) {
+    var off = {}
+    if (offset) off = offset;
+    // Make a call to the server to populate the collection
+    images.fetch({
+        data: { offset: off },
+        success: function (model, response, options) {
+            var thumbnailView = new DeploymentThumbanilView({
+                el: $("#ThumbnailListContainer"),
+                collection: images,
+                meta: images.meta //read from initiaisation method's "option" variable
+            });
+        },
+        error: function (model, response, options) {
+            alert('fetch failed: ' + response.status);
+        }
+    });
+}
 
 deployment = new Deployment({ id: catami_getIdFromUrl() });
 deployment.fetch({

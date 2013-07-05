@@ -3,6 +3,8 @@
 {% block content %}
 
 <div id="DeploymentViewContainer"></div>
+<div id="ThumbnailListContainer"></div>
+<div id="pagination"></div>
 
 <script type="text/template" id="DeploymentViewTemplate">
 
@@ -34,6 +36,18 @@
              </div>            
         </div>
     </div>
+</script>
+
+<script type="text/template" id="ThumbnailListTemplate">
+
+    <div class="row-fluid" style="padding-top: 5px">
+        <%=images%>
+    </div>
+
+</script>
+
+<script type="text/template" id="ImageTemplate">
+    <img src="<%= thumbnail_location %>" style="padding-top: 5px;">
 </script>
 
 
