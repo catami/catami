@@ -25,16 +25,23 @@
             <div class="span3">
                 <h2><%= name %></h2>
                 <p><%= description %></p>
-                <p><b>Shared With: </b> bob, jayne, jill </p>
+                <p><b>Shared With: </b> Public </p>
+
+                {% if user.is_authenticated %}
                 <p>
                     <a id="configure_project_button" class="btn" href="#">Configure Project</a>
                 </p>
+                {% endif %}
+            
             </div>
 
             <div class="span9" style="vertical-align: bottom;">
+
+                {% if user.is_authenticated %}
                 <a class="btn btn-primary btn-large pull-right" id="start_annotating_button">
                     Start Annotating
                 </a>
+                {% endif %}
 
                 <div class="progress progress-success">
                   <div class="bar" style="width:50%;"> 0% Complete </div>
