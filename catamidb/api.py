@@ -544,6 +544,7 @@ class GenericImageResource(ModelResource):
         filtering = {
             'deployment': ALL_WITH_RELATIONS,
             'date_time': ALL,
+            'id': ALL
         }
         allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
 

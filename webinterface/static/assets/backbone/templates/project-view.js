@@ -30,8 +30,13 @@ var Image = Backbone.Model.extend({
 });
 
 var Images = Backbone.Tastypie.Collection.extend({
-    urlRoot: "/api/dev/generic_image",
-    model: Image
+    model: Image,
+    url: function(){
+        return this.instanceUrl;
+    },
+    initialize: function(props){
+        this.instanceUrl = props.url;
+    }
 });
 
 var Project = Backbone.Model.extend({
@@ -62,23 +67,23 @@ ProjectView = Backbone.View.extend({
     render: function () {
 
         //ge tall the images to be rendered
-        var imageTemplate = "";
+        //var imageTemplate = "";
         //var images = project.get("objects")[0].generic_images;
-        var images = project.get("generic_images");
-
+        //var images = project.get("generic_images");
+        /*
         for(var i=0; i < images.length; i++) {
             var imageVariables = {
                 "thumbnail_location": images[i].thumbnail_location
             };
             imageTemplate += _.template($("#ImageTemplate").html(), imageVariables);
         }
-
+        */
         //render the items to the main template
         var projectVariables = {
             "name": project.get("name"),
             "description": project.get("description"),
             "map_extent": project.get("map_extent"),
-            "images": imageTemplate
+            "images": ""
         };
 
         // Compile the template using underscore
@@ -101,6 +106,59 @@ ProjectView = Backbone.View.extend({
         window.location.replace("/projects/" + project.get("id") + "/annotate");
     }
 });
+
+ThumbanilView = Backbone.View.extend({
+    el: $('div'),
+    meta: {},
+    initialize: function (options) {
+        this.meta = options['meta']; //assign specified metadata to local var
+        this.render();
+    },
+    render: function () {
+        //ge tall the images to be rendered
+        var imageTemplate = "";
+
+        images.each(function (image) {
+            var imageVariables = {
+                "thumbnail_location": image.get('thumbnail_location')
+            };
+            imageTemplate += _.template($("#ThumbnailTemplate").html(), imageVariables);
+        });
+
+        var thumbnailListVariables = { "images": imageTemplate };
+        // Compile the template using underscore
+        var thumbnailListTemplate = _.template($("#ThumbnailListTemplate").html(), thumbnailListVariables);
+        // Load the compiled HTML into the Backbone "el"
+
+        this.$el.html(thumbnailListTemplate);
+
+        //Create pagination
+        var options = catami_generatePaginationOptions(this.meta);
+        $('#pagination').bootstrapPaginator(options);
+
+        return this;
+    }
+});
+
+
+function loadPage(offset) {
+    var off = {}
+    if (offset) off = offset;
+    // Make a call to the server to populate the collection
+    images.fetch({
+        data: { limit: 12, offset: off },
+        success: function (model, response, options) {
+            var thumbnailView = new ThumbanilView({
+                el: $("#ThumbnailListContainer"),
+                collection: images,
+                meta: images.meta //read from initiaisation method's "option" variable
+            });
+        },
+        error: function (model, response, options) {
+            alert('fetch failed: ' + response.status);
+        }
+    });
+}
 
 
 
