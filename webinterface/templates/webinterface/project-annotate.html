@@ -5,6 +5,8 @@
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/elastislide.css" />
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/jit/css/base.css"/>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/jit/css/Icicle.css"/>
     <style type="text/css">
         div.wrapper{
 		    float:left; /* important */
@@ -23,10 +25,20 @@
 		    text-align: center;
 		}
     </style>
-
+	<div class="row">
     <div id="ProjectAnnotateContainer"></div>
-    <div id="ImageContainer"></div>
-
+	</div>
+	<div class="row-fluid">
+    <div class="span8" id="ImageContainer"></div>
+	<div class="span4" id="ChooseAnnotationContainer"></div>
+	</div>
+	
+    <script type="text/template" id="ChooseAnnotationTemplate">
+	    <p id="current_annotation_label">Selected:</p>
+    	<div id="annotation-chooser" style="height: 500px;"></div>
+    	<a id="goto_parent_button" class="btn" href="#">Parent</a>
+	</script>
+	
     <script type="text/template" id="ProjectAnnotateTemplate">
 
         <!--
@@ -67,7 +79,8 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-annotate-view.js"></script>
-
+	<script type="text/javascript" src="{{ STATIC_URL }}assets/jit/js/jit.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}assets/jit/js/catami-icicle.js"></script>
 
     <script type="text/javascript">
 
@@ -87,14 +100,21 @@
                     el: $("#ImageContainer"),
                     model : annotationSets
                 });
-
-                //trigger an event for selecting the first thumbanil in the list
+                
+                //trigger an event for selecting the first thumbnail in the list
                 GlobalEvent.trigger("thumbnail_selected", 0);
             },
             error: function (model, response, options) {
                 alert('Fetch failed: ' + response.status);
             }
+       
         });
+        
+    	var chooseAnnotationView = new ChooseAnnotationView({
+            el: $("#ChooseAnnotationContainer"),
+        });
+          
+        start_icicle_view();
 
     </script>
 

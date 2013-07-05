@@ -1,10 +1,47 @@
 var GlobalEvent = _.extend({}, Backbone.Events);
 
+var AnnotationCode = Backbone.Model.extend({
+    urlRoot: "/api/dev/annotation_code/"
+});
+
+var AnnotationCodeList = Backbone.Tastypie.Collection.extend({
+    urlRoot: "/api/dev/annotation_code/",
+    model: AnnotationCode
+});
+
+ChooseAnnotationView = Backbone.View.extend({
+    model: AnnotationCodeList,
+    el: $('div'),
+    initialize: function () {
+        // annotation_code_list = AnnotationCodeList();
+        // annotation_code_list.fetch();
+        GlobalEvent.on("annotation_chosen", this.annotationChosen, this);
+        this.render();
+    },
+    render: function() {
+        // Compile the template using underscore
+        var chooseAnnotationTemplate = _.template($("#ChooseAnnotationTemplate").html(), null);
+
+        // Load the compiled HTML into the Backbone "el"
+        this.$el.html(chooseAnnotationTemplate);
+
+        return this;
+    },
+    events: {
+
+    },
+    annotationChosen: function(annotationCode){
+          //alert(annotationCode);
+          this.$('#current_annotation_label').text(annotationCode);
+          this.$('#goto_parent_button').text('Parent of '+annotationCode);
+    }
+});
+
 ProjectAnnotateView = Backbone.View.extend({
     model: AnnotationSets,
     el: $('div'),
     initialize: function () {
-        //bind to the blobal event, so we can get events from other views
+        //bind to the global event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
 
         this.render();
