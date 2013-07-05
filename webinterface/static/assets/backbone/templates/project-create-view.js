@@ -108,6 +108,9 @@ ProjectCreateView = Backbone.View.extend({
         var isValid = this.model.isValid(true);
 
         if (isValid) {
+            //show a loading symbol
+            buttonLoading("create_button");
+
             //save away
             var theXHR = this.model.save({},{
                 success: function (model, xhr, options) {
@@ -120,6 +123,8 @@ ProjectCreateView = Backbone.View.extend({
                     window.location.replace("/projects/" + projectId);
                 },
                 error: function (model, xhr, options) {
+
+                    buttonReset("create_button");
 
                     this.$('.alert').hide();
                     /* XXX

@@ -78,6 +78,9 @@ ProjectConfigureView = Backbone.View.extend({
             //need to specify the properties to patch
             var properties = { 'name': data.name, 'description': data.description };
 
+            //show a loading symbol
+            buttonLoading("save_button");
+
             //save away
             var theXHR = this.model.save(properties, {
                 patch: true,
@@ -86,6 +89,8 @@ ProjectConfigureView = Backbone.View.extend({
                     window.location.replace("/projects/" + model.get("id"));
                 },
                 error: function (model, xhr, options) {
+                    buttonReset("save_button");
+
                     this.$('.alert').hide();
                     /* XXX
                        Backbone save() implementation triggers  error callback even when 201 (Created) and 202 (Accepted) status code is returned

@@ -474,16 +474,13 @@ class GenericAnnotationSetResource(ModelResource):
         # iterate through the images and create points
         for image in images:
             for i in range(int(sample_size)):
-                x = random.random()
-                y = random.random()
-
                 point_annotation = GenericPointAnnotation()
 
                 point_annotation.generic_annotation_set = annotation_set
                 point_annotation.image = image
                 point_annotation.owner = annotation_set.owner
-                point_annotation.x = x
-                point_annotation.y = y
+                point_annotation.x = random.random()
+                point_annotation.y = random.random()
 
                 point_annotation.annotation_caab_code = "00000000" # not considered
                 point_annotation.qualifier_short_name = "" # not considered
