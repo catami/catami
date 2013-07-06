@@ -387,9 +387,9 @@ NewProjectsMap.prototype = new BaseMap;
 
 /**
  *
- * Will take a collectionId and update the map
+ * Will take a projectId and update the map
  *
- * @param collectionId
+ * @param projectId
  */
 NewProjectsMap.prototype.updateMapForSelectedProject = function(projectId) {
     var filter_array = [];
@@ -398,6 +398,24 @@ NewProjectsMap.prototype.updateMapForSelectedProject = function(projectId) {
         type: OpenLayers.Filter.Comparison.EQUAL_TO,
         property: "project_id",
         value: projectId
+    }));
+
+    this.updateMapUsingFilter(filter_array);
+};
+
+/**
+ *
+ * Will take a projectId and update the map
+ *
+ * @param projectId
+ */
+NewProjectsMap.prototype.updateMapForSelectedAnnotationSet = function(annotationSetId) {
+    var filter_array = [];
+
+    filter_array.push(new OpenLayers.Filter.Comparison({
+        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+        property: "genericannotationset_id",
+        value: annotationSetId
     }));
 
     this.updateMapUsingFilter(filter_array);

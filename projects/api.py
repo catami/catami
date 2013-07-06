@@ -404,7 +404,7 @@ class ProjectResource(ModelResource):
             image_bundle = Bundle()
             image_bundle.request = request
             image_bundle.data = dict(deployment=deployment_id)
-            images = GenericImageResource().obj_get_list(image_bundle)
+            images = GenericImageResource().obj_get_list(image_bundle, deployment=deployment_id)
 
             #check the the sample size is not larger than the number of images in our image list
             if int(image_sample_size) > len(images):
@@ -526,6 +526,7 @@ class GenericAnnotationSetResource(ModelResource):
             set """
 
         images = annotation_set.generic_images.all()
+        points_to_bulk_save = []
 
         # iterate through the images and create points
         for image in images:
@@ -541,7 +542,11 @@ class GenericAnnotationSetResource(ModelResource):
                 point_annotation.annotation_caab_code = "00000000" # not considered
                 point_annotation.qualifier_short_name = "" # not considered
 
-                point_annotation.save()
+                #point_annotation.save()
+                points_to_bulk_save.append(point_annotation)
+
+        # do the bulk save - for performance
+        GenericPointAnnotation.objects.bulk_create(points_to_bulk_save)
 
     def apply_stratified_sampled_points(self, annotation_set, sample_size):
         """ Apply points to the images attached to this annotation set using

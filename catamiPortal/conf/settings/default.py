@@ -25,6 +25,7 @@ WMS_LAYER_NAME = "catami:catamidb_images"
 WMS_DEPLOYMENTS = "catami:catamidb_genericdeployment"
 WMS_COLLECTION_LAYER_NAME = "catami:collection_images"
 WMS_PROJECTS_LAYER_NAME = "catami:project_images"
+WMS_ANNOTATIONSET_LAYER_NAME = "catami:annotationset_images"
 
 ADMINS = (
     ('Mark Gray', 'mark.gray@ivec.org'),
