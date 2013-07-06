@@ -101,14 +101,15 @@ ProjectAnnotateView = Backbone.View.extend({
     }
 });
 
+var selectedThumbnailPosition = 0;
+
 ImageAnnotateView = Backbone.View.extend({
     model: AnnotationSets,
     el: $('div'),
     initialize: function () {
-
-
         //bind to the blobal event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
+        GlobalEvent.on("screen_changed", this.screenChanged, this);
     },
     renderSelectedImage: function (selected) {
         //ge tall the images to be rendered
@@ -137,7 +138,7 @@ ImageAnnotateView = Backbone.View.extend({
         //based on that image query the API for the points
 
         points.fetch({
-            data: { image: image.id, annotation_set: annotationSet.get('id') },
+            data: { limit: 100, image: image.id, generic_annotation_set: annotationSet.get('id') },
             success: function (model, response, options) {
 
                 //loop through the points and apply them to the image
@@ -168,18 +169,18 @@ ImageAnnotateView = Backbone.View.extend({
     },
     events: {
         "thumbnail_selected": "thumbnailSelected",
+        "screen_changed": "screenChanged"
     },
     thumbnailSelected: function(selectedPosition) {
+        selectedThumbnailPosition = selectedPosition;
         this.renderSelectedImage(selectedPosition);
         this.renderPointsForImage(selectedPosition);
+    },
+    screenChanged: function() {
+        this.renderSelectedImage(selectedThumbnailPosition);
+        this.renderPointsForImage(selectedThumbnailPosition);
     }
 });
-
-function blackNote() {
-    alert("clicked");
-  return $(document.createElement('span')).addClass('black note')
-}
-
 
 
 
