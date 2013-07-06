@@ -106,10 +106,15 @@ var selectedThumbnailPosition = 0;
 ImageAnnotateView = Backbone.View.extend({
     model: AnnotationSets,
     el: $('div'),
+    events: {
+        "thumbnail_selected": "thumbnailSelected"
+    },
     initialize: function () {
         //bind to the blobal event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
+        GlobalEvent.on("point_clicked", this.pointClicked, this);
+        GlobalEvent.on("annotation_chosen", this.annotationChosen, this);
     },
     renderSelectedImage: function (selected) {
         //ge tall the images to be rendered
@@ -131,34 +136,41 @@ ImageAnnotateView = Backbone.View.extend({
         return this;
     },
     renderPointsForImage: function(selected) {
+
         //get the selected image
         var annotationSet = annotationSets.at(0);
         var image = annotationSet.get("generic_images")[selected];
 
         //based on that image query the API for the points
-
         points.fetch({
             data: { limit: 100, image: image.id, generic_annotation_set: annotationSet.get('id') },
             success: function (model, response, options) {
 
                 //loop through the points and apply them to the image
                 points.each(function (point) {
+                    var pointId = point.get('id');
+                    var label = point.get('annotation_caab_code');
 
-                    //var imgsrc = '{{ STATIC_URL }}images/annotationPointOverlayScored.png';
-                    var img = $('<span>');
-                    img.attr('id', point.get('id'));
-                    img.attr('class', 'annotatedPoint');
-                    img.css('top', point.get('y')*$('#Image').height());
-                    img.css('left', point.get('x')*$('#Image').width());
-                    //img.css('z-index', "1000");
+                    var labelClass = (label == "00000000")
+                        ? 'pointNotAnnotated'
+                        : 'pointAnnotated';
 
-                    img.attr('src', '');
-                    img.attr('selected', false);
-                    img.attr('data-toggle', 'tooltip');
-                    img.attr('title', "something");
+                    var span = $('<span>');
+                    span.attr('id', pointId);
+                    span.attr('class', labelClass);
+                    span.css('top', point.get('y')*$('#Image').height());
+                    span.css('left', point.get('x')*$('#Image').width());
+                    span.attr('caab_code', label);
 
-                    img.appendTo('#ImageContainer');
+                    //span.attr('onclick', function() {
+                    //    GlobalEvent.trigger("point_clicked");
+                    //});
 
+                    span.appendTo('#ImageContainer');
+                });
+
+                $('span').click(function(){
+                    GlobalEvent.trigger("point_clicked", this);
                 });
 
             },
@@ -167,18 +179,68 @@ ImageAnnotateView = Backbone.View.extend({
             }
         });
     },
-    events: {
-        "thumbnail_selected": "thumbnailSelected",
-        "screen_changed": "screenChanged"
-    },
     thumbnailSelected: function(selectedPosition) {
         selectedThumbnailPosition = selectedPosition;
         this.renderSelectedImage(selectedPosition);
-        this.renderPointsForImage(selectedPosition);
+
+        var parent = this;
+        //now we have to wait for the image to load before we can draw points
+        $("#Image").imagesLoaded(function() {
+            parent.renderPointsForImage(selectedPosition);
+        });
     },
     screenChanged: function() {
-        this.renderSelectedImage(selectedThumbnailPosition);
-        this.renderPointsForImage(selectedThumbnailPosition);
+        //loop through the points and apply them to the image
+        points.each(function (point) {
+            var pointId = point.get('id');
+            var span = $('#'+pointId);
+
+            span.css('top', point.get('y')*$('#Image').height());
+            span.css('left', point.get('x')*$('#Image').width());
+        });
+    },
+    pointClicked: function(thePoint) {
+        var theClass = $(thePoint).attr('class');
+        var theCaabCode = $(thePoint).attr('caab_code');
+
+        if(theClass == 'pointSelected' && theCaabCode == '00000000')
+            $(thePoint).attr('class', 'pointNotAnnotated');
+        else if(theClass == 'pointSelected' && theCaabCode != '00000000')
+            $(thePoint).attr('class', 'pointAnnotated');
+        else
+            $(thePoint).attr('class', 'pointSelected');
+    },
+    annotationChosen: function(caab_code) {
+        //get the selected points
+        var selectedPoints = $('.pointSelected');
+
+        //save the annotations
+        $.each(selectedPoints, function(index, pointSpan) {
+            console.log(pointSpan.id);
+            //need to specify the properties to patch
+            var properties = { 'annotation_caab_code': caab_code };
+
+            var theXHR = points.get(pointSpan.id).save(properties, {
+                patch: true,
+                success: function (model, xhr, options) {
+
+                    //change the point to annotated
+                    var idOfSaved = model.get("id");
+                    $('#'+idOfSaved).attr('class', 'pointAnnotated');
+
+                },
+                error: function (model, xhr, options) {
+                    if (xhr.status == "201" || xhr.status == "202") {
+                        //change the point to annotated
+                        var idOfSaved = model.get("id");
+                        $('#'+idOfSaved).attr('class', 'pointAnnotated');
+                    }
+                    else {
+                        alert("An error occurred. " + theXHR.error_message);
+                    }
+                }
+            })
+        });
     }
 });
 

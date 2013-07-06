@@ -41,8 +41,20 @@
             position: relative;
         }
 
-        .annotatedPoint {
+        .pointAnnotated {
             background: url('{{ STATIC_URL }}images/annotationPointOverlayScored.png') no-repeat 0 0;
+            width: 10px;
+            height: 10px;
+        }
+
+        .pointNotAnnotated {
+            background: url('{{ STATIC_URL }}images/annotationPointOverlay.png') no-repeat 0 0;
+            width: 10px;
+            height: 10px;
+        }
+
+        .pointSelected {
+            background: url('{{ STATIC_URL }}images/annotationPointOverlaySelected.png') no-repeat 0 0;
             width: 10px;
             height: 10px;
         }
