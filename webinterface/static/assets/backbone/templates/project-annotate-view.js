@@ -174,7 +174,7 @@ ImageAnnotateView = Backbone.View.extend({
                     span.appendTo('#ImageContainer');
                 });
 
-                $('span').click(function(){
+                $("#ImageContainer").children('span').click(function(){
                     GlobalEvent.trigger("point_clicked", this);
                 });
 
