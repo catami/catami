@@ -138,6 +138,7 @@ ImageAnnotateView = Backbone.View.extend({
         return this;
     },
     renderPointsForImage: function(selected) {
+        var parent = this;
 
         //get the selected image
         var annotationSet = annotationSets.at(0);
@@ -164,16 +165,15 @@ ImageAnnotateView = Backbone.View.extend({
                     span.css('left', point.get('x')*$('#Image').width()-6) ;
                     span.attr('caab_code', label);
 
-                    //span.attr('onclick', function() {
-                    //    GlobalEvent.trigger("point_clicked");
-                    //});
-
                     span.appendTo('#ImageContainer');
                 });
 
                 $('span').click(function(){
                     GlobalEvent.trigger("point_clicked", this);
                 });
+
+                //update pils
+                parent.updatePils();
 
             },
             error: function (model, response, options) {
@@ -213,6 +213,12 @@ ImageAnnotateView = Backbone.View.extend({
             $(thePoint).attr('class', 'pointSelected');
     },
     annotationChosen: function(caab_code) {
+        //TODO: remove this
+        var arr = caab_code.split(":");
+        var caab_code = arr[arr.length-1];
+
+        var parent = this;
+
         //get the selected points
         var selectedPoints = $('.pointSelected');
 
@@ -230,6 +236,8 @@ ImageAnnotateView = Backbone.View.extend({
                     var idOfSaved = model.get("id");
                     $('#'+idOfSaved).attr('class', 'pointAnnotated');
 
+                    //update the pil sidebar
+                    parent.updatePils();
                 },
                 error: function (model, xhr, options) {
                     if (xhr.status == "201" || xhr.status == "202") {
@@ -243,6 +251,25 @@ ImageAnnotateView = Backbone.View.extend({
                 }
             })
         });
+    },
+    updatePils: function() {
+
+        $("#LabelPils").empty();
+
+        annotationCodeList.each(function (annotationCode) {
+            var caab_code = annotationCode.get('caab_code');
+
+            var count = points.filter(
+                function(point) {
+                    return point.get("annotation_caab_code") == caab_code;
+                }
+            ).length;
+
+            if(count > 0) {
+                $("#LabelPils").append("<li class='active'> <a>"+annotationCode.get('code_name')+" <span class='badge badge-info'><b>"+ count +"</b></span> </a> </li>");
+            }
+        });
+
     }
 });
 

@@ -119,7 +119,7 @@ ProjectView = Backbone.View.extend({
                                 pointsAnnotatedCounter++;
                         });
 
-                        $('#percentage_complete').html(((pointsAnnotatedCounter/totalPoints)*100.0) + "%");
+                        $('#percentage_complete').html(Math.floor((pointsAnnotatedCounter/totalPoints)*100) + "%");
 
                     },
                     error: function (model, response, options) {
