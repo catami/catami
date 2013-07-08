@@ -151,15 +151,15 @@ ImageAnnotateView = Backbone.View.extend({
                     var pointId = point.get('id');
                     var label = point.get('annotation_caab_code');
 
-                    var labelClass = (label == "00000000")
+                    var labelClass = (label == "")
                         ? 'pointNotAnnotated'
                         : 'pointAnnotated';
 
                     var span = $('<span>');
                     span.attr('id', pointId);
                     span.attr('class', labelClass);
-                    span.css('top', point.get('y')*$('#Image').height());
-                    span.css('left', point.get('x')*$('#Image').width());
+                    span.css('top', point.get('y')*$('#Image').height()-6);
+                    span.css('left', point.get('x')*$('#Image').width()-6) ;
                     span.attr('caab_code', label);
 
                     //span.attr('onclick', function() {
@@ -203,9 +203,9 @@ ImageAnnotateView = Backbone.View.extend({
         var theClass = $(thePoint).attr('class');
         var theCaabCode = $(thePoint).attr('caab_code');
 
-        if(theClass == 'pointSelected' && theCaabCode == '00000000')
+        if(theClass == 'pointSelected' && theCaabCode == "")
             $(thePoint).attr('class', 'pointNotAnnotated');
-        else if(theClass == 'pointSelected' && theCaabCode != '00000000')
+        else if(theClass == 'pointSelected' && theCaabCode != "")
             $(thePoint).attr('class', 'pointAnnotated');
         else
             $(thePoint).attr('class', 'pointSelected');
