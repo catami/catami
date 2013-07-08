@@ -76,7 +76,7 @@ DeploymentThumbanilView = Backbone.View.extend({
         this.$el.html(thumbnailListTemplate);
 
         //Create pagination
-        var options = catami_generatePaginationOptions(this.meta);
+        var options = thumbnailPaginationOptions(this.meta);
         $('#pagination').bootstrapPaginator(options);
 
         return this;
