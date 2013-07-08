@@ -66,8 +66,6 @@ ProjectView = Backbone.View.extend({
     },
     render: function () {
 
-
-
         //render the items to the main template
         var projectVariables = {
             "name": project.get("name"),

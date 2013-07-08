@@ -141,7 +141,7 @@
         var mapExtent = "";
 
         var project = new Project({id: projectId});
-        var images = new Images({"url": "/api/dev/project/" + projectId + "/images/"});
+        var images;
         var annotationSets = new AnnotationSets();
         var points = new PointAnnotations();
 
@@ -153,12 +153,14 @@
 
                 mapExtent = project.get("map_extent");
 
-                loadPage();
-
                 annotationSets.fetch({
                     data: { project: projectId },
                     success: function (model, response, options) {
                         var annotationSetId = annotationSets.at(0).get('id');
+
+                        //load the image thumbnails
+                        images = new Images({"url": "/api/dev/generic_annotation_set/" + annotationSetId + "/images/"});
+                        loadPage();
 
                         //create the map
                         var map = new NewProjectsMap(wmsUrl, wmsLayerName, 'map', mapExtent);
