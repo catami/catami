@@ -111,12 +111,18 @@ ImageAnnotateView = Backbone.View.extend({
     events: {
         "thumbnail_selected": "thumbnailSelected"
     },
+
     initialize: function () {
         //bind to the blobal event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
         GlobalEvent.on("annotation_chosen", this.annotationChosen, this);
+        GlobalEvent.on("hide_points", this.hidePoints, this);
+        GlobalEvent.on("show_points", this.showPoints, this);
+
+        $('#hide_points_button').mousedown(this.hidePoints);
+        $('#hide_points_button').mouseup(this.showPoints);
     },
     renderSelectedImage: function (selected) {
         //ge tall the images to be rendered
@@ -268,6 +274,26 @@ ImageAnnotateView = Backbone.View.extend({
             if(count > 0) {
                 $("#LabelPils").append("<li class='active'> <a>"+annotationCode.get('code_name')+" <span class='badge badge-info'><b>"+ count +"</b></span> </a> </li>");
             }
+        });
+
+    },
+    hidePoints: function () {
+        //loop through the points and hide them
+        points.each(function (point) {
+            var pointId = point.get('id');
+            var span = $('#'+pointId);
+
+            span.css('visibility', 'hidden');
+        });
+
+    },
+    showPoints: function () {
+         //loop through the points and show them
+        points.each(function (point) {
+            var pointId = point.get('id');
+            var span = $('#'+pointId);
+
+            span.css('visibility', 'visible');
         });
 
     }
