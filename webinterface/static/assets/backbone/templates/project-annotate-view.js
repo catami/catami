@@ -66,7 +66,9 @@ ProjectAnnotateView = Backbone.View.extend({
 
         //render the items to the main template
         var annotationSetVariables = {
-            "thumbnails": imageTemplate
+            "thumbnails": imageTemplate,
+            "name": project.get("name"),
+            "id": project.get("id")
         };
 
         // Compile the template using underscore
