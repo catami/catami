@@ -77,7 +77,7 @@ ProjectCreateView = Backbone.View.extend({
         var deploymentTemplate = "";
 
         var deployments = new Deployments();
-        deployments.fetch({async:false});
+        deployments.fetch({async:false, data:{limit: 1000}});
 
         deployments.each(function (deployment) {
             var deploymentVariables = {
