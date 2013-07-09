@@ -170,7 +170,9 @@ ImageAnnotateView = Backbone.View.extend({
     },
 
     initialize: function () {
-        //bind to the global event, so we can get events from other views
+        var parent = this;
+
+        //bind to the blobal event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
@@ -180,6 +182,10 @@ ImageAnnotateView = Backbone.View.extend({
 
         $('#hide_points_button').mousedown(this.hidePoints);
         $('#hide_points_button').mouseup(this.showPoints);
+
+        $('#ZoomSwitch').on('switch-change', function (e, data) {
+            (data.value) ? parent.zoomOn() : parent.zoomOff();
+        });
     },
     renderSelectedImage: function (selected) {
         //ge tall the images to be rendered
@@ -197,6 +203,8 @@ ImageAnnotateView = Backbone.View.extend({
 
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(imageTemplate);
+
+
 
         return this;
     },
@@ -230,6 +238,7 @@ ImageAnnotateView = Backbone.View.extend({
                     span.attr('class', labelClass);
                     span.css('top', point.get('y')*$('#Image').height()-6);
                     span.css('left', point.get('x')*$('#Image').width()-6) ;
+                    span.css('z-index', 10000);
                     span.attr('caab_code', label);
 
                     if (labelClass === 'pointAnnotated'){
@@ -259,8 +268,11 @@ ImageAnnotateView = Backbone.View.extend({
         var parent = this;
         //now we have to wait for the image to load before we can draw points
         $("#Image").imagesLoaded(function() {
+
             parent.renderPointsForImage(selectedPosition);
+
         });
+
     },
     screenChanged: function() {
         //loop through the points and apply them to the image
@@ -361,7 +373,13 @@ ImageAnnotateView = Backbone.View.extend({
 
             span.css('visibility', 'visible');
         });
-
+    },
+    zoomOn: function() {
+        $("#Image").elevateZoom({zoomWindowPosition: 9});
+    },
+    zoomOff: function() {
+        $.removeData($("#Image"), 'elevateZoom');
+        $('.zoomContainer').remove();
     }
 });
 

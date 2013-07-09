@@ -6,80 +6,114 @@
 
 
 {% block content %}
+    <style type="text/css">
 
-    <div class="content-container" style="margin-top: -20px; margin-left:-20px; margin-right:-20px;">
+        body {
+            background-image: url('{{ STATIC_URL }}images/banner_01.jpg');
+            background-repeat:no-repeat;
+            background-size: 100%;
+        }
 
-        <!header image >
-        <div id="header" align="center" class="">
-            <img src="{{ STATIC_URL }}images/banner_01.jpg" alt="catami pretty banner" width="2400"/>
+        div .headerbg {
+            width: 100%;
+            height: 32%;
+        }
+    </style>
+
+    <div class="content-container" >
+
+
+        <div id="header" class="headerbg" style="width: 100%; height: 50%;">
+            <!--<img src="{{ STATIC_URL }}images/banner_01.jpg" alt="catami pretty banner" width="2400"/>-->
+        </div>
+
+        <div class="container-fluid">
+            <div class="span6">
+
+                {% if user.is_authenticated %}
+
+
+                        <div class="well">
+                            <p class="lead" style="align:center;">My profile. <a
+                                    href="/accounts/{{ user.username }}/"><i
+                                    class="icon-user icon-4x pull-right"></i></a></p>
+                            <br>
+                        </div>
+
+                        <div class="well">
+                            <p class="lead">My projects. <a
+                                    href="{% url webinterface.views.projects %}"><i
+                                    class="icon-list-alt icon-4x pull-right"></i></a></p>
+                            <br>
+                        </div>
+
+                        <div class="well">
+                            <p class="lead"> Create a project and start annotating. <a
+                                    href="{% url webinterface.views.project_create %}"><i class="icon-plus-sign-alt icon-4x pull-right"></i></a>
+                            </p>
+                            <br>
+                        </div>
+
+                        <div class="well">
+                            <p class="lead"> Explore data holdings. <a
+                                    href="{% url webinterface.views.campaign_list %}"><i class="icon-search icon-4x pull-right"></i></a>
+                            </p>
+                            <br>
+                        </div>
+
+
+                {% else %}
+
+                        <div class="well" style="align:center;">
+                            <p class="lead">Sign up. <a href="{% url userena_signup %}"><i
+                                    class="icon-user icon-4x pull-right"></i></a></p>
+                            <a href="#"
+                               rel="popover"
+                               data-html="true"
+                               data-placement="top"
+                               id="accountRationalePopover"
+                               data-content="<div id='account_rationale'><i class='icon-excalmation-sign icon-2x'></i>Catami is about managing and analysing marine imagery.<br><br>An account at Catami gives you all kinds of functions: upload, sharing and other advanced functions.  If you have a problem with a Catami service we can easily help you out!<br><br> We're not going to do anything nefarious with your personal information! Promise!</div>"
+                               data-original-title="The Catami Guru Answers:"><p><i
+                                    class="icon-question-sign"></i> Why should I make an account?</p>
+                            </a>
+
+                        </div>
+                        <div class="well">
+                            <p class="lead">Login. <a
+                                    href="{% url userena_signin %}"><i class="icon-signin icon-4x pull-right"></i></a>
+                            </p>
+                            <a href="{% url userena_password_reset %}"><p><i
+                                    class="icon-exclamation-sign"></i> Forgot your account details?</p></a>
+                        </div>
+
+                        <div class="well">
+                            <p class="lead"> Explore our data holdings. <a
+                                    href="{% url webinterface.views.campaign_list %}"><i class="icon-search icon-4x pull-right"></i></a>
+                            </p>
+                            <br>
+                        </div>
+
+                        <div class="well">
+                            <p class="lead">Explore projects people are sharing. <a
+                                    href="{% url webinterface.views.projects %}"><i
+                                    class="icon-list-alt icon-4x pull-right"></i></a></p>
+                            <br>
+                        </div>
+
+                {% endif %}
+
+            </div>
         </div>
 
         <!-- Tag line zone	 -->
         <div align="center" style="margin-top:20px;">
-            <p class="lead">CATAMI is bringing together Australia's marine imagery and marine researchers</p>
+            <p class="lead">Welcome to CATAMI. An online data exploration, and image annotation system for marine ecologists.</p>
         </div>
 
         <hr class="fancy-style">
 
-        <div class="container-fluid">
-            <div class="row-fluid">
-                <div class="span12">
-                    <div class="row-fluid">
-                        <div class="span5 offset1">
-                            <img src="{{ STATIC_URL }}images/front-tile-01.jpg" class="img-polaroid">
-                            <img src="{{ STATIC_URL }}images/front-tile-02.jpg" class="img-polaroid">
-                            <img src="{{ STATIC_URL }}images/front-tile-03.jpg" class="img-polaroid">
-                        </div>
-                        <div class="span6">
-                            {% if user.is_authenticated %}
-                                <p class="lead">Welcome back to Catami, <strong>{{ user.username }}.</strong><br> Here's
-                                    your stuff ... </p>
 
-                                <div class="well">
-                                    <p class="lead" style="align:center;">Your profile ... <a
-                                            href="/accounts/{{ user.username }}/"><i
-                                            class="icon-user icon-3x icon-border"></i></a></p>
-                                </div>
-
-                                <div class="well">
-                                    <p class="lead">Your data collections ... <a
-                                            href="{% url webinterface.views.projects %}"><i
-                                            class="icon-list-alt icon-3x icon-border"></i></a></p>
-                                </div>
-
-                            {% else %}
-
-                                <p class="lead">Welcome to Catami, you might be be new here.</p>
-                                <div class="well" style="align:center;">
-                                    <p class="lead">If you'd like to make an account ... <a href="{% url userena_signup %}"><i
-                                            class="icon-user icon-3x icon-border"></i></a></p>
-                                    <a href="#"
-                                       rel="popover"
-                                       data-html="true"
-                                       data-placement="top"
-                                       id="accountRationalePopover"
-                                       data-content="<div id='account_rationale'><i class='icon-excalmation-sign icon-2x'></i>Catami is about managing and analysing marine imagery.<br><br>An account at Catami gives you all kinds of functions: upload, sharing and other advanced functions.  If you have a problem with a Catami service we can easily help you out!<br><br> We're not going to do anything nefarious with your personal information! Promise!</div>"
-                                       data-original-title="The Catami Guru Answers:"><p><i
-                                            class="icon-question-sign"></i> Why should I make an account?</p>
-                                    </a>
-
-                                </div>
-                                <div class="well">
-                                    <p class="lead">If you already have an account, login ... <a
-                                            href="{% url userena_signin %}"><i class="icon-signin icon-3x icon-border"></i></a>
-                                    </p>
-                                    <a href="{% url userena_password_reset %}"><p><i
-                                            class="icon-exclamation-sign"></i> Forgot your account details?</p></a>
-                                </div>
-                            {% endif %}
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Footer Zone -->
-        <hr>
 
         <div class="row-fluid">
             <div class="span12">
