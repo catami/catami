@@ -243,17 +243,41 @@
                                 GlobalEvent.trigger("thumbnail_selected", 0);
                             },
                             error: function (model, response, options) {
-                                alert('Fetch failed: ' + response.status);
+                                $.pnotify({
+                                    title: 'Failed to load the annotation code list. Try refreshing the page.',
+                                    text: response.status,
+                                    type: 'error', // success | info | error
+                                    hide: true,
+                                    icon: false,
+                                    history: false,
+                                    sticker: false
+                                });
                             }
                         });
                     },
                     error: function (model, response, options) {
-                        alert('Fetch failed: ' + response.status);
+                        $.pnotify({
+                            title: 'Failed to load the project details. Try refreshing the page.',
+                            text: response.status,
+                            type: 'error', // success | info | error
+                            hide: true,
+                            icon: false,
+                            history: false,
+                            sticker: false
+                        });
                     }
                 });
             },
             error: function (model, response, options) {
-                alert('Fetch failed: ' + response.status);
+                $.pnotify({
+                    title: 'Failed to load the annotation set details. Try refreshing the page.',
+                    text: response.status,
+                    type: 'error', // success | info | error
+                    hide: true,
+                    icon: false,
+                    history: false,
+                    sticker: false
+                });
             }
        
         });

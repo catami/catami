@@ -48,7 +48,6 @@ ProjectCollectionView = Backbone.View.extend({
     },
     render: function () {
 
-
         //render each of the items to the template
         var projectTemplate = "";
         projects.each(function (project) {
@@ -102,7 +101,15 @@ function loadPage(offset) {
             });
         },
         error: function (model, response, options) {
-            alert('Fetch failed: ' + response.status);
+            $.pnotify({
+                title: 'Failed to load the project list. Try refreshing the page.',
+                text: response.status,
+                type: 'error', // success | info | error
+                hide: true,
+                icon: false,
+                history: false,
+                sticker: false
+            });
         }
 
     });

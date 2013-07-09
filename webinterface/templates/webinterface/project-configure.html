@@ -80,7 +80,15 @@
                 });
             },
             error: function (model, response, options) {
-                alert('Fetch failed: ' + response.status);
+                $.pnotify({
+                    title: 'Failed to load project details. Try refreshing the page.',
+                    text: response.status,
+                    type: 'error', // success | info | error
+                    hide: true,
+                    icon: false,
+                    history: false,
+                    sticker: false
+                });
             }
         });
 
