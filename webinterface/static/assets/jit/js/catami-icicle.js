@@ -60,9 +60,7 @@ function classificationTreeBuilder(jsonData){
   // everything ends up the top node
 
   generate_fullnames_for_tree(new_array[0]);
-
   return new_array[0];
-
 }
 
 function caab_as_icicle_node(object){
@@ -74,7 +72,8 @@ function caab_as_icicle_node(object){
   icicle_data['$area'] = 5;
   icicle_data['$dim'] = 5;
   icicle_data['$color'] = '#'+object.point_colour;
-  icicle_data['caabcode'] = object.caab_code;
+  icicle_data['caabcode_object'] = object.caab_code;
+  icicle_data['caabcode_id'] = object.id;
   icicle_node.data = icicle_data;
   icicle_node.children = [];
   return icicle_node;
@@ -174,9 +173,10 @@ function start_icicle_view(){
             this.onMouseLeave(icicle.events.hovered);
           //perform the enter animation
           icicle.enter(node);
-          currentSelection = fullname_for_caabcode(node.data.fullname,node.id);
-
-          GlobalEvent.trigger("annotation_chosen",currentSelection);
+          currentSelection.name= fullname_for_caabcode(node.data.fullname,node.id);
+          currentSelection.caabcode_id = node.data.caabcode_id;
+          currentSelection.caabcode = node.id;
+          GlobalEvent.trigger("annotation_chosen", currentSelection.caabcode_id);
         }
       },
       onRightClick: function(){

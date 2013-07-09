@@ -9,12 +9,20 @@ var AnnotationCodeList = Backbone.Tastypie.Collection.extend({
     model: AnnotationCode
 });
 
+//yeah, it's a global.
+var annotation_code_list = new AnnotationCodeList();
+
 ChooseAnnotationView = Backbone.View.extend({
     model: AnnotationCodeList,
     el: $('div'),
     initialize: function () {
-        // annotation_code_list = AnnotationCodeList();
-        // annotation_code_list.fetch();
+        // var annotation_code_list = new AnnotationCodeList();
+        annotation_code_list.fetch({
+            data: { limit: 999 },
+            success: function (model, response, options) {},
+            error: function (model, response, options) {}
+        });
+
         GlobalEvent.on("annotation_chosen", this.annotationChosen, this);
         this.render();
     },
@@ -28,14 +36,25 @@ ChooseAnnotationView = Backbone.View.extend({
         return this;
     },
     events: {
-
+        'mouseenter': 'mouse_entered',
+        'mouseleave': 'mouse_exited'
+    },
+    mouse_entered: function() {
+        // selected annotations remain editable until mouse exit
+    },
+    mouse_exited: function() {
+        // selected annotations rare now set with the current annotation code
+        GlobalEvent.trigger("annotation_to_be_set", this.current_annotation);
     },
     annotationChosen: function(annotationCode){
           //alert(annotationCode);
+          this.current_annotation = annotationCode;
           this.$('#current_annotation_label').text(annotationCode);
-          this.$('#goto_parent_button').text('Parent of '+annotationCode);
+          // this.$('#goto_parent_button').text('Parent of '+annotationCode);
     }
 });
+
+ChooseAnnotationView.current_annotation = null;
 
 ProjectAnnotateView = Backbone.View.extend({
     model: AnnotationSets,
@@ -93,7 +112,7 @@ ProjectAnnotateView = Backbone.View.extend({
                 $(this).find('.description').html("<i class='icon-chevron-sign-down icon-2x'></i>");
             } else {
                 $(this).find('.description').html("");
-            };
+            }
         });
     },
     events: {
@@ -114,7 +133,7 @@ ImageAnnotateView = Backbone.View.extend({
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
-        GlobalEvent.on("annotation_chosen", this.annotationChosen, this);
+        GlobalEvent.on("annotation_to_be_set", this.annotationChosen, this);
     },
     renderSelectedImage: function (selected) {
         //ge tall the images to be rendered
@@ -150,10 +169,11 @@ ImageAnnotateView = Backbone.View.extend({
                 points.each(function (point) {
                     var pointId = point.get('id');
                     var label = point.get('annotation_caab_code');
+                    var labelClass = (label == "00000000") ? 'pointNotAnnotated' : 'pointAnnotated';
 
-                    var labelClass = (label == "00000000")
-                        ? 'pointNotAnnotated'
-                        : 'pointAnnotated';
+                    annotation_object = annotation_code_list.find(function(model) {
+                        return model.get('caab_code')===point.get('annotation_caab_code');
+                    });
 
                     var span = $('<span>');
                     span.attr('id', pointId);
@@ -161,6 +181,10 @@ ImageAnnotateView = Backbone.View.extend({
                     span.css('top', point.get('y')*$('#Image').height());
                     span.css('left', point.get('x')*$('#Image').width());
                     span.attr('caab_code', label);
+
+                    if (labelClass === 'pointAnnotated'){
+                        span.text(annotation_object.id);
+                    }
 
                     //span.attr('onclick', function() {
                     //    GlobalEvent.trigger("point_clicked");
@@ -210,15 +234,15 @@ ImageAnnotateView = Backbone.View.extend({
         else
             $(thePoint).attr('class', 'pointSelected');
     },
-    annotationChosen: function(caab_code) {
+    annotationChosen: function(caab_code_id) {
         //get the selected points
         var selectedPoints = $('.pointSelected');
+        caab_object = annotation_code_list.get(caab_code_id);
 
         //save the annotations
         $.each(selectedPoints, function(index, pointSpan) {
-            console.log(pointSpan.id);
             //need to specify the properties to patch
-            var properties = { 'annotation_caab_code': caab_code };
+            var properties = { 'annotation_caab_code': caab_object.get('caab_code') };
 
             var theXHR = points.get(pointSpan.id).save(properties, {
                 patch: true,
@@ -227,6 +251,7 @@ ImageAnnotateView = Backbone.View.extend({
                     //change the point to annotated
                     var idOfSaved = model.get("id");
                     $('#'+idOfSaved).attr('class', 'pointAnnotated');
+                    $('#'+idOfSaved).text(caab_code_id);
 
                 },
                 error: function (model, xhr, options) {
@@ -239,7 +264,7 @@ ImageAnnotateView = Backbone.View.extend({
                         alert("An error occurred. " + theXHR.error_message);
                     }
                 }
-            })
+            });
         });
     }
 });
