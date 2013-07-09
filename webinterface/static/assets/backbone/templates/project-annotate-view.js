@@ -79,7 +79,6 @@ ChooseAnnotationView = Backbone.View.extend({
         GlobalEvent.trigger("annotation_to_be_set", this.current_annotation);
     },
     new_parent_icicle_node: function(new_parent_id){
-        console.log('I SEEN',new_parent_id);
         this.current_annotation = new_parent_id;
         var caab_object = annotation_code_list.get(new_parent_id);
 
@@ -287,6 +286,7 @@ ImageAnnotateView = Backbone.View.extend({
     pointClicked: function(thePoint) {
         var theClass = $(thePoint).attr('class');
         var theCaabCode = $(thePoint).attr('caab_code');
+        $(thePoint).css('color','');
 
         if(theClass == 'pointSelected' && theCaabCode == ""){
             $(thePoint).attr('class', 'pointNotAnnotated');
@@ -294,6 +294,8 @@ ImageAnnotateView = Backbone.View.extend({
             $(thePoint).attr('class', 'pointAnnotated');
         } else {
             $(thePoint).attr('class', 'pointSelected');
+            //hide the label, if there is one
+            $(thePoint).css('color','rgba(0,0,0,0)');
             GlobalEvent.trigger("point_is_selected", this);
         }
     },
@@ -375,7 +377,7 @@ ImageAnnotateView = Backbone.View.extend({
         });
     },
     zoomOn: function() {
-        $("#Image").elevateZoom({zoomWindowPosition: 9});
+        $("#Image").elevateZoom({zoomWindowPosition: 2});
     },
     zoomOff: function() {
         $.removeData($("#Image"), 'elevateZoom');
