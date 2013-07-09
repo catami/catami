@@ -203,8 +203,6 @@ ImageAnnotateView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(imageTemplate);
 
-
-
         return this;
     },
     renderPointsForImage: function(selected) {
@@ -256,7 +254,15 @@ ImageAnnotateView = Backbone.View.extend({
 
             },
             error: function (model, response, options) {
-                alert('Fetch failed: ' + response.status);
+                $.pnotify({
+                    title: 'Failed to load the points for this image. Try refreshing the page.',
+                    text: response.status,
+                    type: 'error', // success | info | error
+                    hide: true,
+                    icon: false,
+                    history: false,
+                    sticker: false
+                });
             }
         });
     },
@@ -333,7 +339,15 @@ ImageAnnotateView = Backbone.View.extend({
                         $('#'+idOfSaved).attr('class', 'pointAnnotated');
                     }
                     else {
-                        alert("An error occurred. " + theXHR.error_message);
+                        $.pnotify({
+                            title: 'Failed to save your annotations to the server.',
+                            text: response.status,
+                            type: 'error', // success | info | error
+                            hide: true,
+                            icon: false,
+                            history: false,
+                            sticker: false
+                        });
                     }
                 }
             });

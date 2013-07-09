@@ -157,47 +157,67 @@
                 annotationSets.fetch({
                     data: { project: projectId },
                     success: function (model, response, options) {
-                        var annotationSetId = annotationSets.at(0).get('id');
 
-                        //load the image thumbnails
-                        images = new Images({"url": "/api/dev/generic_annotation_set/" + annotationSetId + "/images/"});
-                        loadPage();
+                        //check not an empty list
+                        if(annotationSets.length > 0) {
+                            var annotationSetId = annotationSets.at(0).get('id');
 
-                        //create the map
-                        var map = new NewProjectsMap(wmsUrl, projectWMSLayerName, 'map', mapExtent);
-                        map.updateMapForSelectedProject(projectId);
-                        //map.updateMapForSelectedAnnotationSet(annotationSetId);
-                        map.addAnnotationSetLayer(annotationSetId, wmsUrl, annotationSetWMSLayerName);
-                        map.zoomToExtent();
+                            //load the image thumbnails
+                            images = new Images({"url": "/api/dev/generic_annotation_set/" + annotationSetId + "/images/"});
+                            loadPage();
 
-                        //load the project
-                        var projectView = new ProjectView({
-                            el: $("#ProjectDashboardContainer"),
-                            model : project
-                        });
+                            //create the map
+                            var map = new NewProjectsMap(wmsUrl, projectWMSLayerName, 'map', mapExtent);
+                            map.updateMapForSelectedProject(projectId);
+                            //map.updateMapForSelectedAnnotationSet(annotationSetId);
+                            map.addAnnotationSetLayer(annotationSetId, wmsUrl, annotationSetWMSLayerName);
+                            map.zoomToExtent();
 
-                        projectView.renderProjectStats();
+                            //load the project
+                            var projectView = new ProjectView({
+                                el: $("#ProjectDashboardContainer"),
+                                model : project
+                            });
 
+                            projectView.renderProjectStats();
+                        } else {
+                            $.pnotify({
+                                title: 'Failed to load annotation set details. Try refreshing the page.',
+                                text: '',
+                                type: 'error', // success | info | error
+                                hide: true,
+                                icon: false,
+                                history: false,
+                                sticker: false
+                            });
+                        }
                     },
                     error: function (model, response, options) {
-                        alert('Fetch failed: ' + response.status);
+                        $.pnotify({
+                            title: 'Failed to load annotation set details. Try refreshing the page.',
+                            text: response.status,
+                            type: 'error', // success | info | error
+                            hide: true,
+                            icon: false,
+                            history: false,
+                            sticker: false
+                        });
                     }
-
                 });
-
             },
             error: function (model, response, options) {
-                alert('Fetch failed: ' + response.status);
+                $.pnotify({
+                    title: 'Failed to load project details. Try refreshing the page.',
+                    text: response.status,
+                    type: 'error', // success | info | error
+                    hide: true,
+                    icon: false,
+                    history: false,
+                    sticker: false
+                });
             }
-
         });
 
-        function loadAnnotationSet() {
-
-        }
-
     </script>
-
-
 
 {% endblock %}

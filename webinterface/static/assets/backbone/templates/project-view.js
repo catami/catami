@@ -125,6 +125,16 @@ ProjectView = Backbone.View.extend({
                     error: function (model, response, options) {
                         $('#points_per_image').html("?");
                         $('#percentage_complete').html("?");
+
+                        $.pnotify({
+                            title: 'Failed to load the project stats. Try refreshing the page.',
+                            text: response.status,
+                            type: 'error', // success | info | error
+                            hide: true,
+                            icon: false,
+                            history: false,
+                            sticker: false
+                        });
                     }
                 });
 
@@ -133,6 +143,16 @@ ProjectView = Backbone.View.extend({
                 $('#total_images').html("?");
                 $('#points_per_image').html("?");
                 $('#percentage_complete').html("?");
+
+                $.pnotify({
+                    title: 'Failed to load the project stats. Try refreshing the page.',
+                    text: response.status,
+                    type: 'error', // success | info | error
+                    hide: true,
+                    icon: false,
+                    history: false,
+                    sticker: false
+                });
             }
 
         });
@@ -201,7 +221,15 @@ function loadPage(offset) {
             });
         },
         error: function (model, response, options) {
-            alert('fetch failed: ' + response.status);
+            $.pnotify({
+                title: 'Failed to load the desired images. Try refreshing the page.',
+                text: response.status,
+                type: 'error', // success | info | error
+                hide: true,
+                icon: false,
+                history: false,
+                sticker: false
+            });
         }
     });
 }
