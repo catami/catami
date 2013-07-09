@@ -7,6 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
 <!-- 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/jit/css/base.css"/> -->
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/jit/css/Icicle.css"/>
+
     <style type="text/css">
         div.wrapper{
 		    float:left; /* important */
@@ -152,7 +153,9 @@
     </script>
 
     <script type="text/template" id="ImageTemplate">
+
         <img id="Image" src='<%= web_location %>' data-src='<%= web_location %>' alt='image'>
+
     </script>
 
     <script src="{{ STATIC_URL }}assets/jquery/modernizr.custom.17475.js"></script>
@@ -165,6 +168,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.imagesloaded.min.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}assets/jit/js/jit.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}assets/jit/js/catami-icicle.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery.elevatezoom/jquery.elevateZoom-2.5.5.min.js"></script>
 
     <script type="text/javascript">
 
@@ -228,6 +232,7 @@
             //trigger an event to redraw
             GlobalEvent.trigger("screen_changed");
         });
+
 
     </script>
 

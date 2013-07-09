@@ -160,6 +160,8 @@ ImageAnnotateView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(imageTemplate);
 
+
+
         return this;
     },
     renderPointsForImage: function(selected) {
@@ -222,7 +224,16 @@ ImageAnnotateView = Backbone.View.extend({
         //now we have to wait for the image to load before we can draw points
         $("#Image").imagesLoaded(function() {
             parent.renderPointsForImage(selectedPosition);
+
+           /*$("#Image").elevateZoom({
+                zoomType	: "lens",
+                lensShape : "square",
+                lensSize    : 200
+            });*/
+
+            $("#Image").elevateZoom({zoomWindowPosition: 9});
         });
+
     },
     screenChanged: function() {
         //loop through the points and apply them to the image
