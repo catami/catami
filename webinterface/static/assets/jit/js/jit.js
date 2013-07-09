@@ -13905,7 +13905,6 @@ $jit.Icicle = new Class({
         that.clickedNode = parent;
 
         //catami icicle hack
-        console.log( parent.data.caabcode_id);
         GlobalEvent.trigger("new_parent_icicle_node", parent.data.caabcode_id);
 
         if(config.request) {
