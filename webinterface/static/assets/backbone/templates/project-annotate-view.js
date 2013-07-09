@@ -137,6 +137,11 @@ ImageAnnotateView = Backbone.View.extend({
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
         GlobalEvent.on("annotation_to_be_set", this.annotationChosen, this);
+        GlobalEvent.on("hide_points", this.hidePoints, this);
+        GlobalEvent.on("show_points", this.showPoints, this);
+
+        $('#hide_points_button').mousedown(this.hidePoints);
+        $('#hide_points_button').mouseup(this.showPoints);
     },
     renderSelectedImage: function (selected) {
         //ge tall the images to be rendered
@@ -173,9 +178,12 @@ ImageAnnotateView = Backbone.View.extend({
                 points.each(function (point) {
                     var pointId = point.get('id');
                     var label = point.get('annotation_caab_code');
-                    var labelClass = (label == "00000000") ? 'pointNotAnnotated' : 'pointAnnotated';
+                    
+                    annotation_object = annotation_code_list.find(function(model) {
+                        return model.get('caab_code')===point.get('annotation_caab_code');
+                    });
 
-                    var labelClass = (label == "")
+                    var labelClass = (label === "")
                         ? 'pointNotAnnotated'
                         : 'pointAnnotated';
 
@@ -189,10 +197,6 @@ ImageAnnotateView = Backbone.View.extend({
                     if (labelClass === 'pointAnnotated'){
                         span.text(annotation_object.id);
                     }
-
-                    //span.attr('onclick', function() {
-                    //    GlobalEvent.trigger("point_clicked");
-                    //});
 
                     span.appendTo('#ImageContainer');
                 });
@@ -241,11 +245,10 @@ ImageAnnotateView = Backbone.View.extend({
         else
             $(thePoint).attr('class', 'pointSelected');
     },
-    annotationChosen: function(caab_code) {
+    annotationChosen: function(caab_code_id) {
         //TODO: remove this
-        var arr = caab_code.split(":");
-        var caab_code = arr[arr.length-1];
-
+        //var arr = caab_code.split(":");
+        //var caab_code = arr[arr.length-1];
         var parent = this;
 
         //get the selected points
