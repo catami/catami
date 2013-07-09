@@ -37,16 +37,16 @@
         </tr>
     </tbody>
     </table>
-    <!--
-    <div id='deployment-map' style="height: 300px; width:100%; border: 2px>
-    </div>-->
+    
+    <div id='deployment-map' style="height: 300px; width:100%; border: 2px">
+    </div>
     
     <div>
         <%= deploymentlist %>
     </div>
 </script>
 
-<script type="text/template" id="DeploymentListTemplate">
+<script type="text/template" id="DeploymentListTemplate">   
     <h3>Deployments in <%= campaign_name%></h3>
     <table class="table table-striped">
         <thead>
@@ -59,7 +59,7 @@
             <th>Max Depth</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="deploymentlist">            
             <%=deployments%>
         </tbody>
     </table>
@@ -68,7 +68,7 @@
 
 </script>
 
-<script type="text/template" id="DeploymentTemplate">
+<script type="text/template" id="DeploymentTemplate">   
     <tr>
         <td><a href="<%= deployment_url %>"><%= short_name %></a></td>
         <td><%= type %></td>        
