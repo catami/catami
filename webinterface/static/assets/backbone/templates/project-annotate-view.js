@@ -24,6 +24,9 @@ ChooseAnnotationView = Backbone.View.extend({
         });
 
         GlobalEvent.on("annotation_chosen", this.annotationChosen, this);
+        GlobalEvent.on("point_is_selected", this.initializeSelection, this);
+        GlobalEvent.on("new_parent_icicle_node", this.new_parent_icicle_node, this);
+
         this.render();
     },
     render: function() {
@@ -32,25 +35,60 @@ ChooseAnnotationView = Backbone.View.extend({
 
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(chooseAnnotationTemplate);
-
+        this.clearSelection();
         return this;
     },
     events: {
         'mouseenter': 'mouse_entered',
-        'mouseleave': 'mouse_exited'
+        'mouseleave': 'mouse_exited',
+        'click #assign_annotation_button': 'annotationFinalised'
     },
     mouse_entered: function() {
         // selected annotations remain editable until mouse exit
     },
     mouse_exited: function() {
         // selected annotations rare now set with the current annotation code
+        //GlobalEvent.trigger("annotation_to_be_set", this.current_annotation);
+    },
+    initializeSelection: function() {
+        this.$('#assign_annotation_button').css('visibility', 'hidden');
+        this.$('#current_annotation_label').text('Select Annotation...');
+    },
+    clearSelection: function(){
+        this.$('#assign_annotation_button').css('visibility', 'hidden');
+        this.$('#current_annotation_label').text('Annotation Selector');
+    },
+    annotationChosen: function(annotation_code_id){
+          //alert(annotationCode);
+          this.$('#assign_annotation_button').css('visibility', 'visible');
+          this.current_annotation = annotation_code_id;
+          var caab_object = annotation_code_list.get(annotation_code_id);
+          if (caab_object.get('parent')){
+              var parent_caab_name_list = caab_object.get('parent').split('/');
+              var parent_caab_object = annotation_code_list.get(parent_caab_name_list[parent_caab_name_list.length-2]);
+              this.$('#current_annotation_label').text(caab_object.get('code_name'));
+              this.$('#goto_parent_button').empty().append('<i class="icon-chevron-left"></i> '+parent_caab_object.get('code_name'));
+          } else {
+              this.$('#current_annotation_label').text(caab_object.get('code_name'));
+              this.$('#goto_parent_button').empty();
+          }
+    },
+    annotationFinalised: function(){
+        //make it so
+        this.$('#assign_annotation_button').css('visibility', 'hidden');
         GlobalEvent.trigger("annotation_to_be_set", this.current_annotation);
     },
-    annotationChosen: function(annotationCode){
-          //alert(annotationCode);
-          this.current_annotation = annotationCode;
-          this.$('#current_annotation_label').text(annotationCode);
-          // this.$('#goto_parent_button').text('Parent of '+annotationCode);
+    new_parent_icicle_node: function(new_parent_id){
+        console.log('I SEEN',new_parent_id);
+        this.current_annotation = new_parent_id;
+        var caab_object = annotation_code_list.get(new_parent_id);
+
+        if (new_parent_id === '1'){
+            this.$('#assign_annotation_button').css('visibility', 'hidden');
+            this.$('#current_annotation_label').text(caab_object.get('code_name'));
+        } else {
+            this.annotationChosen(new_parent_id);
+        }
     }
 });
 
@@ -132,7 +170,7 @@ ImageAnnotateView = Backbone.View.extend({
     },
 
     initialize: function () {
-        //bind to the blobal event, so we can get events from other views
+        //bind to the global event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
@@ -238,12 +276,14 @@ ImageAnnotateView = Backbone.View.extend({
         var theClass = $(thePoint).attr('class');
         var theCaabCode = $(thePoint).attr('caab_code');
 
-        if(theClass == 'pointSelected' && theCaabCode == "")
+        if(theClass == 'pointSelected' && theCaabCode == ""){
             $(thePoint).attr('class', 'pointNotAnnotated');
-        else if(theClass == 'pointSelected' && theCaabCode != "")
+        } else if(theClass == 'pointSelected' && theCaabCode != ""){
             $(thePoint).attr('class', 'pointAnnotated');
-        else
+        } else {
             $(thePoint).attr('class', 'pointSelected');
+            GlobalEvent.trigger("point_is_selected", this);
+        }
     },
     annotationChosen: function(caab_code_id) {
         //TODO: remove this

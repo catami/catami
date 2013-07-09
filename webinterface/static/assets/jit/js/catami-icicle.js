@@ -124,7 +124,10 @@ function start_icicle_view(){
     // id of the visualization container
     injectInto: 'annotation-chooser',
     // whether to add transition animations
-    animate: false,
+    animate: true,
+    duration: 100,
+    fps: 40,
+    transition: $jit.Trans.Quad.easeInOut,
     // nodes offset
     offset: 1,
     // whether to add cushion type nodes
@@ -151,6 +154,10 @@ function start_icicle_view(){
         // add tooltip info
         tip.innerHTML = "<div class=\"tip-title\"><b>Name:</b> " + node.name + "</div><div class=\"tip-text\">" + count + " children</div>";
       }
+    },
+    // callbacks for node actions
+    onAfterCompute: function(){
+      alert('yep');
     },
     // Add events to nodes
     Events: {
@@ -234,10 +241,10 @@ function start_icicle_view(){
 //init controls
 function controls() {
   var jit = $jit;
-
   //define goto parent button action
   var gotoparent = jit.id('goto_parent_button');
   jit.util.addEvent(gotoparent, 'click', function() {
+    //GlobalEvent.trigger("new_parent_icicle_node", currentSelection.caabcode_id);
     icicle.out();
   });
 }

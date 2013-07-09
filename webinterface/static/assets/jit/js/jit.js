@@ -13841,7 +13841,7 @@ $jit.Icicle = new Class({
           }, "ignore");
 
           that.fx.animate({
-            duration: 500,
+            duration: 100,
             modes:['node-property:alpha'],
             onComplete: function() {
               that.clickedNode = node;
@@ -13849,7 +13849,7 @@ $jit.Icicle = new Class({
 
               that.fx.animate({
                 modes:['linear', 'node-property:width:height'],
-                duration: 1000,
+                duration: 75,
                 onComplete: function() {
                   that.busy = false;
                   that.clickedNode = node;
@@ -13903,6 +13903,11 @@ $jit.Icicle = new Class({
     callback = {
       onComplete: function() {
         that.clickedNode = parent;
+
+        //catami icicle hack
+        console.log( parent.data.caabcode_id);
+        GlobalEvent.trigger("new_parent_icicle_node", parent.data.caabcode_id);
+
         if(config.request) {
           that.requestNodes(parent, {
             onComplete: function() {
@@ -13927,7 +13932,7 @@ $jit.Icicle = new Class({
       this.clickedNode = previousClickedNode;
       this.fx.animate({
         modes:['linear', 'node-property:width:height'],
-        duration: 1000,
+        duration: 100,
         onComplete: function() {
           //animate the parent subtree
           that.clickedNode = clickedNode;
@@ -13939,7 +13944,7 @@ $jit.Icicle = new Class({
             node.setData('alpha', 1);
           }, "ignore");
           that.fx.animate({
-            duration: 500,
+            duration: 50,
             modes:['node-property:alpha'],
             onComplete: function() {
               callback.onComplete();
@@ -14019,6 +14024,7 @@ $jit.Icicle.Group = new Class({
       nodeSelected[nodes[i].id] = nodes[i];
       controller.request(nodes[i].id, nodes[i]._level, {
         onComplete: function(nodeId, data){
+
           if (data && data.children) {
             data.id = nodeId;
             viz.op.sum(data, {
