@@ -178,7 +178,7 @@ ImageAnnotateView = Backbone.View.extend({
                 points.each(function (point) {
                     var pointId = point.get('id');
                     var label = point.get('annotation_caab_code');
-                    
+
                     annotation_object = annotation_code_list.find(function(model) {
                         return model.get('caab_code')===point.get('annotation_caab_code');
                     });
@@ -291,7 +291,6 @@ ImageAnnotateView = Backbone.View.extend({
 
         annotationCodeList.each(function (annotationCode) {
             var caab_code = annotationCode.get('caab_code');
-
             var count = points.filter(
                 function(point) {
                     return point.get("annotation_caab_code") == caab_code;
@@ -299,7 +298,7 @@ ImageAnnotateView = Backbone.View.extend({
             ).length;
 
             if(count > 0) {
-                $("#LabelPils").append("<li class='active'> <a>"+annotationCode.get('code_name')+" <span class='badge badge-info'><b>"+ count +"</b></span> </a> </li>");
+                $("#LabelPils").append("<li class='active'> <a>("+annotationCode.id+") "+annotationCode.get('code_name')+" <span class='badge badge-info'><b>"+ count +"</b></span> </a> </li>");
             }
         });
 
