@@ -102,7 +102,8 @@ def project_view(request, project_id):
     return render_to_response('webinterface/project-view.html',
                               {"project_id": project_id,
                                'WMS_URL': settings.WMS_URL,
-                               'WMS_layer_name': settings.WMS_ANNOTATIONSET_LAYER_NAME},
+                               'project_WMS_layer_name': settings.WMS_PROJECTS_LAYER_NAME,
+                               'annotation_set_WMS_layer_name': settings.WMS_ANNOTATIONSET_LAYER_NAME},
                               RequestContext(request))
 
 def project_create(request):

@@ -403,6 +403,39 @@ NewProjectsMap.prototype.updateMapForSelectedProject = function(projectId) {
     this.updateMapUsingFilter(filter_array);
 };
 
+
+NewProjectsMap.prototype.addAnnotationSetLayer = function(annotationSetId, wmsUrl, wmsLayerName) {
+    var filter_array = [];
+
+    filter_array.push(new OpenLayers.Filter.Comparison({
+        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+        property: "genericannotationset_id",
+        value: annotationSetId
+    }));
+
+    //this is the layer for our points to be displayed with
+    var annotationImagePointsLayer = new OpenLayers.Layer.WMS("AnnotationSetImages",
+        wmsUrl,
+        {layers: wmsLayerName, transparent: "true", format: "image/png", filter: this.xml.write(this.filter_1_1.write(this.filter))},
+        {isBaseLayer: false, minZoomLevel: 1, maxZoomLevel: 25, numZoomLevels: 25}
+    );
+    this.mapInstance.addLayer(annotationImagePointsLayer);
+
+    var filter_logic = new OpenLayers.Filter.Logical({
+        type: OpenLayers.Filter.Logical.AND,
+        filters: filter_array
+    });
+
+    var xml = new OpenLayers.Format.XML();
+    var new_filter = xml.write(this.filter_1_1.write(filter_logic));
+
+    //var layer = this.mapInstance.getLayersByName("Images")[0];
+    annotationImagePointsLayer.params['FILTER'] = new_filter;
+    annotationImagePointsLayer.redraw();
+};
+
+
+
 /**
  *
  * Will take a projectId and update the map

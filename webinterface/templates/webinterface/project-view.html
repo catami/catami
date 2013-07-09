@@ -137,7 +137,8 @@
 
         var projectId = "{{ project_id }}";
         var wmsUrl = "{{ WMS_URL }}";
-        var wmsLayerName = "{{ WMS_layer_name }}";
+        var projectWMSLayerName = "{{ project_WMS_layer_name }}";
+        var annotationSetWMSLayerName = "{{ annotation_set_WMS_layer_name }}";
         var mapExtent = "";
 
         var project = new Project({id: projectId});
@@ -163,9 +164,10 @@
                         loadPage();
 
                         //create the map
-                        var map = new NewProjectsMap(wmsUrl, wmsLayerName, 'map', mapExtent);
-                        //map.updateMapForSelectedProject(projectId);
-                        map.updateMapForSelectedAnnotationSet(annotationSetId);
+                        var map = new NewProjectsMap(wmsUrl, projectWMSLayerName, 'map', mapExtent);
+                        map.updateMapForSelectedProject(projectId);
+                        //map.updateMapForSelectedAnnotationSet(annotationSetId);
+                        map.addAnnotationSetLayer(annotationSetId, wmsUrl, annotationSetWMSLayerName);
                         map.zoomToExtent();
 
                         //load the project
