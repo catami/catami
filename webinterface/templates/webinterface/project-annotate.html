@@ -7,6 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
 <!-- 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/jit/css/base.css"/> -->
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/jit/css/Icicle.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/catami-api/css/bootstrapSwitch.css"/>
 
     <style type="text/css">
         div.wrapper{
@@ -111,6 +112,13 @@
                 <a id="hide_points_button" class="btn" href="#">Hide Points</a>
             </div>
 
+            <div>
+                <div id="ZoomSwitch" class="switch" data-on-label="Zoom ON" data-off-label="Zoom OFF">
+                    <input type="checkbox" />
+                </div>
+            </div>
+
+
         </div>
         <div class="span6" id="ImageContainer"></div>
         <div class="span4" id="ChooseAnnotationContainer"></div>
@@ -169,6 +177,7 @@
 	<script type="text/javascript" src="{{ STATIC_URL }}assets/jit/js/jit.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}assets/jit/js/catami-icicle.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery.elevatezoom/jquery.elevateZoom-2.5.5.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/bootstrapSwitch.js"></script>
 
     <script type="text/javascript">
 
