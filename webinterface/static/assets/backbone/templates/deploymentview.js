@@ -76,7 +76,7 @@ DeploymentThumbanilView = Backbone.View.extend({
         this.$el.html(thumbnailListTemplate);
 
         //Create pagination
-        var options = catami_generatePaginationOptions(this.meta);
+        var options = thumbnailPaginationOptions(this.meta);
         $('#pagination').bootstrapPaginator(options);
 
         return this;
@@ -106,19 +106,6 @@ function loadPage(offset) {
     });
 }
 
-deployment = new Deployment({ id: catami_getIdFromUrl() });
-deployment.fetch({
-    success: function (model, response, options) {
-        var deployment_view = new DeploymentView({
-            el: $("#DeploymentViewContainer"),
-            model : deployment
-        });
-    },
-    error: function (model, response, options) {
-        alert('fetch failed: ' + response.status);
-    }
-});
-
 function plotMeasurement(url, divId, axisLabel) {
     $.ajax({
         type: "GET",
@@ -138,3 +125,19 @@ function plotMeasurement(url, divId, axisLabel) {
         }
     });
 }
+
+deployment = new Deployment({ id: catami_getIdFromUrl() });
+deployment.fetch({
+    success: function (model, response, options) {
+        var deployment_view = new DeploymentView({
+            el: $("#DeploymentViewContainer"),
+            model : deployment
+        });
+    },
+    error: function (model, response, options) {
+        alert('fetch failed: ' + response.status);
+    }
+});
+
+
+

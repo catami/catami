@@ -85,7 +85,9 @@ ProjectAnnotateView = Backbone.View.extend({
 
         //render the items to the main template
         var annotationSetVariables = {
-            "thumbnails": imageTemplate
+            "thumbnails": imageTemplate,
+            "name": project.get("name"),
+            "id": project.get("id")
         };
 
         // Compile the template using underscore
@@ -128,6 +130,7 @@ ImageAnnotateView = Backbone.View.extend({
     events: {
         "thumbnail_selected": "thumbnailSelected"
     },
+
     initialize: function () {
         //bind to the blobal event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
@@ -155,6 +158,7 @@ ImageAnnotateView = Backbone.View.extend({
         return this;
     },
     renderPointsForImage: function(selected) {
+        var parent = this;
 
         //get the selected image
         var annotationSet = annotationSets.at(0);
@@ -171,15 +175,15 @@ ImageAnnotateView = Backbone.View.extend({
                     var label = point.get('annotation_caab_code');
                     var labelClass = (label == "00000000") ? 'pointNotAnnotated' : 'pointAnnotated';
 
-                    annotation_object = annotation_code_list.find(function(model) {
-                        return model.get('caab_code')===point.get('annotation_caab_code');
-                    });
+                    var labelClass = (label == "")
+                        ? 'pointNotAnnotated'
+                        : 'pointAnnotated';
 
                     var span = $('<span>');
                     span.attr('id', pointId);
                     span.attr('class', labelClass);
-                    span.css('top', point.get('y')*$('#Image').height());
-                    span.css('left', point.get('x')*$('#Image').width());
+                    span.css('top', point.get('y')*$('#Image').height()-6);
+                    span.css('left', point.get('x')*$('#Image').width()-6) ;
                     span.attr('caab_code', label);
 
                     if (labelClass === 'pointAnnotated'){
@@ -193,9 +197,12 @@ ImageAnnotateView = Backbone.View.extend({
                     span.appendTo('#ImageContainer');
                 });
 
-                $('span').click(function(){
+                $("#ImageContainer").children('span').click(function(){
                     GlobalEvent.trigger("point_clicked", this);
                 });
+
+                //update pils
+                parent.updatePils();
 
             },
             error: function (model, response, options) {
@@ -227,14 +234,20 @@ ImageAnnotateView = Backbone.View.extend({
         var theClass = $(thePoint).attr('class');
         var theCaabCode = $(thePoint).attr('caab_code');
 
-        if(theClass == 'pointSelected' && theCaabCode == '00000000')
+        if(theClass == 'pointSelected' && theCaabCode == "")
             $(thePoint).attr('class', 'pointNotAnnotated');
-        else if(theClass == 'pointSelected' && theCaabCode != '00000000')
+        else if(theClass == 'pointSelected' && theCaabCode != "")
             $(thePoint).attr('class', 'pointAnnotated');
         else
             $(thePoint).attr('class', 'pointSelected');
     },
-    annotationChosen: function(caab_code_id) {
+    annotationChosen: function(caab_code) {
+        //TODO: remove this
+        var arr = caab_code.split(":");
+        var caab_code = arr[arr.length-1];
+
+        var parent = this;
+
         //get the selected points
         var selectedPoints = $('.pointSelected');
         caab_object = annotation_code_list.get(caab_code_id);
@@ -253,6 +266,8 @@ ImageAnnotateView = Backbone.View.extend({
                     $('#'+idOfSaved).attr('class', 'pointAnnotated');
                     $('#'+idOfSaved).text(caab_code_id);
 
+                    //update the pil sidebar
+                    parent.updatePils();
                 },
                 error: function (model, xhr, options) {
                     if (xhr.status == "201" || xhr.status == "202") {
@@ -266,6 +281,45 @@ ImageAnnotateView = Backbone.View.extend({
                 }
             });
         });
+    },
+    updatePils: function() {
+
+        $("#LabelPils").empty();
+
+        annotationCodeList.each(function (annotationCode) {
+            var caab_code = annotationCode.get('caab_code');
+
+            var count = points.filter(
+                function(point) {
+                    return point.get("annotation_caab_code") == caab_code;
+                }
+            ).length;
+
+            if(count > 0) {
+                $("#LabelPils").append("<li class='active'> <a>"+annotationCode.get('code_name')+" <span class='badge badge-info'><b>"+ count +"</b></span> </a> </li>");
+            }
+        });
+
+    },
+    hidePoints: function () {
+        //loop through the points and hide them
+        points.each(function (point) {
+            var pointId = point.get('id');
+            var span = $('#'+pointId);
+
+            span.css('visibility', 'hidden');
+        });
+
+    },
+    showPoints: function () {
+         //loop through the points and show them
+        points.each(function (point) {
+            var pointId = point.get('id');
+            var span = $('#'+pointId);
+
+            span.css('visibility', 'visible');
+        });
+
     }
 });
 

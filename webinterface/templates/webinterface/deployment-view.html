@@ -3,8 +3,28 @@
 {% block content %}
 
 <div id="DeploymentViewContainer"></div>
-<div id="ThumbnailListContainer"></div>
-<div id="pagination"></div>
+
+<div class="row-fluid">
+    <div id='deployment-map' style="height: 600px; z-index: 0; position: relative;" class="span6"></div>
+    <div class="span6">
+        <div id="ThumbnailListContainer"></div>
+        <div id="pagination"></div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span4">
+         <div id="placeholder_01" style="height: 200px">Loading Depth...</div>
+     </div>
+     <div class="span4">
+        <div id="placeholder_02" style="height: 200px">Loading Salinity...</div>
+     </div>
+     <div class="span4">
+         <div id="placeholder_03" style="height: 200px">Loading Temperature...</div>
+     </div>
+</div>
+
+
 
 <script type="text/template" id="DeploymentViewTemplate">
 
@@ -19,35 +39,15 @@
             <li class="active"><%= deployment_name%></li>
         </ul>
     </div>
-    <div class="row-fluid">
-        <div id='deployment-map' style="height: 600px; z-index: 0; position: relative;"
-            class="span8">
-            <!-- Map content inserted using JQuery -->
-        </div>
-        <div class="span4">     
-             <div class="row">
-                 <div id="placeholder_01" style="height: 200px">Loading Depth...</div>
-             </div>
-             <div class="row">
-                <div id="placeholder_02" style="height: 200px">Loading Salinity...</div>
-             </div>
-             <div class="row">
-                 <div id="placeholder_03" style="height: 200px">Loading Temperature...</div>
-             </div>            
-        </div>
-    </div>
+
 </script>
 
 <script type="text/template" id="ThumbnailListTemplate">
-
-    <div class="row-fluid" style="padding-top: 5px">
-        <%=images%>
-    </div>
-
+    <%=images%>
 </script>
 
 <script type="text/template" id="ImageTemplate">
-    <img src="<%= thumbnail_location %>" style="padding-top: 5px;">
+    <img src="<%= thumbnail_location %>" style="padding-bottom: 5px;">
 </script>
 
 

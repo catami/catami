@@ -501,6 +501,42 @@ class GenericAnnotationSetResource(ModelResource):
             'id': 'exact'
         }
 
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
+        ]
+
+    def get_images(self, request, **kwargs):
+        """
+        This is a nested function so that we can do pagenated thumbnail queries on the image resource
+        """
+
+        # need to create a bundle for tastypie
+        basic_bundle = self.build_bundle(request=request)
+
+        try:
+            obj = self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI.")
+
+        # get all the images related to this project
+        annotation_set_images = GenericAnnotationSet.objects.get(id=obj.pk).generic_images.all()
+
+        # create the id string list to send to the next API call
+        # TODO: this is not ideal, best find a better way to deal with this
+        image_ids = ""
+        for image in annotation_set_images:
+            image_ids += image.id.__str__() + ","
+
+        # strip the comma from the end
+        image_ids = image_ids[:-1]
+
+        # call the image resource to give us what we want
+        image_resource = GenericImageResource()
+        return image_resource.get_list(request, id__in=image_ids)
+
     def random_sample_images(self, project, sample_size):
         """ Randomly sample images from the parent project and
             attach them to this annotation set. """
@@ -536,11 +572,11 @@ class GenericAnnotationSetResource(ModelResource):
                 point_annotation.generic_annotation_set = annotation_set
                 point_annotation.image = image
                 point_annotation.owner = annotation_set.owner
-                point_annotation.x = random.random()
-                point_annotation.y = random.random()
+                point_annotation.x = random.uniform(0.008, 0.992) #random.random()
+                point_annotation.y = random.uniform(0.008, 0.992)
 
-                point_annotation.annotation_caab_code = "00000000" # not considered
-                point_annotation.qualifier_short_name = "" # not considered
+                point_annotation.annotation_caab_code = ""
+                point_annotation.qualifier_short_name = ""
 
                 #point_annotation.save()
                 points_to_bulk_save.append(point_annotation)

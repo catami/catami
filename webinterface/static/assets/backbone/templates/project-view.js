@@ -66,24 +66,11 @@ ProjectView = Backbone.View.extend({
     },
     render: function () {
 
-        //ge tall the images to be rendered
-        //var imageTemplate = "";
-        //var images = project.get("objects")[0].generic_images;
-        //var images = project.get("generic_images");
-        /*
-        for(var i=0; i < images.length; i++) {
-            var imageVariables = {
-                "thumbnail_location": images[i].thumbnail_location
-            };
-            imageTemplate += _.template($("#ImageTemplate").html(), imageVariables);
-        }
-        */
         //render the items to the main template
         var projectVariables = {
             "name": project.get("name"),
             "description": project.get("description"),
-            "map_extent": project.get("map_extent"),
-            "images": ""
+            "map_extent": project.get("map_extent")
         };
 
         // Compile the template using underscore
@@ -93,6 +80,65 @@ ProjectView = Backbone.View.extend({
         this.$el.html(projectTemplate);
 
         return this;
+    },
+    renderProjectStats: function() {
+
+        //get sampling methods
+        var imageSamplingMethods = ["random", "stratified", "spatial"];
+        var pointSamplingMethods = ["random", "stratified"];
+        var imageSampling = imageSamplingMethods[annotationSets.at(0).get('image_sampling_methodology')];
+        var pointSampling = pointSamplingMethods[annotationSets.at(0).get('annotation_methodology')];
+
+        var annotationSetImages = new Images({"url": "/api/dev/generic_annotation_set/" + annotationSets.at(0).get('id') + "/images/"});
+
+        //get total images
+        annotationSetImages.fetch({
+            data: { limit: 1, offset: 0},
+            success: function (model, response, options) {
+                //total images set
+                $('#total_images').html(annotationSetImages.meta.total_count);
+                $('#image_sampling_method').html(imageSampling);
+
+                //get points total and calculate completeness
+                points.fetch({ //assuming annotation sets have been fetched and succeeded
+                    data: { limit: 100000, generic_annotation_set: annotationSets.at(0).get('id') },
+                    success: function (model, response, options) {
+
+                        //points per image set
+                        var totalPoints = points.meta.total_count;
+                        var totalImages = annotationSetImages.meta.total_count;
+                        $('#points_per_image').html(totalPoints/totalImages);
+                        $('#point_sampling_method').html(pointSampling);
+
+                        console.log("total points " + totalPoints);
+
+                        var pointsAnnotatedCounter = 0;
+                        //loop through the points calculate completeness
+                        points.each(function (point) {
+                            if(point.get('annotation_caab_code') != "")
+                                pointsAnnotatedCounter++;
+                        });
+
+                        $('#percentage_complete').html(Math.floor((pointsAnnotatedCounter/totalPoints)*100) + "%");
+
+                    },
+                    error: function (model, response, options) {
+                        $('#points_per_image').html("?");
+                        $('#percentage_complete').html("?");
+                    }
+                });
+
+            },
+            error: function (model, response, options) {
+                $('#total_images').html("?");
+                $('#points_per_image').html("?");
+                $('#percentage_complete').html("?");
+            }
+
+        });
+
+
+
     },
     events: {
         "click #configure_project_button": "doConfigure",

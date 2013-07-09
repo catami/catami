@@ -62,7 +62,7 @@
             <div class="span3">
                 <h2><%= name %></h2>
                 <p><%= description %></p>
-                <p><b>Shared With: </b> Public </p>
+                <p><b>Shared ith: </b> Public </p>
 
                 {% if user.is_authenticated %}
                 <p>
@@ -74,23 +74,24 @@
 
             <div class="span9" style="vertical-align: bottom;">
 
-
-
                 <div class="row-fluid">
                     <div class="span3">
-                        <h1>600</h1>
-                        <p><b>images to annotate</b></p>
+                        <h1 id="total_images">Loading...</h1>
+                        <b id="image_sampling_method"></b>
+                        <b>images to annotate</b>
                     </div>
 
                     <div class="span3">
-                        <h1>50</h1>
-                        <p><b>points per image</b></p>
+                        <h1 id="points_per_image">Loading...</h1>
+                        <b id="point_sampling_method"></b>
+                        <b>points per image</b>
                     </div>
 
                     <div class="span3">
-                        <h1>64%</h1>
+                        <h1 id="percentage_complete">Loading...</h1>
                         <p><b>complete</b></p>
                     </div>
+
                     <div class="span3">
                         {% if user.is_authenticated %}
                         <a class="btn btn-primary btn-large pull-right" id="start_annotating_button">
@@ -131,6 +132,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-view.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/point-annotation-model.js"></script>
     <script type="text/javascript">
 
         var projectId = "{{ project_id }}";
@@ -139,9 +141,9 @@
         var mapExtent = "";
 
         var project = new Project({id: projectId});
-        var images = new Images({"url": "/api/dev/project/" + projectId + "/images/"});
+        var images;
         var annotationSets = new AnnotationSets();
-
+        var points = new PointAnnotations();
 
 
         project.fetch({
@@ -151,14 +153,36 @@
 
                 mapExtent = project.get("map_extent");
 
-                //load the project
-                var projectView = new ProjectView({
-                    el: $("#ProjectDashboardContainer"),
-                    model : project
+                annotationSets.fetch({
+                    data: { project: projectId },
+                    success: function (model, response, options) {
+                        var annotationSetId = annotationSets.at(0).get('id');
+
+                        //load the image thumbnails
+                        images = new Images({"url": "/api/dev/generic_annotation_set/" + annotationSetId + "/images/"});
+                        loadPage();
+
+                        //create the map
+                        var map = new NewProjectsMap(wmsUrl, wmsLayerName, 'map', mapExtent);
+                        //map.updateMapForSelectedProject(projectId);
+                        map.updateMapForSelectedAnnotationSet(annotationSetId);
+                        map.zoomToExtent();
+
+                        //load the project
+                        var projectView = new ProjectView({
+                            el: $("#ProjectDashboardContainer"),
+                            model : project
+                        });
+
+                        projectView.renderProjectStats();
+
+                    },
+                    error: function (model, response, options) {
+                        alert('Fetch failed: ' + response.status);
+                    }
+
                 });
 
-                loadPage();
-                loadAnnotationSet()
             },
             error: function (model, response, options) {
                 alert('Fetch failed: ' + response.status);
@@ -167,22 +191,7 @@
         });
 
         function loadAnnotationSet() {
-            annotationSets.fetch({
-                data: { project: projectId },
-                success: function (model, response, options) {
-                    var annotationSetId = annotationSets.at(0).get('id');
 
-                    //create the map
-                    var map = new NewProjectsMap(wmsUrl, wmsLayerName, 'map', mapExtent);
-                    //map.updateMapForSelectedProject(projectId);
-                    map.updateMapForSelectedAnnotationSet(annotationSetId);
-                    map.zoomToExtent();
-                },
-                error: function (model, response, options) {
-                    alert('Fetch failed: ' + response.status);
-                }
-
-            });
         }
 
     </script>

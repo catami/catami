@@ -48,6 +48,7 @@ ProjectCollectionView = Backbone.View.extend({
     },
     render: function () {
 
+
         //render each of the items to the template
         var projectTemplate = "";
         projects.each(function (project) {
@@ -69,9 +70,13 @@ ProjectCollectionView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectListTemplate);
 
-        //Create pagination
-        var options = catami_generatePaginationOptions(this.meta);
-        $('#pagination').bootstrapPaginator(options);
+        try {
+            //Create pagination
+            var options = catami_generatePaginationOptions(this.meta);
+            $('#pagination').bootstrapPaginator(options);
+        } catch (Exception) { //
+            // swallow this exception - if there is an empty list an exception will be thrown, don't let it break the page
+        }
 
         return this;
     },
