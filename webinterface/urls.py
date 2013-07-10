@@ -67,12 +67,16 @@ urlpatterns = patterns(
     url(r'^accounts/(?P<username>[\.\w]+)/edit/$', userena_views.profile_edit,  {'template_name': 'accounts/profile_form.html'}, name='userena_profile_edit'),
     url(r'^accounts/(?P<username>(?!signout|signup|signin)[\.\w]+)/$', userena_views.profile_detail, {'template_name': 'accounts/profile_detail.html'},  name='userena_profile_detail'),
 
+    url(r'^accounts/activate/(?P<activation_key>\w+)/$', userena_views.activate, name='userena_activate'),
+    # Disabled account
+    url(r'^accounts/(?P<username>[\.\w-]+)/disabled/$',userena_views.direct_to_user_template, {'template_name': 'accounts/disabled.html'}, name='userena_disabled'),
     #userena profile list
     url(r'accounts/$', userena_views.profile_list, {'template_name': 'accounts/profile_list.html'},  name='userena_profile_list'),
     #userena signin/signup
     url(r'^accounts/signup/$', userena_views.signup, {'template_name': 'accounts/signup_form.html'}, name='userena_signup'),
     url(r'^accounts/signin/$', userena_views.signin, {'template_name': 'accounts/signin_form.html'}, name='userena_signin'),
     url(r'^accounts/signout/$', auth_views.logout, {'next_page': userena_settings.USERENA_REDIRECT_ON_SIGNOUT, 'template_name': 'accounts/signout.html'}, name='userena_signout'),
+
     #userana to catch any un
     (r'^accounts/', include('userena.urls')),
     url(r'^logout/$', 'logout_view'),
