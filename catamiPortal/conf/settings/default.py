@@ -23,6 +23,7 @@ NOSE_ARGS = [
 WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
 WMS_LAYER_NAME = "catami:catamidb_images"
 WMS_DEPLOYMENTS = "catami:catamidb_genericdeployment"
+WMS_CAMPAIGNS = "catami:catamidb_campaigns_centroid"
 WMS_COLLECTION_LAYER_NAME = "catami:collection_images"
 WMS_PROJECTS_LAYER_NAME = "catami:project_images"
 WMS_ANNOTATIONSET_LAYER_NAME = "catami:annotationset_images"

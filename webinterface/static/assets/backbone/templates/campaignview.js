@@ -60,7 +60,6 @@ CampaignView = Backbone.View.extend({
         }));
         map.updateMapUsingFilter(filter_array);
         
-        //alert('map.mapInstance: ' + map.mapInstance.toSource())
         deploymentPicker = new OpenLayers.Control.WMSGetFeatureInfo({
             url: WMS_URL,
             title: 'identify features on click',
@@ -72,14 +71,16 @@ CampaignView = Backbone.View.extend({
                     while (map.mapInstance.popups.length > 0) {
                         map.mapInstance.removePopup(map.mapInstance.popups[0]);
                     }
-                    map.mapInstance.addPopup(new OpenLayers.Popup.FramedCloud(
-                        "deployment_popup", //id
-                        map.mapInstance.getLonLatFromPixel(event.xy), //position on map
-                        null, //size of content
-                        generatePopupContent(event), //contentHtml
-                        null, //flag for close box
-                        true //function to call on closebox click
-                    ));
+                    if (event.features.length > 0) {
+                        map.mapInstance.addPopup(new OpenLayers.Popup.FramedCloud(
+                            "deployment_popup", //id
+                            map.mapInstance.getLonLatFromPixel(event.xy), //position on map
+                            null, //size of content
+                            generatePopupContent(event), //contentHtml
+                            null, //flag for close box
+                            true //function to call on closebox click
+                        ));
+                    }
                 }
             }
         });
@@ -167,7 +168,7 @@ function loadPage(offset) {
 
 function generatePopupContent(e) {  
     var count = e.features.length;
-    var content = "<div style=\"width:140px\"><b>Deployments (" + count + ") : </b> <br>";
+    var content = "<div style=\"width:250px\"><b>Deployments (" + count + ") : </b> <br>";
     for (var i = 0; i < count; i++) {
         content += "&bull; <a href=\"" + DeploymentListUrl + e.features[i].attributes.id + "\">"
                     + e.features[i].attributes.short_name + "</a>" + (i < count ? "<br>" : "");

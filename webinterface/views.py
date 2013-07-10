@@ -220,7 +220,9 @@ def campaign_list(request):
 
     return render_to_response(
         'webinterface/campaign-list.html',
-        {'campaign_list': campaign_list},
+        {'campaign_list': campaign_list,
+         'WMS_URL': settings.WMS_URL,
+         'WMS_CAMPAIGNS': settings.WMS_CAMPAIGNS},
         context_instance=RequestContext(request))
 
 

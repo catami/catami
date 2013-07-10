@@ -40,6 +40,37 @@ CampaignCollectionView = Backbone.View.extend({
 
         this.$el.html(campaignListTemplate);
 
+        var map = new BaseMap(WMS_URL, WMS_CAMPAIGNS, "campaign-map");//, mapExtent);       
+        map.updateMapUsingFilter([]);
+        campaignPicker = new OpenLayers.Control.WMSGetFeatureInfo({
+            url: WMS_URL,
+            title: 'identify features on click',
+            //layers: [map.mapInstance.imagePointsLayer],
+            queryVisible: true,
+            eventListeners: {
+                getfeatureinfo: function (event) {
+                    //remove all existing popups first before generating one.
+                    while (map.mapInstance.popups.length > 0) {
+                        map.mapInstance.removePopup(map.mapInstance.popups[0]);
+                    }
+                    if (event.features.length > 0) {
+                        map.mapInstance.addPopup(new OpenLayers.Popup.FramedCloud(
+                            "campaign_popup", //id
+                            map.mapInstance.getLonLatFromPixel(event.xy), //position on map
+                            null, //size of content
+                            generatePopupContent(event), //contentHtml
+                            null, //flag for close box
+                            true //function to call on closebox click
+                        ));
+                    }
+                }
+            }
+        });
+        campaignPicker.infoFormat = 'application/vnd.ogc.gml';
+        map.mapInstance.addControl(campaignPicker);
+        campaignPicker.activate();
+
+
         //Create pagination
         var options = catami_generatePaginationOptions(this.meta);
         $('#pagination').bootstrapPaginator(options);
@@ -71,3 +102,10 @@ function loadPage(offset) {
     });
 }
 
+function generatePopupContent(e) {   
+    var content = "<div style=\"width:250px\"><b>Campaign: </b> <br>";
+    content += "<a href=\"" + CampaignListUrl + e.features[0].attributes.campaign_id + "\">"
+                + e.features[0].attributes.short_name + "</a>";
+    content += "</div>";
+    return content;
+}
