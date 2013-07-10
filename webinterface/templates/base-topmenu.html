@@ -1,6 +1,3 @@
-{% load waffle_tags %}
-{% comment %}{% load dajaxice_templatetags %} {% endcomment %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,10 +107,9 @@
 
                     </li>
 
-                    {% switch Collections %}
-                        <li class="dropdown {% ifequal request.path "/projects" %}active{% endifequal %}">
-                        <a href="{% url webinterface.views.projects %}"><i class="icon-list-alt "></i> Projects</a>
-                    {% endswitch %}
+
+                    <li class="dropdown {% ifequal request.path "/projects" %}active{% endifequal %}">
+                    <a href="{% url webinterface.views.projects %}"><i class="icon-list-alt "></i> Projects</a>
 
                     <!--<li class="divider-vertical"></li>-->
                     <li class="dropdown">
