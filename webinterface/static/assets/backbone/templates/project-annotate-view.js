@@ -354,15 +354,25 @@ ImageAnnotateView = Backbone.View.extend({
                     parent.updatePils();
                 },
                 error: function (model, xhr, options) {
-                    if (xhr.status == "201" || xhr.status == "202") {
+                    if (theXHR.status == "201" || theXHR.status == "202") {
                         //change the point to annotated
                         var idOfSaved = model.get("id");
                         $('#'+idOfSaved).attr('class', 'pointAnnotated');
+                    } else if(theXHR.status == "401") {
+                        $.pnotify({
+                            title: 'You don\'t have permission to annotate this image.',
+                            text: theXHR.response,
+                            type: 'error', // success | info | error
+                            hide: true,
+                            icon: false,
+                            history: false,
+                            sticker: false
+                        });
                     }
                     else {
                         $.pnotify({
                             title: 'Failed to save your annotations to the server.',
-                            text: response.status,
+                            text: theXHR.response,
                             type: 'error', // success | info | error
                             hide: true,
                             icon: false,
