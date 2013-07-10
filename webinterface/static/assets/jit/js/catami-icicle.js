@@ -107,7 +107,7 @@ function start_icicle_view(){
   controls();
 
   // get the classification data and get it organised
-  var classification_api = 'http://localhost:8000/api/dev/annotation_code/?format=json&limit=999';
+  var classification_api = 'http://sandbox.catami.org/api/dev/annotation_code/?format=json&limit=999';
   var class_code;
   ajaxobj = $.ajax({
       dataType: "json",
