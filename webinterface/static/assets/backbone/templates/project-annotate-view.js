@@ -205,6 +205,27 @@ ImageAnnotateView = Backbone.View.extend({
 
         return this;
     },
+    refreshPointLabelsForImage: function() {
+        //checks annotated point list in view.  If any label has blank label text, then
+        //get it from the relevant API call.
+        //
+        //labels are made blank when a previouslt labeled point is once again selected
+
+        var annotatedPoints = $('.pointAnnotated');
+
+        $.each(annotatedPoints, function(index, pointSpan) {
+            // refresh annotated
+            if ($(pointSpan).text() === ""){
+                var newpoint = new PointAnnotation({id: pointSpan.id});
+                newpoint.fetch({success:function(model) {
+                    var annotation_object = annotation_code_list.find(function(listmodel) {
+                        return listmodel.get('caab_code')===newpoint.get('annotation_caab_code');
+                    });
+                    $(pointSpan).text(annotation_object.id);
+                }});
+            }
+        });
+    },
     renderPointsForImage: function(selected) {
         var parent = this;
 
@@ -222,7 +243,7 @@ ImageAnnotateView = Backbone.View.extend({
                     var pointId = point.get('id');
                     var label = point.get('annotation_caab_code');
 
-                    annotation_object = annotation_code_list.find(function(model) {
+                    var annotation_object = annotation_code_list.find(function(model) {
                         return model.get('caab_code')===point.get('annotation_caab_code');
                     });
 
@@ -292,7 +313,6 @@ ImageAnnotateView = Backbone.View.extend({
     pointClicked: function(thePoint) {
         var theClass = $(thePoint).attr('class');
         var theCaabCode = $(thePoint).attr('caab_code');
-        $(thePoint).css('color','');
 
         if(theClass == 'pointSelected' && theCaabCode == ""){
             $(thePoint).attr('class', 'pointNotAnnotated');
@@ -301,9 +321,11 @@ ImageAnnotateView = Backbone.View.extend({
         } else {
             $(thePoint).attr('class', 'pointSelected');
             //hide the label, if there is one
-            $(thePoint).css('color','rgba(0,0,0,0)');
+            $(thePoint).text("");
             GlobalEvent.trigger("point_is_selected", this);
         }
+
+        this.refreshPointLabelsForImage();
     },
     annotationChosen: function(caab_code_id) {
         //TODO: remove this
@@ -314,7 +336,6 @@ ImageAnnotateView = Backbone.View.extend({
         //get the selected points
         var selectedPoints = $('.pointSelected');
         caab_object = annotation_code_list.get(caab_code_id);
-
         //save the annotations
         $.each(selectedPoints, function(index, pointSpan) {
             //need to specify the properties to patch
