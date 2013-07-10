@@ -296,7 +296,6 @@ ImageAnnotateView = Backbone.View.extend({
         $("#Image").imagesLoaded(function() {
 
             parent.renderPointsForImage(selectedPosition);
-
         });
 
     },
@@ -386,7 +385,7 @@ ImageAnnotateView = Backbone.View.extend({
     },
     updatePils: function() {
 
-        $("#LabelPils").empty();
+        var pilHtml = "";
 
         annotationCodeList.each(function (annotationCode) {
             var caab_code = annotationCode.get('caab_code');
@@ -397,9 +396,17 @@ ImageAnnotateView = Backbone.View.extend({
             ).length;
 
             if(count > 0) {
-                $("#LabelPils").append("<li class='active'> <a>("+annotationCode.id+") "+annotationCode.get('code_name')+" <span class='badge badge-info'><b>"+ count +"</b></span> </a> </li>");
+                pilHtml += "<li class='active'> <a>("+annotationCode.id+") "+annotationCode.get('code_name')+" <span class='badge badge-info'><b>"+ count +"</b></span> </a> </li>";
             }
         });
+
+        if(pilHtml == "") {
+            $("#LabelPils").empty();
+            $("#LabelPils").append('<li class="active"> <a>This image is not labelled.</a> </li>');
+        } else {
+            $("#LabelPils").empty();
+            $("#LabelPils").append(pilHtml);
+        }
 
     },
     hidePoints: function () {
@@ -422,7 +429,7 @@ ImageAnnotateView = Backbone.View.extend({
         });
     },
     zoomOn: function() {
-        $("#Image").elevateZoom({zoomWindowPosition: 2});
+        $("#Image").elevateZoom({zoomWindowPosition: 1});
     },
     zoomOff: function() {
         $.removeData($("#Image"), 'elevateZoom');

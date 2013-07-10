@@ -29,7 +29,8 @@
 		
         #ImageContainer {
             position: relative;
-            margin:10px 0px;
+            margin-top: 10px;
+            margin-right: 510px;
         }
 
         #ImageContainer span {
@@ -96,7 +97,7 @@
         <div id="ProjectAnnotateContainer"></div>
     </div>
 
-    <div class="row-fluid">
+    <div style="width: 100%">
 <!--
         <div class="span2" id="ControlsContainer">
             <div>
@@ -120,9 +121,9 @@
 
         </div>
 -->
-        <div class="span8" id="ImageContainer"></div>
-        <div class="span4">
-        	<div id="ChooseAnnotationContainer" style="margin-top:10px;"></div>
+
+        <div style="float: right; width: 500px;">
+        	<div id="ChooseAnnotationContainer" ></div>
         		<div>
         			<h3>Annotations</h3>
 	                <ul id="LabelPils" class="nav nav-pills">
@@ -133,12 +134,15 @@
 				</div>
             <div>
                 <h3>Tools</h3>
-                <a id="hide_points_button" class="btn" href="#">Hide Points</a>
+                <a id="hide_points_button" class="btn">Hide Points</a>
                 <div id="ZoomSwitch" class="switch" data-on-label="Zoom ON" data-off-label="Zoom OFF">
                 	<input type="checkbox" />
 				</div>
             </div>
         </div>
+
+        <div id="ImageContainer"></div>
+
 	</div>
 	
     <script type="text/template" id="ChooseAnnotationTemplate">
@@ -149,10 +153,10 @@
 				<li><a id="goto_parent_button" style="color:#488dff;" href="#"></a></li>
 				<li><a id="current_annotation_label" class="brand" style="margin-left: auto; margin-right: auto;" href="#">Annotation</a></li>
 			</ul>
-			<a id="assign_annotation_button" class="btn btn-small pull-right" style="color:#488dff;" href="#">Assign Label</a>
+			<a id="assign_annotation_button" class="btn btn-primary btn-small pull-right"  href="#">Assign Label</a>
 			</div></div>
 		</div>
-    	<div id="annotation-chooser" style="height: 500px;"></div>
+    	<div id="annotation-chooser" style="height: 500px"></div>
 	</script>
 	
     <script type="text/template" id="ProjectAnnotateTemplate">
