@@ -6,8 +6,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 import guardian
 from guardian.shortcuts import get_objects_for_user
-from waffle.decorators import waffle_switch
-from django.core.urlresolvers import reverse
 import logging
 
 #for the geoserver proxy

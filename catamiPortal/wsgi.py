@@ -16,7 +16,7 @@ framework.
 import os
 import sys
 
-sys.path.insert(0, '/home/catami/catamiportal/catami')
+sys.path.insert(0, '/home/catami/catami')
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "catamiPortal.settings")
 
