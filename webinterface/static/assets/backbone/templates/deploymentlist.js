@@ -16,27 +16,23 @@ DeploymentCollectionView = Backbone.View.extend({
     },
     render: function () {
         var deploymentTemplate = "";
-        // Compile the template using underscore       
-        var deploymentType = catami_getURLParameter("type");       
+        // Compile the template using underscore                   
         
-        deployments.each(function (deployment) {                        
-            var type = deployment.get("type").toUpperCase();
-            //if type is not specified, list everything, else filter by type
-            if (deploymentType == "null" || deploymentType.toUpperCase() == type) {
-                var deploymentVariables = {
-                    "type": type,
-                    "type_url": "?type=" + type,
-                    "short_name": deployment.get("short_name"),
-                    "deployment_url": deployment.get("id") + "?type=" + type,
-                    "start_time": deployment.get("start_time_stamp"),
-                    "end_time": deployment.get("end_time_stamp"),
-                    "min_depth": deployment.get("min_depth"),
-                    "max_depth": deployment.get("max_depth"),               
-                    "campaign_url": CampaignListUrl + catami_getIdFromUrl(deployment.get("campaign")) + "/",
-                    "campaign_name": deployment.get("campaign_name")
-                };
-                deploymentTemplate += _.template($("#DeploymentTemplate").html(), deploymentVariables);
-            }
+        deployments.each(function (deployment) {
+            var type = deployment.get("type").toUpperCase()
+            var deploymentVariables = {
+                "type": type,
+                "type_url": "?type=" + type,
+                "short_name": deployment.get("short_name"),
+                "deployment_url": deployment.get("id"),
+                "start_time": deployment.get("start_time_stamp"),
+                "end_time": deployment.get("end_time_stamp"),
+                "min_depth": deployment.get("min_depth"),
+                "max_depth": deployment.get("max_depth"),               
+                "campaign_url": CampaignListUrl + catami_getIdFromUrl(deployment.get("campaign")) + "/",
+                "campaign_name": deployment.get("campaign_name")
+            };
+            deploymentTemplate += _.template($("#DeploymentTemplate").html(), deploymentVariables);            
         });
        
         var deploymentListVariables = { "deployments": deploymentTemplate };
@@ -61,9 +57,14 @@ loadPage();
 function loadPage(offset) {
     var off = {}
     if (offset) off = offset;
+    var type = {}
+    var deploymentType = catami_getURLParameter("type");
+    
+    if (deploymentType && deploymentType != 'null') type = deploymentType.toUpperCase();
     // Make a call to the server to populate the collection 
     deployments.fetch({
-        data: { offset: off },
+        data: { offset: off,
+                type: type},
         success: function (model, response, options) {
             var deployment_view = new DeploymentCollectionView({
                 el: $("#DeploymentListContainer"),

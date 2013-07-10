@@ -414,6 +414,7 @@ class GenericDeploymentResource(ModelResource):
         filtering = {
             'short_name': ALL,
             'campaign': ALL_WITH_RELATIONS,
+            'type' : ALL,
         }
         allowed_methods = ['get', 'post']  # allow post to create campaign via Backbonejs
 
