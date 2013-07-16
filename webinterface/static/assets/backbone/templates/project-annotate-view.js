@@ -356,9 +356,15 @@ ImageAnnotateView = Backbone.View.extend({
                 },
                 error: function (model, xhr, options) {
                     if (theXHR.status == "201" || theXHR.status == "202") {
+                        alert("202");
+
                         //change the point to annotated
                         var idOfSaved = model.get("id");
                         $('#'+idOfSaved).attr('class', 'pointAnnotated');
+                        $('#'+idOfSaved).text(caab_code_id);
+
+                        //update the pil sidebar
+                        parent.updatePils();
                     } else if(theXHR.status == "401") {
                         $.pnotify({
                             title: 'You don\'t have permission to annotate this image.',

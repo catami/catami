@@ -27,7 +27,7 @@
     <div class="row-fluid">
 
             <div class="span6">
-                <div id="map" style="position:relative; height:388px;z-index:-1; top: 0px; left: 0px"></div>
+                <div id="map" style="width:100%;height:388px;z-index:0;padding:0;"></div>
             </div>
 
             <div class="span6">
@@ -62,7 +62,7 @@
             <div class="span3">
                 <h2><%= name %></h2>
                 <p><%= description %></p>
-                <p><b>Shared ith: </b> Public </p>
+                <p><b>Shared with: </b> Public </p>
 
                 {% if user.is_authenticated %}
                 <p>
