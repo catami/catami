@@ -85,26 +85,6 @@ CampaignView = Backbone.View.extend({
     }
 });
 
-var map;
-var campaign_id = catami_getIdFromUrl();
-campaign = new Campaign({ id: campaign_id });
-deployments = new Deployments();
-loadPage(); //get list deployments belonging to this campaign
-
-campaign.fetch({
-    success: function (model, response, options) {
-        var campaign_view = new CampaignView({
-            el: $("#CampaignViewContainer"),
-            model: campaign,
-            meta: deployments.meta //read from initiaisation method's "option" variable
-        });
-    },
-    error: function (model, response, options) {
-        alert('fetch failed: ' + response.status);
-    }
-});
-
-
 function populateDeploymentList() {
     var deploymentTemplate = "";
     // Compile the template using underscore       
@@ -176,3 +156,22 @@ function clusterSelected(event) {
         ));
     }    
 }
+
+var map;
+var campaign_id = catami_getIdFromUrl();
+campaign = new Campaign({ id: campaign_id });
+deployments = new Deployments();
+
+campaign.fetch({
+    success: function (model, response, options) {
+        var campaign_view = new CampaignView({
+            el: $("#CampaignViewContainer"),
+            model: campaign,
+            meta: deployments.meta //read from initiaisation method's "option" variable
+        });
+        loadPage(); //get list deployments belonging to this campaign
+    },
+    error: function (model, response, options) {
+        alert('fetch failed: ' + response.status);
+    }
+});

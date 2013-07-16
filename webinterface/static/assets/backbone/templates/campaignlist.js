@@ -90,10 +90,6 @@ CampaignCollectionView = Backbone.View.extend({
     }
 });
 
-var campaigns = new Campaigns();
-loadPage();
-
-
 function loadPage(offset) {
     var off = {}
     if (offset) off = offset;
@@ -120,3 +116,6 @@ function generatePopupContent(e) {
     content += "</div>";
     return content;
 }
+
+var campaigns = new Campaigns();
+loadPage();

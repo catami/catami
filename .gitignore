@@ -13,3 +13,4 @@ log/catamiPortal.log
 !.gitignore
 *.diff
 *.backup
+media/
