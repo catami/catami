@@ -91,7 +91,7 @@ function initDeploymentMap() {
     //Map view code to get moved out later.
     //prep some data we need to use to display the points
     var WMS_URL = "{{ WMS_URL }}";
-    var WMSLayerName = "{{ WMS_layer_name }}";
+    var LAYER_IMAGES = "{{ LAYER_IMAGES }}";
 
 
     /* Filter based on the deployment id */
@@ -172,7 +172,7 @@ function initDeploymentMap() {
     //this is the layer for our points to be displayed with
     var imagePointsLayer = new OpenLayers.Layer.WMS("Images",
             WMS_URL,
-            {layers: WMSLayerName, transparent: "true", format: "image/png", filter: xml.write(filter_1_1.write(filter))},
+            { layers: LAYER_IMAGES, transparent: "true", format: "image/png", filter: xml.write(filter_1_1.write(filter)) },
             {isBaseLayer: false, minZoomLevel: 1, maxZoomLevel: 25, numZoomLevels: 25}
     );
     deploymentMap.addLayer(imagePointsLayer);

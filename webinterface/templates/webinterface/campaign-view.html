@@ -85,21 +85,19 @@
 {% block add_script %}
 <script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
 <script src="{{ STATIC_URL }}assets/OpenLayers/LoadingPanel.js"></script>
-<script src='{{ STATIC_URL }}assets/catami-api/js/Map.js'></script>
+<script src="{{ STATIC_URL }}assets/OpenLayers/AnimatedCluster.js"></script>
+<script src='{{ STATIC_URL }}assets/catami-api/js/MapUtils.js'></script>
 
 
 <script type="text/javascript">
     //Init js variables which is used by Backbone to render html template
-    var WMS_URL = "{{ WMS_URL }}";
-    var WMS_DEPLOYMENTS = "{{ WMS_DEPLOYMENTS }}";
+    var WFS_URL = "{{ WFS_URL }}";
+    var LAYER_DEPLOYMENTS = "{{ LAYER_DEPLOYMENTS }}";
     var DeploymentListUrl = "{% url webinterface.views.deployment_list %}"
     var CampaignListUrl = "{% url webinterface.views.campaign_list %}"
-    var CampaignUrl = "#";      
 </script>
 <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/campaignview.js"></script>
-<script type="text/javascript">
-    //alert('campaign_id: ' + campaign_id);
-</script>
+
 
 
 {% endblock %}

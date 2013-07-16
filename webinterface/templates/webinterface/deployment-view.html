@@ -56,7 +56,7 @@
 {% block add_script %}
 <script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
 <script src="{{ STATIC_URL }}assets/OpenLayers/LoadingPanel.js"></script>
-<script src='{{ STATIC_URL }}assets/catami-api/js/Map.js'></script>
+<script src='{{ STATIC_URL }}assets/catami-api/js/MapUtils.js'></script>
 <script src='{{ STATIC_URL }}assets/js/jquery.flot.js'></script>
 <script src='{{ STATIC_URL }}assets/js/jquery.flot.axislabels.js'></script>
 
@@ -64,7 +64,7 @@
 <script type="text/javascript">
 //Init js variables which is used by Backbone to render html template
      var WMS_URL = "{{ WMS_URL }}";
-     var WMS_LAYER_NAME = "{{ WMS_LAYER_NAME }}";
+     var LAYER_IMAGES = "{{ LAYER_IMAGES }}";
      var CampaignListUrl = "{% url webinterface.views.campaign_list %}"
      var CampaignUrl = "{% url webinterface.views.campaign_view deployment_object.campaign.id %}";
 

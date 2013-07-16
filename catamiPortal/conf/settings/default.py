@@ -21,12 +21,12 @@ NOSE_ARGS = [
 ]
 
 WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
-WMS_LAYER_NAME = "catami:catamidb_images"
-WMS_DEPLOYMENTS = "catami:catamidb_genericdeployment"
-WMS_CAMPAIGNS = "catami:catamidb_campaigns_centroid"
-WMS_COLLECTION_LAYER_NAME = "catami:collection_images"
-WMS_PROJECTS_LAYER_NAME = "catami:project_images"
-WMS_ANNOTATIONSET_LAYER_NAME = "catami:annotationset_images"
+WFS_URL = "http://localhost:8080/geoserver/wfs"
+LAYER_IMAGES = "catami:catamidb_images"
+LAYER_DEPLOYMENTS = "catami:catamidb_genericdeployment"
+LAYER_CAMPAIGNS = "catami:catamidb_campaigns_centroid"
+LAYER_PROJECTS = "catami:project_images"
+LAYER_ANNOTATIONSET = "catami:annotationset_images"
 
 ADMINS = (
     ('Mark Gray', 'mark.gray@ivec.org'),

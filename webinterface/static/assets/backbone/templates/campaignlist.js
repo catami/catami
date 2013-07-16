@@ -40,36 +40,47 @@ CampaignCollectionView = Backbone.View.extend({
 
         this.$el.html(campaignListTemplate);
 
-        var map = new BaseMap(WMS_URL, WMS_CAMPAIGNS, "campaign-map");//, mapExtent);       
-        map.updateMapUsingFilter([]);
-        campaignPicker = new OpenLayers.Control.WMSGetFeatureInfo({
-            url: WMS_URL,
+        //map is assigned to the given div        
+        var baseProjection = "EPSG:3857";
+        var dataProjection = "EPSG:4326";
+        var mapUtils = new MapUtils(baseProjection, dataProjection);        
+        map = new OpenLayers.Map("campaign-map", mapUtils.createMapOption());
+        mapUtils.map = map; //assign map to mapUtils, so that we don't have to pass map object into function every time.            
+        map.addLayer(mapUtils.createOSMLayer()); //create and add OpenStreetMaps baselayer to map
+
+        var loadingPanel = new OpenLayers.Control.LoadingPanel();
+        map.addControl(loadingPanel);
+        mapUtils.zoomToAustralia();
+
+        //gsUrl, gslayerName, layerName, isBaseLayer
+        var layer = mapUtils.createLayer(WMS_URL, LAYER_CAMPAIGNS, "campaign-list", false);
+        map.addLayer(layer);
+        mapUtils.applyFilter(layer, []);
+        
+
+        campaignPicker = new OpenLayers.Control.GetFeature({
+            protocol: OpenLayers.Protocol.WFS.fromWMSLayer(layer),
+            box: false,
+            clickTolerance: 10,
             title: 'identify features on click',
-            //layers: [map.mapInstance.imagePointsLayer],
-            queryVisible: true,
-            eventListeners: {
-                getfeatureinfo: function (event) {
-                    //remove all existing popups first before generating one.
-                    while (map.mapInstance.popups.length > 0) {
-                        map.mapInstance.removePopup(map.mapInstance.popups[0]);
-                    }
-                    if (event.features.length > 0) {
-                        map.mapInstance.addPopup(new OpenLayers.Popup.FramedCloud(
-                            "campaign_popup", //id
-                            map.mapInstance.getLonLatFromPixel(event.xy), //position on map
-                            null, //size of content
-                            generatePopupContent(event), //contentHtml
-                            null, //flag for close box
-                            true //function to call on closebox click
-                        ));
-                    }
-                }
-            }
+            queryVisible: true,            
         });
         campaignPicker.infoFormat = 'application/vnd.ogc.gml';
-        map.mapInstance.addControl(campaignPicker);
+        campaignPicker.events.register("featureselected", this, function (e) {
+            while (map.popups.length > 0) {
+                map.removePopup(map.popups[0]);
+            }
+            map.addPopup(new OpenLayers.Popup.FramedCloud(
+                                        "campaign_popup", //id
+                                        e.feature.geometry.getBounds().getCenterLonLat(), //position on map
+                                        null, //size of content
+                                        generatePopupContent(e), //contentHtml
+                                        null, //flag for close box
+                                        true //function to call on closebox click
+                                    ));
+        });
+        map.addControl(campaignPicker);        
         campaignPicker.activate();
-
 
         //Create pagination
         var options = catami_generatePaginationOptions(this.meta);
@@ -104,8 +115,8 @@ function loadPage(offset) {
 
 function generatePopupContent(e) {   
     var content = "<div style=\"width:250px\"><b>Campaign: </b> <br>";
-    content += "<a href=\"" + CampaignListUrl + e.features[0].attributes.campaign_id + "\">"
-                + e.features[0].attributes.short_name + "</a>";
+    content += "<a href=\"" + CampaignListUrl + e.feature.attributes.campaign_id + "\">"
+                + e.feature.attributes.short_name + "</a>";
     content += "</div>";
     return content;
 }

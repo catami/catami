@@ -100,8 +100,8 @@ def project_view(request, project_id):
     return render_to_response('webinterface/project-view.html',
                               {"project_id": project_id,
                                'WMS_URL': settings.WMS_URL,
-                               'project_WMS_layer_name': settings.WMS_PROJECTS_LAYER_NAME,
-                               'annotation_set_WMS_layer_name': settings.WMS_ANNOTATIONSET_LAYER_NAME},
+                               'LAYER_PROJECTS': settings.LAYER_PROJECTS,
+                               'LAYER_ANNOTATIONSET': settings.LAYER_ANNOTATIONSET},
                               RequestContext(request))
 
 def project_create(request):
@@ -165,7 +165,7 @@ def deployment_view(request, deployment_id):
         'webinterface/deployment-view.html',
         {'deployment_object': deployment_object,
          'WMS_URL': settings.WMS_URL,
-         'WMS_LAYER_NAME': settings.WMS_LAYER_NAME,
+         'LAYER_IMAGES': settings.LAYER_IMAGES,
          'deployment_id': deployment_object.id},
         context_instance=RequestContext(request))
 
@@ -222,7 +222,7 @@ def campaign_list(request):
         'webinterface/campaign-list.html',
         {'campaign_list': campaign_list,
          'WMS_URL': settings.WMS_URL,
-         'WMS_CAMPAIGNS': settings.WMS_CAMPAIGNS},
+         'LAYER_CAMPAIGNS': settings.LAYER_CAMPAIGNS},
         context_instance=RequestContext(request))
 
 
@@ -244,8 +244,8 @@ def campaign_view(request, campaign_id):
     return render_to_response(
         'webinterface/campaign-view.html',
         {'campaign_object': campaign_object, 
-         'WMS_URL': settings.WMS_URL,
-         'WMS_DEPLOYMENTS': settings.WMS_DEPLOYMENTS},
+         'WFS_URL': settings.WFS_URL,
+         'LAYER_DEPLOYMENTS': settings.LAYER_DEPLOYMENTS},
         context_instance=RequestContext(request))
 
 

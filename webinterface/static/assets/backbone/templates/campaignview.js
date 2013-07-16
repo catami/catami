@@ -46,50 +46,37 @@ CampaignView = Backbone.View.extend({
         this.$el.html(campaignViewTemplate);
 
         //instantiate openlayer map via Geoserver
-        var campaigntId = campaign.get("id");
+        var campaignId = campaign.get("id");
         //var mapExtent = campaign.get("map_extent");
-        
-        var map = new BaseMap(WMS_URL, WMS_DEPLOYMENTS, "deployment-map");//, mapExtent);
-        //load layer and filter by deployment id
-        
-        filter_array = []
-        filter_array.push(new OpenLayers.Filter.Comparison({
-            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-            property: "campaign_id",
-            value: campaigntId
-        }));
-        map.updateMapUsingFilter(filter_array);
-        
-        deploymentPicker = new OpenLayers.Control.WMSGetFeatureInfo({
-            url: WMS_URL,
-            title: 'identify features on click',
-            //layers: [map.mapInstance.imagePointsLayer],
-            queryVisible: true,
+                
+        //map is assigned to the given div        
+        var baseProjection= "EPSG:3857";
+        var dataProjection = "EPSG:4326";
+        var mapUtils = new MapUtils(baseProjection, dataProjection);        
+        map = new OpenLayers.Map("deployment-map", mapUtils.createMapOption());
+        mapUtils.map = map; //assign map to mapUtils, so that we don't have to pass map object into function every time.        
+        map.addLayer(mapUtils.createOSMLayer()); //create and add OpenStreetMaps baselayer to map
+
+        var loadingPanel = new OpenLayers.Control.LoadingPanel();        
+        map.addControl(loadingPanel);
+        mapUtils.zoomToAustralia();
+
+        var url = WFS_URL + "?service=WFS&version=1.1.0" +
+                  "&request=GetFeature&typeName=" + LAYER_DEPLOYMENTS + "&srsName=epsg:3857" +
+                  "&outputFormat=json&CQL_FILTER=campaign_id=" + campaignId;
+       
+        var clusterLayer = mapUtils.createClusterLayer(url);
+        map.addLayer(clusterLayer);
+
+        var selectCtrl = new OpenLayers.Control.SelectFeature(clusterLayer, {
+            clickout: true,
             eventListeners: {
-                getfeatureinfo: function (event) {
-                    //remove all existing popups first before generating one.
-                    while (map.mapInstance.popups.length > 0) {
-                        map.mapInstance.removePopup(map.mapInstance.popups[0]);
-                    }
-                    if (event.features.length > 0) {
-                        map.mapInstance.addPopup(new OpenLayers.Popup.FramedCloud(
-                            "deployment_popup", //id
-                            map.mapInstance.getLonLatFromPixel(event.xy), //position on map
-                            null, //size of content
-                            generatePopupContent(event), //contentHtml
-                            null, //flag for close box
-                            true //function to call on closebox click
-                        ));
-                    }
-                }
+                featurehighlighted: clusterSelected
             }
         });
-        deploymentPicker.infoFormat = 'application/vnd.ogc.gml';
-        map.mapInstance.addControl(deploymentPicker);
-        deploymentPicker.activate();
-
-        //map.zoomToExtent();
-        
+        map.addControl(selectCtrl);        
+        selectCtrl.activate();
+      
         //Create pagination
         var options = catami_generatePaginationOptions(this.meta);
         $('#pagination').bootstrapPaginator(options);
@@ -98,6 +85,7 @@ CampaignView = Backbone.View.extend({
     }
 });
 
+var map;
 var campaign_id = catami_getIdFromUrl();
 campaign = new Campaign({ id: campaign_id });
 deployments = new Deployments();
@@ -165,15 +153,26 @@ function loadPage(offset) {
     });
 }
 
-
-function generatePopupContent(e) {  
-    var count = e.features.length;
-    var content = "<div style=\"width:250px\"><b>Deployments (" + count + ") : </b> <br>";
-    for (var i = 0; i < count; i++) {
-        content += "&bull; <a href=\"" + DeploymentListUrl + e.features[i].attributes.id + "\">"
-                    + e.features[i].attributes.short_name + "</a>" + (i < count ? "<br>" : "");
-    }
-    content += "</div>";
-    return content;
+function clusterSelected(event) {
+    var f = event.feature;
+    var count = f.cluster.length;
+    var content = "<div style=\"width:250px\"><b>Deployments (" + count + ") : </b> <br>";    
+    if (count > 0) {
+        for (var i = 0; i < count; i++) {
+            content += "&bull; <a href=\"" + DeploymentListUrl + f.cluster[i].attributes.id + "\">"
+                        + f.cluster[i].attributes.short_name + "</a>" + (i < count ? "<br>" : "");
+        }
+        content += "</div>";
+        while (map.popups.length > 0) {
+            map.removePopup(map.popups[0]);
+        }
+        map.addPopup(new OpenLayers.Popup.FramedCloud(
+            "deployment_popup", //id
+            f.geometry.getBounds().getCenterLonLat(), //position on map
+            null, //size of content
+            content, //contentHtml
+            null, //flag for close box
+            true //function to call on closebox click
+        ));
+    }    
 }
-

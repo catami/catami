@@ -31,7 +31,23 @@ DeploymentView = Backbone.View.extend({
         //instantiate openlayer map via Geoserver
         var deploymentId = deployment.get("id");
         var mapExtent = deployment.get("map_extent");
-        var map = new BaseMap(WMS_URL, WMS_LAYER_NAME, "deployment-map", mapExtent);
+
+        //map is assigned to the given div
+        var baseProjection = "EPSG:3857";
+        var dataProjection = "EPSG:4326";
+        var mapUtils = new MapUtils(baseProjection, dataProjection);
+        map = new OpenLayers.Map("deployment-map", mapUtils.createMapOption());
+        mapUtils.map = map; //assign map to mapUtils, so that we don't have to pass map object into function every time.       
+        map.addLayer(mapUtils.createOSMLayer()); //create and add OpenStreetMaps baselayer to map
+
+        var loadingPanel = new OpenLayers.Control.LoadingPanel();
+        map.addControl(loadingPanel);
+        mapUtils.zoomToAustralia();
+
+        //gsUrl, gslayerName, layerName, isBaseLayer
+        var layer = mapUtils.createLayer(WMS_URL, LAYER_IMAGES, "deployment-image", false);
+        map.addLayer(layer);
+
         //load layer and filter by deployment id
         filter_array = []
         filter_array.push(new OpenLayers.Filter.Comparison({
@@ -39,8 +55,9 @@ DeploymentView = Backbone.View.extend({
             property: "deployment_id",
             value: deploymentId
         }));
-        map.updateMapUsingFilter(filter_array);
-        map.zoomToExtent();
+
+        mapUtils.applyFilter(layer, filter_array);
+        mapUtils.zoomToExtent(mapExtent);
 
         plotMeasurement("/api/dev/generic_image/?format=json&deployment=" + deploymentId + "&output=flot&limit=10000", "#placeholder_01", "Depth (m)")
         plotMeasurement("/api/dev/measurements/?format=json&image__deployment=" + deploymentId + "&mtype=salinity&limit=10000&output=flot", "#placeholder_02", "Salinity (psu)")
@@ -58,7 +75,7 @@ DeploymentThumbanilView = Backbone.View.extend({
         this.render();
     },
     render: function () {
-        //ge tall the images to be rendered
+        //get all the images to be rendered
         var imageTemplate = "";
 
         images.each(function (image) {
