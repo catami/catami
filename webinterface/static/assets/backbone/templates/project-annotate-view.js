@@ -162,7 +162,7 @@ ProjectAnnotateView = Backbone.View.extend({
 var selectedThumbnailPosition = 0;
 
 ImageAnnotateView = Backbone.View.extend({
-    model: AnnotationSets,
+    model: new PointAnnotation(),
     el: $('div'),
     events: {
         "thumbnail_selected": "thumbnailSelected"
@@ -337,11 +337,13 @@ ImageAnnotateView = Backbone.View.extend({
         caab_object = annotation_code_list.get(caab_code_id);
         //save the annotations
         $.each(selectedPoints, function(index, pointSpan) {
+
             //need to specify the properties to patch
             var properties = { 'annotation_caab_code': caab_object.get('caab_code') };
 
             var theXHR = points.get(pointSpan.id).save(properties, {
                 patch: true,
+                headers: {"cache-control": "no-cache"},
                 success: function (model, xhr, options) {
 
                     //change the point to annotated
@@ -380,7 +382,7 @@ ImageAnnotateView = Backbone.View.extend({
                         });
                     }
                 }
-            });
+            })
         });
     },
     updatePils: function() {
@@ -436,6 +438,9 @@ ImageAnnotateView = Backbone.View.extend({
         $('.zoomContainer').remove();
     }
 });
+
+
+
 
 
 
