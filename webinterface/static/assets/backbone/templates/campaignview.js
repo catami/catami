@@ -110,29 +110,6 @@ function populateDeploymentList() {
     return deploymentTemplate;
 }
 
-function loadPage(offset) {
-    var off = {}
-    if (offset) off = offset;
-    deployments.fetch({
-        //only fetch deployments belonging to this campaign
-        data: {
-            campaign: campaign_id,
-            offset: off,
-            limit: 5 //limit to 5 per list due to space constraint
-        },
-        success: function (model, response, options) {
-            if (offset) {
-                var deploymentListTemplate = populateDeploymentList();
-                
-                $("#deploymentlist").html(deploymentListTemplate);
-            }
-        },
-        error: function (model, response, options) {
-            alert('fetch failed: ' + response.status);
-        }
-    });
-}
-
 function clusterSelected(event) {
     var f = event.feature;
     var count = f.cluster.length;
@@ -157,19 +134,53 @@ function clusterSelected(event) {
     }    
 }
 
+function loadPage(offset) {
+    var off = {}
+    if (offset) off = offset;
+    deployments.fetch({
+        //only fetch deployments belonging to this campaign
+        data: {
+            campaign: campaign_id,
+            offset: off,
+            limit: 5 //limit to 5 per list due to space constraint
+        },
+        success: function (model, response, options) {
+            var deploymentListTemplate = populateDeploymentList();
+            $("#deploymentlist").html(deploymentListTemplate);
+        },
+        error: function (model, response, options) {
+            alert('fetch failed: ' + response.status);
+        }
+    });
+}
+
 var map;
 var campaign_id = catami_getIdFromUrl();
-campaign = new Campaign({ id: campaign_id });
 deployments = new Deployments();
+campaign = new Campaign({ id: campaign_id });
+var off = {}
 
 campaign.fetch({
     success: function (model, response, options) {
-        var campaign_view = new CampaignView({
-            el: $("#CampaignViewContainer"),
-            model: campaign,
-            meta: deployments.meta //read from initiaisation method's "option" variable
+        //get list deployments belonging to this campaign
+        deployments.fetch({
+            //only fetch deployments belonging to this campaign
+            data: {
+                campaign: campaign_id,
+                offset: off,
+                limit: 5 //limit to 5 per list due to space constraint
+            },
+            success: function (model, response, options) {
+                var campaign_view = new CampaignView({
+                    el: $("#CampaignViewContainer"),
+                    model: campaign,
+                    meta: deployments.meta //read from initiaisation method's "option" variable
+                });
+            },
+            error: function (model, response, options) {
+                alert('fetch failed: ' + response.status);
+            }
         });
-        loadPage(); //get list deployments belonging to this campaign
     },
     error: function (model, response, options) {
         alert('fetch failed: ' + response.status);
