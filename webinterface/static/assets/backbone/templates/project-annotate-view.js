@@ -182,8 +182,8 @@ ImageAnnotateView = Backbone.View.extend({
         $('#hide_points_button').mousedown(this.hidePoints);
         $('#hide_points_button').mouseup(this.showPoints);
 
-        $('#ZoomSwitch').on('switch-change', function (e, data) {
-            (data.value) ? parent.zoomOn() : parent.zoomOff();
+        $('#ZoomToggle').on('click', function(e) {
+            ($(this).hasClass('active')) ? parent.zoomOff() : parent.zoomOn();
         });
     },
     renderSelectedImage: function (selected) {
@@ -291,10 +291,13 @@ ImageAnnotateView = Backbone.View.extend({
         selectedThumbnailPosition = selectedPosition;
         this.renderSelectedImage(selectedPosition);
 
+        //turn the zoom off and reset the zoom button
+        this.zoomOff();
+        $('#ZoomToggle').removeClass('active');
+
         var parent = this;
         //now we have to wait for the image to load before we can draw points
         $("#Image").imagesLoaded(function() {
-
             parent.renderPointsForImage(selectedPosition);
         });
 
