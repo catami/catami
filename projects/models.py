@@ -8,6 +8,7 @@ from random import sample
 from django.db.utils import IntegrityError
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+import random
 import logging
 
 
@@ -119,6 +120,46 @@ class GenericAnnotation(models.Model):
     class Meta:
         """Defines Metaparameters of the model."""
         abstract = True
+
+
+class GenericPointAnnotationManager(models.Manager):
+    """ Handles logic functions related to points annotations """
+
+    def apply_random_sampled_points(self, annotation_set, sample_size):
+        """ Randomly apply points to the images attached to this annotation
+            set """
+
+        images = annotation_set.generic_images.all()
+        points_to_bulk_save = []
+
+        # iterate through the images and create points
+        for image in images:
+            print image
+            for i in range(int(sample_size)):
+
+                point_annotation = GenericPointAnnotation()
+
+                point_annotation.generic_annotation_set = annotation_set
+                point_annotation.image = image
+                point_annotation.owner = annotation_set.owner
+                point_annotation.x = random.uniform(0.008, 0.992) #random.random()
+                point_annotation.y = random.uniform(0.008, 0.992)
+
+                point_annotation.annotation_caab_code = ""
+                point_annotation.qualifier_short_name = ""
+
+                #point_annotation.save()
+                points_to_bulk_save.append(point_annotation)
+
+        # do the bulk save - for performance
+        GenericPointAnnotation.objects.bulk_create(points_to_bulk_save)
+
+    def apply_stratified_sampled_points(self, annotation_set, sample_size):
+        """ Apply points to the images attached to this annotation set using
+            stratified sampling """
+
+        #TODO: implement
+        return None
 
 
 class GenericPointAnnotation(GenericAnnotation):

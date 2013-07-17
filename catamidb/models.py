@@ -6,6 +6,7 @@ d.marrable@ivec.org
 Significantly rewritten Lachlan Toohey 21/2/2013
 
 """
+from random import sample
 from django.contrib.auth.models import Group
 
 from django.contrib.gis.db import models
@@ -233,6 +234,7 @@ class Pose(models.Model):
         """Defines Metaparameters of the model."""
         unique_together = (('deployment', 'date_time'), )
 
+
 class ImageUpload(models.Model):
     """
     Model used to upload images to server, and have server generate thumbnails
@@ -245,6 +247,25 @@ class ImageUpload(models.Model):
     """
 
     img = models.ImageField(upload_to="images", null=True, blank=True, max_length=255)   
+
+
+class GenericImageManager(models.GeoManager):
+    """ Handles logic functions related to images """
+
+    def random_sample_images(self, images, sample_size):
+        """ Randomly sample images from a set """
+
+        return sample(images, int(sample_size))
+
+    def stratified_sample_images(self, images, sample_size):
+        """ Stratified sample images from a set """
+
+        every_nth = images.count()/int(sample_size)
+
+        sampled_images = images[0:images.count():every_nth]
+
+        return sampled_images
+
 
 class GenericImage(models.Model):
     """

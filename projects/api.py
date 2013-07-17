@@ -8,13 +8,13 @@ import tastypie
 from tastypie.bundle import Bundle
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
-from catamidb.models import GenericImage
+from catamidb.models import GenericImage, GenericImageManager
 from projects.models import (Project,
                              GenericAnnotationSet,
                              GenericPointAnnotation,
                              GenericWholeImageAnnotation,
                              AnnotationCodes,
-                             QualifierCodes)
+                             QualifierCodes, GenericPointAnnotationManager)
 from catamidb.api import GenericImageResource
 from tastypie.authentication import (Authentication,
                                      SessionAuthentication,
@@ -537,60 +537,6 @@ class GenericAnnotationSetResource(ModelResource):
         image_resource = GenericImageResource()
         return image_resource.get_list(request, id__in=image_ids)
 
-    def random_sample_images(self, project, sample_size):
-        """ Randomly sample images from the parent project and
-            attach them to this annotation set. """
-
-        project_images = project.generic_images.all()
-        sampled_images = sample(project_images, int(sample_size))
-
-        return sampled_images
-
-    def stratified_sample_images(self, project, sample_size):
-        """ Stratified sample images from the parent project and
-            attach them to this resource. """
-
-        project_images = project.generic_images.all()
-        every_nth = project_images.count()/int(sample_size)
-
-        sampled_images = project_images[0:project_images.count():every_nth]
-
-        return sampled_images
-
-    def apply_random_sampled_points(self, annotation_set, sample_size):
-        """ Randomly apply points to the images attached to this annotation
-            set """
-
-        images = annotation_set.generic_images.all()
-        points_to_bulk_save = []
-
-        # iterate through the images and create points
-        for image in images:
-            for i in range(int(sample_size)):
-                point_annotation = GenericPointAnnotation()
-
-                point_annotation.generic_annotation_set = annotation_set
-                point_annotation.image = image
-                point_annotation.owner = annotation_set.owner
-                point_annotation.x = random.uniform(0.008, 0.992) #random.random()
-                point_annotation.y = random.uniform(0.008, 0.992)
-
-                point_annotation.annotation_caab_code = ""
-                point_annotation.qualifier_short_name = ""
-
-                #point_annotation.save()
-                points_to_bulk_save.append(point_annotation)
-
-        # do the bulk save - for performance
-        GenericPointAnnotation.objects.bulk_create(points_to_bulk_save)
-
-    def apply_stratified_sampled_points(self, annotation_set, sample_size):
-        """ Apply points to the images attached to this annotation set using
-            stratified sampling """
-
-        #TODO: implement
-        return None
-
     def do_sampling_operations(self, bundle):
         """ Helper function to hold all the sampling logic """
 
@@ -599,9 +545,9 @@ class GenericAnnotationSetResource(ModelResource):
         image_sampling_methodology = bundle.data['image_sampling_methodology']
 
         if image_sampling_methodology == '0':
-            bundle.obj.generic_images = self.random_sample_images(bundle.obj.project, image_sample_size)
+            bundle.obj.generic_images = GenericImageManager().random_sample_images(bundle.obj.project.generic_images.all(), image_sample_size)
         elif image_sampling_methodology == '1':
-            bundle.obj.generic_images = self.stratified_sample_images(bundle.obj.project, image_sample_size)
+            bundle.obj.generic_images = GenericImageManager().stratified_sample_images(bundle.obj.project.generic_images.all(), image_sample_size)
         else:
             raise Exception("Image sampling method not implemented.")
 
@@ -613,7 +559,7 @@ class GenericAnnotationSetResource(ModelResource):
         annotation_methodology = bundle.data['annotation_methodology']
 
         if annotation_methodology == '0':
-            self.apply_random_sampled_points(bundle.obj, point_sample_size)
+            GenericPointAnnotationManager().apply_random_sampled_points(bundle.obj, point_sample_size)
         else:
             raise Exception("Point sampling method not implemented.")
 
