@@ -43,7 +43,7 @@ class Campaign(models.Model):
     """A campaign describes a field campaign that has many deployments."""
     objects = CampaignManager()
 
-    short_name = models.CharField(max_length=100)
+    short_name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     associated_researchers = models.TextField()
     associated_publications = models.TextField()
