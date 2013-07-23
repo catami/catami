@@ -523,6 +523,20 @@ class ImageUploadResource(ModelResource):
                         logger.debug("Cannot create thumbnail for '%s'" % infile)
                         raise ImmediateHttpResponse(response=http.HttpBadRequest("Cannot create thumbnail for '%s'" % infile))
 
+                    #Final check to see if thumbnail and image is generated/uploaded respectively.
+                    if os.path.isfile(outfile): 
+                        try: open(outfile)
+                        except IOError:
+                            raise ImmediateHttpResponse(response=http.HttpBadRequest("Generated thumbnail missing! '%s'" % outfile))
+                    else:
+                        raise ImmediateHttpResponse(response=http.HttpBadRequest("Generated thumbnail missing! '%s'" % outfile))
+                    if os.path.isfile(infile): 
+                        try: open(infile)
+                        except IOError:
+                            raise ImmediateHttpResponse(response=http.HttpBadRequest("Imported image missing! '%s'" % infile))
+                    else:
+                        raise ImmediateHttpResponse(response=http.HttpBadRequest("Imported image missing! '%s'" % infile))
+
                 else:
                     raise ImmediateHttpResponse(response=http.HttpBadRequest("Invalid Deployment ID specified:"+str(bundle.data["deployment"])))
             else:

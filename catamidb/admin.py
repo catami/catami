@@ -1,5 +1,6 @@
 """Admin interface for catamidb models."""
 from django.contrib.auth.models import User, Group
+from guardian.admin import GuardedModelAdmin
 from catamiPortal import settings
 
 __author__ = 'mat'
@@ -30,3 +31,8 @@ admin.site.register(BRUVDeployment, admin.GeoModelAdmin)
 admin.site.register(DOVDeployment, admin.GeoModelAdmin)
 admin.site.register(TVDeployment, admin.GeoModelAdmin)
 admin.site.register(TIDeployment, admin.GeoModelAdmin)
+
+#class CampaignAdmin(GuardedModelAdmin):
+#    pass
+
+#admin.site.register(Campaign, CampaignAdmin)
