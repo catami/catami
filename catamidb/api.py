@@ -490,9 +490,9 @@ class ImageUploadResource(ModelResource):
 
                     if not os.path.exists(temp_dir):
                         os.makedirs(temp_dir)
-
-                    imageDest = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName + "__" + id, "images", "")
-                    thumbDest = os.path.join(settings.IMPORT_PATH, campaignName, deploymentName + "__" + id, "thumbnails", "")
+                    dp = deploymentName + "__" + bundle.data["deployment"]
+                    imageDest = os.path.join(settings.IMPORT_PATH, campaignName, dp, "images", "")
+                    thumbDest = os.path.join(settings.IMPORT_PATH, campaignName, dp, "thumbnails", "")
                     bundle.obj.img.field.upload_to = temp_dir
 
                     if not os.path.exists(imageDest):
