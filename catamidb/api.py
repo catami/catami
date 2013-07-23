@@ -590,14 +590,19 @@ class GenericImageResource(ModelResource):
 
 
     def dehydrate(self, bundle):
+        deploymentId = bundle.obj.deployment.id
         deploymentName = bundle.obj.deployment.short_name
         campaignName = bundle.obj.deployment.campaign.short_name
         imageName = bundle.obj.image_name
         imgNameNoExt, imgExt = os.path.splitext(imageName)
         size = str(settings.THUMBNAIL_SIZE[0]) + "x" + str(settings.THUMBNAIL_SIZE[1])
         thumbnailName = imgNameNoExt + "_" + size + imgExt        
-        bundle.data['web_location'] = "http://" + bundle.request.get_host() + "/images/" + campaignName + "/" + deploymentName + "/images/" + imageName
-        bundle.data['thumbnail_location'] = "http://" + bundle.request.get_host() + "/images/" + campaignName + "/" + deploymentName + "/thumbnails/" + thumbnailName
+
+
+        dp = deploymentName + "__" + str(deploymentId);
+        location = "http://" + bundle.request.get_host() + "/images/" + campaignName + "/" + dp
+        bundle.data['web_location'] = location + "/images/" + imageName
+        bundle.data['thumbnail_location'] = location + "/thumbnails/" + thumbnailName
         return bundle
 
 
