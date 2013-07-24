@@ -5,10 +5,10 @@
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/elastislide.css" />
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
-<!-- 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/jit/css/base.css"/> -->
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/jit/css/Icicle.css"/>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/catami-api/css/bootstrapSwitch.css"/>
-
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/d3/catami-d3-icicle.css" />
+	
     <style type="text/css">
         div.wrapper{
 		    float:left; /* important */
@@ -184,11 +184,10 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-annotate-view.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.imagesloaded.min.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}assets/jit/js/jit.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}assets/jit/js/catami-icicle.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery.elevatezoom/jquery.elevateZoom-2.5.5.min.js"></script>
     <!--<script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/bootstrapSwitch.js"></script>-->
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
 
     <script type="text/javascript">
 
@@ -212,7 +211,7 @@
                             data: {limit: 500},
                             success: function (model, response, options) {
 
-                                start_icicle_view();
+                                //start_icicle_view();
 
                                 //load the views
                                 var projectAnnotateView = new ProjectAnnotateView({
@@ -268,9 +267,11 @@
        
         });
 
+
     	var chooseAnnotationView = new ChooseAnnotationView({
             el: $("#ChooseAnnotationContainer")
         });
+
 
         $(window).resize(function(e){
             //trigger an event to redraw
@@ -279,5 +280,5 @@
 
 
     </script>
-
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/d3/catami-d3-icicle.js"></script>
 {% endblock %}

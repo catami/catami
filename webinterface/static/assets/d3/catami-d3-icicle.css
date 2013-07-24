@@ -1,0 +1,14 @@
+.chart {
+  overflow: hidden;
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  font-size: 11px;
+}
+.label {
+  font: 12px helvetica, sans-serif;
+  white-space: nowrap;
+}
+text {
+  pointer-events: none;
+}
