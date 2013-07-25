@@ -134,7 +134,6 @@ class GenericPointAnnotationManager(models.Manager):
 
         # iterate through the images and create points
         for image in images:
-            print image
             for i in range(int(sample_size)):
 
                 point_annotation = GenericPointAnnotation()

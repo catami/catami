@@ -286,6 +286,7 @@ class GenericImage(models.Model):
         """Defines Metaparameters of the model."""
         unique_together = (('date_time', 'deployment'), )
 
+
 class GenericCamera(models.Model):
     """Data about a camera used in a deployment.
     Contains information about the orientation and quality of the images

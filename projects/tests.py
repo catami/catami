@@ -5,6 +5,7 @@ from guardian.shortcuts import assign_perm
 from model_mommy import mommy
 from tastypie.test import ResourceTestCase, TestApiClient
 from datetime import datetime
+from catamidb.models import GenericImage
 from projects.models import Project, GenericAnnotationSet, GenericPointAnnotation, AnnotationCodes
 from django.contrib.gis.geos import Point, Polygon
 from projects import authorization
@@ -217,10 +218,6 @@ class TestProjectResource(ResourceTestCase):
                 format='json',
                 data=self.bill_put_data)
 
-        print new_project_id
-        print "---------*****"
-        print response.status_code
-
         self.assertHttpAccepted(response)
 
         response = self.bill_api_client.get(self.project_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
@@ -237,6 +234,39 @@ class TestProjectResource(ResourceTestCase):
         response = self.bill_api_client.get(self.project_url, format='json')
         self.assertValidJSONResponse(response)
         self.assertEqual(len(self.deserialize(response)['objects']), 3)
+
+    def test_create_project_helper_function(self):
+        create_project_url = self.project_url + "create_project/"
+
+        self.create_project_data = {'name': 'helpercreated',
+                               'description': 'my description',
+                               'deployment_id': self.deployment_one.id.__str__(),
+                               'image_sampling_methodology': '0',
+                               'image_sample_size': '10',
+                               'annotation_methodology': '0',
+                               'point_sample_size': '10',
+                               }
+
+        response = self.bill_api_client.post(
+                create_project_url,
+                format='json',
+                data=self.create_project_data)
+
+        self.assertHttpOK(response)
+
+        project_location_split = response['Location'].split('/')
+        project_id = project_location_split[len(project_location_split)-2]
+
+        #check we got the right amount of images created
+        response = self.bill_api_client.get(self.project_url + "?name=helpercreated",
+                                            format='json')
+
+        #check the right number of images are on the project
+        number_of_images = len(self.deserialize(response)['objects'][0]['generic_images'])
+        self.assertEqual(number_of_images, len(GenericImage.objects.filter(deployment=self.deployment_one.id)))
+
+        #check the right number of images are on the associated annotation set
+        self.assertEqual(10, len(GenericAnnotationSet.objects.get(project=project_id).generic_images.all()))
 
 
 class TestGenericAnnotationSetResource(ResourceTestCase):
