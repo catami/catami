@@ -139,7 +139,7 @@ def deployment_list(request):
     """
     return render_to_response(
         'webinterface/deployment-list.html',
-        {'deployment_list': GenericDeployment.objects.all()},
+        {'deployment_list': Deployment.objects.all()},
         context_instance=RequestContext(request))
 
 
@@ -154,7 +154,7 @@ def deployment_view(request, deployment_id):
     deployment_object = {}
 
     try:
-        deployment_object = list(GenericDeployment.objects.filter(
+        deployment_object = list(Deployment.objects.filter(
             id=deployment_id, campaign__in=latest_campaign_list))[0]
 
     #if it doesn't exist or we dont have permission then go back to the main list
@@ -232,7 +232,7 @@ def campaign_view(request, campaign_id):
     """
     try:
         campaign_object = Campaign.objects.get(id=campaign_id)  
-        #deployments = GenericDeployment.objects.filter(campaign=campaign_id)     
+        #deployments = Deployment.objects.filter(campaign=campaign_id)
         #check for permissions
         if not check_permission(request.user, 'catamidb.view_campaign', campaign_object):
             raise Campaign.DoesNotExist

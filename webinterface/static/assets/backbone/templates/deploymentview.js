@@ -1,14 +1,14 @@
 var Image = Backbone.Model.extend({
-    urlRoot: "/api/dev/generic_image/"
+    urlRoot: "/api/dev/image/"
 });
 
 var Images = Backbone.Tastypie.Collection.extend({
-    urlRoot: "/api/dev/generic_image/",
+    urlRoot: "/api/dev/image/",
     model: Image
 });
 
 var Deployment = Backbone.Model.extend({
-    urlRoot: "/api/dev/generic_deployment/"
+    urlRoot: "/api/dev/deployment/"
 });
 
 DeploymentView = Backbone.View.extend({
@@ -59,7 +59,7 @@ DeploymentView = Backbone.View.extend({
         mapUtils.applyFilter(layer, filter_array);
         mapUtils.zoomToExtent(mapExtent);
 
-        plotMeasurement("/api/dev/generic_image/?format=json&deployment=" + deploymentId + "&output=flot&limit=10000", "#placeholder_01", "Depth (m)")
+        plotMeasurement("/api/dev/image/?format=json&deployment=" + deploymentId + "&output=flot&limit=10000", "#placeholder_01", "Depth (m)")
         plotMeasurement("/api/dev/measurements/?format=json&image__deployment=" + deploymentId + "&mtype=salinity&limit=10000&output=flot", "#placeholder_02", "Salinity (psu)")
         plotMeasurement("/api/dev/measurements/?format=json&image__deployment=" + deploymentId + "&mtype=temperature&limit=10000&output=flot", "#placeholder_03", "Temperature (cel)")
            

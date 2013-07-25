@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 
 from django.contrib import admin
-from django.views.generic.simple import direct_to_template
+
 
 from userena import views as userena_views
 from userena import settings as userena_settings

@@ -1,25 +1,25 @@
 from datetime import datetime
 from model_mommy.recipe import Recipe
 from django.contrib.gis.geos import Point, Polygon
-from catamidb.models import GenericImage
+from catamidb.models import Image
 from projects.models import Project
 
-genericImage1 = Recipe(
-    GenericImage,
+Image1 = Recipe(
+    Image,
     position=Point(12.4604, 43.9420),
     depth=27.5,
     date_time=datetime.now()
 )
 
-genericImage2 = Recipe(
-    GenericImage,
+Image2 = Recipe(
+    Image,
     position=Point(12.4604, 43.9420),
     depth=27.5,
     date_time=datetime.now()
 )
 
-genericImage3 = Recipe(
-    GenericImage,
+Image3 = Recipe(
+    Image,
     position=Point(12.4604, 43.9420),
     depth=27.5,
     date_time=datetime.now()

@@ -111,7 +111,7 @@ ProjectAnnotateView = Backbone.View.extend({
         // enforcing only one annotation set per project for the time being, so
         // can assume the first one
         var annotationSet = annotationSets.at(0);
-        var images = annotationSet.get("generic_images");
+        var images = annotationSet.get("images");
 
         for(var i=0; i < images.length; i++) {
             var imageVariables = {
@@ -193,7 +193,7 @@ ImageAnnotateView = Backbone.View.extend({
         // enforcing only one annotation set per project for the time being, so
         // can assume the first one
         var annotationSet = annotationSets.at(0);
-        var image = annotationSet.get("generic_images")[selected];
+        var image = annotationSet.get("images")[selected];
 
         var imageVariables = {
             "web_location": image.web_location
@@ -231,11 +231,11 @@ ImageAnnotateView = Backbone.View.extend({
 
         //get the selected image
         var annotationSet = annotationSets.at(0);
-        var image = annotationSet.get("generic_images")[selected];
+        var image = annotationSet.get("images")[selected];
 
         //based on that image query the API for the points
         points.fetch({
-            data: { limit: 100, image: image.id, generic_annotation_set: annotationSet.get('id') },
+            data: { limit: 100, image: image.id, annotation_set: annotationSet.get('id') },
             success: function (model, response, options) {
 
                 //loop through the points and apply them to the image

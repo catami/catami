@@ -1,9 +1,9 @@
 var Deployment = Backbone.Model.extend({
-    urlRoot: "/api/dev/generic_deployment/",
+    urlRoot: "/api/dev/deployment/",
 });
 
 var Deployments = Backbone.Tastypie.Collection.extend({
-    urlRoot: "/api/dev/generic_deployment/",
+    urlRoot: "/api/dev/deployment/",
     model: Deployment
 });
 

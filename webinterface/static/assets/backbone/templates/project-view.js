@@ -17,16 +17,16 @@ $.fn.serializeObject = function()
 };
 
 var Deployment = Backbone.Model.extend({
-    urlRoot: "/api/dev/generic_deployment"
+    urlRoot: "/api/dev/deployment"
 });
 
 var Deployments = Backbone.Tastypie.Collection.extend({
-    urlRoot: "/api/dev/generic_deployment",
+    urlRoot: "/api/dev/deployment",
     model: Deployment
 });
 
 var Image = Backbone.Model.extend({
-    urlRoot: "/api/dev/generic_image"
+    urlRoot: "/api/dev/image"
 });
 
 var Images = Backbone.Tastypie.Collection.extend({
@@ -89,7 +89,7 @@ ProjectView = Backbone.View.extend({
         var imageSampling = imageSamplingMethods[annotationSets.at(0).get('image_sampling_methodology')];
         var pointSampling = pointSamplingMethods[annotationSets.at(0).get('annotation_methodology')];
 
-        var annotationSetImages = new Images({"url": "/api/dev/generic_annotation_set/" + annotationSets.at(0).get('id') + "/images/"});
+        var annotationSetImages = new Images({"url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/images/"});
 
         //get total images
         annotationSetImages.fetch({
@@ -101,7 +101,7 @@ ProjectView = Backbone.View.extend({
 
                 //get points total and calculate completeness
                 points.fetch({ //assuming annotation sets have been fetched and succeeded
-                    data: { limit: 100000, generic_annotation_set: annotationSets.at(0).get('id') },
+                    data: { limit: 100000, annotation_set: annotationSets.at(0).get('id') },
                     success: function (model, response, options) {
 
                         //points per image set

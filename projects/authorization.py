@@ -25,17 +25,18 @@ def apply_project_permissions(user, project):
     public_group, created = Group.objects.get_or_create(name='Public')
     assign_perm('view_project', public_group, project)
 
-def apply_generic_annotation_set_permissions(user, generic_annotation_set):
-    #assign all permissions view, add, change, delete
-    logger.debug("Applying owner permissions to annotation set: " + generic_annotation_set.name)
 
-    assign_perm('view_genericannotationset', user, generic_annotation_set)
-    assign_perm('add_genericannotationset', user, generic_annotation_set)
-    assign_perm('change_genericannotationset', user, generic_annotation_set)
-    assign_perm('delete_genericannotationset', user, generic_annotation_set)
+def apply_annotation_set_permissions(user, annotation_set):
+    #assign all permissions view, add, change, delete
+    logger.debug("Applying owner permissions to annotation set: " + annotation_set.name)
+
+    assign_perm('view_annotationset', user, annotation_set)
+    assign_perm('add_annotationset', user, annotation_set)
+    assign_perm('change_annotationset', user, annotation_set)
+    assign_perm('delete_annotationset', user, annotation_set)
 
     #assign view permissions to the Anonymous user
-    logger.debug("Making annotation set public: " + generic_annotation_set.name)
+    logger.debug("Making annotation set public: " + annotation_set.name)
 
     public_group, created = Group.objects.get_or_create(name='Public')
-    assign_perm('view_genericannotationset', public_group, generic_annotation_set)
+    assign_perm('view_annotationset', public_group, annotation_set)

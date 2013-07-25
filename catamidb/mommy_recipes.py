@@ -1,31 +1,31 @@
 from datetime import datetime
 from model_mommy.recipe import Recipe
 from django.contrib.gis.geos import Point, Polygon
-from catamidb.models import GenericImage, GenericDeployment
+from catamidb.models import Image, Deployment
 
-genericImage1 = Recipe(
-    GenericImage,
+Image1 = Recipe(
+    Image,
     position=Point(12.4604, 43.9420),
     depth=27.5,
     date_time=datetime.now()     
 )   
 
-genericImage2 = Recipe(
-    GenericImage,
+Image2 = Recipe(
+    Image,
     position=Point(12.4604, 43.9420),
     depth=27.5,
     date_time=datetime.now()     
 )          
 
-genericImage3 = Recipe(
-    GenericImage,
+Image3 = Recipe(
+    Image,
     position=Point(12.4604, 43.9420),
     depth=27.5,
     date_time=datetime.now()     
 )        
 
-genericDeployment1 = Recipe(
-    GenericDeployment,
+Deployment1 = Recipe(
+    Deployment,
     type = 'AUV',
     short_name = 'gdp1',
     operator = '',
@@ -42,8 +42,8 @@ genericDeployment1 = Recipe(
                             (0.0, 0.0)))
 )
 
-genericDeployment2 = Recipe(
-    GenericDeployment,
+Deployment2 = Recipe(
+    Deployment,
     type = 'AUV',   
     short_name = 'gdp2',
     operator = '',
@@ -60,8 +60,8 @@ genericDeployment2 = Recipe(
                             (0.0, 0.0)))
 )
 
-genericDeployment3 = Recipe(
-    GenericDeployment,
+Deployment3 = Recipe(
+    Deployment,
     type = 'AUV',   
     short_name = 'gdp3',
     operator = '',

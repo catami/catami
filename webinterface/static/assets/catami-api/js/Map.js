@@ -409,7 +409,7 @@ NewProjectsMap.prototype.addAnnotationSetLayer = function(annotationSetId, wmsUr
 
     filter_array.push(new OpenLayers.Filter.Comparison({
         type: OpenLayers.Filter.Comparison.EQUAL_TO,
-        property: "genericannotationset_id",
+        property: "annotationset_id",
         value: annotationSetId
     }));
 
@@ -447,7 +447,7 @@ NewProjectsMap.prototype.updateMapForSelectedAnnotationSet = function(annotation
 
     filter_array.push(new OpenLayers.Filter.Comparison({
         type: OpenLayers.Filter.Comparison.EQUAL_TO,
-        property: "genericannotationset_id",
+        property: "annotationset_id",
         value: annotationSetId
     }));
 

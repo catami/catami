@@ -84,7 +84,8 @@ class DeploymentManager(models.GeoManager):
         return self.get(start_time_stamp=start_time_stamp,
                         short_name=short_name)
 
-class GenericDeployment(models.Model):
+
+class Deployment(models.Model):
     """
     Defining a simple Deployment Model. Operator is included in the model as part of denormalising the subtypes
     This is to replace existing Deployment and subtypes BRUVDeployment, DOVDeployment, TIDEDeployment and TVDeployment
@@ -145,7 +146,7 @@ class ImageUpload(models.Model):
     img = models.ImageField(upload_to="images", null=True, blank=True, max_length=255)   
 
 
-class GenericImageManager(models.GeoManager):
+class ImageManager(models.GeoManager):
     """ Handles logic functions related to images """
 
     def random_sample_images(self, images, sample_size):
@@ -163,7 +164,7 @@ class GenericImageManager(models.GeoManager):
         return sampled_images
 
 
-class GenericImage(models.Model):
+class Image(models.Model):
     """
     Defining a simple image Model. Depth is included in the model to make
     queries flat, simple and faster.
@@ -171,7 +172,7 @@ class GenericImage(models.Model):
     This is to replace existing Image and Pose.
     """
 
-    deployment = models.ForeignKey(GenericDeployment)
+    deployment = models.ForeignKey(Deployment)
     image_name = models.CharField(max_length=200)   
     date_time = models.DateTimeField()
     position = models.PointField()
@@ -183,7 +184,7 @@ class GenericImage(models.Model):
         unique_together = (('date_time', 'deployment'), )
 
 
-class GenericCamera(models.Model):
+class Camera(models.Model):
     """Data about a camera used in a deployment.
     Contains information about the orientation and quality of the images
     as well as a name for the camera itself.
@@ -203,7 +204,7 @@ class GenericCamera(models.Model):
         (HORIZONTAL_ANGLE, 'Horizontal/Seascape'),
     )
 
-    image = models.ForeignKey(GenericImage)
+    image = models.ForeignKey(Image)
     name = models.CharField(max_length=50)
     angle = models.IntegerField(choices=CAMERA_ANGLES)    
 
@@ -235,7 +236,7 @@ class Measurements(models.Model):
         ('',''), 
     )
         
-    image = models.ForeignKey(GenericImage)
+    image = models.ForeignKey(Image)
 
     #The water temperature at the location (and time) of the image.
     temperature = models.FloatField(null=True, blank=True)
