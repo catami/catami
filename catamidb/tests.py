@@ -19,7 +19,7 @@ from model_mommy import mommy
 from tastypie.test import ResourceTestCase, TestApiClient
 from catamiPortal import settings
 from catamidb import authorization
-from catamidb.models import Campaign, Deployment, GenericImage, Measurements, GenericDeployment
+from catamidb.models import Campaign, GenericImage, Measurements, GenericDeployment
 
 setup_test_environment()
 from django.core import management

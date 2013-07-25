@@ -20,7 +20,7 @@ from tastypie.resources import ModelResource, Resource
 from .models import *
 from catamidb import authorization
 
-import os, sys, shutil
+import os, shutil
 import PIL
 
 import logging
@@ -400,6 +400,7 @@ class CampaignResource(ModelResource):
         dps = GenericDeployment.objects.filter(campaign=bundle.obj.id)
         bundle.data['deployment_count'] = len(dps)
         return bundle
+
 
 class GenericDeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
