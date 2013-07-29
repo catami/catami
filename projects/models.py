@@ -3,7 +3,7 @@ from datetime import datetime
 from dateutil.tz import tzutc
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
-from catamidb.models import GenericImage, GenericDeployment
+from catamidb.models import Image, Deployment
 from random import sample
 from django.db.utils import IntegrityError
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -60,7 +60,7 @@ class Project(models.Model):
     owner = models.ForeignKey(User, null=True)
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()
-    generic_images = models.ManyToManyField(GenericImage, null=True)
+    images = models.ManyToManyField(Image, null=True)
 
     class Meta:
         unique_together = (('owner', 'name', 'creation_date'), )
@@ -69,7 +69,7 @@ class Project(models.Model):
         )
 
 
-class GenericAnnotationSet(models.Model):
+class AnnotationSet(models.Model):
     """
     An annotated set is used to contain a set of images to be annotated.
     """
@@ -93,22 +93,22 @@ class GenericAnnotationSet(models.Model):
     description = models.TextField(blank=True, null=True)
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()
-    generic_images = models.ManyToManyField(GenericImage, related_name='projects')
+    images = models.ManyToManyField(Image, related_name='projects')
     image_sampling_methodology = models.IntegerField(choices=IMAGE_SAMPLING_METHODOLOGY_CHOICES)
     annotation_methodology = models.IntegerField(choices=ANNOTATATION_SAMPLING_METHODOLOGY_CHOICES)
 
     class Meta:
         unique_together = (('owner', 'name', 'creation_date'), )
         permissions = (
-            ('view_genericannotationset', 'View the generic annotation set.'),
+            ('view_annotationset', 'View the  annotation set.'),
         )
 
 
-class GenericAnnotation(models.Model):
+class Annotation(models.Model):
     """The common base for Point and Whole image annotations.
     """
 
-    image = models.ForeignKey('catamidb.GenericImage')
+    image = models.ForeignKey('catamidb.Image')
     owner = models.ForeignKey(User, null=True)
 
     #loose reference to AnnotationCode table
@@ -122,24 +122,23 @@ class GenericAnnotation(models.Model):
         abstract = True
 
 
-class GenericPointAnnotationManager(models.Manager):
+class PointAnnotationManager(models.Manager):
     """ Handles logic functions related to points annotations """
 
     def apply_random_sampled_points(self, annotation_set, sample_size):
         """ Randomly apply points to the images attached to this annotation
             set """
 
-        images = annotation_set.generic_images.all()
+        images = annotation_set.images.all()
         points_to_bulk_save = []
 
         # iterate through the images and create points
         for image in images:
-            print image
             for i in range(int(sample_size)):
 
-                point_annotation = GenericPointAnnotation()
+                point_annotation = PointAnnotation()
 
-                point_annotation.generic_annotation_set = annotation_set
+                point_annotation.annotation_set = annotation_set
                 point_annotation.image = image
                 point_annotation.owner = annotation_set.owner
                 point_annotation.x = random.uniform(0.008, 0.992) #random.random()
@@ -152,7 +151,7 @@ class GenericPointAnnotationManager(models.Manager):
                 points_to_bulk_save.append(point_annotation)
 
         # do the bulk save - for performance
-        GenericPointAnnotation.objects.bulk_create(points_to_bulk_save)
+        PointAnnotation.objects.bulk_create(points_to_bulk_save)
 
     def apply_stratified_sampled_points(self, annotation_set, sample_size):
         """ Apply points to the images attached to this annotation set using
@@ -162,7 +161,7 @@ class GenericPointAnnotationManager(models.Manager):
         return None
 
 
-class GenericPointAnnotation(GenericAnnotation):
+class PointAnnotation(Annotation):
     """
     A Point annotation.
 
@@ -170,13 +169,13 @@ class GenericPointAnnotation(GenericAnnotation):
     the set to which it belongs.
     """
 
-    generic_annotation_set = models.ForeignKey('projects.GenericAnnotationSet')
+    annotation_set = models.ForeignKey('projects.AnnotationSet')
 
     x = models.FloatField(validators = [MinValueValidator(0.0), MaxValueValidator(100.0)])
     y = models.FloatField(validators = [MinValueValidator(0.0), MaxValueValidator(100.0)])
 
 
-class GenericWholeImageAnnotation(GenericAnnotation):
+class WholeImageAnnotation(Annotation):
     """
     A Whole Image annotation.
 
@@ -184,4 +183,4 @@ class GenericWholeImageAnnotation(GenericAnnotation):
     annotation.
     """
 
-    generic_annotation_set = models.ForeignKey('projects.GenericAnnotationSet')
+    annotation_set = models.ForeignKey('projects.AnnotationSet')

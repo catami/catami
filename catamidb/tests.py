@@ -19,7 +19,7 @@ from model_mommy import mommy
 from tastypie.test import ResourceTestCase, TestApiClient
 from catamiPortal import settings
 from catamidb import authorization
-from catamidb.models import Campaign, Deployment, GenericImage, Measurements, GenericDeployment
+from catamidb.models import Campaign, Image, Measurements, Deployment
 
 setup_test_environment()
 from django.core import management
@@ -272,10 +272,10 @@ class TestCampaignResource(ResourceTestCase):
         self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
 
-class TestGenericDeploymentResource(ResourceTestCase):
+class TestDeploymentResource(ResourceTestCase):
     def setUp(self):
         #Tastypie stuff
-        super(TestGenericDeploymentResource, self).setUp()
+        super(TestDeploymentResource, self).setUp()
 
         self.bob_api_client = TestApiClient()
         self.bill_api_client = TestApiClient()
@@ -309,10 +309,10 @@ class TestGenericDeploymentResource(ResourceTestCase):
         self.campaign_bills = mommy.make_one('catamidb.Campaign', id=2)
 
         #make a deployments
-        self.deployment_bobs = mommy.make_recipe('catamidb.genericDeployment1',
+        self.deployment_bobs = mommy.make_recipe('catamidb.Deployment1',
                                                  id=1,
                                                  campaign=self.campaign_bobs)
-        self.deployment_bills = mommy.make_recipe('catamidb.genericDeployment2',
+        self.deployment_bills = mommy.make_recipe('catamidb.Deployment2',
                                                   id=2,
                                                   campaign=self.campaign_bills)
 
@@ -325,7 +325,7 @@ class TestGenericDeploymentResource(ResourceTestCase):
                                                  self.campaign_bills)
 
         #the API url for deployments
-        self.deployment_url = '/api/dev/generic_deployment/'
+        self.deployment_url = '/api/dev/deployment/'
 
         #some post data for testing deployment creation
         self.post_data = {
@@ -380,7 +380,7 @@ class TestGenericDeploymentResource(ResourceTestCase):
     def test_deployments_operations_as_authorised_users(self):
         # create a campaign & deployment that ONLY bill can see
         bills_campaign = mommy.make_one('catamidb.Campaign', id=3, short_name='cp_3')
-        bills_deployment = mommy.make_recipe('catamidb.genericDeployment3', id=3,
+        bills_deployment = mommy.make_recipe('catamidb.Deployment3', id=3,
                                              campaign=bills_campaign)
         assign('view_campaign', self.user_bill, bills_campaign)
 
@@ -416,10 +416,10 @@ class TestGenericDeploymentResource(ResourceTestCase):
         self.assertHttpUnauthorized(response)
 
 
-class TestGenericImageResource(ResourceTestCase):
+class TestImageResource(ResourceTestCase):
     def setUp(self):
         #Tastypie stuff
-        super(TestGenericImageResource, self).setUp()
+        super(TestImageResource, self).setUp()
 
         self.bob_api_client = TestApiClient()
         self.bill_api_client = TestApiClient()
@@ -453,21 +453,21 @@ class TestGenericImageResource(ResourceTestCase):
         self.campaign_bills = mommy.make_one('catamidb.Campaign', id=2)
 
         #make a deployments
-        self.deployment_bobs = mommy.make_recipe('catamidb.genericDeployment1',
+        self.deployment_bobs = mommy.make_recipe('catamidb.Deployment1',
                                                  id=1,
                                                  campaign=self.campaign_bobs)
-        self.deployment_bills = mommy.make_recipe('catamidb.genericDeployment2',
+        self.deployment_bills = mommy.make_recipe('catamidb.Deployment2',
                                                   id=2,
                                                   campaign=self.campaign_bills) 
 
         #make images
         self.image_bobs = mommy.make_recipe(
-            'catamidb.genericImage1',
+            'catamidb.Image1',
             id=1,             
             deployment=self.deployment_bobs)
 
         self.image_bills = mommy.make_recipe(
-            'catamidb.genericImage2',
+            'catamidb.Image2',
             id=2,            
             deployment=self.deployment_bills)
 
@@ -479,8 +479,8 @@ class TestGenericImageResource(ResourceTestCase):
         authorization.apply_campaign_permissions(
             self.user_bill, self.campaign_bills)
 
-        #the API url for GenericImage
-        self.image_url = '/api/dev/generic_image/'
+        #the API url for Image
+        self.image_url = '/api/dev/image/'
 
         #some post data for testing image creation
         self.post_data = {
@@ -532,9 +532,9 @@ class TestGenericImageResource(ResourceTestCase):
     def test_image_operations_as_authorised_users(self):
         # create a campaign & deployment that ONLY bill can see
         bills_campaign = mommy.make_one('catamidb.Campaign', id=3, short_name='cp__1')
-        bills_deployment = mommy.make_recipe('catamidb.genericDeployment3', id=3,
+        bills_deployment = mommy.make_recipe('catamidb.Deployment3', id=3,
                                              campaign=bills_campaign)
-        bills_image = mommy.make_recipe('catamidb.genericImage3', 
+        bills_image = mommy.make_recipe('catamidb.Image3',
                                         id=3,                                        
                                         deployment=bills_deployment)
         assign('view_campaign', self.user_bill, bills_campaign)
@@ -571,10 +571,10 @@ class TestGenericImageResource(ResourceTestCase):
         self.assertHttpUnauthorized(response)
 
 
-class TestGenericCameraResource(ResourceTestCase):
+class TestCameraResource(ResourceTestCase):
     def setUp(self):
         #Tastypie stuff
-        super(TestGenericCameraResource, self).setUp()
+        super(TestCameraResource, self).setUp()
 
         self.bob_api_client = TestApiClient()
         self.bill_api_client = TestApiClient()
@@ -608,31 +608,31 @@ class TestGenericCameraResource(ResourceTestCase):
         self.campaign_bills = mommy.make_one('catamidb.Campaign', id=2)
 
         #make a deployments
-        self.deployment_bobs = mommy.make_recipe('catamidb.genericDeployment1',
+        self.deployment_bobs = mommy.make_recipe('catamidb.Deployment1',
                                                  id=1,
                                                  campaign=self.campaign_bobs)
-        self.deployment_bills = mommy.make_recipe('catamidb.genericDeployment2',
+        self.deployment_bills = mommy.make_recipe('catamidb.Deployment2',
                                                   id=2,
                                                   campaign=self.campaign_bills)
 
         #make images
         self.image_bobs = mommy.make_recipe(
-            'catamidb.genericImage1',
+            'catamidb.Image1',
             id=1, 
             deployment=self.deployment_bobs)
 
         self.image_bills = mommy.make_recipe(
-            'catamidb.genericImage2',
+            'catamidb.Image2',
             id=2,
             deployment=self.deployment_bills)
 
         #make cameras
         self.camera_bobs = mommy.make_one(
-            'catamidb.GenericCamera', 
+            'catamidb.Camera',
             id=1,
             image=self.image_bobs)
         self.camera_bills = mommy.make_one(
-            'catamidb.GenericCamera',
+            'catamidb.Camera',
             id=2,
             image=self.image_bills)
 
@@ -645,7 +645,7 @@ class TestGenericCameraResource(ResourceTestCase):
             self.user_bill, self.campaign_bills)
 
         #the API url for deployments
-        self.camera_url = '/api/dev/generic_camera/'
+        self.camera_url = '/api/dev/camera/'
 
         #some post data for testing camera creation
         self.post_data = []
@@ -696,19 +696,19 @@ class TestGenericCameraResource(ResourceTestCase):
     def test_camera_operations_as_authorised_users(self):
         # create a campaign & deployment that ONLY bill can see
         bills_campaign = mommy.make_one('catamidb.Campaign', id=3, short_name='cp_3')
-        bills_deployment = mommy.make_recipe('catamidb.genericDeployment3', id=3,
+        bills_deployment = mommy.make_recipe('catamidb.Deployment3', id=3,
                                              campaign=bills_campaign)
         assign('view_campaign', self.user_bill, bills_campaign)
 
         #make exclusive image for bill and assign this image to camera to image
         self.image_bill_exc = mommy.make_recipe(
-            'catamidb.genericImage3',
+            'catamidb.Image3',
             id=3,             
             deployment=bills_deployment) #IMPORTANT camera checks campaign which has reference to deployment. Image has reference to deployment and camera
 
         #make exclusive camera for bill
         self.camera_bill_exc = mommy.make_one(
-            'catamidb.GenericCamera',
+            'catamidb.Camera',
             id=3,
             image=self.image_bill_exc)
 
@@ -781,20 +781,20 @@ class TestMeasurementsResource(ResourceTestCase):
         self.campaign_bills = mommy.make_one('catamidb.Campaign', id=2)
 
         #make a deployments
-        self.deployment_bobs = mommy.make_recipe('catamidb.genericDeployment1',
+        self.deployment_bobs = mommy.make_recipe('catamidb.Deployment1',
                                                  id=1,
                                                  campaign=self.campaign_bobs)
-        self.deployment_bills = mommy.make_recipe('catamidb.genericDeployment2',
+        self.deployment_bills = mommy.make_recipe('catamidb.Deployment2',
                                                   id=2,
                                                   campaign=self.campaign_bills)
         #make images
         self.image_bobs = mommy.make_recipe(
-            'catamidb.genericImage1',
+            'catamidb.Image1',
             id=1, 
             deployment=self.deployment_bobs)
 
         self.image_bills = mommy.make_recipe(
-            'catamidb.genericImage2',
+            'catamidb.Image2',
             id=2,
             deployment=self.deployment_bills)
 
@@ -871,9 +871,9 @@ class TestMeasurementsResource(ResourceTestCase):
     def test_measurement_operations_as_authorised_users(self):
         # create a campaign & deployment that ONLY bill can see
         bills_campaign = mommy.make_one('catamidb.Campaign', id=3, short_name='cp__3')
-        bills_deployment = mommy.make_recipe('catamidb.genericDeployment1', id=3,
+        bills_deployment = mommy.make_recipe('catamidb.Deployment1', id=3,
                                              campaign=bills_campaign, short_name='dp__3')
-        bills_image = mommy.make_recipe('catamidb.genericImage3', 
+        bills_image = mommy.make_recipe('catamidb.Image3',
                                         id=3,                                        
                                         deployment=bills_deployment)
         bills_measurements = mommy.make_one('catamidb.Measurements', 

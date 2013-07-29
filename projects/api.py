@@ -8,14 +8,14 @@ import tastypie
 from tastypie.bundle import Bundle
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
-from catamidb.models import GenericImage, GenericImageManager
+from catamidb.models import Image, ImageManager
 from projects.models import (Project,
-                             GenericAnnotationSet,
-                             GenericPointAnnotation,
-                             GenericWholeImageAnnotation,
+                             AnnotationSet,
+                             PointAnnotation,
+                             WholeImageAnnotation,
                              AnnotationCodes,
-                             QualifierCodes, GenericPointAnnotationManager)
-from catamidb.api import GenericImageResource
+                             QualifierCodes, PointAnnotationManager)
+from catamidb.api import ImageResource
 from tastypie.authentication import (Authentication,
                                      SessionAuthentication,
                                      MultiAuthentication,
@@ -124,26 +124,26 @@ class ProjectAuthorization(Authorization):
             )
 
 
-class GenericAnnotationSetAuthorization(Authorization):
+class AnnotationSetAuthorization(Authorization):
     """
-    Implements authorization for the GenericAnnotationSet.
+    Implements authorization for the AnnotationSet.
     """
 
     def read_list(self, object_list, bundle):
-        """Restrict the list to only user visible GenericAnnotationSet."""
+        """Restrict the list to only user visible AnnotationSet."""
         user = get_real_user_object(bundle.request.user)
         user_objects = get_objects_for_user(user, [
-            'projects.view_genericannotationset'], object_list)
+            'projects.view_annotationset'], object_list)
 
         return user_objects
 
     def read_detail(self, object_list, bundle):
-        """Check user has permission to view this GenericAnnotationSet."""
+        """Check user has permission to view this AnnotationSet."""
         # get real user
         user = get_real_user_object(bundle.request.user)
 
         # check the user has permission to view this object
-        if user.has_perm('projects.view_genericannotationset', bundle.obj):
+        if user.has_perm('projects.view_annotationset', bundle.obj):
             return True
 
         raise Unauthorized()
@@ -160,7 +160,7 @@ class GenericAnnotationSetAuthorization(Authorization):
             "You need to log in to create annotation sets.")
 
     def delete_list(self, object_list, bundle):
-        """Currently do not permit deletion of any GenericAnnotationSet list.
+        """Currently do not permit deletion of any AnnotationSet list.
         """
         raise Unauthorized(
             "You do not have permission to delete these annotation sets.")
@@ -174,7 +174,7 @@ class GenericAnnotationSetAuthorization(Authorization):
         user = get_real_user_object(bundle.request.user)
 
         # check the user has permission to delete this object
-        if user.has_perm('projects.delete_genericannotationset', bundle.obj):
+        if user.has_perm('projects.delete_annotationset', bundle.obj):
             return True
 
         raise Unauthorized(
@@ -185,7 +185,7 @@ class GenericAnnotationSetAuthorization(Authorization):
         """
 
         user = get_real_user_object(bundle.request.user)
-        if user.has_perm('projects.change_genericannotationset', bundle.obj):
+        if user.has_perm('projects.change_annotationset', bundle.obj):
             # the user has permission to edit
             return True
         else:
@@ -194,34 +194,34 @@ class GenericAnnotationSetAuthorization(Authorization):
             )
 
 
-class GenericPointAnnotationAuthorization(Authorization):
+class PointAnnotationAuthorization(Authorization):
     """
-    Implements authorization for the GenericPointAnnotations.
+    Implements authorization for the PointAnnotations.
     """
 
     def read_list(self, object_list, bundle):
-        """Restrict the list to only user visible GenericPointAnnotations."""
+        """Restrict the list to only user visible PointAnnotations."""
         user = get_real_user_object(bundle.request.user)
 
         # get the objects the user has permission to see
         annotation_set_objects = get_objects_for_user(user, [
-            'projects.view_genericannotationset'])
+            'projects.view_annotationset'])
 
         # get all annotation points for the above allowable annotation sets
-        point_annotations = GenericPointAnnotation.objects.select_related("generic_annotation_set")
-        point_annotation_ids = (point_annotations.filter(generic_annotation_set__in=annotation_set_objects).
+        point_annotations = PointAnnotation.objects.select_related("annotation_set")
+        point_annotation_ids = (point_annotations.filter(annotation_set__in=annotation_set_objects).
                           values_list('id'))
 
         #now filter out the deployments we are not allowed to see
         return object_list.filter(id__in=point_annotation_ids)
 
     def read_detail(self, object_list, bundle):
-        """Check user has permission to view this GenericPointAnnotation."""
+        """Check user has permission to view this PointAnnotation."""
         # get real user
         user = get_real_user_object(bundle.request.user)
 
         # check the user has permission to view this object
-        if user.has_perm('projects.view_genericannotationset', bundle.obj.generic_annotation_set):
+        if user.has_perm('projects.view_annotationset', bundle.obj.annotation_set):
             return True
 
         # raise hell! - https://github.com/toastdriven/django-
@@ -232,6 +232,7 @@ class GenericPointAnnotationAuthorization(Authorization):
         raise Unauthorized("Sorry, no create lists.")
 
     def create_detail(self, object_list, bundle):
+
         #authenticated people can create items
         if bundle.request.user.is_authenticated():
             return True
@@ -240,7 +241,7 @@ class GenericPointAnnotationAuthorization(Authorization):
             "You don't have permission to create annotations on this annotation set.")
 
     def delete_list(self, object_list, bundle):
-        """Currently do not permit deletion of any GenericAnnotationSet list.
+        """Currently do not permit deletion of any AnnotationSet list.
         """
         raise Unauthorized("You do not have permission to delete these annotation points.")
 
@@ -257,7 +258,7 @@ class GenericPointAnnotationAuthorization(Authorization):
            raise Unauthorized()
 
         # check the user has permission to edit the contained annotation set
-        if user.has_perm('projects.change_genericannotationset', bundle.obj.generic_annotation_set):
+        if user.has_perm('projects.change_annotationset', bundle.obj.annotation_set):
             return True
 
         raise Unauthorized(
@@ -274,7 +275,7 @@ class GenericPointAnnotationAuthorization(Authorization):
            raise Unauthorized()
 
         # check the user has permission to edit the contained annotation set
-        if user.has_perm('projects.change_genericannotationset', bundle.obj.generic_annotation_set):
+        if user.has_perm('projects.change_annotationset', bundle.obj.annotation_set):
             return True
 
         raise Unauthorized("You don't have permission to edit this annotation point.")
@@ -305,7 +306,7 @@ class ProjectResourceLite(ModelResource):
 
 
 class ModelResource(ModelResource):
-    def override_urls(self):
+    def prepend_urls(self):
         urls = []
 
         for name, field in self.fields.items():
@@ -323,7 +324,7 @@ class ModelResource(ModelResource):
 
 class ProjectResource(ModelResource):
     owner = fields.ForeignKey(UserResource, 'owner', full=True)
-    generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', blank=True)
+    images = fields.ManyToManyField(ImageResource, 'images', blank=True)
 
     class Meta:
         always_return_data = True,
@@ -338,7 +339,7 @@ class ProjectResource(ModelResource):
         filtering = {
             'name': ALL,
             'owner': ALL,
-            'generic_images': ALL_WITH_RELATIONS,
+            'images': ALL_WITH_RELATIONS,
             'id': 'exact'
         }
         #excludes = ['owner', 'creation_date', 'modified_date']
@@ -365,7 +366,7 @@ class ProjectResource(ModelResource):
             return HttpMultipleChoices("More than one resource is found at this URI.")
 
         # get all the images related to this project
-        project_images = Project.objects.get(id=obj.pk).generic_images.all()
+        project_images = Project.objects.get(id=obj.pk).images.all()
 
         # create the id string list to send to the next API call
         # TODO: this is not ideal, best find a better way to deal with this
@@ -377,7 +378,7 @@ class ProjectResource(ModelResource):
         image_ids = image_ids[:-1]
 
         # call the image resource to give us what we want
-        image_resource = GenericImageResource()
+        image_resource = ImageResource()
         return image_resource.get_list(request, id__in=image_ids)
 
     def create_project(self, request, **kwargs):
@@ -404,7 +405,7 @@ class ProjectResource(ModelResource):
             image_bundle = Bundle()
             image_bundle.request = request
             image_bundle.data = dict(deployment=deployment_id)
-            images = GenericImageResource().obj_get_list(image_bundle, deployment=deployment_id)
+            images = ImageResource().obj_get_list(image_bundle, deployment=deployment_id)
 
             #check the the sample size is not larger than the number of images in our image list
             if int(image_sample_size) > len(images):
@@ -415,7 +416,7 @@ class ProjectResource(ModelResource):
             #create the project
             project_bundle = Bundle()
             project_bundle.request = request
-            project_bundle.data = dict(name=name, description=description, generic_images=images)
+            project_bundle.data = dict(name=name, description=description, images=images)
             new_project = self.obj_create(project_bundle)
 
             #create the annotation set for the project
@@ -426,7 +427,7 @@ class ProjectResource(ModelResource):
                                               image_sample_size=image_sample_size,
                                               annotation_methodology=annotation_methodology,
                                               point_sample_size=point_sample_size)
-            GenericAnnotationSetResource().obj_create(annotation_set_bundle)
+            AnnotationSetResource().obj_create(annotation_set_bundle)
 
             # build up a response with a 'Location', so the client knows the project id which is created
             kwargs = dict (resource_name=self._meta.resource_name,
@@ -467,11 +468,11 @@ class ProjectResource(ModelResource):
     def dehydrate(self, bundle):
         # Add an image_count field to ProjectResource.
         bundle.data['image_count'] = Project.objects.get(pk=bundle.data[
-            'id']).generic_images.count()
+            'id']).images.count()
 
         # Add the map_extent of all the images in this project
-        images = Project.objects.get(id=bundle.obj.id).generic_images.all()
-        images = GenericImage.objects.filter(id__in=images)
+        images = Project.objects.get(id=bundle.obj.id).images.all()
+        images = Image.objects.filter(id__in=images)
         map_extent = ""
         if len(images) != 0:
             map_extent = images.extent().__str__()
@@ -481,17 +482,17 @@ class ProjectResource(ModelResource):
         return bundle
 
 
-class GenericAnnotationSetResource(ModelResource):
+class AnnotationSetResource(ModelResource):
     project = fields.ForeignKey(ProjectResource, 'project')
-    generic_images = fields.ManyToManyField(GenericImageResource, 'generic_images', full=True, blank=True, null=True)
+    images = fields.ManyToManyField(ImageResource, 'images', full=True, blank=True, null=True)
 
     class Meta:
-        queryset = GenericAnnotationSet.objects.all()
-        resource_name = "generic_annotation_set"
+        queryset = AnnotationSet.objects.all()
+        resource_name = "annotation_set"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication(),
                                              Authentication())
-        authorization = GenericAnnotationSetAuthorization()
+        authorization = AnnotationSetAuthorization()
         detail_allowed_methods = ['get', 'post', 'put', 'delete']
         list_allowed_methods = ['get', 'post', 'put', 'delete']
         filtering = {
@@ -522,7 +523,7 @@ class GenericAnnotationSetResource(ModelResource):
             return HttpMultipleChoices("More than one resource is found at this URI.")
 
         # get all the images related to this project
-        annotation_set_images = GenericAnnotationSet.objects.get(id=obj.pk).generic_images.all()
+        annotation_set_images = AnnotationSet.objects.get(id=obj.pk).images.all()
 
         # create the id string list to send to the next API call
         # TODO: this is not ideal, best find a better way to deal with this
@@ -534,7 +535,7 @@ class GenericAnnotationSetResource(ModelResource):
         image_ids = image_ids[:-1]
 
         # call the image resource to give us what we want
-        image_resource = GenericImageResource()
+        image_resource = ImageResource()
         return image_resource.get_list(request, id__in=image_ids)
 
     def do_sampling_operations(self, bundle):
@@ -545,9 +546,9 @@ class GenericAnnotationSetResource(ModelResource):
         image_sampling_methodology = bundle.data['image_sampling_methodology']
 
         if image_sampling_methodology == '0':
-            bundle.obj.generic_images = GenericImageManager().random_sample_images(bundle.obj.project.generic_images.all(), image_sample_size)
+            bundle.obj.images = ImageManager().random_sample_images(bundle.obj.project.images.all(), image_sample_size)
         elif image_sampling_methodology == '1':
-            bundle.obj.generic_images = GenericImageManager().stratified_sample_images(bundle.obj.project.generic_images.all(), image_sample_size)
+            bundle.obj.images = ImageManager().stratified_sample_images(bundle.obj.project.images.all(), image_sample_size)
         else:
             raise Exception("Image sampling method not implemented.")
 
@@ -559,14 +560,14 @@ class GenericAnnotationSetResource(ModelResource):
         annotation_methodology = bundle.data['annotation_methodology']
 
         if annotation_methodology == '0':
-            GenericPointAnnotationManager().apply_random_sampled_points(bundle.obj, point_sample_size)
+            PointAnnotationManager().apply_random_sampled_points(bundle.obj, point_sample_size)
         else:
             raise Exception("Point sampling method not implemented.")
 
     def obj_create(self, bundle, **kwargs):
         """
         We are overiding this function so we can get access to the newly
-        created GenericAnnotationSet. Once we have reference to it, we can apply
+        created AnnotationSet. Once we have reference to it, we can apply
         object level permissions to the object.
         """
         # get real user
@@ -577,13 +578,13 @@ class GenericAnnotationSetResource(ModelResource):
         bundle.data['creation_date'] = create_modified_date
         bundle.data['modified_date'] = create_modified_date
 
-        bundle.data['generic_images'] = ''
+        bundle.data['images'] = ''
 
         #attach current user as the owner
         bundle.data['owner'] = user
 
         #create the bundle
-        super(GenericAnnotationSetResource, self).obj_create(bundle)
+        super(AnnotationSetResource, self).obj_create(bundle)
 
         #generate image subsamples and points
         try:
@@ -596,22 +597,22 @@ class GenericAnnotationSetResource(ModelResource):
             raise ImmediateHttpResponse(HttpNotImplemented("Unable to create annotation set."))
 
         #make sure we apply permissions to this newly created object
-        authorization.apply_generic_annotation_set_permissions(user, bundle.obj)
+        authorization.apply_annotation_set_permissions(user, bundle.obj)
 
         return bundle
 
 
-class GenericPointAnnotationResource(ModelResource):
-    generic_annotation_set = fields.ForeignKey(GenericAnnotationSetResource, 'generic_annotation_set')
-    image = fields.ForeignKey(GenericImageResource, 'image')
+class PointAnnotationResource(ModelResource):
+    annotation_set = fields.ForeignKey(AnnotationSetResource, 'annotation_set')
+    image = fields.ForeignKey(ImageResource, 'image')
 
     class Meta:
-        queryset = GenericPointAnnotation.objects.all()
-        resource_name = "generic_point_annotation"
+        queryset = PointAnnotation.objects.all()
+        resource_name = "point_annotation"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication(),
                                              Authentication())
-        authorization = GenericPointAnnotationAuthorization()
+        authorization = PointAnnotationAuthorization()
         detail_allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
         list_allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
         filtering = {
@@ -620,38 +621,38 @@ class GenericPointAnnotationResource(ModelResource):
             'id': 'exact',
             'annotation_caab_code': 'exact',
             'qualifier_short_name': 'exact',
-            'generic_annotation_set': 'exact',
+            'annotation_set': 'exact',
         }
 
     def obj_create(self, bundle, **kwargs):
         """
         We are overiding this function so we can get access to the newly
-        created GenericAnnotationSet. Once we have reference to it, we can apply
+        created AnnotationSet. Once we have reference to it, we can apply
         object level permissions to the object.
         """
 
         # get real user
         user = get_real_user_object(bundle.request.user)
 
-        super(GenericPointAnnotationResource, self).obj_create(bundle)
+        super(PointAnnotationResource, self).obj_create(bundle)
 
         # NOTE: we can't check permissions on related objects until the bundle
         # is created - django throws an exception. What we need to do here is
         # check permissions. If the user does not have permissions we delete
         # the create object.
-        if not user.has_perm('projects.change_genericannotationset', bundle.obj.generic_annotation_set):
+        if not user.has_perm('projects.change_annotationset', bundle.obj.annotation_set):
             bundle.obj.delete()
 
         return bundle
 
 
-class GenericWholeImageAnnotationResource(ModelResource):
-    generic_annotation_set = fields.ForeignKey(GenericAnnotationSet, 'generic_annotation_set', full=True)
-    image = fields.ForeignKey(GenericImageResource, 'image', full=True)
+class WholeImageAnnotationResource(ModelResource):
+    annotation_set = fields.ForeignKey(AnnotationSet, 'annotation_set', full=True)
+    image = fields.ForeignKey(ImageResource, 'image', full=True)
 
     class Meta:
-        queryset = GenericWholeImageAnnotation.objects.all()
-        resource_name = "generic_whole_image_annotation"
+        queryset = WholeImageAnnotation.objects.all()
+        resource_name = "whole_image_annotation"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication(),
                                              Authentication())
@@ -664,7 +665,7 @@ class GenericWholeImageAnnotationResource(ModelResource):
             'id': 'exact',
             'annotation_caab_code': 'exact',
             'qualifier_short_name': 'exact',
-            'generic_annotation_set': 'exact',
+            'annotation_set': 'exact',
         }
 
 

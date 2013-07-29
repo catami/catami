@@ -20,7 +20,7 @@ from tastypie.resources import ModelResource, Resource
 from .models import *
 from catamidb import authorization
 
-import os, sys, shutil
+import os, shutil
 import PIL
 
 import logging
@@ -101,7 +101,7 @@ class CampaignAuthorization(Authorization):
         raise Unauthorized("Sorry, no deletes.")
 
 
-class GenericDeploymentAuthorization(Authorization):
+class DeploymentAuthorization(Authorization):
     def read_list(self, object_list, bundle):
         # get real user object
         user = get_real_user_object(bundle.request.user)
@@ -111,7 +111,7 @@ class GenericDeploymentAuthorization(Authorization):
             'catamidb.view_campaign'])
 
         # get all deployments for the above allowable campaigns
-        deployments = GenericDeployment.objects.select_related("campaign")
+        deployments = Deployment.objects.select_related("campaign")
         deployment_ids = (deployments.filter(campaign__in=campaign_objects).
                           values_list('id'))
 
@@ -150,7 +150,7 @@ class GenericDeploymentAuthorization(Authorization):
         raise Unauthorized("Sorry, no deletes.")
 
 
-class GenericImageAuthorization(Authorization):
+class ImageAuthorization(Authorization):
     def read_list(self, object_list, bundle):
         # get real user object
         user = get_real_user_object(bundle.request.user)
@@ -160,7 +160,7 @@ class GenericImageAuthorization(Authorization):
             'catamidb.view_campaign'])
 
         # get all images for the above allowable campaigns
-        images = GenericImage.objects.select_related("deployment__campaign")
+        images = Image.objects.select_related("deployment__campaign")
         image_ids = images.filter(
             deployment__campaign__in=campaign_objects).values_list('id')
 
@@ -178,8 +178,6 @@ class GenericImageAuthorization(Authorization):
         if user.has_perm('catamidb.view_campaign',
                          bundle.obj.deployment.campaign):
             return True
-
-        print "should not see this"
 
         raise Unauthorized()
 
@@ -204,6 +202,7 @@ class GenericImageAuthorization(Authorization):
 
 
 class ImageUploadAuthorization(Authorization):
+
     def read_list(self, object_list, bundle):
         return image_objects
 
@@ -230,7 +229,7 @@ class ImageUploadAuthorization(Authorization):
         raise Unauthorized("Sorry, no deletes.")
 
 
-class GenericCameraAuthorization(Authorization):
+class CameraAuthorization(Authorization):
     def read_list(self, object_list, bundle):
         # get real user object
         user = get_real_user_object(bundle.request.user)
@@ -240,7 +239,7 @@ class GenericCameraAuthorization(Authorization):
             'catamidb.view_campaign'])
 
         # campaign contain deployments, which is referenced in images. Find images user can see first
-        images = GenericImage.objects.select_related("deployment__campaign")
+        images = Image.objects.select_related("deployment__campaign")
         #get ids of allowed images
         allowed_images_ids = images.filter(
             deployment__campaign__in=campaign_objects).values_list('id')     
@@ -257,7 +256,7 @@ class GenericCameraAuthorization(Authorization):
             'catamidb.view_campaign'])
 
         # campaign contain deployments, which is referenced in images. Find images user can see first
-        images = GenericImage.objects.select_related("deployment__campaign")
+        images = Image.objects.select_related("deployment__campaign")
         #get ids of allowed images
         allowed_images_ids = images.filter(
             deployment__campaign__in=campaign_objects).values_list('id')     
@@ -301,7 +300,7 @@ class MeasurementsAuthorization(Authorization):
             'catamidb.view_campaign'])
 
         # campaign contain deployments, which is referenced in images. Find images user can see first
-        images = GenericImage.objects.select_related("deployment__campaign")
+        images = Image.objects.select_related("deployment__campaign")
         #get ids of allowed images
         allowed_images_ids = images.filter(
             deployment__campaign__in=campaign_objects).values_list('id')     
@@ -318,7 +317,7 @@ class MeasurementsAuthorization(Authorization):
             'catamidb.view_campaign'])
 
         # campaign contain deployments, which is referenced in images. Find images user can see first
-        images = GenericImage.objects.select_related("deployment__campaign")
+        images = Image.objects.select_related("deployment__campaign")
         #get ids of allowed images
         allowed_images_ids = images.filter(
             deployment__campaign__in=campaign_objects).values_list('id')     
@@ -397,20 +396,21 @@ class CampaignResource(ModelResource):
         return bundle
 
     def dehydrate(self, bundle):                   
-        dps = GenericDeployment.objects.filter(campaign=bundle.obj.id)
+        dps = Deployment.objects.filter(campaign=bundle.obj.id)
         bundle.data['deployment_count'] = len(dps)
         return bundle
 
-class GenericDeploymentResource(ModelResource):
+
+class DeploymentResource(ModelResource):
     campaign = fields.ForeignKey(CampaignResource, 'campaign')
 
     class Meta:
         always_return_data = True,
-        queryset = GenericDeployment.objects.prefetch_related("campaign").all()
-        resource_name = "generic_deployment"
+        queryset = Deployment.objects.prefetch_related("campaign").all()
+        resource_name = "deployment"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
-        authorization = GenericDeploymentAuthorization()
+        authorization = DeploymentAuthorization()
         filtering = {
             'short_name': ALL,
             'campaign': ALL_WITH_RELATIONS,
@@ -425,7 +425,7 @@ class GenericDeploymentResource(ModelResource):
         bundle.data['campaign_name'] = dp.campaign.short_name
 
         # Add the map_extent of all the images in this project
-        images = GenericImage.objects.filter(deployment=bundle.obj.id)
+        images = Image.objects.filter(deployment=bundle.obj.id)
         map_extent = ""
         if len(images) != 0:
             map_extent = images.extent().__str__()
@@ -441,7 +441,7 @@ class ImageUploadResource(ModelResource):
     class Meta:
         always_return_data = True
         queryset = ImageUpload.objects.all()
-        deployments = GenericDeployment.objects.all()
+        deployments = Deployment.objects.all()
         resource_name = "image_upload"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
@@ -546,16 +546,16 @@ class ImageUploadResource(ModelResource):
         return bundle
 
 
-class GenericImageResource(ModelResource):   
-    deployment = fields.ToOneField('catamidb.api.GenericDeploymentResource', 'deployment')
+class ImageResource(ModelResource):
+    deployment = fields.ToOneField('catamidb.api.DeploymentResource', 'deployment')
 
     class Meta:
         always_return_data = True
-        queryset = GenericImage.objects.all()
-        resource_name = "generic_image"
+        queryset = Image.objects.all()
+        resource_name = "image"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
-        authorization = GenericImageAuthorization()
+        authorization = ImageAuthorization()
         filtering = {
             'deployment': ALL_WITH_RELATIONS,
             'date_time': ALL,
@@ -606,15 +606,15 @@ class GenericImageResource(ModelResource):
         return bundle
 
 
-class GenericCameraResource(ModelResource):   
-    image = fields.ToOneField('catamidb.api.GenericImageResource', 'image')    
+class CameraResource(ModelResource):
+    image = fields.ToOneField('catamidb.api.ImageResource', 'image')
     class Meta:
         always_return_data = True
-        queryset = GenericCamera.objects.all()
-        resource_name = "generic_camera"
+        queryset = Camera.objects.all()
+        resource_name = "camera"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
-        authorization = GenericCameraAuthorization()
+        authorization = CameraAuthorization()
         filtering = {
             'id': ALL,
             'name': ALL,
@@ -623,7 +623,7 @@ class GenericCameraResource(ModelResource):
 
 
 class MeasurementsResource(ModelResource):     
-    image = fields.ToOneField('catamidb.api.GenericImageResource', 'image')   
+    image = fields.ToOneField('catamidb.api.ImageResource', 'image')
     class Meta:
         always_return_data = True
         queryset = Measurements.objects.all()
