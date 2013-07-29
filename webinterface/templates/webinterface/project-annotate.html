@@ -30,7 +30,7 @@
         #ImageContainer {
             position: relative;
             margin-top: 10px;
-            margin-right: 510px;
+            /*margin-right: 510px;*/
         }
 
         #ImageContainer span {
@@ -98,37 +98,36 @@
         <div id="ProjectAnnotateContainer"></div>
     </div>
 
-    <div style="width: 100%">
+    <div class="row-fluid">
 
-        <div style="float: right; width: 500px;">
-        
-            <div class="well">
-                <h3>Tools</h3>
-                <a id="hide_points_button" class="btn">Hide Points (click and hold me)</a>
+        <div class="span9" id="ImageContainer"></div>
 
-                <div class="btn-group" data-toggle="buttons-checkbox">
-                    <button id="ZoomToggle" type="button" class="btn" >Zoom Toggle</button>
-                </div>
-            </div>
+        <div class="span3" style="margin-top: 10px;">
 
-        	<div id="ChooseAnnotationContainer" ></div>
+            <div id="ChooseAnnotationContainer" ></div>
 
-            <div>
-                <h3>Annotations</h3>
-                <ul id="LabelPils" class="nav nav-pills">
-                    <li class="active">
-                        <a>This image is not labelled.</a>
-                    </li>
-                </ul>
-            </div>
         </div>
-
-        <div id="ImageContainer"></div>
 
 	</div>
 	
     <script type="text/template" id="ChooseAnnotationTemplate">
-    	<div id="annotation-chooser" style="height: 500px"></div>
+
+        <div class="well">
+            <a id="hide_points_button" class="btn">Hide Points (click and hold me)</a>
+
+           <!-- <div class="btn-group" data-toggle="buttons-checkbox">
+                <button id="ZoomToggle" type="button" class="btn" >Zoom Toggle</button>
+
+            </div>-->
+            <button id="ZoomToggle" type="button" class="btn" data-toggle="button">Zoom Toggle</button>
+        </div>
+
+    	<div id="annotation-chooser"></div>
+
+         <div>
+                <h3>Image Labels</h3>
+                <ul id="LabelPils" class="nav nav-pills"></ul>
+            </div>
 	</script>
 	
     <script type="text/template" id="ProjectAnnotateTemplate">
@@ -173,7 +172,6 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.imagesloaded.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.accordion.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery.elevatezoom/jquery.elevateZoom-2.5.5.min.js"></script>
-    <!--<script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/bootstrapSwitch.js"></script>-->
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
 
     <script type="text/javascript">
@@ -184,6 +182,7 @@
         var annotationSets = new AnnotationSets();
         var project = new Project({"id": projectId});
         var annotationCodeList = new AnnotationCodeList();
+        //var nested_annotation_list;
 
         annotationSets.fetch({
             data: { project: projectId },
@@ -195,6 +194,7 @@
                         annotationCodeList.fetch({
                             data: {limit: 500},
                             success: function (model, response, options) {
+
 
                                 //load the views
                                 var projectAnnotateView = new ProjectAnnotateView({
@@ -250,17 +250,21 @@
        
         });
 
-
-    	var chooseAnnotationView = new ChooseAnnotationView({
+        var chooseAnnotationView = new ChooseAnnotationView({
             el: $("#ChooseAnnotationContainer")
         });
+        $('#annotation-chooser ul').accordion();
 
-		$('#annotation-chooser ul').accordion();
+        //make the first item expanded
+        $('ul.accordion > li').addClass('active', 'true');
+        $('ul.accordion > li > ul').css('display', 'block');
+
+
         $(window).resize(function(e){
             //trigger an event to redraw
             GlobalEvent.trigger("screen_changed");
         });
 
 		    </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
+
 {% endblock %}

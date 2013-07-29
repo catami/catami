@@ -10,17 +10,18 @@ var AnnotationCodeList = Backbone.Tastypie.Collection.extend({
 });
 
 //yeah, it's a global.
-var annotation_code_list = new AnnotationCodeList();
+
+//var annotation_code_list = new AnnotationCodeList();
 var nested_annotation_list;
+//var annotationCodeList = new AnnotationCodeList();
 
 ChooseAnnotationView = Backbone.View.extend({
     model: AnnotationCodeList,
     el: $('div'),
     initialize: function () {
-        // var annotation_code_list = new AnnotationCodeList();
 
-        annotation_code_list.fetch({
-            async: false,
+        annotationCodeList.fetch({
+        async: false,
             data: { limit: 999 },
             success: function (model, response, options) {
                 nested_annotation_list = classificationTreeBuilder(model.toJSON());
@@ -71,10 +72,30 @@ ChooseAnnotationView = Backbone.View.extend({
         e.preventDefault();
         var annotation_code_id = $(e.currentTarget).data("id");
         GlobalEvent.trigger("annotation_to_be_set", annotation_code_id);
+
+/*    annotationChosen: function(annotation_code_id){
+          //alert(annotationCode);
+          this.$('#assign_annotation_button').css('visibility', 'visible');
+          this.current_annotation = annotation_code_id;
+          var caab_object = annotationCodeList.get(annotation_code_id);
+          if (caab_object.get('parent')){
+              var parent_caab_name_list = caab_object.get('parent').split('/');
+              var parent_caab_object = annotationCodeList.get(parent_caab_name_list[parent_caab_name_list.length-2]);
+              this.$('#current_annotation_label').text(caab_object.get('code_name'));
+              this.$('#goto_parent_button').empty().append('<i class="icon-chevron-left"></i> '+parent_caab_object.get('code_name'));
+          } else {
+              this.$('#current_annotation_label').text(caab_object.get('code_name'));
+              this.$('#goto_parent_button').empty();
+          }*/
+    },
+    annotationFinalised: function(){
+        //make it so
+        this.$('#assign_annotation_button').css('visibility', 'hidden');
+        GlobalEvent.trigger("annotation_to_be_set", this.current_annotation);
     },
     new_parent_node: function(new_parent_id){
         this.current_annotation = new_parent_id;
-        var caab_object = annotation_code_list.get(new_parent_id);
+        var caab_object = annotationCodeList.get(new_parent_id);
 
         if (new_parent_id === '1'){
             this.$('#assign_annotation_button').css('visibility', 'hidden');
@@ -171,6 +192,8 @@ ImageAnnotateView = Backbone.View.extend({
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
+        GlobalEvent.on("point_mouseover", this.pointMouseOver, this);
+        GlobalEvent.on("point_mouseout", this.pointMouseOut, this);
         GlobalEvent.on("annotation_to_be_set", this.annotationChosen, this);
         GlobalEvent.on("hide_points", this.hidePoints, this);
         GlobalEvent.on("show_points", this.showPoints, this);
@@ -214,7 +237,7 @@ ImageAnnotateView = Backbone.View.extend({
             if ($(pointSpan).text() === ""){
                 var newpoint = new PointAnnotation({id: pointSpan.id});
                 newpoint.fetch({success:function(model) {
-                    var annotation_object = annotation_code_list.find(function(listmodel) {
+                    var annotation_object = annotationCodeList.find(function(listmodel) {
                         return listmodel.get('caab_code')===newpoint.get('annotation_caab_code');
                     });
                     $(pointSpan).text(annotation_object.id);
@@ -239,7 +262,7 @@ ImageAnnotateView = Backbone.View.extend({
                     var pointId = point.get('id');
                     var label = point.get('annotation_caab_code');
 
-                    var annotation_object = annotation_code_list.find(function(model) {
+                    var annotationCode = annotationCodeList.find(function(model) {
                         return model.get('caab_code')===point.get('annotation_caab_code');
                     });
 
@@ -254,9 +277,11 @@ ImageAnnotateView = Backbone.View.extend({
                     span.css('left', point.get('x')*$('#Image').width()-6) ;
                     span.css('z-index', 10000);
                     span.attr('caab_code', label);
+                    span.attr('data-toggle', 'tooltip');
 
                     if (labelClass === 'pointAnnotated'){
-                        span.text(annotation_object.id);
+                        span.text(annotationCode.id);
+                        span.attr('title', annotationCode.get("code_name"));
                     }
 
                     span.appendTo('#ImageContainer');
@@ -264,6 +289,14 @@ ImageAnnotateView = Backbone.View.extend({
 
                 $("#ImageContainer").children('span').click(function(){
                     GlobalEvent.trigger("point_clicked", this);
+                });
+
+                $("#ImageContainer").children('span').mouseover(function(){
+                    GlobalEvent.trigger("point_mouseover", this);
+                });
+
+                $("#ImageContainer").children('span').mouseout(function(){
+                    GlobalEvent.trigger("point_mouseout", this);
                 });
 
                 //update pils
@@ -313,10 +346,18 @@ ImageAnnotateView = Backbone.View.extend({
         var theCaabCode = $(thePoint).attr('caab_code');
 
         if(theClass == 'pointSelected' && theCaabCode == ""){
+            alert("1");
             $(thePoint).attr('class', 'pointNotAnnotated');
         } else if(theClass == 'pointSelected' && theCaabCode != ""){
             $(thePoint).attr('class', 'pointAnnotated');
         } else {
+
+            //firstly we need to check if we need to deselect already labelled points
+            $(".pointLabelledStillSelected").each(function (index, pointSpan) {
+                $(pointSpan).attr('class', 'pointAnnotated');
+            });
+
+            //then we make the current points selected
             $(thePoint).attr('class', 'pointSelected');
             //hide the label, if there is one
             $(thePoint).text("");
@@ -325,15 +366,31 @@ ImageAnnotateView = Backbone.View.extend({
 
         this.refreshPointLabelsForImage();
     },
+    pointMouseOver: function(thePoint) {
+        //get points which have the same caab code assigned
+        var samePoints = points.filter(
+            function(point) {
+                return point.get("annotation_caab_code") == $(thePoint).attr('caab_code');
+            }
+        );
+
+        //show the labels
+        for(var i = 0; i < samePoints.length; i++) {
+            $("#"+samePoints[i].get("id")).tooltip('show');
+        };
+    },
+    pointMouseOut: function(thePoint) {
+        //remove labels from all points
+        points.each(function(point) {
+            $("#"+point.get("id")).tooltip('destroy');
+        });
+    },
     annotationChosen: function(caab_code_id) {
-        //TODO: remove this
-        //var arr = caab_code.split(":");
-        //var caab_code = arr[arr.length-1];
         var parent = this;
 
         //get the selected points
         var selectedPoints = $('.pointSelected');
-        caab_object = annotation_code_list.get(caab_code_id);
+        caab_object = annotationCodeList.get(caab_code_id);
         //save the annotations
         $.each(selectedPoints, function(index, pointSpan) {
 
@@ -345,10 +402,18 @@ ImageAnnotateView = Backbone.View.extend({
                 headers: {"cache-control": "no-cache"},
                 success: function (model, xhr, options) {
 
-                    //change the point to annotated
+                    //show label on annotated point
                     var idOfSaved = model.get("id");
-                    $('#'+idOfSaved).attr('class', 'pointAnnotated');
-                    $('#'+idOfSaved).text(caab_code_id);
+                    $('#'+idOfSaved).addClass('pointLabelledStillSelected'); //this means the point stays selected, we are just assigning the class to this point to keep that state
+                    $('#'+idOfSaved).attr('title', annotationCodeList.get(caab_code_id).get("code_name"));
+                    $('#'+idOfSaved).attr('caab_code', caab_object.get('caab_code'));
+                    $('#'+idOfSaved).tooltip("destroy");
+                    $('#'+idOfSaved).tooltip("show");
+
+                    //change the point to annotated
+                    //var idOfSaved = model.get("id");
+                    //$('#'+idOfSaved).attr('class', 'pointAnnotated');
+                    //$('#'+idOfSaved).text(caab_code_id);
 
                     //update the pil sidebar
                     parent.updatePils();
@@ -357,10 +422,17 @@ ImageAnnotateView = Backbone.View.extend({
                     if (theXHR.status == "201" || theXHR.status == "202") {
                         alert("202");
 
-                        //change the point to annotated
+                        //show label on annotated point
                         var idOfSaved = model.get("id");
-                        $('#'+idOfSaved).attr('class', 'pointAnnotated');
-                        $('#'+idOfSaved).text(caab_code_id);
+                        $('#'+idOfSaved).addClass('pointLabelledStillSelected'); //this means the point stays selected, we are just assigning the class to this point to keep that state
+                        $('#'+idOfSaved).attr('title', annotationCodeList.get(caab_code_id).get("code_name"));
+                        $('#'+idOfSaved).attr('caab_code', caab_object.get('caab_code'));
+                        $('#'+idOfSaved).tooltip("destroy");
+                        $('#'+idOfSaved).tooltip("show");
+
+                        //var idOfSaved = model.get("id");
+                        //$('#'+idOfSaved).attr('class', 'pointAnnotated');
+                        //$('#'+idOfSaved).text(caab_code_id);
 
                         //update the pil sidebar
                         parent.updatePils();
