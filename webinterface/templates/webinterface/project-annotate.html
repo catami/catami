@@ -7,7 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/catami-api/css/bootstrapSwitch.css"/>
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/d3/catami-d3-icicle.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/annotation_accordion.css" />
 	
     <style type="text/css">
         div.wrapper{
@@ -101,6 +101,16 @@
     <div style="width: 100%">
 
         <div style="float: right; width: 500px;">
+        
+            <div class="well">
+                <h3>Tools</h3>
+                <a id="hide_points_button" class="btn">Hide Points (click and hold me)</a>
+
+                <div class="btn-group" data-toggle="buttons-checkbox">
+                    <button id="ZoomToggle" type="button" class="btn" >Zoom Toggle</button>
+                </div>
+            </div>
+
         	<div id="ChooseAnnotationContainer" ></div>
 
             <div>
@@ -111,15 +121,6 @@
                     </li>
                 </ul>
             </div>
-
-            <div>
-                <h3>Tools</h3>
-                <a id="hide_points_button" class="btn">Hide Points (click and hold me)</a>
-
-                <div class="btn-group" data-toggle="buttons-checkbox">
-                    <button id="ZoomToggle" type="button" class="btn" >Zoom Toggle</button>
-                </div>
-            </div>
         </div>
 
         <div id="ImageContainer"></div>
@@ -127,21 +128,10 @@
 	</div>
 	
     <script type="text/template" id="ChooseAnnotationTemplate">
-		<div class="navbar">
-			<div class="navbar-inner">
-			<div class="container">
-			<ul class="nav">
-				<li><a id="goto_parent_button" style="color:#488dff;" href="#"></a></li>
-				<li><a id="current_annotation_label" class="brand" style="margin-left: auto; margin-right: auto;" href="#">Annotation</a></li>
-			</ul>
-			<a id="assign_annotation_button" class="btn btn-primary btn-small pull-right"  href="#">Assign Label</a>
-			</div></div>
-		</div>
     	<div id="annotation-chooser" style="height: 500px"></div>
 	</script>
 	
     <script type="text/template" id="ProjectAnnotateTemplate">
-
         <div class="row-fluid">
             <div class="span12">
                 <ul class="breadcrumb">
@@ -163,7 +153,6 @@
                 </ul>
             </div>
         </div>
-
     </script>
 
     <script type="text/template" id="ThumbnailTemplate">
@@ -171,9 +160,7 @@
     </script>
 
     <script type="text/template" id="ImageTemplate">
-
         <img id="Image" src='<%= web_location %>' data-src='<%= web_location %>' alt='image'>
-
     </script>
 
     <script src="{{ STATIC_URL }}assets/jquery/modernizr.custom.17475.js"></script>
@@ -184,10 +171,10 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-annotate-view.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.imagesloaded.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.accordion.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery.elevatezoom/jquery.elevateZoom-2.5.5.min.js"></script>
     <!--<script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/bootstrapSwitch.js"></script>-->
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
-    <script type="text/javascript" src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
 
     <script type="text/javascript">
 
@@ -197,8 +184,6 @@
         var annotationSets = new AnnotationSets();
         var project = new Project({"id": projectId});
         var annotationCodeList = new AnnotationCodeList();
-
-
 
         annotationSets.fetch({
             data: { project: projectId },
@@ -210,8 +195,6 @@
                         annotationCodeList.fetch({
                             data: {limit: 500},
                             success: function (model, response, options) {
-
-                                //start_icicle_view();
 
                                 //load the views
                                 var projectAnnotateView = new ProjectAnnotateView({
@@ -272,13 +255,12 @@
             el: $("#ChooseAnnotationContainer")
         });
 
-
+		$('#annotation-chooser ul').accordion();
         $(window).resize(function(e){
             //trigger an event to redraw
             GlobalEvent.trigger("screen_changed");
         });
 
-
-    </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/d3/catami-d3-icicle.js"></script>
+		    </script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
 {% endblock %}

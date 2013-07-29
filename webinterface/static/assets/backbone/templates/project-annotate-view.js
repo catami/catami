@@ -11,21 +11,26 @@ var AnnotationCodeList = Backbone.Tastypie.Collection.extend({
 
 //yeah, it's a global.
 var annotation_code_list = new AnnotationCodeList();
+var nested_annotation_list;
 
 ChooseAnnotationView = Backbone.View.extend({
     model: AnnotationCodeList,
     el: $('div'),
     initialize: function () {
         // var annotation_code_list = new AnnotationCodeList();
+
         annotation_code_list.fetch({
+            async: false,
             data: { limit: 999 },
-            success: function (model, response, options) {},
+            success: function (model, response, options) {
+                nested_annotation_list = classificationTreeBuilder(model.toJSON());
+            },
             error: function (model, response, options) {}
         });
 
         GlobalEvent.on("annotation_chosen", this.annotationChosen, this);
         GlobalEvent.on("point_is_selected", this.initializeSelection, this);
-        GlobalEvent.on("new_parent_icicle_node", this.new_parent_icicle_node, this);
+        GlobalEvent.on("new_parent_node", this.new_parent_node, this);
 
         this.render();
     },
@@ -33,15 +38,19 @@ ChooseAnnotationView = Backbone.View.extend({
         // Compile the template using underscore
         var chooseAnnotationTemplate = _.template($("#ChooseAnnotationTemplate").html(), null);
 
+        list_html = buildList(nested_annotation_list, false);
+
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(chooseAnnotationTemplate);
+        $('#annotation-chooser').append(list_html);
         this.clearSelection();
         return this;
     },
     events: {
         'mouseenter': 'mouse_entered',
         'mouseleave': 'mouse_exited',
-        'click #assign_annotation_button': 'annotationFinalised'
+        'click #assign_annotation_button': 'annotationFinalised',
+        'click #annotation-chooser a': 'annotationChosen'
     },
     mouse_entered: function() {
         // selected annotations remain editable until mouse exit
@@ -58,27 +67,12 @@ ChooseAnnotationView = Backbone.View.extend({
         this.$('#assign_annotation_button').css('visibility', 'hidden');
         this.$('#current_annotation_label').text('Annotation Selector');
     },
-    annotationChosen: function(annotation_code_id){
-          //alert(annotationCode);
-          this.$('#assign_annotation_button').css('visibility', 'visible');
-          this.current_annotation = annotation_code_id;
-          var caab_object = annotation_code_list.get(annotation_code_id);
-          if (caab_object.get('parent')){
-              var parent_caab_name_list = caab_object.get('parent').split('/');
-              var parent_caab_object = annotation_code_list.get(parent_caab_name_list[parent_caab_name_list.length-2]);
-              this.$('#current_annotation_label').text(caab_object.get('code_name'));
-              this.$('#goto_parent_button').empty().append('<i class="icon-chevron-left"></i> '+parent_caab_object.get('code_name'));
-          } else {
-              this.$('#current_annotation_label').text(caab_object.get('code_name'));
-              this.$('#goto_parent_button').empty();
-          }
+    annotationChosen: function(e){
+        e.preventDefault();
+        var annotation_code_id = $(e.currentTarget).data("id");
+        GlobalEvent.trigger("annotation_to_be_set", annotation_code_id);
     },
-    annotationFinalised: function(){
-        //make it so
-        this.$('#assign_annotation_button').css('visibility', 'hidden');
-        GlobalEvent.trigger("annotation_to_be_set", this.current_annotation);
-    },
-    new_parent_icicle_node: function(new_parent_id){
+    new_parent_node: function(new_parent_id){
         this.current_annotation = new_parent_id;
         var caab_object = annotation_code_list.get(new_parent_id);
 
@@ -89,6 +83,8 @@ ChooseAnnotationView = Backbone.View.extend({
             this.annotationChosen(new_parent_id);
         }
     }
+
+
 });
 
 ChooseAnnotationView.current_annotation = null;
@@ -449,7 +445,78 @@ ImageAnnotateView = Backbone.View.extend({
 });
 
 
+// helper functions, to be removed pending some API/server
+function caab_as_node(object){
+  var node = {};
+  node.name = object.code_name;
+  node['cpccode'] = object.cpc_code;
+  node['color'] = '#'+object.point_colour;
+  node['caabcode_object'] = object.caab_code;
+  node['caabcode_id'] = object.id;
+  return node;
+}
 
+
+function classificationTreeBuilder(jsonData){
+  // takes the json of caab code objects from the catami API 
+  // and converts it from a list of objects with parent information
+  // to a JSON Tree with child arrays
+  var new_array = [];
+
+  var lookup = [];
+  for (var i = 0, len = jsonData.length; i < len; i++) {
+      var temp =  jsonData[i];
+      lookup[jsonData[i].id] = temp;
+  }
+  for (var index = 1; index < lookup.length; index++){
+      new_array.push(caab_as_node(lookup[index]));
+  }
+
+  //list is now ordererd so we build the tree starting at the bottom and working up
+
+  for (index = lookup.length - 1; index > 0; index--){
+    // get the ID of the parent from the parent url
+    if (lookup[index].parent !== null) {
+      parent_text = lookup[index].parent.split('/');
+      parent_id = parent_text[parent_text.length-2];
+      if (parent_id > -1){
+        if (new_array[parent_id-1].children === undefined){
+            new_array[parent_id-1].children = [];
+        }
+        new_array[parent_id-1].children.push(new_array[index-1]);
+      }
+    }
+  }
+
+  // we accululated the children to parent nodes from the bottom up. So
+  // everything ends up the top node
+  return new_array[0];
+}
+
+function buildList(node, isSub){
+    var html = '';
+    if (isSub === false){html += '<ul class="accordion">';}
+
+    // html += '<li>';
+    // html += '<a href="#">' + node.name + '</a>';
+
+    if(node.children){
+        html += '<li>';
+        html += '<a href="#"data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+        html += '<ul>';
+        for (var i = node.children.length - 1; i >= 0; i--) {
+            html += buildList(node.children[i], true);
+        }
+        html += '</ul>';
+    } else {
+        html += '<li>';
+        html += '<a class="endpoint" href="#" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+    }
+    html += '</li>';
+
+    if (isSub === false){html += '</ul>';}
+    return html;
+}
 
 
 
