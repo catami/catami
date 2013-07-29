@@ -185,6 +185,7 @@ ImageAnnotateView = Backbone.View.extend({
         "thumbnail_selected": "thumbnailSelected"
     },
 
+
     initialize: function () {
         var parent = this;
 
@@ -197,11 +198,16 @@ ImageAnnotateView = Backbone.View.extend({
         GlobalEvent.on("annotation_to_be_set", this.annotationChosen, this);
         GlobalEvent.on("hide_points", this.hidePoints, this);
         GlobalEvent.on("show_points", this.showPoints, this);
+        GlobalEvent.on("deselect_points", this.deselectPoints, this);
+
 
         $('#hide_points_button').mousedown(this.hidePoints);
         $('#hide_points_button').mouseup(this.showPoints);
 
-        $('#ZoomToggle').on('click', function(e) {
+        //triggering the event for backbone so reference to this class get passed down the chain
+        $('#deselect_points_button').click(function(){GlobalEvent.trigger("deselect_points")});
+
+        $('#zoom_toggle').on('click', function(e) {
             ($(this).hasClass('active')) ? parent.zoomOff() : parent.zoomOn();
         });
     },
@@ -346,7 +352,6 @@ ImageAnnotateView = Backbone.View.extend({
         var theCaabCode = $(thePoint).attr('caab_code');
 
         if(theClass == 'pointSelected' && theCaabCode == ""){
-            alert("1");
             $(thePoint).attr('class', 'pointNotAnnotated');
         } else if(theClass == 'pointSelected' && theCaabCode != ""){
             $(thePoint).attr('class', 'pointAnnotated');
@@ -513,6 +518,27 @@ ImageAnnotateView = Backbone.View.extend({
     zoomOff: function() {
         $.removeData($("#Image"), 'elevateZoom');
         $('.zoomContainer').remove();
+    },
+    deselectPoints: function () {
+
+        //deselect any points that are labelled and still selected
+        $(".pointLabelledStillSelected").each(function (index, pointSpan) {
+            $(pointSpan).attr('class', 'pointAnnotated');
+        });
+
+        //deselect any points that are selected
+        $(".pointSelected").each(function(index, pointSpan) {
+            var theCaabCode = $(pointSpan).attr('caab_code');
+
+            if(theCaabCode == "") {
+                $(pointSpan).attr('class', 'pointNotAnnotated');
+            } else {
+                $(pointSpan).attr('class', 'pointAnnotated');
+            }
+        });
+
+        //refresh
+        this.refreshPointLabelsForImage();
     }
 });
 
