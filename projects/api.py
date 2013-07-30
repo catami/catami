@@ -393,21 +393,21 @@ class ProjectResource(ModelResource):
                 
 
         # get all the images related to this project
-        images = Project.objects.get(id=kwargs['pk']).generic_images.all()       
+        images = Project.objects.get(id=kwargs['pk']).images.all()       
 
         #get all annotation sets related to this project
-        sets = GenericAnnotationSet.objects.filter(project=kwargs['pk'])
+        sets = AnnotationSet.objects.filter(project=kwargs['pk'])
 
         writer = csv.writer(response)
         writer.writerow(['Image Name', 'Campaign Name', 'Deployment Name', 
                          'Image Location', 'Point in Image', 'Annotation Code', 'Annotation Name'])        
         
         for set in sets:
-            for image in set.generic_images.all():
+            for image in set.images.all():
                 point_bundle = Bundle()
                 point_bundle.request = request
-                point_bundle.data = dict(image=image.id, generic_annotation_set=set.id)
-                points = GenericPointAnnotationResource().obj_get_list(point_bundle, image=image.id)
+                point_bundle.data = dict(image=image.id, annotation_set=set.id)
+                points = PointAnnotationResource().obj_get_list(point_bundle, image=image.id)
                 for point in points: 
                     code_name = ''
                     if point.annotation_caab_code and point.annotation_caab_code is not u'':

@@ -260,7 +260,7 @@ project.fetch({
                     var annotationSetId = annotationSets.at(0).get('id');
 
                     //load the image thumbnails
-                    images = new Images({ "url": "/api/dev/generic_annotation_set/" + annotationSetId + "/images/" });
+                    images = new Images({ "url": "/api/dev/annotation_set/" + annotationSetId + "/images/" });
                     loadPage();
 
                     //create the map
