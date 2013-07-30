@@ -162,11 +162,15 @@ ProjectView = Backbone.View.extend({
     },
     events: {
         "click #configure_project_button": "doConfigure",
+        "click #export_project_button": "doExport",
         "click #start_annotating_button": "doStartAnnotating"
     },
     doConfigure: function (event) {
         //redirect to configuration page
         window.location.replace("/projects/" + project.get("id") + "/configure");
+    },
+    doExport: function (event) {
+        window.location.replace("/api/dev/project/" + project.get("id") + "/csv");
     },
     doStartAnnotating: function(event) {
         window.location.replace("/projects/" + project.get("id") + "/annotate");
@@ -234,6 +238,82 @@ function loadPage(offset) {
     });
 }
 
+var project = new Project({ id: projectId });
+var images;
+var annotationSets = new AnnotationSets();
+var points = new PointAnnotations();
+
+
+project.fetch({
+
+    success: function (model, response, options) {
+        console.log(project);
+
+        mapExtent = project.get("map_extent");
+
+        annotationSets.fetch({
+            data: { project: projectId },
+            success: function (model, response, options) {
+
+                //check not an empty list
+                if (annotationSets.length > 0) {
+                    var annotationSetId = annotationSets.at(0).get('id');
+
+                    //load the image thumbnails
+                    images = new Images({ "url": "/api/dev/generic_annotation_set/" + annotationSetId + "/images/" });
+                    loadPage();
+
+                    //create the map
+                    var map = new NewProjectsMap(WMS_URL, LAYER_PROJECTS, 'map', mapExtent);
+                    map.updateMapForSelectedProject(projectId);
+                    //map.updateMapForSelectedAnnotationSet(annotationSetId);
+                    map.addAnnotationSetLayer(annotationSetId, WMS_URL, LAYER_ANNOTATIONSET);
+                    map.zoomToExtent();
+
+                    //load the project
+                    var projectView = new ProjectView({
+                        el: $("#ProjectDashboardContainer"),
+                        model: project
+                    });
+
+                    projectView.renderProjectStats();
+                } else {
+                    $.pnotify({
+                        title: 'Failed to load annotation set details. Try refreshing the page.',
+                        text: '',
+                        type: 'error', // success | info | error
+                        hide: true,
+                        icon: false,
+                        history: false,
+                        sticker: false
+                    });
+                }
+            },
+            error: function (model, response, options) {
+                $.pnotify({
+                    title: 'Failed to load annotation set details. Try refreshing the page.',
+                    text: response.status,
+                    type: 'error', // success | info | error
+                    hide: true,
+                    icon: false,
+                    history: false,
+                    sticker: false
+                });
+            }
+        });
+    },
+    error: function (model, response, options) {
+        $.pnotify({
+            title: 'Failed to load project details. Try refreshing the page.',
+            text: response.status,
+            type: 'error', // success | info | error
+            hide: true,
+            icon: false,
+            history: false,
+            sticker: false
+        });
+    }
+});
 
 
  
