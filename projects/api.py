@@ -1,4 +1,6 @@
-# import traceback
+import traceback
+import csv
+import StringIO
 from django.conf.urls import url
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.http import HttpResponse
@@ -427,7 +429,8 @@ class ProjectResource(ModelResource):
     def prepend_urls(self):
         return [
             url(r"^(?P<project>%s)/create_project%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('create_project'), name="create_project"),
-            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
+            url(r"^(?P<project>%s)/(?P<pk>\w[\w/-]*)/csv%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_csv'), name="api_get_csv"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),            
         ]
 
     def get_images(self, request, **kwargs):
@@ -460,6 +463,43 @@ class ProjectResource(ModelResource):
         # call the image resource to give us what we want
         image_resource = ImageResource()
         return image_resource.get_list(request, id__in=image_ids)
+
+    def get_csv(self, request, **kwargs):
+        """
+        Special handler function to export project as CSV
+        """
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="' + kwargs['project'] + '.csv"'
+                
+
+        # get all the images related to this project
+        images = Project.objects.get(id=kwargs['pk']).images.all()       
+
+        #get all annotation sets related to this project
+        sets = AnnotationSet.objects.filter(project=kwargs['pk'])
+
+        writer = csv.writer(response)
+        writer.writerow(['Image Name', 'Campaign Name', 'Deployment Name', 
+                         'Image Location', 'Point in Image', 'Annotation Code', 'Annotation Name'])        
+        
+        for set in sets:
+            for image in set.images.all():
+                point_bundle = Bundle()
+                point_bundle.request = request
+                point_bundle.data = dict(image=image.id, annotation_set=set.id)
+                points = PointAnnotationResource().obj_get_list(point_bundle, image=image.id)
+                for point in points: 
+                    code_name = ''
+                    if point.annotation_caab_code and point.annotation_caab_code is not u'':
+                        code = AnnotationCodes.objects.filter(caab_code=point.annotation_caab_code)                    
+                        if code and code is not None and len(code) > 0:
+                            code_name = code[0].code_name
+                    writer.writerow([image.image_name, image.deployment.campaign.short_name, 
+                                     image.deployment.short_name, image.position, 
+                                     (str(point.x) + ' , ' + str(point.y)), 
+                                     point.annotation_caab_code, code_name])
+
+        return response
 
     def create_project(self, request, **kwargs):
         """

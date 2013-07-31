@@ -67,6 +67,7 @@
                 {% if user.is_authenticated %}
                 <p>
                     <a id="configure_project_button" class="btn" href="#">Configure Project</a>
+                    <a id="export_project_button" class="btn" href="#">Export Project</a>
                 </p>
                 {% endif %}
 
@@ -130,9 +131,6 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/OpenLayers/LoadingPanel.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/Map.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-view.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/point-annotation-model.js"></script>
     <script type="text/javascript">
 
         var projectId = "{{ project_id }}";
@@ -141,83 +139,9 @@
         var LAYER_ANNOTATIONSET = "{{ LAYER_ANNOTATIONSET }}";
         var mapExtent = "";
 
-        var project = new Project({id: projectId});
-        var images;
-        var annotationSets = new AnnotationSets();
-        var points = new PointAnnotations();
-
-
-        project.fetch({
-
-            success: function (model, response, options) {
-                console.log(project);
-
-                mapExtent = project.get("map_extent");
-
-                annotationSets.fetch({
-                    data: { project: projectId },
-                    success: function (model, response, options) {
-
-                        //check not an empty list
-                        if(annotationSets.length > 0) {
-                            var annotationSetId = annotationSets.at(0).get('id');
-
-                            //load the image thumbnails
-                            images = new Images({"url": "/api/dev/annotation_set/" + annotationSetId + "/images/"});
-                            loadPage();
-
-                            //create the map
-                            var map = new NewProjectsMap(WMS_URL, LAYER_PROJECTS, 'map', mapExtent);
-                            map.updateMapForSelectedProject(projectId);
-                            //map.updateMapForSelectedAnnotationSet(annotationSetId);
-                            map.addAnnotationSetLayer(annotationSetId, WMS_URL, LAYER_ANNOTATIONSET);
-                            map.zoomToExtent();
-
-                            //load the project
-                            var projectView = new ProjectView({
-                                el: $("#ProjectDashboardContainer"),
-                                model : project
-                            });
-
-                            projectView.renderProjectStats();
-                        } else {
-                            $.pnotify({
-                                title: 'Failed to load annotation set details. Try refreshing the page.',
-                                text: '',
-                                type: 'error', // success | info | error
-                                hide: true,
-                                icon: false,
-                                history: false,
-                                sticker: false
-                            });
-                        }
-                    },
-                    error: function (model, response, options) {
-                        $.pnotify({
-                            title: 'Failed to load annotation set details. Try refreshing the page.',
-                            text: response.status,
-                            type: 'error', // success | info | error
-                            hide: true,
-                            icon: false,
-                            history: false,
-                            sticker: false
-                        });
-                    }
-                });
-            },
-            error: function (model, response, options) {
-                $.pnotify({
-                    title: 'Failed to load project details. Try refreshing the page.',
-                    text: response.status,
-                    type: 'error', // success | info | error
-                    hide: true,
-                    icon: false,
-                    history: false,
-                    sticker: false
-                });
-            }
-        });
-
     </script>
 
+<script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/point-annotation-model.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-view.js"></script>
 {% endblock %}
