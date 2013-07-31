@@ -59,7 +59,6 @@ class ProjectAuthorization(Authorization):
 
     def read_list(self, object_list, bundle):
         """Restrict the list to only user visible project."""
-        print 'ProjectAuthorization read_list'
         user = get_real_user_object(bundle.request.user)
         user_objects = get_objects_for_user(user, ['projects.view_project'], object_list)
 
@@ -195,7 +194,6 @@ class PointAnnotationAuthorization(Authorization):
 
     def read_list(self, object_list, bundle):
         """Restrict the list to only user visible PointAnnotations."""
-        print 'PointAnnotationAuthorization read_list'
 
         user = get_real_user_object(bundle.request.user)
 
@@ -282,7 +280,6 @@ class WholeImageAnnotationAuthorization(Authorization):
 
     def read_list(self, object_list, bundle):
         """Restrict the list to only user visible WholeImageAnnotation."""
-        print 'WholeImageAnnotationAuthorization read_list'
 
         user = get_real_user_object(bundle.request.user)
 
@@ -298,17 +295,14 @@ class WholeImageAnnotationAuthorization(Authorization):
 
     def read_detail(self, object_list, bundle):
         """Check user has permission to view this PointAnnotation."""
-        print 'WholeImageAnnotationAuthorization read_detail'
 
         # get real user
         user = get_real_user_object(bundle.request.user)
-        print user
-        print object_list[0].annotation_caab_code
-        print bundle.obj.annotation_set
+
         # check the user has permission to view this object
         if user.has_perm('projects.view_annotationset', bundle.obj.annotation_set):
             return True
-        print "auth failed"
+
         # raise hell! - https://github.com/toastdriven/django-tastypie/issues/826
         raise Unauthorized()
 
@@ -393,7 +387,6 @@ class ModelResource(ModelResource):
 
         for name, field in self.fields.items():
             if isinstance(field, fields.ToManyField):
-                print field.to_class
                 resource = r"^(?P<resource_name>{resource_name})/(?P<{related_name}>.+)/{related_resource}/$".format(
                     resource_name=self._meta.resource_name,
                     related_name=field.related_name,
