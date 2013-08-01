@@ -26,6 +26,7 @@ var Deployments = Backbone.Tastypie.Collection.extend({
     model: Deployment
 });
 
+
 var ProjectCreate = Backbone.Model.extend({
     urlRoot: "/api/dev/project/create_project/",
     validation: {
@@ -45,7 +46,12 @@ var ProjectCreate = Backbone.Model.extend({
             required: true,
             msg: 'Please select an image sampling methodology.'
         },
-        image_sample_size: {
+        image_sample_size_point: {
+            required: true,
+            msg: 'Please select an image sample size.',
+            min: 1
+        },
+        image_sample_size_whole: {
             required: true,
             msg: 'Please select an image sample size.',
             min: 1
@@ -100,10 +106,29 @@ ProjectCreateView = Backbone.View.extend({
         return this;
     },
     events: {
+        'click #radio_point': 'pointAnnotationClicked',
+        'click #radio_whole': 'wholeImageAnnotationClicked',
         "click #create_button": "doCreate"
+    },
+    pointAnnotationClicked: function (event) {
+        this.$('.wholeImage_annotation_annotation_div').hide();
+        this.$('.point_annotation_div').fadeIn();        
+    },
+    wholeImageAnnotationClicked: function (event) {
+      this.$('.point_annotation_div').hide();
+      this.$('.wholeImage_annotation_annotation_div').fadeIn();
     },
     doCreate: function (event) {
         var data = $('form').serializeObject();
+        //$(this).hasClass('disabled') // for disabled states
+        //$(this).hasClass('active') // for active states
+        //$(this).is(':disabled') // for disabled buttons only       
+        if ($("#radio_point").hasClass('active')) data["image_sample_size"] = $("#image_sample_size_point").val();
+        else data["image_sample_size"] = $("#image_sample_size_whole").val();
+        //delete data['image_sample_size_whole'];
+        //delete data['image_sample_size_point'];        
+        
+        alert('data: ' + data.toSource());
         this.model.set(data);
         var isValid = this.model.isValid(true);
 
@@ -158,3 +183,12 @@ ProjectCreateView = Backbone.View.extend({
         this.$('.alert-error').fadeIn();
     }
 });
+
+
+
+var projectCreate = new ProjectCreate();
+var projectConfigureView = new ProjectCreateView({
+    el: $("#ProjectCreateContainer"),
+    model: projectCreate
+});
+
