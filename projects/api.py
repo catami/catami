@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.http import HttpResponse
 from django.utils import simplejson
 from tastypie import fields
-import tastypie
+# import tastypie
 from tastypie.bundle import Bundle
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
@@ -31,10 +31,10 @@ from jsonapi.security import get_real_user_object
 from projects import authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from datetime import datetime
-from random import sample
+# from random import sample
 from tastypie.exceptions import ImmediateHttpResponse
 from tastypie.http import HttpNotImplemented, HttpBadRequest, HttpGone, HttpMultipleChoices
-import random
+# import random
 import logging
 
 logger = logging.getLogger(__name__)
@@ -60,8 +60,7 @@ class ProjectAuthorization(Authorization):
     def read_list(self, object_list, bundle):
         """Restrict the list to only user visible project."""
         user = get_real_user_object(bundle.request.user)
-        user_objects = get_objects_for_user(user, [
-            'projects.view_project'], object_list)
+        user_objects = get_objects_for_user(user, ['projects.view_project'], object_list)
 
         return user_objects
 
@@ -106,8 +105,7 @@ class ProjectAuthorization(Authorization):
         if user.has_perm('projects.delete_project', bundle.obj):
             return True
 
-        raise Unauthorized(
-            "You do not have permission to delete this project.")
+        raise Unauthorized("You do not have permission to delete this project.")
 
     def update_detail(self, object_list, bundle):
         """Restrict access to updating a project.
@@ -121,9 +119,7 @@ class ProjectAuthorization(Authorization):
             # the user has permission to edit
             return True
         else:
-            raise Unauthorized(
-                "You don't have permission to edit this project"
-            )
+            raise Unauthorized("You don't have permission to edit this project")
 
 
 class AnnotationSetAuthorization(Authorization):
@@ -134,8 +130,7 @@ class AnnotationSetAuthorization(Authorization):
     def read_list(self, object_list, bundle):
         """Restrict the list to only user visible AnnotationSet."""
         user = get_real_user_object(bundle.request.user)
-        user_objects = get_objects_for_user(user, [
-            'projects.view_annotationset'], object_list)
+        user_objects = get_objects_for_user(user, ['projects.view_annotationset'], object_list)
 
         return user_objects
 
@@ -164,8 +159,7 @@ class AnnotationSetAuthorization(Authorization):
     def delete_list(self, object_list, bundle):
         """Currently do not permit deletion of any AnnotationSet list.
         """
-        raise Unauthorized(
-            "You do not have permission to delete these annotation sets.")
+        raise Unauthorized("You do not have permission to delete these annotation sets.")
 
     def delete_detail(self, object_list, bundle):
         """
@@ -179,8 +173,7 @@ class AnnotationSetAuthorization(Authorization):
         if user.has_perm('projects.delete_annotationset', bundle.obj):
             return True
 
-        raise Unauthorized(
-            "You do not have permission to delete this project.")
+        raise Unauthorized("You do not have permission to delete this project.")
 
     def update_detail(self, object_list, bundle):
         """Restrict access to updating a project.
@@ -191,9 +184,7 @@ class AnnotationSetAuthorization(Authorization):
             # the user has permission to edit
             return True
         else:
-            raise Unauthorized(
-                "You don't have permission to edit this annotation set"
-            )
+            raise Unauthorized("You don't have permission to edit this annotation set")
 
 
 class PointAnnotationAuthorization(Authorization):
@@ -203,16 +194,15 @@ class PointAnnotationAuthorization(Authorization):
 
     def read_list(self, object_list, bundle):
         """Restrict the list to only user visible PointAnnotations."""
+
         user = get_real_user_object(bundle.request.user)
 
         # get the objects the user has permission to see
-        annotation_set_objects = get_objects_for_user(user, [
-            'projects.view_annotationset'])
+        annotation_set_objects = get_objects_for_user(user, ['projects.view_annotationset'])
 
         # get all annotation points for the above allowable annotation sets
         point_annotations = PointAnnotation.objects.select_related("annotation_set")
-        point_annotation_ids = (point_annotations.filter(annotation_set__in=annotation_set_objects).
-                          values_list('id'))
+        point_annotation_ids = (point_annotations.filter(annotation_set__in=annotation_set_objects).values_list('id'))
 
         #now filter out the deployments we are not allowed to see
         return object_list.filter(id__in=point_annotation_ids)
@@ -257,7 +247,7 @@ class PointAnnotationAuthorization(Authorization):
 
         #if the user is not authenticated they can't do anything
         if not bundle.request.user.is_authenticated():
-           raise Unauthorized()
+            raise Unauthorized()
 
         # check the user has permission to edit the contained annotation set
         if user.has_perm('projects.change_annotationset', bundle.obj.annotation_set):
@@ -274,13 +264,97 @@ class PointAnnotationAuthorization(Authorization):
 
         #if the user is not authenticated they can't do anything
         if not bundle.request.user.is_authenticated():
-           raise Unauthorized()
+            raise Unauthorized()
 
         # check the user has permission to edit the contained annotation set
         if user.has_perm('projects.change_annotationset', bundle.obj.annotation_set):
             return True
 
         raise Unauthorized("You don't have permission to edit this annotation point.")
+
+
+class WholeImageAnnotationAuthorization(Authorization):
+    """
+    Implements authorization for WholeImageAnnotations.
+    """
+
+    def read_list(self, object_list, bundle):
+        """Restrict the list to only user visible WholeImageAnnotation."""
+
+        user = get_real_user_object(bundle.request.user)
+
+        # get the objects the user has permission to see
+        annotation_set_objects = get_objects_for_user(user, ['projects.view_annotationset'])
+
+        # get all whole image annotation points for the above allowable annotation sets
+        whole_image_annotations = WholeImageAnnotation.objects.select_related("annotation_set")
+        whole_image_annotation_ids = (whole_image_annotations.filter(annotation_set__in=annotation_set_objects).values_list('id'))
+
+        #now filter out the deployments we are not allowed to see
+        return object_list.filter(id__in=whole_image_annotation_ids)
+
+    def read_detail(self, object_list, bundle):
+        """Check user has permission to view this PointAnnotation."""
+
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        # check the user has permission to view this object
+        if user.has_perm('projects.view_annotationset', bundle.obj.annotation_set):
+            return True
+
+        # raise hell! - https://github.com/toastdriven/django-tastypie/issues/826
+        raise Unauthorized()
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized("Sorry, no create lists.")
+
+    def create_detail(self, object_list, bundle):
+
+        #authenticated people can create items
+        if bundle.request.user.is_authenticated():
+            return True
+
+        raise Unauthorized("You don't have permission to create whole image annotations on this annotation set.")
+
+    def delete_list(self, object_list, bundle):
+        """Currently do not permit deletion of any AnnotationSet list.
+        """
+        raise Unauthorized("You do not have permission to delete these whole image annotation points.")
+
+    def delete_detail(self, object_list, bundle):
+        """
+        Check the user has permission to delete.
+        """
+
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        #if the user is not authenticated they can't do anything
+        if not bundle.request.user.is_authenticated():
+            raise Unauthorized()
+
+        # check the user has permission to edit the contained annotation set
+        if user.has_perm('projects.change_annotationset', bundle.obj.annotation_set):
+            return True
+
+        raise Unauthorized("You do not have permission to delete this annotation point.")
+
+    def update_detail(self, object_list, bundle):
+        """Restrict access to updating a project.
+        """
+
+        user = get_real_user_object(bundle.request.user)
+
+        #if the user is not authenticated they can't do anything
+        if not bundle.request.user.is_authenticated():
+            raise Unauthorized()
+
+        # check the user has permission to edit the contained annotation set
+        if user.has_perm('projects.change_annotationset', bundle.obj.annotation_set):
+            return True
+
+        raise Unauthorized("You don't have permission to edit this whole image annotation.")
 
 
 class ProjectResourceLite(ModelResource):
@@ -313,7 +387,6 @@ class ModelResource(ModelResource):
 
         for name, field in self.fields.items():
             if isinstance(field, fields.ToManyField):
-                print field.to_class
                 resource = r"^(?P<resource_name>{resource_name})/(?P<{related_name}>.+)/{related_resource}/$".format(
                     resource_name=self._meta.resource_name,
                     related_name=field.related_name,
@@ -355,7 +428,7 @@ class ProjectResource(ModelResource):
 
     def get_images(self, request, **kwargs):
         """
-        This is a nested function so that we can do pagenated thumbnail queries on the image resource
+        This is a nested function so that we can do paginated thumbnail queries on the image resource
         """
 
         # need to create a bundle for tastypie
@@ -425,7 +498,6 @@ class ProjectResource(ModelResource):
         """
         Special handler function to create a project based on search criteria from images
         """
-
         json_data = simplejson.loads(request.body)
 
         #pull the query parameters out
@@ -453,6 +525,14 @@ class ProjectResource(ModelResource):
                                     status=400,
                                     content_type='application/json')
 
+            # subsample and set the images
+            if image_sampling_methodology == '0':
+                image_subset = ImageManager().random_sample_images(images, image_sample_size)
+            elif image_sampling_methodology == '1':
+                image_subset = ImageManager().stratified_sample_images(images, image_sample_size)
+            else:
+                raise Exception("Image sampling method not implemented.")
+
             #create the project
             project_bundle = Bundle()
             project_bundle.request = request
@@ -466,13 +546,16 @@ class ProjectResource(ModelResource):
                                               image_sampling_methodology=image_sampling_methodology,
                                               image_sample_size=image_sample_size,
                                               annotation_methodology=annotation_methodology,
-                                              point_sample_size=point_sample_size)
+                                              point_sample_size=point_sample_size, 
+                                              images=image_subset)
+            
             AnnotationSetResource().obj_create(annotation_set_bundle)
 
             # build up a response with a 'Location', so the client knows the project id which is created
             kwargs = dict (resource_name=self._meta.resource_name,
                             pk=new_project.obj.id,
                             api_name=self._meta.api_name)
+
             response = HttpResponse(content_type='application/json')
             response['Location'] = self._build_reverse_url('api_dispatch_detail', kwargs = kwargs)
             return response
@@ -549,7 +632,7 @@ class AnnotationSetResource(ModelResource):
 
     def get_images(self, request, **kwargs):
         """
-        This is a nested function so that we can do pagenated thumbnail queries on the image resource
+        This is a nested function so that we can do paginated thumbnail queries on the image resource
         """
 
         # need to create a bundle for tastypie
@@ -581,24 +664,11 @@ class AnnotationSetResource(ModelResource):
     def do_sampling_operations(self, bundle):
         """ Helper function to hold all the sampling logic """
 
-        # subsample and set the images
-        image_sample_size = bundle.data['image_sample_size']
-        image_sampling_methodology = bundle.data['image_sampling_methodology']
-
-        if image_sampling_methodology == '0':
-            bundle.obj.images = ImageManager().random_sample_images(bundle.obj.project.images.all(), image_sample_size)
-        elif image_sampling_methodology == '1':
-            bundle.obj.images = ImageManager().stratified_sample_images(bundle.obj.project.images.all(), image_sample_size)
-        else:
-            raise Exception("Image sampling method not implemented.")
-
-        #save the object with the new images on it
-        bundle.obj.save()
-
         # subsample points based on methodologies
+        #bundle.obj.images = bundle.data['image_subset']
         point_sample_size = bundle.data['point_sample_size']
         annotation_methodology = bundle.data['annotation_methodology']
-
+        
         if annotation_methodology == '0':
             PointAnnotationManager().apply_random_sampled_points(bundle.obj, point_sample_size)
         else:
@@ -606,7 +676,7 @@ class AnnotationSetResource(ModelResource):
 
     def obj_create(self, bundle, **kwargs):
         """
-        We are overiding this function so we can get access to the newly
+        We are overriding this function so we can get access to the newly
         created AnnotationSet. Once we have reference to it, we can apply
         object level permissions to the object.
         """
@@ -618,14 +688,13 @@ class AnnotationSetResource(ModelResource):
         bundle.data['creation_date'] = create_modified_date
         bundle.data['modified_date'] = create_modified_date
 
-        bundle.data['images'] = ''
+        #bundle.data['images'] = ''
 
         #attach current user as the owner
         bundle.data['owner'] = user
 
         #create the bundle
         super(AnnotationSetResource, self).obj_create(bundle)
-
         #generate image subsamples and points
         try:
             self.do_sampling_operations(bundle)
@@ -638,7 +707,7 @@ class AnnotationSetResource(ModelResource):
 
         #make sure we apply permissions to this newly created object
         authorization.apply_annotation_set_permissions(user, bundle.obj)
-
+                
         return bundle
 
 
@@ -666,7 +735,7 @@ class PointAnnotationResource(ModelResource):
 
     def obj_create(self, bundle, **kwargs):
         """
-        We are overiding this function so we can get access to the newly
+        We are overriding this function so we can get access to the newly
         created AnnotationSet. Once we have reference to it, we can apply
         object level permissions to the object.
         """
@@ -687,8 +756,8 @@ class PointAnnotationResource(ModelResource):
 
 
 class WholeImageAnnotationResource(ModelResource):
-    annotation_set = fields.ForeignKey(AnnotationSet, 'annotation_set', full=True)
-    image = fields.ForeignKey(ImageResource, 'image', full=True)
+    annotation_set = fields.ForeignKey(AnnotationSetResource, 'annotation_set')
+    image = fields.ForeignKey(ImageResource, 'image')
 
     class Meta:
         queryset = WholeImageAnnotation.objects.all()
@@ -696,7 +765,7 @@ class WholeImageAnnotationResource(ModelResource):
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication(),
                                              Authentication())
-        authorization = ProjectAuthorization()
+        authorization = WholeImageAnnotationAuthorization()
         detail_allowed_methods = ['get', 'post', 'put', 'delete']
         list_allowed_methods = ['get', 'post', 'put', 'delete']
         filtering = {
@@ -708,6 +777,27 @@ class WholeImageAnnotationResource(ModelResource):
             'annotation_set': 'exact',
         }
 
+    def obj_create(self, bundle, **kwargs):
+        """
+        We are overriding this function so we can get access to the newly
+        created AnnotationSet. Once we have reference to it, we can apply
+        object level permissions to the object. Copied from PointAnnotationResource
+        """
+
+        # get real user
+        user = get_real_user_object(bundle.request.user)
+
+        super(WholeImageAnnotationResource, self).obj_create(bundle)
+
+        # NOTE: we can't check permissions on related objects until the bundle
+        # is created - django throws an exception. What we need to do here is
+        # check permissions. If the user does not have permissions we delete
+        # the create object.
+        if not user.has_perm('projects.change_annotationset', bundle.obj.annotation_set):
+            bundle.obj.delete()
+
+        return bundle
+
 
 class AnnotationCodesResource(ModelResource):
     parent = fields.ForeignKey('projects.api.AnnotationCodesResource', 'parent', null=True)
@@ -718,7 +808,6 @@ class AnnotationCodesResource(ModelResource):
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication(),
                                              Authentication())
-        #authorization = ProjectAuthorization()
         detail_allowed_methods = ['get']
         list_allowed_methods = ['get']
 
@@ -738,7 +827,6 @@ class QualifierCodesResource(ModelResource):
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication(),
                                              Authentication())
-        #authorization = ProjectAuthorization()
         detail_allowed_methods = ['get']
         list_allowed_methods = ['get']
         filtering = {
