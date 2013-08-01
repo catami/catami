@@ -446,12 +446,12 @@ class TestAnnotationSetResource(ResourceTestCase):
                                #'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
                                #'creation_date': '2012-05-01',
                                #'modified_date': '2012-05-01',
-                               #'images': [ "/api/dev/image/" + self.mock_image_one.id.__str__() + "/",
-                               #                    "/api/dev/image/" + self.mock_image_two.id.__str__() + "/"],
+                               'images': [ "/api/dev/image/" + self.mock_image_one.id.__str__() + "/",
+                                           "/api/dev/image/" + self.mock_image_two.id.__str__() + "/"],
                                #'images': '',
                                'annotation_methodology': '0',
                                'image_sampling_methodology': '0',
-                               'image_sample_size': '10',
+                               'image_sample_size': '2',
                                'point_sample_size': '15'
                                 }
 
@@ -506,10 +506,11 @@ class TestAnnotationSetResource(ResourceTestCase):
                                #'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
                                #'creation_date': '2012-05-01',
                                #'modified_date': '2012-05-01',
-                               #'images': '',
+                               'images': [ "/api/dev/image/" + self.mock_image_one.id.__str__() + "/",
+                                           "/api/dev/image/" + self.mock_image_two.id.__str__() + "/"],                               
                                'annotation_methodology': '0',
                                'image_sampling_methodology': '0',
-                               'image_sample_size': '10',
+                               'image_sample_size': '2',
                                'point_sample_size': '15'
                                 }
 
@@ -524,9 +525,9 @@ class TestAnnotationSetResource(ResourceTestCase):
         response = self.bill_api_client.get(self.annotation_set_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
                                             format='json')
 
-        # check that the API did indeed samle 10 images
+        # check that the API did indeed samle 2 images
         images = self.deserialize(response)['objects'][0]['images']
-        self.assertEqual(len(images), 10)
+        self.assertEqual(len(images), 2)
 
         # check that the API set 15 points per image
         for image in images:
@@ -542,10 +543,11 @@ class TestAnnotationSetResource(ResourceTestCase):
                                #'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
                                #'creation_date': '2012-05-01',
                                #'modified_date': '2012-05-01',
-                               #'images': '',
+                               'images': [ "/api/dev/image/" + self.mock_image_one.id.__str__() + "/",
+                                           "/api/dev/image/" + self.mock_image_two.id.__str__() + "/"],
                                'annotation_methodology': '0',
                                'image_sampling_methodology': '1',
-                               'image_sample_size': '10',
+                               'image_sample_size': '2',
                                'point_sample_size': '5'
                                 }
 
@@ -560,9 +562,9 @@ class TestAnnotationSetResource(ResourceTestCase):
         response = self.bill_api_client.get(self.annotation_set_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
                                             format='json')
 
-        # check that the API did indeed samle 10 images
+        # check that the API did indeed sample 2 images
         images = self.deserialize(response)['objects'][0]['images']
-        self.assertEqual(len(images), 10)
+        self.assertEqual(len(images), 2)
 
         # check that the API set 5 points per image
         for image in images:
@@ -770,7 +772,6 @@ class TestPointAnnotationResource(ResourceTestCase):
         #check bill can POST
         #some post data for testing project creation
         self.bill_post_data = {'annotation_set':'/api/dev/annotation_set/' + self.annotation_set_bills.id.__str__() + '/',
-                               #'annotation_set': self.annotation_set_bills.id.__str__(),
                                'annotation_caab_code': 'caab1',
                                'qualifier_short_name': 'qualifier1',
                                'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
@@ -878,7 +879,6 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
 
     def setUp(self):
         #Tastypie stuff
-        print 'TestWholeImageAnnotationResource test'
         super(TestWholeImageAnnotationResource, self).setUp()
 
         create_setup(self)
@@ -966,13 +966,11 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
                                                     image=self.mock_image_one,
                                                     owner=self.user_bill)
 
-        print self.whole_image_annotation_point_bills
         #the API url for whole image annotation points
         self.whole_image_annotation_url = '/api/dev/whole_image_annotation/'
 
     def test_whole_image_annotation_operations_disabled(self):
         # test that we can not Create Update Delete as anonymous
-        print 'TestWholeImageAnnotationResource test_whole_image_annotation_operations_disabled'
         self.assertHttpUnauthorized(
             self.anon_api_client.post(
                 self.whole_image_annotation_url,
@@ -995,7 +993,6 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
 
     def test_point_annotation_operations_as_authorised_users(self):
         # create a point annotation that only bill can see
-        print 'TestWholeImageAnnotationResource test_point_annotation_operations_as_authorised_users'
 
         bills_private_annotation_set = mommy.make_one(AnnotationSet,
                                             project=self.project_bills,

@@ -498,7 +498,6 @@ class ProjectResource(ModelResource):
         """
         Special handler function to create a project based on search criteria from images
         """
-
         json_data = simplejson.loads(request.body)
 
         #pull the query parameters out
@@ -526,6 +525,14 @@ class ProjectResource(ModelResource):
                                     status=400,
                                     content_type='application/json')
 
+            # subsample and set the images
+            if image_sampling_methodology == '0':
+                image_subset = ImageManager().random_sample_images(images, image_sample_size)
+            elif image_sampling_methodology == '1':
+                image_subset = ImageManager().stratified_sample_images(images, image_sample_size)
+            else:
+                raise Exception("Image sampling method not implemented.")
+
             #create the project
             project_bundle = Bundle()
             project_bundle.request = request
@@ -539,13 +546,16 @@ class ProjectResource(ModelResource):
                                               image_sampling_methodology=image_sampling_methodology,
                                               image_sample_size=image_sample_size,
                                               annotation_methodology=annotation_methodology,
-                                              point_sample_size=point_sample_size)
+                                              point_sample_size=point_sample_size, 
+                                              images=image_subset)
+            
             AnnotationSetResource().obj_create(annotation_set_bundle)
 
             # build up a response with a 'Location', so the client knows the project id which is created
             kwargs = dict (resource_name=self._meta.resource_name,
                             pk=new_project.obj.id,
                             api_name=self._meta.api_name)
+
             response = HttpResponse(content_type='application/json')
             response['Location'] = self._build_reverse_url('api_dispatch_detail', kwargs = kwargs)
             return response
@@ -654,24 +664,11 @@ class AnnotationSetResource(ModelResource):
     def do_sampling_operations(self, bundle):
         """ Helper function to hold all the sampling logic """
 
-        # subsample and set the images
-        image_sample_size = bundle.data['image_sample_size']
-        image_sampling_methodology = bundle.data['image_sampling_methodology']
-
-        if image_sampling_methodology == '0':
-            bundle.obj.images = ImageManager().random_sample_images(bundle.obj.project.images.all(), image_sample_size)
-        elif image_sampling_methodology == '1':
-            bundle.obj.images = ImageManager().stratified_sample_images(bundle.obj.project.images.all(), image_sample_size)
-        else:
-            raise Exception("Image sampling method not implemented.")
-
-        #save the object with the new images on it
-        bundle.obj.save()
-
         # subsample points based on methodologies
+        #bundle.obj.images = bundle.data['image_subset']
         point_sample_size = bundle.data['point_sample_size']
         annotation_methodology = bundle.data['annotation_methodology']
-
+        
         if annotation_methodology == '0':
             PointAnnotationManager().apply_random_sampled_points(bundle.obj, point_sample_size)
         else:
@@ -691,14 +688,13 @@ class AnnotationSetResource(ModelResource):
         bundle.data['creation_date'] = create_modified_date
         bundle.data['modified_date'] = create_modified_date
 
-        bundle.data['images'] = ''
+        #bundle.data['images'] = ''
 
         #attach current user as the owner
         bundle.data['owner'] = user
 
         #create the bundle
         super(AnnotationSetResource, self).obj_create(bundle)
-
         #generate image subsamples and points
         try:
             self.do_sampling_operations(bundle)
@@ -711,7 +707,7 @@ class AnnotationSetResource(ModelResource):
 
         #make sure we apply permissions to this newly created object
         authorization.apply_annotation_set_permissions(user, bundle.obj)
-
+                
         return bundle
 
 
