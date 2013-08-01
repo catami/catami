@@ -123,12 +123,17 @@ ProjectCreateView = Backbone.View.extend({
         //$(this).hasClass('disabled') // for disabled states
         //$(this).hasClass('active') // for active states
         //$(this).is(':disabled') // for disabled buttons only       
-        if ($("#radio_point").hasClass('active')) data["image_sample_size"] = $("#image_sample_size_point").val();
-        else data["image_sample_size"] = $("#image_sample_size_whole").val();
-        //delete data['image_sample_size_whole'];
-        //delete data['image_sample_size_point'];        
+        if ($("#radio_point").hasClass('active')) {
+            data["image_sample_size"] = $("#image_sample_size_point").val();
+            data["annotation_type"] = 0; //refer to /projects/models.py/ class AnnotationSet / ANNOTATATION_TYPE_CHOICES  
+        }
+        else {
+            data["image_sample_size"] = $("#image_sample_size_whole").val();
+            data["annotation_type"] = 1; //refer to /projects/models.py/ class AnnotationSet / ANNOTATATION_TYPE_CHOICES  
+            //delete data['image_sample_size_whole'];
+            //delete data['image_sample_size_point'];        
+        }
         
-        alert('data: ' + data.toSource());
         this.model.set(data);
         var isValid = this.model.isValid(true);
 

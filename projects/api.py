@@ -508,6 +508,7 @@ class ProjectResource(ModelResource):
         image_sample_size = json_data['image_sample_size']
         annotation_methodology = json_data['annotation_methodology']
         point_sample_size = json_data['point_sample_size']
+        annotation_type = json_data['annotation_type']
 
         #only proceed with all parameters
         if (name and description and deployment_id and image_sampling_methodology and
@@ -547,7 +548,8 @@ class ProjectResource(ModelResource):
                                               image_sample_size=image_sample_size,
                                               annotation_methodology=annotation_methodology,
                                               point_sample_size=point_sample_size, 
-                                              images=image_subset)
+                                              images=image_subset,
+                                              annotation_type=annotation_type)
             
             AnnotationSetResource().obj_create(annotation_set_bundle)
 
@@ -622,7 +624,8 @@ class AnnotationSetResource(ModelResource):
             'project': 'exact',
             'name': 'exact',
             'owner': 'exact',
-            'id': 'exact'
+            'id': 'exact',
+            'annotation_type' : 'exact'
         }
 
     def prepend_urls(self):

@@ -81,10 +81,16 @@ class AnnotationSet(models.Model):
     )
 
     ANNOTATATION_SAMPLING_METHODOLOGY_CHOICES = (
+        (-1, 'Not Applicable'),
         (0, 'Random Point'),
         (1, 'Stratified Point'),
         (2, 'Fixed 5 Point'),
         (3, 'Percentage Cover'),
+    )
+
+    ANNOTATATION_TYPE_CHOICES = (
+        (0, 'Point'),
+        (1, 'Whole Image'),
     )
 
     project = models.ForeignKey('projects.Project')
@@ -96,6 +102,7 @@ class AnnotationSet(models.Model):
     images = models.ManyToManyField(Image, related_name='projects')
     image_sampling_methodology = models.IntegerField(choices=IMAGE_SAMPLING_METHODOLOGY_CHOICES)
     annotation_methodology = models.IntegerField(choices=ANNOTATATION_SAMPLING_METHODOLOGY_CHOICES)
+    annotation_type = models.IntegerField(choices=ANNOTATATION_TYPE_CHOICES)
 
     class Meta:
         unique_together = (('owner', 'name', 'creation_date'), )
