@@ -206,22 +206,14 @@ PROJECT_APPS = (
     'projects'
 )
 
-#haystack support
-#HAYSTACK_CONNECTIONS = {
-#    'default': {
-#        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-#        'URL': 'http://127.0.0.1:8983/solr'
-#    },
-#}
-
 ANONYMOUS_USER_ID = -1
 
-EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-#EMAIL_USE_TLS = True
-#EMAIL_HOST = 'smtp.gmail.com'
-#EMAIL_PORT = 587
-#EMAIL_HOST_USER = 'none@none.none'
-#EMAIL_HOST_PASSWORD = 'none'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 #AUTH_PROFILE_MODULE = "accounts.UserProfile"
 AUTH_PROFILE_MODULE = 'accounts.MyProfile'
 
@@ -230,6 +222,8 @@ LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
 USERENA_REDIRECT_ON_SIGNOUT = '/'
 USERENA_SIGNIN_REDIRECT_URL = '/'
+
+#this need to be 1 for on and 0 for off
 USERENA_ACTIVATION_REQUIRED = 0
 
 # A sample logging configuration. The only tangible logging
