@@ -50,7 +50,7 @@ class CreateWorksetAndAnnotationForm(forms.Form):
     #collection = forms.IntegerField(widget=forms.HiddenInput())
     owner = forms.CharField(widget=forms.HiddenInput())
     annotation_set_name = forms.CharField(widget=forms.HiddenInput(), required=False)
-    annotation_methodology = forms.IntegerField(widget=forms.HiddenInput(),initial=0)
+    point_sampling_methodology = forms.IntegerField(widget=forms.HiddenInput(),initial=0)
 
 
 

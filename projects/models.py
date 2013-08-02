@@ -80,15 +80,14 @@ class AnnotationSet(models.Model):
         (2, 'Spatial'),
     )
 
-    ANNOTATATION_SAMPLING_METHODOLOGY_CHOICES = (
+    POINT_SAMPLING_METHODOLOGY_CHOICES = (
         (-1, 'Not Applicable'),
         (0, 'Random Point'),
         (1, 'Stratified Point'),
         (2, 'Fixed 5 Point'),
-        (3, 'Percentage Cover'),
     )
 
-    ANNOTATATION_TYPE_CHOICES = (
+    ANNOTATATION_SET_TYPE_CHOICES = (
         (0, 'Point'),
         (1, 'Whole Image'),
     )
@@ -101,8 +100,8 @@ class AnnotationSet(models.Model):
     modified_date = models.DateTimeField()
     images = models.ManyToManyField(Image, related_name='projects')
     image_sampling_methodology = models.IntegerField(choices=IMAGE_SAMPLING_METHODOLOGY_CHOICES)
-    annotation_methodology = models.IntegerField(choices=ANNOTATATION_SAMPLING_METHODOLOGY_CHOICES)
-    annotation_type = models.IntegerField(choices=ANNOTATATION_TYPE_CHOICES)
+    point_sampling_methodology = models.IntegerField(choices=POINT_SAMPLING_METHODOLOGY_CHOICES)
+    annotation_set_type = models.IntegerField(choices=ANNOTATATION_SET_TYPE_CHOICES)
 
     class Meta:
         unique_together = (('owner', 'name', 'creation_date'), )

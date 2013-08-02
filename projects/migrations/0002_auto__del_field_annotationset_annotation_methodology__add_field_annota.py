@@ -8,15 +8,31 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'AnnotationSet.annotation_type'
-        db.add_column('projects_annotationset', 'annotation_type',
+        # Deleting field 'AnnotationSet.annotation_methodology'
+        db.delete_column('projects_annotationset', 'annotation_methodology')
+
+        # Adding field 'AnnotationSet.point_sampling_methodology'
+        db.add_column('projects_annotationset', 'point_sampling_methodology',
+                      self.gf('django.db.models.fields.IntegerField')(default=0),
+                      keep_default=False)
+
+        # Adding field 'AnnotationSet.annotation_set_type'
+        db.add_column('projects_annotationset', 'annotation_set_type',
                       self.gf('django.db.models.fields.IntegerField')(default=0),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'AnnotationSet.annotation_type'
-        db.delete_column('projects_annotationset', 'annotation_type')
+        # Adding field 'AnnotationSet.annotation_methodology'
+        db.add_column('projects_annotationset', 'annotation_methodology',
+                      self.gf('django.db.models.fields.IntegerField')(default=0),
+                      keep_default=False)
+
+        # Deleting field 'AnnotationSet.point_sampling_methodology'
+        db.delete_column('projects_annotationset', 'point_sampling_methodology')
+
+        # Deleting field 'AnnotationSet.annotation_set_type'
+        db.delete_column('projects_annotationset', 'annotation_set_type')
 
 
     models = {
@@ -108,8 +124,7 @@ class Migration(SchemaMigration):
         },
         'projects.annotationset': {
             'Meta': {'unique_together': "(('owner', 'name', 'creation_date'),)", 'object_name': 'AnnotationSet'},
-            'annotation_methodology': ('django.db.models.fields.IntegerField', [], {}),
-            'annotation_type': ('django.db.models.fields.IntegerField', [], {}),
+            'annotation_set_type': ('django.db.models.fields.IntegerField', [], {}),
             'creation_date': ('django.db.models.fields.DateTimeField', [], {}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -118,6 +133,7 @@ class Migration(SchemaMigration):
             'modified_date': ('django.db.models.fields.DateTimeField', [], {}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True'}),
+            'point_sampling_methodology': ('django.db.models.fields.IntegerField', [], {}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['projects.Project']"})
         },
         'projects.pointannotation': {

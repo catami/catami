@@ -56,7 +56,7 @@ var ProjectCreate = Backbone.Model.extend({
             msg: 'Please select an image sample size.',
             min: 1
         },
-        annotation_methodology: {
+        point_sampling_methodology: {
             required: true,
             msg: 'Please select a point sampling methodology.'
         },
@@ -125,11 +125,11 @@ ProjectCreateView = Backbone.View.extend({
         //$(this).is(':disabled') // for disabled buttons only       
         if ($("#radio_point").hasClass('active')) {
             data["image_sample_size"] = $("#image_sample_size_point").val();
-            data["annotation_type"] = 0; //refer to /projects/models.py/ class AnnotationSet / ANNOTATATION_TYPE_CHOICES  
+            data["annotation_set_type"] = 0; //refer to /projects/models.py/ class AnnotationSet / ANNOTATATION_TYPE_CHOICES  
         }
         else {
             data["image_sample_size"] = $("#image_sample_size_whole").val();
-            data["annotation_type"] = 1; //refer to /projects/models.py/ class AnnotationSet / ANNOTATATION_TYPE_CHOICES  
+            data["annotation_set_type"] = 1; //refer to /projects/models.py/ class AnnotationSet / ANNOTATATION_TYPE_CHOICES  
             //delete data['image_sample_size_whole'];
             //delete data['image_sample_size_point'];        
         }

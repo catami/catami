@@ -87,7 +87,7 @@ ProjectView = Backbone.View.extend({
         var imageSamplingMethods = ["random", "stratified", "spatial"];
         var pointSamplingMethods = ["random", "stratified"];
         var imageSampling = imageSamplingMethods[annotationSets.at(0).get('image_sampling_methodology')];
-        var pointSampling = pointSamplingMethods[annotationSets.at(0).get('annotation_methodology')];
+        var pointSampling = pointSamplingMethods[annotationSets.at(0).get('point_sampling_methodology')];
 
         var annotationSetImages = new Images({"url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/images/"});
 

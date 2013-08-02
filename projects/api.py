@@ -506,13 +506,13 @@ class ProjectResource(ModelResource):
         deployment_id = json_data['deployment_id']
         image_sampling_methodology = json_data['image_sampling_methodology']
         image_sample_size = json_data['image_sample_size']
-        annotation_methodology = json_data['annotation_methodology']
+        point_sampling_methodology = json_data['point_sampling_methodology']
         point_sample_size = json_data['point_sample_size']
-        annotation_type = json_data['annotation_type']
+        annotation_set_type = json_data['annotation_set_type']
 
         #only proceed with all parameters
         if (name and description and deployment_id and image_sampling_methodology and
-            image_sample_size and annotation_methodology and point_sample_size) is not None:
+            image_sample_size and point_sampling_methodology and point_sample_size) is not None:
 
             #get the images we are interested in
             image_bundle = Bundle()
@@ -546,10 +546,10 @@ class ProjectResource(ModelResource):
             annotation_set_bundle.data = dict(project=new_project, name="", description="",
                                               image_sampling_methodology=image_sampling_methodology,
                                               image_sample_size=image_sample_size,
-                                              annotation_methodology=annotation_methodology,
+                                              point_sampling_methodology=point_sampling_methodology,
                                               point_sample_size=point_sample_size, 
                                               images=image_subset,
-                                              annotation_type=annotation_type)
+                                              annotation_set_type=annotation_set_type)
             
             AnnotationSetResource().obj_create(annotation_set_bundle)
 
@@ -625,7 +625,7 @@ class AnnotationSetResource(ModelResource):
             'name': 'exact',
             'owner': 'exact',
             'id': 'exact',
-            'annotation_type' : 'exact'
+            'annotation_set_type' : 'exact'
         }
 
     def prepend_urls(self):
@@ -670,9 +670,9 @@ class AnnotationSetResource(ModelResource):
         # subsample points based on methodologies
         #bundle.obj.images = bundle.data['image_subset']
         point_sample_size = bundle.data['point_sample_size']
-        annotation_methodology = bundle.data['annotation_methodology']
+        point_sampling_methodology = bundle.data['point_sampling_methodology']
         
-        if annotation_methodology == '0':
+        if point_sampling_methodology == '0':
             PointAnnotationManager().apply_random_sampled_points(bundle.obj, point_sample_size)
         else:
             raise Exception("Point sampling method not implemented.")

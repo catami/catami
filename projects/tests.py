@@ -243,9 +243,9 @@ class TestProjectResource(ResourceTestCase):
                                'deployment_id': self.deployment_one.id.__str__(),
                                'image_sampling_methodology': '0',
                                'image_sample_size': '10',
-                               'annotation_methodology': '0',
+                               'point_sampling_methodology': '0',
                                'point_sample_size': '10',
-                               'annotation_type': '0',
+                               'annotation_set_type': '0',
                                }
 
         response = self.bill_api_client.post(
@@ -337,9 +337,9 @@ class TestAnnotationSetResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
-                                            annotation_methodology=0,
+                                            point_sampling_methodology=0,
                                             image_sampling_methodology=0,
-                                            annotation_type=0)
+                                            annotation_set_type=0)
 
         self.annotation_set_bills = mommy.make_one(AnnotationSet,
                                             project=self.project_bills,
@@ -347,9 +347,9 @@ class TestAnnotationSetResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
-                                            annotation_methodology=1,
+                                            point_sampling_methodology=1,
                                             image_sampling_methodology=0,
-                                            annotation_type=0)
+                                            annotation_set_type=0)
 
         #assign this one to bob
         authorization.apply_annotation_set_permissions(
@@ -405,9 +405,9 @@ class TestAnnotationSetResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
-                                            annotation_methodology=2,
+                                            point_sampling_methodology=2,
                                             image_sampling_methodology=0,
-                                            annotation_type=0)
+                                            annotation_set_type=0)
 
         assign_perm('view_annotationset', self.user_bill, bills_annotation_set)
 
@@ -453,11 +453,11 @@ class TestAnnotationSetResource(ResourceTestCase):
                                'images': [ "/api/dev/image/" + self.mock_image_one.id.__str__() + "/",
                                            "/api/dev/image/" + self.mock_image_two.id.__str__() + "/"],
                                #'images': '',
-                               'annotation_methodology': '0',
+                               'point_sampling_methodology': '0',
                                'image_sampling_methodology': '0',
                                'image_sample_size': '2',
                                'point_sample_size': '15',
-                               'annotation_type': '0'
+                               'annotation_set_type': '0'
                                 }
 
         response = self.bill_api_client.post(
@@ -513,11 +513,11 @@ class TestAnnotationSetResource(ResourceTestCase):
                                #'modified_date': '2012-05-01',
                                'images': [ "/api/dev/image/" + self.mock_image_one.id.__str__() + "/",
                                            "/api/dev/image/" + self.mock_image_two.id.__str__() + "/"],                               
-                               'annotation_methodology': '0',
+                               'point_sampling_methodology': '0',
                                'image_sampling_methodology': '0',
                                'image_sample_size': '2',
                                'point_sample_size': '15',
-                               'annotation_type': '0',
+                               'annotation_set_type': '0',
                                 }
 
         response = self.bill_api_client.post(
@@ -551,11 +551,11 @@ class TestAnnotationSetResource(ResourceTestCase):
                                #'modified_date': '2012-05-01',
                                'images': [ "/api/dev/image/" + self.mock_image_one.id.__str__() + "/",
                                            "/api/dev/image/" + self.mock_image_two.id.__str__() + "/"],
-                               'annotation_methodology': '0',
+                               'point_sampling_methodology': '0',
                                'image_sampling_methodology': '1',
                                'image_sample_size': '2',
                                'point_sample_size': '5',
-                               'annotation_type': '0'
+                               'annotation_set_type': '0'
                                 }
 
         response = self.bill_api_client.post(
@@ -588,11 +588,11 @@ class TestAnnotationSetResource(ResourceTestCase):
                                'creation_date': '2012-05-01',
                                'modified_date': '2012-05-01',
                                'images': '',
-                               'annotation_methodology': '4',
+                               'point_sampling_methodology': '4',
                                'image_sampling_methodology': '4',
                                'image_sample_size': '10',
                                'point_sample_size': '5',
-                               'annotation_type': '0'
+                               'annotation_set_type': '0'
                                 }
 
         response = self.bill_api_client.post(
@@ -669,9 +669,9 @@ class TestPointAnnotationResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
-                                            annotation_methodology=0,
+                                            point_sampling_methodology=0,
                                             image_sampling_methodology=0,
-                                            annotation_type=0)
+                                            annotation_set_type=0)
 
         self.annotation_set_bills = mommy.make_one(AnnotationSet,
                                             project=self.project_bills,
@@ -679,9 +679,9 @@ class TestPointAnnotationResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
-                                            annotation_methodology=1,
+                                            point_sampling_methodology=1,
                                             image_sampling_methodology=0,
-                                            annotation_type=0)
+                                            annotation_set_type=0)
 
         #assign this one to bob
         authorization.apply_annotation_set_permissions(
@@ -735,9 +735,9 @@ class TestPointAnnotationResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
-                                            annotation_methodology=2,
+                                            point_sampling_methodology=2,
                                             image_sampling_methodology=0,
-                                            annotation_type=0)
+                                            annotation_set_type=0)
 
         assign_perm('view_annotationset', self.user_bill, bills_private_annotation_set)
 
@@ -949,9 +949,9 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
-                                            annotation_methodology=0,
+                                            point_sampling_methodology=0,
                                             image_sampling_methodology=0,
-                                            annotation_type=0)
+                                            annotation_set_type=0)
 
         self.annotation_set_bills = mommy.make_one(AnnotationSet,
                                             project=self.project_bills,
@@ -959,9 +959,9 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
-                                            annotation_methodology=1,
+                                            point_sampling_methodology=1,
                                             image_sampling_methodology=0,
-                                            annotation_type=0)
+                                            annotation_set_type=0)
 
         #assign this one to bob
         authorization.apply_annotation_set_permissions(self.user_bob, self.annotation_set_bobs)
@@ -1013,9 +1013,9 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
-                                            annotation_methodology=2,
+                                            point_sampling_methodology=2,
                                             image_sampling_methodology=0,
-                                            annotation_type=0)
+                                            annotation_set_type=0)
 
         assign_perm('view_annotationset', self.user_bill, bills_private_annotation_set)
 

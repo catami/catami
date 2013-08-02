@@ -97,7 +97,7 @@ def send_workset_and_annotation_form(request, form, form_id):
             datastuff = {'collection':Collection.objects.get(id=wsid),
                          'owner':user,
                          'name':form.cleaned_data.get('name')+'_annotationset',
-                         'methodology':int(form.cleaned_data.get('annotation_methodology')),
+                         'methodology':int(form.cleaned_data.get('point_sampling_methodology')),
                          'count': int(form.cleaned_data.get('annotation_point_count'))
                         }
 
