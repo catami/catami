@@ -3,11 +3,11 @@
 {% endif %}
 {% blocktrans with site.name as site %}Thank you for signing up at {{ site }}.{% endblocktrans %}
 
-{% trans "To activate your account you should click on the link below:" %}
+{% trans "To activate your account you need to click on the link below:" %}
 
 {{ protocol }}://{{ site.domain }}{% url userena_activate activation_key %}
 
-{% trans "Thanks for using our site!" %}
+{% trans "Thanks for signing up to use CATAMI!" %}
 
 {% trans "Sincerely" %},
 {{ site.name }}

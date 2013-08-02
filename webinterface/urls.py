@@ -65,11 +65,17 @@ urlpatterns = patterns(
     url(r'^accounts/(?P<username>[\.\w]+)/password/$', userena_views.password_change,  {'template_name': 'accounts/password_reset_form.html'}, name='password_change'),
     url(r'^accounts/(?P<username>[\.\w]+)/password/complete/$', userena_views.direct_to_user_template, {'template_name': 'accounts/password_complete.html'}, name='userena_password_change_complete'),
     url(r'^accounts/(?P<username>[\.\w]+)/edit/$', userena_views.profile_edit,  {'template_name': 'accounts/profile_form.html'}, name='userena_profile_edit'),
+    url(r'^accounts/(?P<username>[\.\w-]+)/email/complete/$', userena_views.direct_to_user_template, {'template_name': 'accounts/email_change_complete.html'}, name='userena_email_change_complete'),
+    url(r'^accounts/(?P<username>[\.\w-]+)/confirm-email/complete/$', userena_views.direct_to_user_template, {'template_name': 'accounts/email_confirm_complete.html'}, name='userena_email_confirm_complete'),
+    url(r'^accounts/(?P<username>[\.\w-]+)/signup/complete/$', userena_views.direct_to_user_template, {'template_name': 'accounts/signup_complete.html', 'extra_context': {'userena_activation_required': userena_settings.USERENA_ACTIVATION_REQUIRED, 'userena_activation_days': userena_settings.USERENA_ACTIVATION_DAYS}}, name='userena_signup_complete'),
+
     url(r'^accounts/(?P<username>(?!signout|signup|signin)[\.\w]+)/$', userena_views.profile_detail, {'template_name': 'accounts/profile_detail.html'},  name='userena_profile_detail'),
 
     url(r'^accounts/activate/(?P<activation_key>\w+)/$', userena_views.activate, name='userena_activate'),
+
     # Disabled account
     url(r'^accounts/(?P<username>[\.\w-]+)/disabled/$',userena_views.direct_to_user_template, {'template_name': 'accounts/disabled.html'}, name='userena_disabled'),
+
     #userena profile list
     url(r'accounts/$', userena_views.profile_list, {'template_name': 'accounts/profile_list.html'},  name='userena_profile_list'),
 
@@ -79,10 +85,23 @@ urlpatterns = patterns(
     url(r'^accounts/signout/$', auth_views.logout, {'next_page': userena_settings.USERENA_REDIRECT_ON_SIGNOUT, 'template_name': 'accounts/signout.html'}, name='userena_signout'),
     url(r'^accounts/password/reset/$', auth_views.password_reset, {'template_name': 'accounts/password_reset_form.html', 'email_template_name': 'accounts/emails/password_reset_message.txt'}, name='userena_password_reset'),
     url(r'^accounts/password/reset/done/$', auth_views.password_reset_done, {'template_name': 'accounts/password_reset_done.html'}, name='userena_password_reset_done'),
+    url(r'^accounts/password/reset/confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', auth_views.password_reset_confirm, {'template_name': 'accounts/password_reset_confirm_form.html'}, name='userena_password_reset_confirm'),
+    url(r'^accounts/password/reset/confirm/complete/$', auth_views.password_reset_complete, {'template_name': 'accounts/password_reset_complete.html'}),
+
+    # Retry activation
+    url(r'^accounts/activate/retry/(?P<activation_key>\w+)/$', userena_views.activate_retry, name='userena_activate_retry'),
+
+    # Change email and confirm it
+    url(r'^accounts/confirm-email/(?P<confirmation_key>\w+)/$', userena_views.email_confirm, name='userena_email_confirm'),
+
+    # Disabled account
+    url(r'^accounts/(?P<username>[\.\w-]+)/disabled/$', userena_views.direct_to_user_template, {'template_name': 'accounts/disabled.html'}, name='userena_disabled'),
+
+    url(r'^accounts/page/(?P<page>[0-9]+)/$', userena_views.ProfileListView.as_view(), name='userena_profile_list_paginated'),
+    url(r'^accounts/$', userena_views.ProfileListView.as_view(), name='userena_profile_list'),
 
     #userana to catch any un
-    (r'^accounts/', include('userena.urls')),
-    url(r'^logout/$', 'logout_view'),
+    url(r'^accounts/', include('userena.urls')), url(r'^logout/$', 'logout_view'),
 
     #admin interface
     url(r'^admin/', include(admin.site.urls)),
