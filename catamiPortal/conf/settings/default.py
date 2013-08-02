@@ -218,6 +218,7 @@ EMAIL_HOST_PASSWORD = ''
 AUTH_PROFILE_MODULE = 'accounts.MyProfile'
 
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+LOGOUT_REDIRECT_URL = "/"
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
 USERENA_REDIRECT_ON_SIGNOUT = '/'
