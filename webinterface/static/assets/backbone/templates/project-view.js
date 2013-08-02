@@ -85,7 +85,7 @@ ProjectView = Backbone.View.extend({
 
         //get sampling methods
         var imageSamplingMethods = ["random", "stratified", "spatial"];
-        var pointSamplingMethods = ["random", "stratified"];
+        var pointSamplingMethods = ["random point", "stratified point"];
         var annotationSetTypes = ["fine scale","broad scale"]
 
         var imageSampling = imageSamplingMethods[annotationSets.at(0).get('image_sampling_methodology')];
