@@ -86,8 +86,11 @@ ProjectView = Backbone.View.extend({
         //get sampling methods
         var imageSamplingMethods = ["random", "stratified", "spatial"];
         var pointSamplingMethods = ["random", "stratified"];
+        var annotationSetTypes = ["fine scale","broad scale"]
+
         var imageSampling = imageSamplingMethods[annotationSets.at(0).get('image_sampling_methodology')];
         var pointSampling = pointSamplingMethods[annotationSets.at(0).get('point_sampling_methodology')];
+        var annotationSetType = annotationSetTypes[annotationSets.at(0).get('annotation_set_type')];
 
         var annotationSetImages = new Images({"url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/images/"});
 
@@ -100,43 +103,87 @@ ProjectView = Backbone.View.extend({
                 $('#image_sampling_method').html(imageSampling);
 
                 //get points total and calculate completeness
-                points.fetch({ //assuming annotation sets have been fetched and succeeded
-                    data: { limit: 100000, annotation_set: annotationSets.at(0).get('id') },
-                    success: function (model, response, options) {
+                if (annotationSetType == annotationSetTypes[0]){
+                    points.fetch({ //assuming annotation sets have been fetched and succeeded
+                        data: { limit: 100000, annotation_set: annotationSets.at(0).get('id') },
+                        success: function (model, response, options) {
 
-                        //points per image set
-                        var totalPoints = points.meta.total_count;
-                        var totalImages = annotationSetImages.meta.total_count;
-                        $('#points_per_image').html(totalPoints/totalImages);
-                        $('#point_sampling_method').html(pointSampling);
+                            //points per image set
+                            var totalPoints = points.meta.total_count;
+                            var totalImages = annotationSetImages.meta.total_count;
+                            $('#annotation_type_label').html('Fine Scale Annotation')
+                            $('#points_per_image').html(totalPoints/totalImages);
+                            $('#point_sampling_method').html(pointSampling);
 
-                        console.log("total points " + totalPoints);
+                            console.log("total points " + totalPoints);
 
-                        var pointsAnnotatedCounter = 0;
-                        //loop through the points calculate completeness
-                        points.each(function (point) {
-                            if(point.get('annotation_caab_code') != "")
-                                pointsAnnotatedCounter++;
-                        });
+                            var pointsAnnotatedCounter = 0;
+                            //loop through the points calculate completeness
+                            points.each(function (point) {
+                                if(point.get('annotation_caab_code') != "")
+                                    pointsAnnotatedCounter++;
+                            });
 
-                        $('#percentage_complete').html(Math.floor((pointsAnnotatedCounter/totalPoints)*100) + "%");
+                            $('#percentage_complete').html(Math.floor((pointsAnnotatedCounter/totalPoints)*100) + "%");
 
-                    },
-                    error: function (model, response, options) {
-                        $('#points_per_image').html("?");
-                        $('#percentage_complete').html("?");
+                        },
+                        error: function (model, response, options) {
+                            $('#points_per_image').html("?");
+                            $('#percentage_complete').html("?");
 
-                        $.pnotify({
-                            title: 'Failed to load the project stats. Try refreshing the page.',
-                            text: response.status,
-                            type: 'error', // success | info | error
-                            hide: true,
-                            icon: false,
-                            history: false,
-                            sticker: false
-                        });
-                    }
-                });
+                            $.pnotify({
+                                title: 'Failed to load the project stats. Try refreshing the page.',
+                                text: response.status,
+                                type: 'error', // success | info | error
+                                hide: true,
+                                icon: false,
+                                history: false,
+                                sticker: false
+                            });
+                        }
+                    });
+                }
+                if (annotationSetType == annotationSetTypes[1]){
+                    whole_image_points.fetch({ //assuming annotation sets have been fetched and succeeded
+                        data: { limit: 100000, annotation_set: annotationSets.at(0).get('id') },
+                        success: function (model, response, options) {
+
+                            //points per image set
+                            var totalPoints = whole_image_points.meta.total_count;
+                            var totalImages = annotationSetImages.meta.total_count;
+                            $('#annotation_type_label').html('Broad Scale Annotation')
+                            $('#points_per_image').html(totalPoints/totalImages);
+                            $('#point_sampling_method').html('whole image');
+
+                            console.log("total points " + totalPoints);
+
+                            var pointsAnnotatedCounter = 0;
+                            //loop through the points calculate completeness
+                            whole_image_points.each(function (whole_image_point) {
+                                if(whole_image_point.get('annotation_caab_code') !== ""){
+                                    pointsAnnotatedCounter++;
+                                }
+                            });
+                            console.log('pointsAnnotatedCounter '+pointsAnnotatedCounter)
+                            $('#percentage_complete').html(Math.floor((pointsAnnotatedCounter/totalPoints)*100) + "%");
+
+                        },
+                        error: function (model, response, options) {
+                            $('#points_per_image').html("?");
+                            $('#percentage_complete').html("?");
+
+                            $.pnotify({
+                                title: 'Failed to load the project stats. Try refreshing the page.',
+                                text: response.status,
+                                type: 'error', // success | info | error
+                                hide: true,
+                                icon: false,
+                                history: false,
+                                sticker: false
+                            });
+                        }
+                    });
+                }
 
             },
             error: function (model, response, options) {
@@ -242,7 +289,7 @@ var project = new Project({ id: projectId });
 var images;
 var annotationSets = new AnnotationSets();
 var points = new PointAnnotations();
-
+var whole_image_points = new WholeImageAnnotations();
 
 project.fetch({
 
