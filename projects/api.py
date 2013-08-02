@@ -16,7 +16,9 @@ from projects.models import (Project,
                              PointAnnotation,
                              WholeImageAnnotation,
                              AnnotationCodes,
-                             QualifierCodes, PointAnnotationManager)
+                             QualifierCodes, 
+                             PointAnnotationManager,
+                             WholeImageAnnotationManager)
 from catamidb.api import ImageResource
 from tastypie.authentication import (Authentication,
                                      SessionAuthentication,
@@ -664,7 +666,7 @@ class AnnotationSetResource(ModelResource):
         image_resource = ImageResource()
         return image_resource.get_list(request, id__in=image_ids)
 
-    def do_sampling_operations(self, bundle):
+    def do_point_sampling_operations(self, bundle):
         """ Helper function to hold all the sampling logic """
 
         # subsample points based on methodologies
@@ -676,6 +678,12 @@ class AnnotationSetResource(ModelResource):
             PointAnnotationManager().apply_random_sampled_points(bundle.obj, point_sample_size)
         else:
             raise Exception("Point sampling method not implemented.")
+
+
+    def do_whole_image_point_operations(self, bundle):
+        """ Helper function to hold whole image point assignment logic """
+        WholeImageAnnotationManager().apply_whole_image_points(bundle.obj)
+
 
     def obj_create(self, bundle, **kwargs):
         """
@@ -698,15 +706,29 @@ class AnnotationSetResource(ModelResource):
 
         #create the bundle
         super(AnnotationSetResource, self).obj_create(bundle)
-        #generate image subsamples and points
-        try:
-            self.do_sampling_operations(bundle)
-        except Exception:
-            #delete the object that was created
-            bundle.obj.delete()
+        print 'annotation_set_type',bundle.data['annotation_set_type']
+        # generate anootation points
+        if int(bundle.data['annotation_set_type']) == 0:
+            try:
+                self.do_point_sampling_operations(bundle)
+            except Exception:
+                #delete the object that was created
+                bundle.obj.delete()
 
-            #return not implemented response
-            raise ImmediateHttpResponse(HttpNotImplemented("Unable to create annotation set."))
+                #return not implemented response
+                raise ImmediateHttpResponse(HttpNotImplemented("Unable to create point (fine scale) annotation set."))
+        elif int(bundle.data['annotation_set_type']) == 1:
+            try:
+                self.do_whole_image_point_operations(bundle)
+            except Exception:
+                #delete the object that was created
+                bundle.obj.delete()
+
+                #return not implemented response
+                raise ImmediateHttpResponse(HttpNotImplemented("Unable to create whole image (broad scale) annotation set."))
+        else:
+            print "poop"
+            raise ImmediateHttpResponse(HttpNotImplemented("Unexpected annotation set request."))
 
         #make sure we apply permissions to this newly created object
         authorization.apply_annotation_set_permissions(user, bundle.obj)

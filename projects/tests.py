@@ -235,7 +235,7 @@ class TestProjectResource(ResourceTestCase):
         self.assertValidJSONResponse(response)
         self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
-    def test_create_project_helper_function(self):
+    def test_create_project_helper_function_point_type(self):
         create_project_url = self.project_url + "create_project/"
 
         self.create_project_data = {'name': 'helpercreated',
@@ -268,6 +268,50 @@ class TestProjectResource(ResourceTestCase):
 
         #check the right number of images are on the associated annotation set
         self.assertEqual(10, len(AnnotationSet.objects.get(project=project_id).images.all()))
+
+
+    def test_create_project_helper_function_whole_image_type(self):
+        create_project_url = self.project_url + "create_project/"
+
+        self.create_project_data = {'name': 'helpercreated',
+                               'description': 'my description',
+                               'deployment_id': self.deployment_one.id.__str__(),
+                               'image_sampling_methodology': '0',
+                               'image_sample_size': '10',
+                               'point_sampling_methodology': '-1',
+                               'point_sample_size': '0',
+                               'annotation_set_type': '1',
+                               }
+
+        response = self.bill_api_client.post(
+                create_project_url,
+                format='json',
+                data=self.create_project_data)
+
+        self.assertHttpOK(response)
+
+        project_location_split = response['Location'].split('/')
+        project_id = project_location_split[len(project_location_split)-2]
+
+        #check we got the right amount of images created
+        response = self.bill_api_client.get(self.project_url + "?name=helpercreated",
+                                            format='json')
+
+        #check the right number of images are on the project
+        number_of_images = len(self.deserialize(response)['objects'][0]['images'])
+        self.assertEqual(number_of_images, len(Image.objects.filter(deployment=self.deployment_one.id)))
+
+        #check the right number of images are on the associated annotation set
+        self.assertEqual(10, len(AnnotationSet.objects.get(project=project_id).images.all()))
+
+        annotation_set_images = AnnotationSet.objects.get(project=project_id).images.all()
+
+        #check that the right number of whole image annotations have been applied
+        observed_annotation_count = 0
+        for image in annotation_set_images:
+            observed_annotation_count = observed_annotation_count + len(WholeImageAnnotation.objects.filter(image=image))
+
+        self.assertEqual(40, observed_annotation_count)
 
 
 class TestAnnotationSetResource(ResourceTestCase):
@@ -503,14 +547,11 @@ class TestAnnotationSetResource(ResourceTestCase):
         self.assertValidJSONResponse(response)
         self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
-    def test_annotation_set_creation_random(self):
+    def test_point_annotation_set_creation_random(self):
         #some post data for testing project creation
         self.bill_post_data = {'project':'/api/dev/project/' + self.project_bills_big.id.__str__() + '/',
                                'name': 'myName',
                                'description': 'my description',
-                               #'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
-                               #'creation_date': '2012-05-01',
-                               #'modified_date': '2012-05-01',
                                'images': [ "/api/dev/image/" + self.mock_image_one.id.__str__() + "/",
                                            "/api/dev/image/" + self.mock_image_two.id.__str__() + "/"],                               
                                'point_sampling_methodology': '0',
@@ -541,14 +582,11 @@ class TestAnnotationSetResource(ResourceTestCase):
                                             format='json')
             self.assertEqual(len(self.deserialize(response)['objects']), 15)
 
-    def test_annotation_set_creation_stratified(self):
+    def test_point_annotation_set_creation_stratified(self):
         #some post data for testing project creation
         self.bill_post_data = {'project':'/api/dev/project/' + self.project_bills_big.id.__str__() + '/',
                                'name': 'myName',
-                               'description': 'my description',
-                               #'owner': "/api/dev/users/" + self.user_bill.id.__str__()+"/",
-                               #'creation_date': '2012-05-01',
-                               #'modified_date': '2012-05-01',
+                               'description': 'my description',        
                                'images': [ "/api/dev/image/" + self.mock_image_one.id.__str__() + "/",
                                            "/api/dev/image/" + self.mock_image_two.id.__str__() + "/"],
                                'point_sampling_methodology': '0',

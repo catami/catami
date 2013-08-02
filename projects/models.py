@@ -167,6 +167,35 @@ class PointAnnotationManager(models.Manager):
         return None
 
 
+class WholeImageAnnotationManager(models.Manager):
+    """ Handles logic functions related to whole image annotations """
+
+    def apply_whole_image_points(self, annotation_set):
+        """ Randomly apply points to the images attached to this annotation
+            set """
+            
+        whole_image_annotation_count = 4
+        images = annotation_set.images.all()
+        points_to_bulk_save = []
+
+        # iterate through the images and create points
+        for image in images:
+            for i in range(whole_image_annotation_count):
+                whole_image_annotation = WholeImageAnnotation()
+
+                whole_image_annotation.annotation_set = annotation_set
+                whole_image_annotation.image = image
+                whole_image_annotation.owner = annotation_set.owner
+
+                whole_image_annotation.annotation_caab_code = ""
+                whole_image_annotation.qualifier_short_name = ""
+
+                points_to_bulk_save.append(whole_image_annotation)
+
+        # do the bulk save - for performance
+        WholeImageAnnotation.objects.bulk_create(points_to_bulk_save)
+
+
 class PointAnnotation(Annotation):
     """
     A Point annotation.
