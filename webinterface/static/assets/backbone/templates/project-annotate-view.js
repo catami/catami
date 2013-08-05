@@ -37,7 +37,7 @@ ChooseAnnotationView = Backbone.View.extend({
     },
     render: function() {
         // Compile the template using underscore
-        var chooseAnnotationTemplate = _.template($("#ChooseAnnotationTemplate").html(), null);
+        var chooseAnnotationTemplate = _.template($("#ChooseAnnotationTemplate").html(), {});
 
         list_html = buildList(nested_annotation_list, false);
 
@@ -116,18 +116,25 @@ ProjectAnnotateView = Backbone.View.extend({
     initialize: function () {
         //bind to the global event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
+        // this.wholeImageAnnotationSelectorView = new WholeImageAnnotationSelectorView();
 
         this.render();
+
         this.configElastiSlide();
     },
     render: function () {
 
-        //ge tall the images to be rendered
+        var annotationSetTypes = ["fine scale","broad scale"]
+
+        //get tall the images to be rendered
         var imageTemplate = "";
 
         // enforcing only one annotation set per project for the time being, so
         // can assume the first one
         var annotationSet = annotationSets.at(0);
+
+        var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
+
         var images = annotationSet.get("images");
 
         for(var i=0; i < images.length; i++) {
@@ -150,6 +157,14 @@ ProjectAnnotateView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
 
+        // add whole_image subview if needed
+        var wholeImageTemplate = "";
+        wholeImageTemplate += _.template($("#WholeImageAnnotationTemplate").html(),{});
+
+        if (annotationSetType == annotationSetTypes[1]){
+            this.addWholeImageSelector();
+        }
+
         return this;
     },
     configElastiSlide: function() {
@@ -170,6 +185,31 @@ ProjectAnnotateView = Backbone.View.extend({
                 $(this).find('.description').html("");
             }
         });
+    },
+    addWholeImageSelector: function() {
+        this.wholeImageAnnotationSelectorView = new WholeImageAnnotationSelectorView();
+        //this.wholeImageAnnotationSelectorView.setElement(this.$('#whole-image-annotation-selector')).render();
+
+        // this.assign({
+        //     '#whole-image-annotation-selector' : this.wholeImageAnnotationSelectorView,
+        // });
+
+    },
+    assign : function (selector, view) {
+        // http://ianstormtaylor.com/assigning-backbone-subviews-made-even-cleaner/
+        // helper function to add subview
+        var selectors;
+        if (_.isObject(selector)) {
+            selectors = selector;
+        }
+        else {
+            selectors = {};
+            selectors[selector] = view;
+        }
+        if (!selectors) return;
+        _.each(selectors, function (view, selector) {
+            view.setElement(this.$(selector)).render();
+        }, this);
     },
     events: {
         "thumbnail_selected": "thumbnailSelected"
@@ -542,54 +582,77 @@ ImageAnnotateView = Backbone.View.extend({
     }
 });
 
+WholeImageAnnotationSelectorView = Backbone.View.extend({
+    el: "#whole-image-annotation-selector", 
+    model: new WholeImageAnnotation(),
+    events: {
+    },
+
+    initialize: function () {
+         this.render();
+    },
+    render: function () {
+        console.log("render WholeImageAnnotationSelectorView");
+        var wholeImageTemplate = "";
+
+        wholeImageTemplate += _.template($("#WholeImageAnnotationTemplate").html(), {});
+
+        // // Load the compiled HTML into the Backbone "el"
+        this.$el.html(wholeImageTemplate);
+        return this.el;
+    }
+});
+
 
 // helper functions, to be removed pending some API/server
 function caab_as_node(object){
-  var node = {};
-  node.name = object.code_name;
-  node['cpccode'] = object.cpc_code;
-  node['color'] = '#'+object.point_colour;
-  node['caabcode_object'] = object.caab_code;
-  node['caabcode_id'] = object.id;
-  return node;
+    var node = {};
+    node.name = object.code_name;
+    node['cpccode'] = object.cpc_code;
+    node['color'] = '#'+object.point_colour;
+    node['caabcode_object'] = object.caab_code;
+    node['caabcode_id'] = object.id;
+    return node;
 }
 
 
 function classificationTreeBuilder(jsonData){
-  // takes the json of caab code objects from the catami API 
-  // and converts it from a list of objects with parent information
-  // to a JSON Tree with child arrays
-  var new_array = [];
+    // takes the json of caab code objects from the catami API 
+    // and converts it from a list of objects with parent information
+    // to a JSON Tree with child arrays
+    var new_array = [];
 
-  var lookup = [];
-  for (var i = 0, len = jsonData.length; i < len; i++) {
+    var lookup = [];
+    for (var i = 0, len = jsonData.length; i < len; i++) {
       var temp =  jsonData[i];
       lookup[jsonData[i].id] = temp;
-  }
-  for (var index = 1; index < lookup.length; index++){
-      new_array.push(caab_as_node(lookup[index]));
-  }
-
-  //list is now ordererd so we build the tree starting at the bottom and working up
-
-  for (index = lookup.length - 1; index > 0; index--){
-    // get the ID of the parent from the parent url
-    if (lookup[index].parent !== null) {
-      parent_text = lookup[index].parent.split('/');
-      parent_id = parent_text[parent_text.length-2];
-      if (parent_id > -1){
-        if (new_array[parent_id-1].children === undefined){
-            new_array[parent_id-1].children = [];
-        }
-        new_array[parent_id-1].children.push(new_array[index-1]);
-      }
     }
-  }
+    for (var index = 1; index < lookup.length; index++){
+      new_array.push(caab_as_node(lookup[index]));
+    }
 
-  // we accululated the children to parent nodes from the bottom up. So
-  // everything ends up the top node
-  return new_array[0];
+    //list is now ordererd so we build the tree starting at the bottom and working up
+
+    for (index = lookup.length - 1; index > 0; index--){
+        // get the ID of the parent from the parent url
+        if (lookup[index].parent !== null) {
+          parent_text = lookup[index].parent.split('/');
+          parent_id = parent_text[parent_text.length-2];
+          if (parent_id > -1){
+            if (new_array[parent_id-1].children === undefined){
+                new_array[parent_id-1].children = [];
+            }
+            new_array[parent_id-1].children.push(new_array[index-1]);
+          }
+        }
+    }
+
+    // we accululated the children to parent nodes from the bottom up. So
+    // everything ends up the top node
+    return new_array[0];
 }
+
+
 
 function buildList(node, isSub){
     var html = '';
@@ -597,7 +660,7 @@ function buildList(node, isSub){
 
     // html += '<li>';
     // html += '<a href="#">' + node.name + '</a>';
-
+    
     if(node.children){
         html += '<li>';
         html += '<a href="#"data-id=' + node.caabcode_id + '>' + node.name + '</a>';

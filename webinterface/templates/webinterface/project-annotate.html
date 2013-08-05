@@ -106,10 +106,12 @@
 
         <div class="span3" style="margin-top: 10px;">
 			<section class="buttons well">
-				<button class="zoom-in">Zoom In</button>
-				<button class="zoom-out">Zoom Out</button>
+				<div class="btn-group">
+					<button class="btn zoom-in">Zoom In</button>
+					<button class="btn zoom-out">Zoom Out</button>
+				</div>
 				<input type="range" class="zoom-range">
-				<button class="reset">Reset</button>
+				<button class="btn btn-small reset">Reset</button>
 		    </section>
 		    
 		    <section>
@@ -126,13 +128,26 @@
             <button id="zoom_toggle" type="button" class="btn" data-toggle="button">Zoom Toggle</button>
             <a id="deselect_points_button" class="btn">Deselect Points</a>
         </div>
-
+    	<div class="whole-image-annotation-selector" id="whole-image-annotation-selector"></div>
     	<div id="annotation-chooser"></div>
 
-         <div>
-                <h3>Image Labels</h3>
-                <ul id="LabelPils" class="nav nav-pills"></ul>
-            </div>
+        <div>
+			<h3>Image Labels</h3>
+			<ul id="LabelPils" class="nav nav-pills"></ul>
+        </div>
+	</script>
+	
+	<script type="text/template" id="WholeImageAnnotationTemplate">
+		<div>
+<!--
+			<ul>
+				<span style="border-width:2px; border-color:'#0f0';"><span>Dominant Biota</span><span id="dominant_biota" class="pull-right">label</span></span>
+				<li><span>Dominant Substratum</span><span id="dominant_substratum" class="pull-right">label</span></li>
+				<li><span>Relief</span><span id="relief" class="pull-right">label</span></li>
+				<li><span>Bedform</span><span id="bedform" class="pull-right">label</span></li>
+			</ul>
+-->
+		</div>
 	</script>
 	
     <script type="text/template" id="ProjectAnnotateTemplate">
@@ -172,6 +187,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/point-annotation-model.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/whole-image-annotation-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-annotate-view.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.imagesloaded.min.js"></script>
