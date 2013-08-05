@@ -100,12 +100,21 @@
 
     <div class="row-fluid">
 
-        <div class="span9" id="ImageContainer"></div>
+		<section class="span9">
+        	<div id="ImageContainer"></div>
+		</section>
 
         <div class="span3" style="margin-top: 10px;">
-
-            <div id="ChooseAnnotationContainer" ></div>
-
+			<section class="buttons well">
+				<button class="zoom-in">Zoom In</button>
+				<button class="zoom-out">Zoom Out</button>
+				<input type="range" class="zoom-range">
+				<button class="reset">Reset</button>
+		    </section>
+		    
+		    <section>
+            	<div id="ChooseAnnotationContainer" ></div>
+		    </section>
         </div>
 
 	</div>
@@ -167,6 +176,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-annotate-view.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.imagesloaded.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.accordion.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.panzoom.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery.elevatezoom/jquery.elevateZoom-2.5.5.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
 
@@ -255,12 +265,18 @@
         $('ul.accordion > li').addClass('active', 'true');
         $('ul.accordion > li > ul').css('display', 'block');
 
-
         $(window).resize(function(e){
             //trigger an event to redraw
             GlobalEvent.trigger("screen_changed");
         });
 
 		    </script>
-
+		<script>
+		  $("#ImageContainer").panzoom({
+	        $zoomIn: $(".zoom-in"),
+	        $zoomOut: $(".zoom-out"),
+	        $zoomRange: $(".zoom-range"),
+	        $reset: $(".reset")
+	      });
+	    </script>
 {% endblock %}
