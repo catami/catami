@@ -474,26 +474,39 @@ class ProjectResource(ModelResource):
         sets = AnnotationSet.objects.filter(project=kwargs['pk'])
 
         writer = csv.writer(response)
-        writer.writerow(['Image Name', 'Campaign Name', 'Deployment Name', 
+        writer.writerow(['Annotation Set Type', 'Image Name', 'Campaign Name', 'Deployment Name', 
                          'Image Location', 'Point in Image', 'Annotation Code', 'Annotation Name'])        
         
         for set in sets:
+            # 0 - Point, 1 - Whole Image    
+            annotation_set_type = set.annotation_set_type
             for image in set.images.all():
-                point_bundle = Bundle()
-                point_bundle.request = request
-                point_bundle.data = dict(image=image.id, annotation_set=set.id)
-                points = PointAnnotationResource().obj_get_list(point_bundle, image=image.id)
-                for point in points: 
-                    code_name = ''
-                    if point.annotation_caab_code and point.annotation_caab_code is not u'':
-                        code = AnnotationCodes.objects.filter(caab_code=point.annotation_caab_code)                    
-                        if code and code is not None and len(code) > 0:
-                            code_name = code[0].code_name
-                    writer.writerow([image.image_name, image.deployment.campaign.short_name, 
-                                     image.deployment.short_name, image.position, 
-                                     (str(point.x) + ' , ' + str(point.y)), 
-                                     point.annotation_caab_code, code_name])
-
+                bundle = Bundle()
+                bundle.request = request
+                bundle.data = dict(image=image.id, annotation_set=set.id)
+                if annotation_set_type == 0:
+                    point_set = PointAnnotationResource().obj_get_list(bundle, image=image.id)
+                    for point in point_set: 
+                        code_name = ''
+                        if point.annotation_caab_code and point.annotation_caab_code is not u'':
+                            code = AnnotationCodes.objects.filter(caab_code=point.annotation_caab_code)                    
+                            if code and code is not None and len(code) > 0:
+                                code_name = code[0].code_name
+                        writer.writerow(['Point', image.image_name, image.deployment.campaign.short_name, 
+                                        image.deployment.short_name, image.position, 
+                                        (str(point.x) + ' , ' + str(point.y)), 
+                                        point.annotation_caab_code, code_name])
+                elif annotation_set_type == 1:                    
+                    whole_set = WholeImageAnnotationResource().obj_get_list(bundle, image=image.id)
+                    for whole in whole_set: 
+                        code_name = ''
+                        if whole.annotation_caab_code and whole.annotation_caab_code is not u'':
+                            code = AnnotationCodes.objects.filter(caab_code=whole.annotation_caab_code)                    
+                            if code and code is not None and len(code) > 0:
+                                code_name = code[0].code_name
+                        writer.writerow(['Whole Image', image.image_name, image.deployment.campaign.short_name, 
+                                        image.deployment.short_name, image.position, '',                                         
+                                        whole.annotation_caab_code, code_name])
         return response
 
     def create_project(self, request, **kwargs):
