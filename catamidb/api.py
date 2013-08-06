@@ -464,35 +464,24 @@ class ImageUploadResource(ModelResource):
 
     def obj_create(self, bundle, **kwargs):
         if ("img" in bundle.data.keys() and "deployment" in bundle.data.keys()):
-            #Split image name and image path
-            sourcePath, imgName = os.path.split(str(bundle.data["img"]))
+            imageName = str(bundle.data["img"])
+            sourcePath, imgName = os.path.split(imageName)
             if imgName.find("@") != -1:
                 imgName = imgName[:1]  # remove "@" if exists
-
             # split image name and image extension
-
-            imgNameNoExt, imgExt = os.path.splitext(imgName)
-
+            imgNameNoExt, imgExt = os.path.splitext(imageName)
             if (imgExt.lower() == ".png" or imgExt.lower() == ".jpg" or imgExt.lower() == ".jpeg"):
 
-                deployment = self.Meta.deployments.filter(id=int(bundle.data["deployment"]))
-
-                # Use specified deployment id to get Campaign and Deployment names, which is used to create path for image and thumbnails
-
+                deployment = self.Meta.deployments.filter(id=int(bundle.data["deployment"]))            
                 if deployment.exists():
-                    deploymentName = deployment[0].short_name
-                    campaignName = deployment[0].campaign.short_name
-
                     # django does like us to write files outside MEDIA_ROOT using djanjo functions,
                     # so we create the image in MEDIA_ROOT and then move it to the desired location (deloymeent directory)
-
                     temp_dir = os.path.join(settings.MEDIA_ROOT, 'import_temp')
 
                     if not os.path.exists(temp_dir):
-                        os.makedirs(temp_dir)
-                    dp = deploymentName + "__" + bundle.data["deployment"]
-                    imageDest = os.path.join(settings.IMPORT_PATH, campaignName, dp, "images", "")
-                    thumbDest = os.path.join(settings.IMPORT_PATH, campaignName, dp, "thumbnails", "")
+                        os.makedirs(temp_dir)                   
+                    imageDest = ImageManager().get_image_destination(deployment[0], settings.IMPORT_PATH)
+                    thumbDest = ImageManager().get_thumbnail_destination(deployment[0], settings.IMPORT_PATH)
                     bundle.obj.img.field.upload_to = temp_dir
 
                     if not os.path.exists(imageDest):
@@ -500,14 +489,11 @@ class ImageUploadResource(ModelResource):
                         os.makedirs(imageDest)
 
                     super(ImageUploadResource, self).obj_create(bundle, **kwargs)
-
                     shutil.move(os.path.join(temp_dir, imgName), imageDest)
-
                     logger.debug("%s uploaded to server.." % imgName)
-                    size = str(settings.THUMBNAIL_SIZE[0]) + "x" + str(settings.THUMBNAIL_SIZE[1])
-
-                    infile = os.path.normpath(imageDest + imgName)
-                    outfile = os.path.normpath(thumbDest + imgNameNoExt + "_" + size + imgExt)
+                                                         
+                    infile = ImageManager().get_image_location(imageDest, imgName) 
+                    outfile = ImageManager().get_thumbanail_location(thumbDest, imgName, settings.THUMBNAIL_SIZE)
 
                     logger.debug("Full size image is %s" % infile)
                     logger.debug("Thumbnail image will be %s" % outfile)
@@ -515,10 +501,10 @@ class ImageUploadResource(ModelResource):
                     try:
                         if not os.path.exists(thumbDest):
                             os.makedirs(thumbDest)
-                        im = PIL.Image.open(infile)
-                        im.thumbnail(settings.THUMBNAIL_SIZE, PIL.Image.ANTIALIAS)
-                        im.save(outfile, "JPEG")
-                        logger.debug("Thumbnail imagery %s created." % outfile)
+                            im = PIL.Image.open(infile)
+                            im.thumbnail(settings.THUMBNAIL_SIZE, PIL.Image.ANTIALIAS)
+                            im.save(outfile, "JPEG")
+                            logger.debug("Thumbnail imagery %s created." % outfile)
                     except IOError:
                         logger.debug("Cannot create thumbnail for '%s'" % infile)
                         raise ImmediateHttpResponse(response=http.HttpBadRequest("Cannot create thumbnail for '%s'" % infile))
@@ -534,9 +520,8 @@ class ImageUploadResource(ModelResource):
                         try: open(infile)
                         except IOError:
                             raise ImmediateHttpResponse(response=http.HttpBadRequest("Imported image missing! '%s'" % infile))
-                    else:
+                    else:   
                         raise ImmediateHttpResponse(response=http.HttpBadRequest("Imported image missing! '%s'" % infile))
-
                 else:
                     raise ImmediateHttpResponse(response=http.HttpBadRequest("Invalid Deployment ID specified:"+str(bundle.data["deployment"])))
             else:
@@ -590,17 +575,14 @@ class ImageResource(ModelResource):
 
 
     def dehydrate(self, bundle):
-        deploymentId = bundle.obj.deployment.id
-        deploymentName = bundle.obj.deployment.short_name
-        campaignName = bundle.obj.deployment.campaign.short_name
+        deploymentId = str(bundle.obj.deployment.id)
+        campaignId = str(bundle.obj.deployment.campaign.id)
         imageName = bundle.obj.image_name
         imgNameNoExt, imgExt = os.path.splitext(imageName)
         size = str(settings.THUMBNAIL_SIZE[0]) + "x" + str(settings.THUMBNAIL_SIZE[1])
         thumbnailName = imgNameNoExt + "_" + size + imgExt        
 
-
-        dp = deploymentName + "__" + str(deploymentId);
-        location = "http://" + bundle.request.get_host() + "/images/" + campaignName + "/" + dp
+        location = "http://" + bundle.request.get_host() + "/images/" + campaignId + "/" + deploymentId
         bundle.data['web_location'] = location + "/images/" + imageName
         bundle.data['thumbnail_location'] = location + "/thumbnails/" + thumbnailName
         return bundle
