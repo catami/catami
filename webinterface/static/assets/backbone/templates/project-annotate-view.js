@@ -9,31 +9,88 @@ var AnnotationCodeList = Backbone.Tastypie.Collection.extend({
     model: AnnotationCode
 });
 
-//yeah, it's a global.
+var points = new PointAnnotations();
+var annotationSets = new AnnotationSets();
+var annotationCodeList = new AnnotationCodeList();
 
-//var annotation_code_list = new AnnotationCodeList();
+OrchestratorView = Backbone.View.extend({
+    el: $('div'),
+    events: {
+    },
+    onLoadError: function(model, response, options) {
+        $.pnotify({
+            title: 'Error',
+            text: "Failed to load the annotation code list. Try refreshing the page.",
+            type: 'error', // success | info | error
+            hide: true,
+            icon: false,
+            history: false,
+            sticker: false
+        });
+    },
+    initialize: function () {
+
+        //look out for window resize events
+        $(window).resize(function(e){
+            //trigger an event to redraw
+            GlobalEvent.trigger("screen_changed");
+        });
+
+        //load the data
+        annotationSets.fetch({async:false, data: { project: projectId }, error: this.onLoadError});
+        project.fetch({async: false, error: this.onLoadError});
+        //annotationCodeList.fetch({async: false, data: {limit: 500}});
+        annotationCodeList.fetch({
+            async: false,
+            data: { limit: 999 },
+            success: function (model, response, options) {
+                nested_annotation_list = classificationTreeBuilder(model.toJSON());
+            },
+            error: this.onLoadError
+        });
+
+        //load the views
+        this.thumbnailStripView = new ThumbnailStripView({model : annotationSets});
+        this.imagesAnnotateView = new ImageAnnotateView({model : annotationSets});
+        this.chooseAnnotationView = new ChooseAnnotationView({});
+        this.imagePointsControlView = new ImagePointsControlView({});
+        this.imageZoomControlView = new ImageZoomControlView({});
+        this.imagePointsPILSView = new ImagePointsPILSView({});
+
+        //render the views
+        this.render();
+
+    },
+    render: function () {
+        this.assign(this.thumbnailStripView, '#ThumbnailStripContainer');
+        this.assign(this.imagesAnnotateView, '#ImageContainer');
+        this.assign(this.chooseAnnotationView, '#ChooseAnnotationContainer');
+        this.assign(this.imagePointsControlView, '#ImagePointsControlContainer');
+        this.assign(this.imageZoomControlView, '#ImageZoomControlContainer');
+        this.assign(this.imagePointsPILSView, '#ImagePILSContainer');
+
+        //trigger an event for selecting the first thumbanil in the list
+        GlobalEvent.trigger("thumbnail_selected", 0);
+    },
+    assign : function (view, selector) {
+        view.setElement($(selector)).render();
+    }
+
+});
+
+//yeah, it's a global.
 var nested_annotation_list;
-//var annotationCodeList = new AnnotationCodeList();
 
 ChooseAnnotationView = Backbone.View.extend({
     model: AnnotationCodeList,
     el: $('div'),
     initialize: function () {
 
-        annotationCodeList.fetch({
-        async: false,
-            data: { limit: 999 },
-            success: function (model, response, options) {
-                nested_annotation_list = classificationTreeBuilder(model.toJSON());
-            },
-            error: function (model, response, options) {}
-        });
-
         GlobalEvent.on("annotation_chosen", this.annotationChosen, this);
         GlobalEvent.on("point_is_selected", this.initializeSelection, this);
         GlobalEvent.on("new_parent_node", this.new_parent_node, this);
 
-        this.render();
+        //this.render();
     },
     render: function() {
         // Compile the template using underscore
@@ -45,6 +102,13 @@ ChooseAnnotationView = Backbone.View.extend({
         this.$el.html(chooseAnnotationTemplate);
         $('#annotation-chooser').append(list_html);
         this.clearSelection();
+
+        $('#annotation-chooser ul').accordion();
+
+        //make the first item expanded
+        $('ul.accordion > li').addClass('active', 'true');
+        $('ul.accordion > li > ul').css('display', 'block');
+
         return this;
     },
     events: {
@@ -72,21 +136,6 @@ ChooseAnnotationView = Backbone.View.extend({
         e.preventDefault();
         var annotation_code_id = $(e.currentTarget).data("id");
         GlobalEvent.trigger("annotation_to_be_set", annotation_code_id);
-
-/*    annotationChosen: function(annotation_code_id){
-          //alert(annotationCode);
-          this.$('#assign_annotation_button').css('visibility', 'visible');
-          this.current_annotation = annotation_code_id;
-          var caab_object = annotationCodeList.get(annotation_code_id);
-          if (caab_object.get('parent')){
-              var parent_caab_name_list = caab_object.get('parent').split('/');
-              var parent_caab_object = annotationCodeList.get(parent_caab_name_list[parent_caab_name_list.length-2]);
-              this.$('#current_annotation_label').text(caab_object.get('code_name'));
-              this.$('#goto_parent_button').empty().append('<i class="icon-chevron-left"></i> '+parent_caab_object.get('code_name'));
-          } else {
-              this.$('#current_annotation_label').text(caab_object.get('code_name'));
-              this.$('#goto_parent_button').empty();
-          }*/
     },
     annotationFinalised: function(){
         //make it so
@@ -104,13 +153,10 @@ ChooseAnnotationView = Backbone.View.extend({
             this.annotationChosen(new_parent_id);
         }
     }
-
-
 });
-
 ChooseAnnotationView.current_annotation = null;
 
-ProjectAnnotateView = Backbone.View.extend({
+ThumbnailStripView = Backbone.View.extend({
     model: AnnotationSets,
     el: $('div'),
     initialize: function () {
@@ -118,9 +164,9 @@ ProjectAnnotateView = Backbone.View.extend({
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
         // this.wholeImageAnnotationSelectorView = new WholeImageAnnotationSelectorView();
 
-        this.render();
+        //this.render();
 
-        this.configElastiSlide();
+        //this.configElastiSlide();
     },
     render: function () {
 
@@ -152,22 +198,17 @@ ProjectAnnotateView = Backbone.View.extend({
         };
 
         // Compile the template using underscore
-        var projectTemplate = _.template($("#ProjectAnnotateTemplate").html(), annotationSetVariables);
+        var projectTemplate = _.template($("#ThumbnailStripTemplate").html(), annotationSetVariables);
 
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
 
-        // add whole_image subview if needed
-        var wholeImageTemplate = "";
-        wholeImageTemplate += _.template($("#WholeImageAnnotationTemplate").html(),{});
-
-        if (annotationSetType == annotationSetTypes[1]){
-            this.addWholeImageSelector();
-        }
+        this.configElastiSlide();
 
         return this;
     },
     configElastiSlide: function() {
+        console.log("initialising");
         $( '#carousel' ).elastislide( {
             orientation : 'horizontal',
             minItems : 5,
@@ -186,35 +227,11 @@ ProjectAnnotateView = Backbone.View.extend({
             }
         });
     },
-    addWholeImageSelector: function() {
-        this.wholeImageAnnotationSelectorView = new WholeImageAnnotationSelectorView();
-        //this.wholeImageAnnotationSelectorView.setElement(this.$('#whole-image-annotation-selector')).render();
-
-        // this.assign({
-        //     '#whole-image-annotation-selector' : this.wholeImageAnnotationSelectorView,
-        // });
-
-    },
-    assign : function (selector, view) {
-        // http://ianstormtaylor.com/assigning-backbone-subviews-made-even-cleaner/
-        // helper function to add subview
-        var selectors;
-        if (_.isObject(selector)) {
-            selectors = selector;
-        }
-        else {
-            selectors = {};
-            selectors[selector] = view;
-        }
-        if (!selectors) return;
-        _.each(selectors, function (view, selector) {
-            view.setElement(this.$(selector)).render();
-        }, this);
-    },
     events: {
         "thumbnail_selected": "thumbnailSelected"
     }
 });
+
 
 var selectedThumbnailPosition = 0;
 
@@ -224,8 +241,6 @@ ImageAnnotateView = Backbone.View.extend({
     events: {
         "thumbnail_selected": "thumbnailSelected"
     },
-
-
     initialize: function () {
         var parent = this;
 
@@ -236,20 +251,10 @@ ImageAnnotateView = Backbone.View.extend({
         GlobalEvent.on("point_mouseover", this.pointMouseOver, this);
         GlobalEvent.on("point_mouseout", this.pointMouseOut, this);
         GlobalEvent.on("annotation_to_be_set", this.annotationChosen, this);
+        GlobalEvent.on("refresh_point_labels_for_image", this.refreshPointLabelsForImage, this);
         GlobalEvent.on("hide_points", this.hidePoints, this);
         GlobalEvent.on("show_points", this.showPoints, this);
         GlobalEvent.on("deselect_points", this.deselectPoints, this);
-
-
-        $('#hide_points_button').mousedown(this.hidePoints);
-        $('#hide_points_button').mouseup(this.showPoints);
-
-        //triggering the event for backbone so reference to this class get passed down the chain
-        $('#deselect_points_button').click(function(){GlobalEvent.trigger("deselect_points")});
-
-        $('#zoom_toggle').on('click', function(e) {
-            ($(this).hasClass('active')) ? parent.zoomOff() : parent.zoomOn();
-        });
     },
     renderSelectedImage: function (selected) {
         //ge tall the images to be rendered
@@ -346,7 +351,7 @@ ImageAnnotateView = Backbone.View.extend({
                 });
 
                 //update pils
-                parent.updatePils();
+                GlobalEvent.trigger("image_points_updated", this);
 
             },
             error: function (model, response, options) {
@@ -367,8 +372,8 @@ ImageAnnotateView = Backbone.View.extend({
         this.renderSelectedImage(selectedPosition);
 
         //turn the zoom off and reset the zoom button
-        this.zoomOff();
-        $('#ZoomToggle').removeClass('active');
+        //this.zoomOff();
+        //$('#ZoomToggle').removeClass('active');
 
         var parent = this;
         //now we have to wait for the image to load before we can draw points
@@ -461,7 +466,7 @@ ImageAnnotateView = Backbone.View.extend({
                     //$('#'+idOfSaved).text(caab_code_id);
 
                     //update the pil sidebar
-                    parent.updatePils();
+                    GlobalEvent.trigger("image_points_updated", this);
                 },
                 error: function (model, xhr, options) {
                     if (theXHR.status == "201" || theXHR.status == "202") {
@@ -480,7 +485,7 @@ ImageAnnotateView = Backbone.View.extend({
                         //$('#'+idOfSaved).text(caab_code_id);
 
                         //update the pil sidebar
-                        parent.updatePils();
+                        GlobalEvent.trigger("image_points_updated", this);
                     } else if(theXHR.status == "401") {
                         $.pnotify({
                             title: 'You don\'t have permission to annotate this image.',
@@ -507,32 +512,6 @@ ImageAnnotateView = Backbone.View.extend({
             })
         });
     },
-    updatePils: function() {
-
-        var pilHtml = "";
-
-        annotationCodeList.each(function (annotationCode) {
-            var caab_code = annotationCode.get('caab_code');
-            var count = points.filter(
-                function(point) {
-                    return point.get("annotation_caab_code") == caab_code;
-                }
-            ).length;
-
-            if(count > 0) {
-                pilHtml += "<li class='active'> <a>("+annotationCode.id+") "+annotationCode.get('code_name')+" <span class='badge badge-info'><b>"+ count +"</b></span> </a> </li>";
-            }
-        });
-
-        if(pilHtml == "") {
-            $("#LabelPils").empty();
-            $("#LabelPils").append('<li class="active"> <a>This image is not labelled.</a> </li>');
-        } else {
-            $("#LabelPils").empty();
-            $("#LabelPils").append(pilHtml);
-        }
-
-    },
     hidePoints: function () {
         //loop through the points and hide them
         points.each(function (point) {
@@ -541,7 +520,6 @@ ImageAnnotateView = Backbone.View.extend({
 
             span.css('visibility', 'hidden');
         });
-
     },
     showPoints: function () {
          //loop through the points and show them
@@ -583,14 +561,11 @@ ImageAnnotateView = Backbone.View.extend({
 });
 
 WholeImageAnnotationSelectorView = Backbone.View.extend({
-    el: "#whole-image-annotation-selector", 
+    el: "#whole-image-annotation-selector",
     model: new WholeImageAnnotation(),
     events: {
     },
-
-    initialize: function () {
-         this.render();
-    },
+    initialize: function () {},
     render: function () {
         console.log("render WholeImageAnnotationSelectorView");
         var wholeImageTemplate = "";
@@ -603,6 +578,84 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
     }
 });
 
+ImageZoomControlView = Backbone.View.extend({
+    initialize: function () {},
+    render: function () {
+        var imageZoomControlTemplate = _.template($("#ImageZoomControlTemplate").html(), {});
+
+        // // Load the compiled HTML into the Backbone "el"
+        this.$el.html(imageZoomControlTemplate);
+
+        $("#ImageContainer").panzoom({
+            $zoomIn: $(".zoom-in"),
+            $zoomOut: $(".zoom-out"),
+            $zoomRange: $(".zoom-range"),
+            $reset: $(".reset")
+        });
+
+        return this.el;
+    }
+});
+
+ImagePointsControlView = Backbone.View.extend({
+    initialize: function () {},
+    render: function () {
+        var imagePointsControlTemplate = _.template($("#ImagePointsControlTemplate").html(), {});
+
+        // // Load the compiled HTML into the Backbone "el"
+        this.$el.html(imagePointsControlTemplate);
+
+        $('#hide_points_button').mousedown(function(){GlobalEvent.trigger("hide_points")});
+        $('#hide_points_button').mouseup(function() {GlobalEvent.trigger("show_points")});
+
+        //triggering the event for backbone so reference to this class get passed down the chain
+        $('#deselect_points_button').click(function(){GlobalEvent.trigger("deselect_points")});
+
+        return this.el;
+    }
+});
+
+ImagePointsPILSView = Backbone.View.extend({
+    initialize: function () {
+        //when points are updated, update the pils
+        GlobalEvent.on("image_points_updated", this.updatePils, this);
+    },
+    render: function () {
+        var imagePILSTemplate = _.template($("#ImagePILSTemplate").html(), {});
+
+        // // Load the compiled HTML into the Backbone "el"
+        this.$el.html(imagePILSTemplate);
+
+        this.updatePils();
+
+        return this.el;
+    },
+    updatePils: function() {
+
+        var pilHtml = "";
+        annotationCodeList.each(function (annotationCode) {
+            var caab_code = annotationCode.get('caab_code');
+            var count = points.filter(
+                function(point) {
+                    return point.get("annotation_caab_code") == caab_code;
+                }
+            ).length;
+
+            if(count > 0) {
+                pilHtml += "<li class='active'> <a>("+annotationCode.id+") "+annotationCode.get('code_name')+" <span class='badge badge-info'><b>"+ count +"</b></span> </a> </li>";
+            }
+        });
+
+        if(pilHtml == "") {
+            $("#LabelPils").empty();
+            $("#LabelPils").append('<li class="active"> <a>This image is not labelled.</a> </li>');
+        } else {
+            $("#LabelPils").empty();
+            $("#LabelPils").append(pilHtml);
+        }
+
+    }
+});
 
 // helper functions, to be removed pending some API/server
 function caab_as_node(object){
@@ -617,7 +670,7 @@ function caab_as_node(object){
 
 
 function classificationTreeBuilder(jsonData){
-    // takes the json of caab code objects from the catami API 
+    // takes the json of caab code objects from the catami API
     // and converts it from a list of objects with parent information
     // to a JSON Tree with child arrays
     var new_array = [];
@@ -660,7 +713,7 @@ function buildList(node, isSub){
 
     // html += '<li>';
     // html += '<a href="#">' + node.name + '</a>';
-    
+
     if(node.children){
         html += '<li>';
         html += '<a href="#"data-id=' + node.caabcode_id + '>' + node.name + '</a>';
@@ -678,6 +731,3 @@ function buildList(node, isSub){
     if (isSub === false){html += '</ul>';}
     return html;
 }
-
-
-

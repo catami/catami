@@ -8,7 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/catami-api/css/bootstrapSwitch.css"/>
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/annotation_accordion.css" />
-	
+
     <style type="text/css">
         div.wrapper{
 		    float:left; /* important */
@@ -26,7 +26,7 @@
 		    font-weight: bold;
 		    text-align: center;
 		}
-		
+
         #ImageContainer {
             position: relative;
             margin-top: 10px;
@@ -70,12 +70,12 @@
 		    background-color:rgba(32,103,235,0.1);
 		    border: 1px solid #fff;
 		}
-		
+
 		@-webkit-keyframes rotation {
 		    from {-webkit-transform: rotate(0deg);}
 		    to   {-webkit-transform: rotate(359deg);}
 		}
-		
+
 		.pointSelected {
         	-moz-box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8), 0px 0px 3px rgba(0,0,0,0.8);
 			-webkit-box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8),  0px 0px 3px rgba(0,0,0,0.8);
@@ -88,55 +88,80 @@
 			border-top-left-radius: 50%;
 			border-top-right-radius: 50%;
 			border-bottom-left-radius: 50%;
-			border-bottom-right-radius: 50%;        
+			border-bottom-right-radius: 50%;
 		}
 
     </style>
 
+
     <!-- elastislide thumbnail div -->
-	<div class="row-fluid">
-        <div id="ProjectAnnotateContainer"></div>
+    <div class="row-fluid">
+        <div id="ThumbnailStripContainer"></div>
     </div>
 
     <div class="row-fluid">
 
-		<section class="span9">
-        	<div id="ImageContainer"></div>
-		</section>
+        <section class="span9">
+            <div id="ImageContainer"></div>
+        </section>
 
         <div class="span3" style="margin-top: 10px;">
-			<section class="buttons well">
-				<div class="btn-group">
-					<button class="btn zoom-in">Zoom In</button>
-					<button class="btn zoom-out">Zoom Out</button>
-				</div>
-				<input type="range" class="zoom-range">
-				<button class="btn btn-small reset">Reset</button>
-		    </section>
-		    
-		    <section>
-            	<div id="ChooseAnnotationContainer" ></div>
-		    </section>
+
+            <section>
+                <div id="ImageZoomControlContainer" ></div>
+            </section>
+
+            <section>
+                <div id="ImagePointsControlContainer" ></div>
+            </section>
+
+            <section>
+                <div id="ChooseAnnotationContainer" ></div>
+            </section>
+
+            <section>
+                <div id="ImagePILSContainer" ></div>
+            </section>
         </div>
 
-	</div>
-	
-    <script type="text/template" id="ChooseAnnotationTemplate">
+    </div>
 
-        <div class="well">
-            <a id="hide_points_button" class="btn">Hide Points (click and hold me)</a>
-            <button id="zoom_toggle" type="button" class="btn" data-toggle="button">Zoom Toggle</button>
-            <a id="deselect_points_button" class="btn">Deselect Points</a>
-        </div>
-    	<div class="whole-image-annotation-selector" id="whole-image-annotation-selector"></div>
-    	<div id="annotation-chooser"></div>
+    <script type="text/template" id="ImagePILSTemplate">
 
         <div>
 			<h3>Image Labels</h3>
 			<ul id="LabelPils" class="nav nav-pills"></ul>
         </div>
+
+    </script>
+
+    <script type="text/template" id="ImageZoomControlTemplate">
+        <section class="buttons well">
+            <div class="btn-group">
+                <button class="btn zoom-in">Zoom In</button>
+                <button class="btn zoom-out">Zoom Out</button>
+            </div>
+            <input type="range" class="zoom-range">
+            <button class="btn btn-small reset">Reset</button>
+        </section>
+    </script>
+
+    <script type="text/template" id="ImagePointsControlTemplate">
+        <div class="well">
+            <a id="hide_points_button" class="btn">Hide Points (click and hold me)</a>
+            <!--<button id="zoom_toggle" type="button" class="btn" data-toggle="button">Zoom Toggle</button>-->
+            <a id="deselect_points_button" class="btn">Deselect Points</a>
+        </div>
+    </script>
+
+    <script type="text/template" id="ChooseAnnotationTemplate">
+
+        <div class="whole-image-annotation-selector" id="whole-image-annotation-selector"></div>
+    	<div id="annotation-chooser"></div>
+
+
 	</script>
-	
+
 	<script type="text/template" id="WholeImageAnnotationTemplate">
 		<div>
 <!--
@@ -149,8 +174,8 @@
 -->
 		</div>
 	</script>
-	
-    <script type="text/template" id="ProjectAnnotateTemplate">
+
+    <script type="text/template" id="ThumbnailStripTemplate">
         <div class="row-fluid">
             <div class="span12">
                 <ul class="breadcrumb">
@@ -199,100 +224,15 @@
     <script type="text/javascript">
 
         var projectId = "{{ project_id }}";
-
-        var points = new PointAnnotations();
-        var annotationSets = new AnnotationSets();
         var project = new Project({"id": projectId});
-        var annotationCodeList = new AnnotationCodeList();
-        //var nested_annotation_list;
 
-        annotationSets.fetch({
-            data: { project: projectId },
-            success: function (model, response, options) {
+        var orchestratorView = new OrchestratorView();
 
-                project.fetch({
-                    success: function (model, response, options) {
+    </script>
 
-                        annotationCodeList.fetch({
-                            data: {limit: 500},
-                            success: function (model, response, options) {
+    <script>
+
+    </script>
 
 
-                                //load the views
-                                var projectAnnotateView = new ProjectAnnotateView({
-                                    el: $("#ProjectAnnotateContainer"),
-                                    model : annotationSets
-                                });
-
-                                var imagesAnnotateView = new ImageAnnotateView({
-                                    el: $("#ImageContainer"),
-                                    model : annotationSets
-                                });
-
-                                //trigger an event for selecting the first thumbanil in the list
-                                GlobalEvent.trigger("thumbnail_selected", 0);
-                            },
-                            error: function (model, response, options) {
-                                $.pnotify({
-                                    title: 'Failed to load the annotation code list. Try refreshing the page.',
-                                    text: response.status,
-                                    type: 'error', // success | info | error
-                                    hide: true,
-                                    icon: false,
-                                    history: false,
-                                    sticker: false
-                                });
-                            }
-                        });
-                    },
-                    error: function (model, response, options) {
-                        $.pnotify({
-                            title: 'Failed to load the project details. Try refreshing the page.',
-                            text: response.status,
-                            type: 'error', // success | info | error
-                            hide: true,
-                            icon: false,
-                            history: false,
-                            sticker: false
-                        });
-                    }
-                });
-            },
-            error: function (model, response, options) {
-                $.pnotify({
-                    title: 'Failed to load the annotation set details. Try refreshing the page.',
-                    text: response.status,
-                    type: 'error', // success | info | error
-                    hide: true,
-                    icon: false,
-                    history: false,
-                    sticker: false
-                });
-            }
-       
-        });
-
-        var chooseAnnotationView = new ChooseAnnotationView({
-            el: $("#ChooseAnnotationContainer")
-        });
-        $('#annotation-chooser ul').accordion();
-
-        //make the first item expanded
-        $('ul.accordion > li').addClass('active', 'true');
-        $('ul.accordion > li > ul').css('display', 'block');
-
-        $(window).resize(function(e){
-            //trigger an event to redraw
-            GlobalEvent.trigger("screen_changed");
-        });
-
-		    </script>
-		<script>
-		  $("#ImageContainer").panzoom({
-	        $zoomIn: $(".zoom-in"),
-	        $zoomOut: $(".zoom-out"),
-	        $zoomRange: $(".zoom-range"),
-	        $reset: $(".reset")
-	      });
-	    </script>
 {% endblock %}
