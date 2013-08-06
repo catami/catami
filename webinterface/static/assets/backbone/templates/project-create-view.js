@@ -42,10 +42,6 @@ var ProjectCreate = Backbone.Model.extend({
             required: true,
             msg: 'Please select a deployment.'
         },
-        image_sampling_methodology: {
-            required: true,
-            msg: 'Please select an image sampling methodology.'
-        },
         image_sample_size_point: {
             required: true,
             msg: 'Please select an image sample size.',
@@ -123,17 +119,22 @@ ProjectCreateView = Backbone.View.extend({
         //$(this).hasClass('disabled') // for disabled states
         //$(this).hasClass('active') // for active states
         //$(this).is(':disabled') // for disabled buttons only       
-        if ($("#radio_point").hasClass('active')) {
+        if ($("#radio_point").hasClass('active')) { //if point annotation set 
             data["image_sample_size"] = $("#image_sample_size_point").val();
             data["annotation_set_type"] = 0; //refer to /projects/models.py/ class AnnotationSet / ANNOTATATION_TYPE_CHOICES  
+            data["image_sampling_methodology"] = $("#point_image_sampling_methodology").val();
         }
-        else {
+        else { //else whole image annotation set
             data["image_sample_size"] = $("#image_sample_size_whole").val();
             data["annotation_set_type"] = 1; //refer to /projects/models.py/ class AnnotationSet / ANNOTATATION_TYPE_CHOICES  
-            //delete data['image_sample_size_whole'];
-            //delete data['image_sample_size_point'];        
+            data["image_sampling_methodology"] = $("#whole_image_sampling_methodology").val();      
         }
-        
+        //remove fields that aren't required
+        //delete data['image_sample_size_whole']; this field is used in validation, don't remove
+        //delete data['image_sample_size_point']; this field is used in validation, don't remove
+        delete data['whole_image_sampling_methodology'];
+        delete data['point_image_sampling_methodology'];
+
         this.model.set(data);
         var isValid = this.model.isValid(true);
 
