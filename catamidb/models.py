@@ -14,6 +14,7 @@ from django.dispatch import receiver
 from guardian.shortcuts import assign
 from userena.signals import signup_complete
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -162,6 +163,30 @@ class ImageManager(models.GeoManager):
         sampled_images = images[0:images.count():every_nth]
 
         return sampled_images
+
+    def construct_path_from_deployment(self, deployment, context_path, import_path) :
+        """ Using specified deployment id,get Campaign and Deployment ids, which is used to create path for image and thumbnails """        
+        deploymentId = str(deployment.id)
+        campaignId = str(deployment.campaign.id)
+        return os.path.join(import_path, campaignId, deploymentId, context_path, "")
+
+    def get_image_destination(self, deployment, import_path) :
+        """ Return web location of image """    
+        return self.construct_path_from_deployment(deployment, "images", import_path)
+
+    def get_thumbnail_destination(self, deployment, import_path) :
+        """ Return web location of thumbnail """
+        return self.construct_path_from_deployment(deployment, "thumbnails", import_path)
+
+    def get_image_location(self, imageDest, imgName) :
+        """ Return absolute location of image """
+        return os.path.normpath(imageDest + imgName)
+
+    def get_thumbanail_location(self, thumbDest, imageName, thumbnail_size) :
+        """ Return absolute location of thumbnail """        
+        imgNameNoExt, imgExt = os.path.splitext(imageName)
+        size = str(thumbnail_size[0]) + "x" + str(thumbnail_size[1])
+        return os.path.normpath(thumbDest + imgNameNoExt + "_" + size + imgExt)
 
 
 class Image(models.Model):
