@@ -90,7 +90,50 @@
 			border-bottom-left-radius: 50%;
 			border-bottom-right-radius: 50%;
 		}
+		.wholeImageList{
+			list-style-type: none;
+			padding: 0px;
+			margin: 11px 0px 14px 0px;
+		}
+		.wholeImageItem {
+		    list-style-position:outside;
+		    border-bottom: 2px solid #edd2a7;
+		    border-bottom-color: white;
+		    border-top-color: white;
+		    background-color: #edd2a7;
+		    padding: 3px 5px 3px 5px;
+		    font-weight: bold;
+		}
+		.wholeImageHeader {
+		    list-style-position:outside;
+		    border-bottom: 2px solid #e99c1e;
+		    border-bottom-color: white;
+		    border-top-color: white;
+		    background-color: #e99c1e;
+		    padding: 3px 5px 3px 5px;
+		    font-weight: bold;
+		}
+		.wholeImageFooter {
+		    list-style-position:outside;
+		    border-bottom: 2px solid #e99c1e;
+		    border-bottom-color: white;
+		    border-top-color: white;
+		    background-color: #d9bc8e;
+			padding-left: 10px;
+			padding-right: 10px;
+			font-weight: 300;
+		}
 
+		.wholeImageLabel{
+		    -moz-box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8), 0px 0px 3px rgba(0,0,0,0.8);
+			-webkit-box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8),  0px 0px 3px rgba(0,0,0,0.8);
+			box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8), 0px 0px 3px rgba(0,0,0,0.8);
+			padding-left: 10px;
+			padding-right: 10px;
+			font-weight: 500;
+			background-color: white;
+			font-size: smaller;
+		}
     </style>
 
 
@@ -164,14 +207,14 @@
 
 	<script type="text/template" id="WholeImageAnnotationTemplate">
 		<div>
-<!--
-			<ul>
-				<span style="border-width:2px; border-color:'#0f0';"><span>Dominant Biota</span><span id="dominant_biota" class="pull-right">label</span></span>
-				<li><span>Dominant Substratum</span><span id="dominant_substratum" class="pull-right">label</span></li>
-				<li><span>Relief</span><span id="relief" class="pull-right">label</span></li>
-				<li><span>Bedform</span><span id="bedform" class="pull-right">label</span></li>
+			<ul class="wholeImageList">
+				<li class="wholeImageHeader"><span>Broad Scale Classes</span><a id="clear_all_broad_scale" class="btn btn-mini btn-danger pull-right">Reset All</a></li>
+				<li class="wholeImageItem"><span><span>Dominant Biota</span><span class="wholeImageLabel pull-right" id="dominant_biota">Not Considered</span></span></li>
+				<li class="wholeImageItem"><span>Dominant Substrate</span><span class="wholeImageLabel pull-right" id="dominant_substrate" class="pull-right">Not Considered</span></li>
+				<li class="wholeImageItem"><span>Relief</span><span class="wholeImageLabel pull-right" id="relief" class="pull-right">Not Considered</span></li>
+				<li class="wholeImageItem"><span>Bedform</span><span class="wholeImageLabel pull-right" id="bedform" class="pull-right">Not Considered</span></li>
+				<li class="wholeImageFooter"><em>Choose classes below</em></li>
 			</ul>
--->
 		</div>
 	</script>
 
