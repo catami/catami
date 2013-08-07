@@ -486,10 +486,19 @@ class ImageUploadResource(ModelResource):
 
                     if not os.path.exists(imageDest):
                         logger.debug("Created directory for images: %s" % imageDest)
-                        os.makedirs(imageDest)
-
+                        os.makedirs(imageDest)                                     
+                    
                     super(ImageUploadResource, self).obj_create(bundle, **kwargs)
-                    shutil.move(os.path.join(temp_dir, imgName), imageDest)
+                    try:
+                        src = os.path.join(temp_dir, imgName)
+                        if not os.path.isfile(os.path.join(imageDest, imgName)) :
+                            shutil.move(src, imageDest)
+                        else :
+                            logger.debug("File %s exists! Overwriting" % imgName)
+                            shutil.copy(src, imageDest)
+                            os.remove(src)                            
+                    except IOError:
+                        logger.debug("Unable to move file '%s' to %s" % (imgName, imageDest) )
                     logger.debug("%s uploaded to server.." % imgName)
                                                          
                     infile = ImageManager().get_image_location(imageDest, imgName) 
@@ -501,10 +510,10 @@ class ImageUploadResource(ModelResource):
                     try:
                         if not os.path.exists(thumbDest):
                             os.makedirs(thumbDest)
-                            im = PIL.Image.open(infile)
-                            im.thumbnail(settings.THUMBNAIL_SIZE, PIL.Image.ANTIALIAS)
-                            im.save(outfile, "JPEG")
-                            logger.debug("Thumbnail imagery %s created." % outfile)
+                        im = PIL.Image.open(infile)
+                        im.thumbnail(settings.THUMBNAIL_SIZE, PIL.Image.ANTIALIAS)
+                        im.save(outfile, "JPEG")
+                        logger.debug("Thumbnail imagery %s created." % outfile)
                     except IOError:
                         logger.debug("Cannot create thumbnail for '%s'" % infile)
                         raise ImmediateHttpResponse(response=http.HttpBadRequest("Cannot create thumbnail for '%s'" % infile))
@@ -513,7 +522,7 @@ class ImageUploadResource(ModelResource):
                     if os.path.isfile(outfile): 
                         try: open(outfile)
                         except IOError:
-                            raise ImmediateHttpResponse(response=http.HttpBadRequest("Generated thumbnail missing! '%s'" % outfile))
+                            raise ImmediateHttpResponse(response=http.HttpBadRequest("Unable to open generated thumbnail! '%s'" % outfile))
                     else:
                         raise ImmediateHttpResponse(response=http.HttpBadRequest("Generated thumbnail missing! '%s'" % outfile))
                     if os.path.isfile(infile): 
