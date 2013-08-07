@@ -491,7 +491,7 @@ class ProjectResource(ModelResource):
                     for point in point_set: 
                         code_name = ''
                         if point.annotation_caab_code and point.annotation_caab_code is not u'':
-                            code = AnnotationCodes.objects.filter(caab_code=point.annotation_caab_code)                    
+                            code = AnnotationCodes.objects.filter(caab_code=point.annotation_caab_code)
                             if code and code is not None and len(code) > 0:
                                 code_name = code[0].code_name
                         writer.writerow(['Point', image.image_name, image.deployment.campaign.short_name, 

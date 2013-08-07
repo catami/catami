@@ -12,6 +12,7 @@ from projects import authorization
 from catamidb import authorization as catamidbauthorization
 import logging
 import socket
+import StringIO, csv
 
 #logger = logging.getLogger(__name__)
 logging.disable(logging.DEBUG)
@@ -21,10 +22,17 @@ logging.disable(logging.DEBUG)
 # Test the API                         #
 #======================================#
 def create_setup(self):
-    self.campaign_one = mommy.make_one('catamidb.Campaign')
+    self.campaign_one = mommy.make_one(
+        'catamidb.Campaign',
+        short_name='Campaign1')
+
+    self.campaign_two = mommy.make_one(
+        'catamidb.Campaign',
+        short_name='Campaign2')
 
     self.deployment_one = mommy.make_one(
         'catamidb.Deployment',
+        short_name='Deployment1',
         start_position=Point(12.4604, 43.9420),
         end_position=Point(12.4604,43.9420),
         transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
@@ -32,14 +40,24 @@ def create_setup(self):
 
     self.deployment_two = mommy.make_one(
         'catamidb.Deployment',
+        short_name='Deployment2',
         start_position=Point(12.4604, 43.9420),
         end_position=Point(12.4604, 43.9420),
         transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
         campaign=self.campaign_one)
 
+    self.deployment_three = mommy.make_one(
+        'catamidb.Deployment',
+        short_name='Deployment3',
+        start_position=Point(12.4604, 43.9420),
+        end_position=Point(12.4604, 43.9420),
+        transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
+        campaign=self.campaign_two)
+
     #self.image_list = ['/live/test/test2.jpg', '/live/test/test1.jpg']
     self.mock_image_one = mommy.make_recipe('projects.Image1', deployment=self.deployment_one)
     self.mock_image_two = mommy.make_recipe('projects.Image2', deployment=self.deployment_two)
+    self.mock_image_three = mommy.make_recipe('projects.Image3', deployment=self.deployment_three)
 
     self.camera_one = mommy.make_one('catamidb.Camera', image=self.mock_image_one)
     self.camera_two = mommy.make_one('catamidb.Camera', image=self.mock_image_two)
@@ -312,6 +330,148 @@ class TestProjectResource(ResourceTestCase):
             observed_annotation_count = observed_annotation_count + len(WholeImageAnnotation.objects.filter(image=image))
 
         self.assertEqual(40, observed_annotation_count)
+
+    def test_create_csv(self):
+        #make a couple of projects and save
+        self.project_point = mommy.make_one(Project,
+                                           name="one",
+                                           owner=self.user_bob,
+                                           creation_date=datetime.now(),
+                                           modified_date=datetime.now(),
+                                           images=[self.mock_image_one, self.mock_image_two])
+
+        self.project_whole = mommy.make_one(Project,
+                                            name="two",
+                                            owner=self.user_bill,
+                                            creation_date=datetime.now(),
+                                            modified_date=datetime.now(),
+                                            images=[self.mock_image_three])
+
+        create_csv_url1 = self.project_url + str(self.project_point.id) + "/csv/"
+        create_csv_url2 = self.project_url + str(self.project_whole.id) + "/csv/"
+
+        #assign them to bob
+        authorization.apply_project_permissions(
+            self.user_bob, self.project_point)
+
+        authorization.apply_project_permissions(
+            self.user_bob, self.project_whole)
+
+        #POINT
+        self.annotation_set_point = mommy.make_one(AnnotationSet,
+                                            project=self.project_point,
+                                            owner=self.user_bob,
+                                            creation_date=datetime.now(),
+                                            modified_date=datetime.now(),
+                                            images=[self.mock_image_one, self.mock_image_two],
+                                            point_sampling_methodology=0,
+                                            image_sampling_methodology=0,
+                                            annotation_set_type=0)
+        #WHOLE IMAGE
+        self.annotation_set_whole = mommy.make_one(AnnotationSet,
+                                            project=self.project_whole,
+                                            owner=self.user_bob,
+                                            creation_date=datetime.now(),
+                                            modified_date=datetime.now(),
+                                            images=[self.mock_image_three],
+                                            point_sampling_methodology=-1,
+                                            image_sampling_methodology=0,
+                                            annotation_set_type=1
+                                            )
+
+        #assign them one to bob
+        authorization.apply_annotation_set_permissions(
+            self.user_bob, self.annotation_set_point)
+
+        authorization.apply_annotation_set_permissions(
+            self.user_bob, self.annotation_set_whole)
+
+        #Make some codes
+        self.annotation_code_1 = mommy.make_one(AnnotationCodes, 
+                                              caab_code = '63600901',
+                                              code_name = 'Seagrasses')
+        self.annotation_code_2 = mommy.make_one(AnnotationCodes, 
+                                              caab_code = '10000903',
+                                              code_name = 'Massive forms')
+        self.annotation_code_3 = mommy.make_one(AnnotationCodes, 
+                                              caab_code = '80600901',
+                                              code_name = 'Worms')
+
+        #Make some point annotations
+        self.annotation_point_1 = mommy.make_one(PointAnnotation,
+                                                 annotation_set=self.annotation_set_point,
+                                                 x=10.0,
+                                                 y=15.0,
+                                                 annotation_caab_code = '63600901',                           
+                                                 image=self.mock_image_one,
+                                                 owner=self.user_bob)                                 
+
+        self.annotation_point_2 = mommy.make_one(PointAnnotation,
+                                                 annotation_set=self.annotation_set_point,
+                                                 x=22.0,
+                                                 y=16.0,
+                                                 annotation_caab_code = '10000903',                           
+                                                 image=self.mock_image_two,
+                                                 owner=self.user_bob)                                                                      
+
+        #Make a whole image annotation
+        self.whole_image_annotation_point_1 = mommy.make_one(WholeImageAnnotation,
+                                                    annotation_set=self.annotation_set_whole,
+                                                    annotation_caab_code = '80600901',  
+                                                    image=self.mock_image_three,
+                                                    owner=self.user_bob)
+
+
+        response1 = self.bob_api_client.post(
+                create_csv_url1,
+                format='json',
+                data={})
+
+        response2 = self.bill_api_client.post(
+                create_csv_url2,
+                format='json',
+                data={})
+
+        self.assertHttpOK(response1)
+        self.assertHttpOK(response2)
+
+        output1 = StringIO.StringIO(response1.content)
+        output2 = StringIO.StringIO(response2.content)
+        cr1 = csv.reader(output1)
+        cr2 = csv.reader(output2)
+
+        has_header1 = csv.Sniffer().has_header(response1.content)
+        has_header2 = csv.Sniffer().has_header(response2.content)
+        self.assertTrue(has_header1, msg=None)
+        self.assertTrue(has_header2, msg=None)
+        
+        #POINT
+        expectedRowA1 = ['Annotation Set Type', 'Image Name', 'Campaign Name', 'Deployment Name', 
+                        'Image Location', 'Point in Image', 'Annotation Code', 'Annotation Name']
+        expectedRowA2 = ['Point', 'Image1', 'Campaign1', 'Deployment1', 
+                        'POINT (12.4604000000000000 43.9420000000000000)', '10.0 , 15.0', '63600901', 'Seagrasses']
+        expectedRowA3 = ['Point', 'Image2', 'Campaign1', 'Deployment2', 
+                        'POINT (4.5609999999999999 23.1419999999999990)', '22.0 , 16.0', '10000903', 'Massive forms']
+
+        expectedList1 = [expectedRowA1, expectedRowA2, expectedRowA3]
+
+        i = 0
+        for row in cr1:         
+            self.assertTrue(len(row) == len(expectedList1[i]))
+            self.assertTrue(row == expectedList1[i], msg=None)            
+            i = i + 1
+
+        #WHOLE IMAGE
+        expectedRowB1 = ['Whole Image', 'Image3', 'Campaign2', 'Deployment3', 
+                        'POINT (62.4151000000000020 41.2233999999999980)', '', '80600901', 'Worms']
+        
+        expectedList2 = [expectedRowA1, expectedRowB1]       
+
+        i = 0        
+        for row in cr2:         
+            self.assertTrue(len(row) == len(expectedList2[i]))
+            self.assertTrue(row == expectedList2[i], msg=None)
+            i = i + 1
 
 
 class TestAnnotationSetResource(ResourceTestCase):

@@ -6,6 +6,7 @@ from projects.models import Project
 
 Image1 = Recipe(
     Image,
+    image_name = 'Image1',
     position=Point(12.4604, 43.9420),
     depth=27.5,
     date_time=datetime.now()
@@ -13,14 +14,16 @@ Image1 = Recipe(
 
 Image2 = Recipe(
     Image,
-    position=Point(12.4604, 43.9420),
+    image_name = 'Image2',
+    position=Point(4.561, 23.1420),
     depth=27.5,
     date_time=datetime.now()
 )
 
 Image3 = Recipe(
     Image,
-    position=Point(12.4604, 43.9420),
+    image_name = 'Image3',
+    position=Point(62.4151, 41.2234),
     depth=27.5,
     date_time=datetime.now()
 )
