@@ -463,12 +463,14 @@ class ProjectResource(ModelResource):
         """
         Special handler function to export project as CSV
         """
+
+        project = Project.objects.get(id=kwargs['pk'])
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="' + kwargs['project'] + '.csv"'
+        response['Content-Disposition'] = 'attachment; filename="' + project.name + '.csv"'
                 
 
         # get all the images related to this project
-        images = Project.objects.get(id=kwargs['pk']).images.all()       
+        images = project.images.all()       
 
         #get all annotation sets related to this project
         sets = AnnotationSet.objects.filter(project=kwargs['pk'])
