@@ -806,8 +806,8 @@ class WholeImageAnnotationResource(ModelResource):
                                              ApiKeyAuthentication(),
                                              Authentication())
         authorization = WholeImageAnnotationAuthorization()
-        detail_allowed_methods = ['get', 'post', 'put', 'delete']
-        list_allowed_methods = ['get', 'post', 'put', 'delete']
+        detail_allowed_methods = ['get', 'post', 'put', 'delete','patch']
+        list_allowed_methods = ['get', 'post', 'put', 'delete','patch']
         filtering = {
             'image': 'exact',
             'owner': 'exact',
