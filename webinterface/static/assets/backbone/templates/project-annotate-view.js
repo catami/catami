@@ -1115,40 +1115,57 @@ SimilarityImageView = Backbone.View.extend({
         GlobalEvent.on("thumbnail_selected", this.renderSimilarImages, this);
     },
     renderSimilarImages: function (selected) {
+        var parent = this;
         var annotationSet = annotationSets.at(0);
         var image = annotationSet.get("images")[selected];
         this.currentlySelectedImage = image;
         this.currentlySelectedImageIndex = selected;
 
+        //Show a loading status
+        $(this.el).empty();
+        var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "<div id=\"Spinner\"></div>" });
+        this.$el.html(loadingTemplate);
+        var target = document.getElementById('Spinner');
+        var spinner = new Spinner(spinnerOpts).spin(target);
+
         //we need to fetch the similar images, and render them
         similarImages.fetch({
             cache: false,
-            async: false,
-            data: {image: image.id}
+            data: {image: image.id},
+            success: function(model, response, options) {
+                //remove the loading status
+                $(parent.el).empty();
+
+                //get all the images to be rendered
+                var imageTemplate = "";
+
+                similarImages.each(function (image, index, list) {
+                    var imageVariables = {
+                        "thumbnail_location": image.get('thumbnail_location'),
+                        "web_location": image.get('web_location'),
+                        "index": index
+                    };
+                    imageTemplate += _.template($("#SimilarityThumbnailTemplate").html(), imageVariables);
+                });
+
+                //if we have no images to show then tell the user
+                if(imageTemplate == "")
+                    imageTemplate = "<div class=\"alert alert-info\"> Could not find any images that look like this one, that you have not already classified.</div>"
+
+                var thumbnailListVariables = { "images": imageTemplate };
+                // Compile the template using underscore
+                var thumbnailListTemplate = _.template($("#ImageSimilarityTemplate").html(), thumbnailListVariables);
+                // Load the compiled HTML into the Backbone "el"
+
+                parent.$el.html(thumbnailListTemplate);
+            },
+            error: function(model, response, options) {
+                //remove the loading status
+                $(parent.el).empty();
+                var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "<div class=\"alert alert-error\">An error occurred when trying to find similar images.</div>" });
+                this.$el.html(loadingTemplate);
+            }
         });
-
-        //get all the images to be rendered
-        var imageTemplate = "";
-
-        similarImages.each(function (image, index, list) {
-            var imageVariables = {
-                "thumbnail_location": image.get('thumbnail_location'),
-                "web_location": image.get('web_location'),
-                "index": index
-            };
-            imageTemplate += _.template($("#SimilarityThumbnailTemplate").html(), imageVariables);
-        });
-
-        var thumbnailListVariables = { "images": imageTemplate };
-        // Compile the template using underscore
-        var thumbnailListTemplate = _.template($("#ImageSimilarityTemplate").html(), thumbnailListVariables);
-        // Load the compiled HTML into the Backbone "el"
-
-        this.$el.html(thumbnailListTemplate);
-
-        //Create pagination
-        //var options = thumbnailPaginationOptions(this.meta);
-        //$('#pagination').bootstrapPaginator(options);
 
         return this;
     },
@@ -1163,53 +1180,99 @@ SimilarityImageView = Backbone.View.extend({
         var annotationsForSimilarImage = new WholeImageAnnotations({});
         var annotationsForImageInView = new WholeImageAnnotations({});
 
-        //fetch data #TODO this needs to be made synchronous
+        $.pnotify({
+            title: 'Info',
+            text: 'Copying your broad scale classification to the similar image now.',
+            type: "info",
+            delay: 2000
+        });
+
+        //fetch data
         annotationsForImageInView.fetch({
-            async: false,
-            data:{"annotation_set": annotationSets.at(0).get('id'), "image": this.currentlySelectedImage.id}
+            data:{"annotation_set": annotationSets.at(0).get('id'), "image": this.currentlySelectedImage.id},
+            success: function() {
+                annotationsForSimilarImage.fetch({
+                    data:{"annotation_set": annotationSets.at(0).get('id'), "image": image.get('id')},
+                    success: function() {
+                        deleteAnnotations();
+                        applyNewAnnotations();
+                    },
+                    error: function() {
+                        $.pnotify({
+                            title: 'Error',
+                            text: 'Copying to the similar image failed.',
+                            type: "error",
+                            delay: 2000
+                        });
+                    }
+                });
+            },
+            error: function() {
+                $.pnotify({
+                    title: 'Error',
+                    text: 'Copying to the similar image failed.',
+                    type: "error",
+                    delay: 2000
+                });
+            }
         });
 
-        annotationsForSimilarImage.fetch({
-            async: false,
-            data:{"annotation_set": annotationSets.at(0).get('id'), "image": image.get('id')}
-        });
-
-        //delete the annotations from the similar image
-        annotationsForSimilarImage.each(function(annotation, index) {
-            annotation.destroy({async: false});
-        });
-
-        //replace the annotations on the similar image
-        annotationsForImageInView.each(function(annotation, index) {
-            var annotationCodeReadable = annotationCodeList.find(function(model) {
-                return model.get('caab_code')===annotation.get('annotation_caab_code');
-            }).get("code_name");
-            var newAnnotation = new WholeImageAnnotation({
-                annotation_set: annotationSets.at(0).url(),
-                image: image.url(),
-                annotation_caab_code: annotation.get("annotation_caab_code"),
-                qualifier_short_name: annotation.get("qualifier_short_name")
+        var deleteAnnotations = function() {
+            //delete the annotations from the similar image
+            annotationsForSimilarImage.each(function(annotation, index) {
+                annotation.destroy(null, {
+                    error: function() {
+                        $.pnotify({
+                            title: 'Error',
+                            text: 'Copying to the similar image failed. Unable to delete old annotations from the similar image.',
+                            type: "error",
+                            delay: 2000
+                        });
+                    }
+                });
             });
-            newAnnotation.save(null, {
-                async: false,
-                success: function(model, response, options) {
-                    $.pnotify({
-                        title: 'Success',
-                        text: 'Copied '+ annotationCodeReadable +' to the similar image.',
-                        type: "success",
-                        delay: 2000
-                    });
-                },
-                error: function(model, response, options) {
-                    $.pnotify({
-                        title: 'Error',
-                        text: 'Failed to copy '+ annotationCodeReadable +' to the similar image.',
-                        type: "error",
-                        delay: 2000
-                    });
-                }
+        }
+
+        var applyNewAnnotations = function() {
+            //replace the annotations on the similar image
+            annotationsForImageInView.each(function(annotation, index) {
+                //get the readable name to show the user
+                var annotationCodeReadable = "";
+
+                if(annotation.get('annotation_caab_code') != "")
+                    annotationCodeReadable = annotationCodeList.find(function(model) {
+                        return model.get('caab_code')===annotation.get('annotation_caab_code');
+                    }).get("code_name");
+
+                //create the annotation object
+                var newAnnotation = new WholeImageAnnotation({
+                    annotation_set: annotationSets.at(0).url(),
+                    image: image.url(),
+                    annotation_caab_code: annotation.get("annotation_caab_code"),
+                    qualifier_short_name: annotation.get("qualifier_short_name")
+                });
+
+                //save it
+                newAnnotation.save(null, {
+                    success: function(model, response, options) {
+                        /*$.pnotify({
+                            title: 'Success',
+                            text: 'Copied '+ annotationCodeReadable +' to the similar image.',
+                            type: "success",
+                            delay: 2000
+                        });*/
+                    },
+                    error: function(model, response, options) {
+                        $.pnotify({
+                            title: 'Error',
+                            text: 'Failed to copy '+ annotationCodeReadable +' to the similar image.',
+                            type: "error",
+                            delay: 2000
+                        });
+                    }
+                });
             });
-        });
+        }
 
         this.refreshView();
     },
@@ -1294,3 +1357,56 @@ function buildList(node, isSub){
     if (isSub === false){html += '</ul>';}
     return html;
 }
+
+var spinnerOpts = {
+        lines: 15,
+        // The number of lines to draw
+        length: 5,
+        // The length of each line
+        width: 2,
+        // The line thickness
+        radius: 4,
+        // The radius of the inner circle
+        corners: 1,
+        // Corner roundness (0..1)
+        rotate: 0,
+        // The rotation offset
+        color: '#000',
+        // #rgb or #rrggbb
+        speed: 1,
+        // Rounds per second
+        trail: 60,
+        // Afterglow percentage
+        shadow: false,
+        // Whether to render a shadow
+        hwaccel: false,
+        // Whether to use hardware acceleration
+        className: 'spinner',
+        // The CSS class to assign to the spinner
+        zIndex: 2e9,
+        // The z-index (defaults to 2000000000)
+        top: 'auto',
+        left: 'auto'
+        // Top position relative to parent in px
+        //left: '-10px' // Left position relative to parent in px
+    };
+
+/*
+var spinnerOpts = {
+  lines: 17, // The number of lines to draw
+  length: 20, // The length of each line
+  width: 13, // The line thickness
+  radius: 4, // The radius of the inner circle
+  corners: 0.8, // Corner roundness (0..1)
+  rotate: 0, // The rotation offset
+  direction: 1, // 1: clockwise, -1: counterclockwise
+  color: '#000', // #rgb or #rrggbb
+  speed: 1.7, // Rounds per second
+  trail: 44, // Afterglow percentage
+  shadow: false, // Whether to render a shadow
+  hwaccel: false, // Whether to use hardware acceleration
+  className: 'spinner', // The CSS class to assign to the spinner
+  zIndex: 2e9, // The z-index (defaults to 2000000000)
+  top: 'auto', // Top position relative to parent in px
+  left: 'auto' // Left position relative to parent in px
+};*/

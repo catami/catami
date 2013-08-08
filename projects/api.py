@@ -737,7 +737,6 @@ class AnnotationSetResource(ModelResource):
         #build the payload
         payload = {"imagePath": image_path, "limit": "12", "similarityGreater": "0.9", "featureType": "cedd", "imageComparisonList": image_paths}
 
-        print "1"
         #make the call
         the_response = requests.post(settings.DOLLY_SEARCH_URL, data=payload)
 
