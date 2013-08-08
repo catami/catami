@@ -93,14 +93,12 @@
 		.wholeImageList{
 			list-style-type: none;
 			padding: 0px;
-			margin: 11px 0px 14px 0px;
+			margin: 0px 0px 14px 0px;
 		}
 		.wholeImageItem {
 		    list-style-position:outside;
-		    border-bottom: 2px solid #edd2a7;
-		    border-bottom-color: white;
-		    border-top-color: white;
-		    background-color: #edd2a7;
+		    border-bottom: 2px solid white;
+		    background-color: rgba(237,237,237,1);
 		    padding: 3px 5px 3px 5px;
 		    font-weight: bold;
 		}
@@ -109,8 +107,8 @@
 		    border-bottom: 2px solid #e99c1e;
 		    border-bottom-color: white;
 		    border-top-color: white;
-		    background-color: #e99c1e;
-		    padding: 3px 5px 3px 5px;
+		    background-color: #ebe0cf;
+		    padding: 3px 5px 6px 5px;
 		    font-weight: bold;
 		}
 		.wholeImageFooter {
@@ -118,22 +116,23 @@
 		    border-bottom: 2px solid #e99c1e;
 		    border-bottom-color: white;
 		    border-top-color: white;
-		    background-color: #d9bc8e;
+		    background-color: #d7d1c7;
 			padding-left: 10px;
 			padding-right: 10px;
+			padding-bottom: 3px;
+			padding-top: 3px;
 			font-weight: 300;
 		}
 
 		.wholeImageLabel{
-		    -moz-box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8), 0px 0px 3px rgba(0,0,0,0.8);
-			-webkit-box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8),  0px 0px 3px rgba(0,0,0,0.8);
-			box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8), 0px 0px 3px rgba(0,0,0,0.8);
 			padding-left: 10px;
 			padding-right: 10px;
 			font-weight: 500;
 			background-color: white;
 			font-size: smaller;
 		}
+		
+		
     </style>
 
 
@@ -213,7 +212,7 @@
 				<li class="wholeImageItem"><span>Dominant Substrate</span><span class="wholeImageLabel pull-right" id="dominant_substrate" class="pull-right">Not Considered</span></li>
 				<li class="wholeImageItem"><span>Relief</span><span class="wholeImageLabel pull-right" id="relief" class="pull-right">Not Considered</span></li>
 				<li class="wholeImageItem"><span>Bedform</span><span class="wholeImageLabel pull-right" id="bedform" class="pull-right">Not Considered</span></li>
-				<li class="wholeImageFooter"><em>Choose classes below</em></li>
+				<li class="wholeImageFooter"><span class="label label-info">Tip</span><em> Choose classes below</em></li>
 			</ul>
 		</div>
 	</script>
