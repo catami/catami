@@ -132,6 +132,10 @@ ChooseAnnotationView = Backbone.View.extend({
         GlobalEvent.on("annotation_chosen", this.annotationChosen, this);
         GlobalEvent.on("point_is_selected", this.initializeSelection, this);
         GlobalEvent.on("new_parent_node", this.new_parent_node, this);
+        GlobalEvent.on("OpenToBiotaTree", this.openTreeToBiota, this);
+        GlobalEvent.on("OpenToSubstrateTree", this.openTreeToSubstrate, this);
+        GlobalEvent.on("OpenToReliefTree", this.openTreeToRelief, this);
+        GlobalEvent.on("OpenToBedformTree", this.openTreeToBedform, this);
 
         //this.render();
     },
@@ -149,8 +153,7 @@ ChooseAnnotationView = Backbone.View.extend({
         $('#annotation-chooser ul').accordion();
 
         //make the first item expanded
-        $('ul.accordion > li').addClass('active', 'true');
-        $('ul.accordion > li > ul').css('display', 'block');
+        this.initTreeToTopItem();
 
         return this;
     },
@@ -195,6 +198,11 @@ ChooseAnnotationView = Backbone.View.extend({
         } else {
             this.annotationChosen(new_parent_id);
         }
+    },
+    initTreeToTopItem: function(){
+        //make the first item expanded
+        $('ul.accordion > li').addClass('active', 'true');
+        $('ul.accordion > li > ul').css('display', 'block');
     }
 });
 ChooseAnnotationView.current_annotation = null;
@@ -704,7 +712,11 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
     el: "#whole-image-annotation-selector",
     model: WholeImageAnnotations,
     events: {
-        "click #clear_all_broad_scale": "clearAllWholeImageAnnotations"
+        "click #clear_all_broad_scale": "clearAllWholeImageAnnotations",
+        "click #biota_annotation_label": "highlightInterfaceForBiota",
+        "click #substrate_annotation_label": "highlightInterfaceForSubstrate",
+        "click #relief_annotation_label": "highlightInterfaceForRelief",
+        "click #bedform_annotation_label": "highlightInterfaceForBedform"
     },
 
     initialize: function () {
@@ -984,6 +996,18 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
 
         this.initAllAnnotations();
         this.renderPointsForImage(selectedPosition);
+    },
+    highlightInterfaceForBiota: function(){
+        $('a[href=#biota_root_node]').trigger('activate-node');
+    },
+    highlightInterfaceForSubstrate: function(){
+        $('a[href=#substrate_root_node]').trigger('activate-node');
+    },
+    highlightInterfaceForRelief: function(){
+        $('a[href=#relief_root_node]').trigger('activate-node');
+    },
+    highlightInterfaceForBedform: function(){
+        $('a[href=#bedforms_root_node]').trigger('activate-node');
     },
     initAllAnnotations: function() {
         $('#dominant_biota').text('Not set');
@@ -1342,7 +1366,18 @@ function buildList(node, isSub){
 
     if(node.children){
         html += '<li>';
-        html += '<a href="#"data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+
+        if (parseInt(node.caabcode_id,10) === 2) {
+            html += '<a href="#biota_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+        } else if (parseInt(node.caabcode_id,10) === 239){
+            html += '<a href="#substrate_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+        } else if (parseInt(node.caabcode_id,10) === 256){
+            html += '<a href="#relief_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+        } else if (parseInt(node.caabcode_id,10) === 264){
+            html += '<a href="#bedforms_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+        } else {
+            html += '<a href="#" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+        }
         html += '<ul>';
         for (var i = node.children.length - 1; i >= 0; i--) {
             html += buildList(node.children[i], true);
