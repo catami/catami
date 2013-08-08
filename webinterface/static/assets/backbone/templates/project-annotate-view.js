@@ -986,10 +986,10 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
         this.renderPointsForImage(selectedPosition);
     },
     initAllAnnotations: function() {
-        $('#dominant_biota').text('Not Considered');
-        $('#dominant_substrate').text('Not Considered');
-        $('#relief').text('Not Considered');
-        $('#bedform').text('Not Considered');
+        $('#dominant_biota').text('Not set');
+        $('#dominant_substrate').text('Not set');
+        $('#relief').text('Not set');
+        $('#bedform').text('Not set');
     },
     clearAllWholeImageAnnotations: function(){
         //set all to 'not considered'
@@ -1000,16 +1000,16 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
         //based on that image query the API for the points
         var whole_image_points = new WholeImageAnnotations();
 
-        $('#dominant_biota').text('Not Considered');
-        $('#dominant_substrate').text('Not Considered');
-        $('#relief').text('Not Considered');
-        $('#bedform').text('Not Considered');
+        $('#dominant_biota').text('Not set');
+        $('#dominant_substrate').text('Not set');
+        $('#relief').text('Not set');
+        $('#bedform').text('Not set');
 
         whole_image_points.fetch({
             data: { limit: 100, image: image.id, annotation_set: annotationSet.get('id') },
             success: function (model, response, options) {
                 // 
-                var properties = { 'annotation_caab_code': '00000000' };
+                var properties = { 'annotation_caab_code': '' };
 
                 whole_image_points.each(function (whole_image_point) {
                     var theXHR = whole_image_point.save(properties, {
