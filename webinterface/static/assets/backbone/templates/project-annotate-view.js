@@ -61,9 +61,10 @@ OrchestratorView = Backbone.View.extend({
         this.chooseAnnotationView = new ChooseAnnotationView({});
         this.imagePointsControlView = new ImagePointsControlView({});
         this.imageZoomControlView = new ImageZoomControlView({});
-        this.imagePointsPILSView = new ImagePointsPILSView({});
         if (annotationSets.at(0).get('annotation_set_type') === 1){
             this.wholeImageAnnotationSelectorView = new WholeImageAnnotationSelectorView({});
+        } else {
+            this.imagePointsPILSView = new ImagePointsPILSView({});
         }
         //render the views
         this.render();
@@ -75,9 +76,11 @@ OrchestratorView = Backbone.View.extend({
         this.assign(this.chooseAnnotationView, '#ChooseAnnotationContainer');
         this.assign(this.imagePointsControlView, '#ImagePointsControlContainer');
         this.assign(this.imageZoomControlView, '#ImageZoomControlContainer');
-        this.assign(this.imagePointsPILSView, '#ImagePILSContainer');
         if (annotationSets.at(0).get('annotation_set_type') === 1){
             this.assign(this.wholeImageAnnotationSelectorView, '#whole-image-annotation-selector');
+        } else {
+            this.assign(this.imagePointsPILSView, '#ImagePILSContainer');
+
         }
         //trigger an event for selecting the first thumbanil in the list
         GlobalEvent.trigger("thumbnail_selected", 0);
