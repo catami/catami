@@ -944,14 +944,10 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
         });
     },
     thumbnailSelected: function(selectedPosition) {
-        selectedThumbnailPosition = selectedPosition;
         currentImageInView = selectedPosition;
 
-        var parent = this;
-        //now we have to wait for the image to load before we can draw points
-        $("#Image").imagesLoaded(function() {
-            parent.renderPointsForImage(selectedPosition);
-        });
+        this.initAllAnnotations();
+        this.renderPointsForImage(selectedPosition);
     },
     initAllAnnotations: function() {
         $('#dominant_biota').text('Not Considered');
