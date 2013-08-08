@@ -1181,10 +1181,13 @@ SimilarityImageView = Backbone.View.extend({
 
         //replace the annotations on the similar image
         annotationsForImageInView.each(function(annotation, index) {
+            var annotationCodeReadable = annotationCodeList.find(function(model) {
+                return model.get('caab_code')===annotation.get('annotation_caab_code');
+            }).get("code_name");
             var newAnnotation = new WholeImageAnnotation({
                 annotation_set: annotationSets.at(0).url(),
                 image: image.url(),
-                annotation_caab_code:annotation.get("annotation_caab_code"),
+                annotation_caab_code: annotation.get("annotation_caab_code"),
                 qualifier_short_name: annotation.get("qualifier_short_name")
             });
             newAnnotation.save(null, {
@@ -1192,7 +1195,7 @@ SimilarityImageView = Backbone.View.extend({
                 success: function(model, response, options) {
                     $.pnotify({
                         title: 'Success',
-                        text: 'Copied '+ annotation.get("annotation_caab_code") +' to the similar image.',
+                        text: 'Copied '+ annotationCodeReadable +' to the similar image.',
                         type: "success",
                         delay: 2000
                     });
@@ -1200,7 +1203,7 @@ SimilarityImageView = Backbone.View.extend({
                 error: function(model, response, options) {
                     $.pnotify({
                         title: 'Error',
-                        text: 'Failed to copy '+ annotation.get("annotation_caab_code") +' to the similar image.',
+                        text: 'Failed to copy '+ annotationCodeReadable +' to the similar image.',
                         type: "error",
                         delay: 2000
                     });
