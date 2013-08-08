@@ -131,8 +131,7 @@
 			background-color: white;
 			font-size: smaller;
 		}
-		
-		
+
     </style>
 
 
@@ -164,9 +163,44 @@
             <section>
                 <div id="ImagePILSContainer" ></div>
             </section>
+
+            <section>
+                <div id="ImageSimilarityContainer" ></div>
+            </section>
         </div>
 
     </div>
+
+<!--
+    <div id="ImageSimilarityModalContainer"></div>
+    <script type="text/template" id="ImageSimilarityModalTemplate">
+
+    </script>
+-->
+
+    <script type="text/template" id="ImageSimilarityTemplate">
+        <h3>Similar Image Cluster</h3>
+        <%=images%>
+    </script>
+
+    <script type="text/template" id="SimilarityThumbnailTemplate">
+        <a href="#<%= index %>-modal" data-toggle="modal"> <img id="<%= index %>" class="similarThumbnail" src="<%= thumbnail_location %>" style="padding-bottom: 5px;"> </a>
+
+        <!-- Modal -->
+        <div id="<%= index %>-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Copy the same broad scale classification to this image?</h3>
+          </div>
+          <div class="modal-body">
+            <img src="<%= web_location %>">
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+            <button id="<%= index %>" data-dismiss="modal" class="btn btn-primary yesItsTheSame">Yes</button>
+          </div>
+        </div>
+    </script>
 
     <script type="text/template" id="ImagePILSTemplate">
 

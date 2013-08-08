@@ -1,7 +1,11 @@
 var GlobalEvent = _.extend({}, Backbone.Events);
 
 var AnnotationCode = Backbone.Model.extend({
-    urlRoot: "/api/dev/annotation_code/"
+    urlRoot: "/api/dev/annotation_code/",
+    url: function() {
+        var origUrl = Backbone.Model.prototype.url.call(this);
+        return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
+    }
 });
 
 var AnnotationCodeList = Backbone.Tastypie.Collection.extend({
@@ -9,6 +13,25 @@ var AnnotationCodeList = Backbone.Tastypie.Collection.extend({
     model: AnnotationCode
 });
 
+var Image = Backbone.Model.extend({
+    urlRoot: "/api/dev/image",
+    url: function() {
+        var origUrl = Backbone.Model.prototype.url.call(this);
+        return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
+    }
+});
+
+var Images = Backbone.Tastypie.Collection.extend({
+    model: Image,
+    url: function(){
+        return this.instanceUrl;
+    },
+    initialize: function(props){
+        this.instanceUrl = props.url;
+    }
+});
+
+var similarImages;
 var points = new PointAnnotations();
 var annotationSets = new AnnotationSets();
 var annotationCodeList = new AnnotationCodeList();
@@ -17,6 +40,8 @@ var currentImageInView;
 //yeah, it's a global.
 var nested_annotation_list;
 var plain_annotation_list;
+
+var wholeImageAnnotations = new WholeImageAnnotations();
 
 OrchestratorView = Backbone.View.extend({
     el: $('div'),
@@ -54,6 +79,7 @@ OrchestratorView = Backbone.View.extend({
             },
             error: this.onLoadError
         });
+        similarImages = new Images({"url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/similar_images/"});
 
         //load the views
         this.thumbnailStripView = new ThumbnailStripView({model : annotationSets});
@@ -61,11 +87,16 @@ OrchestratorView = Backbone.View.extend({
         this.chooseAnnotationView = new ChooseAnnotationView({});
         this.imagePointsControlView = new ImagePointsControlView({});
         this.imageZoomControlView = new ImageZoomControlView({});
+
         if (annotationSets.at(0).get('annotation_set_type') === 1){
             this.wholeImageAnnotationSelectorView = new WholeImageAnnotationSelectorView({});
         } else {
             this.imagePointsPILSView = new ImagePointsPILSView({});
         }
+
+        this.imagePointsPILSView = new ImagePointsPILSView({});
+        this.similarityImageView = new SimilarityImageView({});
+
         //render the views
         this.render();
 
@@ -76,12 +107,14 @@ OrchestratorView = Backbone.View.extend({
         this.assign(this.chooseAnnotationView, '#ChooseAnnotationContainer');
         this.assign(this.imagePointsControlView, '#ImagePointsControlContainer');
         this.assign(this.imageZoomControlView, '#ImageZoomControlContainer');
+
         if (annotationSets.at(0).get('annotation_set_type') === 1){
             this.assign(this.wholeImageAnnotationSelectorView, '#whole-image-annotation-selector');
+            this.assign(this.similarityImageView, '#ImageSimilarityContainer');
         } else {
             this.assign(this.imagePointsPILSView, '#ImagePILSContainer');
-
         }
+
         //trigger an event for selecting the first thumbanil in the list
         GlobalEvent.trigger("thumbnail_selected", 0);
     },
@@ -1070,6 +1103,122 @@ function getUsefulCaabRoot(caab_code_id){
 }
 
 
+SimilarityImageView = Backbone.View.extend({
+    currentlySelectedImageIndex: null,
+    currentlySelectedImage: null,
+    model: Images,
+    meta: {},
+    initialize: function (options) {
+        this.meta = options['meta']; //assign specified metadata to local var
+
+        //bind to the event when a thumbnail is selected
+        GlobalEvent.on("thumbnail_selected", this.renderSimilarImages, this);
+    },
+    renderSimilarImages: function (selected) {
+        var annotationSet = annotationSets.at(0);
+        var image = annotationSet.get("images")[selected];
+        this.currentlySelectedImage = image;
+        this.currentlySelectedImageIndex = selected;
+
+        //we need to fetch the similar images, and render them
+        similarImages.fetch({
+            cache: false,
+            async: false,
+            data: {image: image.id}
+        });
+
+        //get all the images to be rendered
+        var imageTemplate = "";
+
+        similarImages.each(function (image, index, list) {
+            var imageVariables = {
+                "thumbnail_location": image.get('thumbnail_location'),
+                "web_location": image.get('web_location'),
+                "index": index
+            };
+            imageTemplate += _.template($("#SimilarityThumbnailTemplate").html(), imageVariables);
+        });
+
+        var thumbnailListVariables = { "images": imageTemplate };
+        // Compile the template using underscore
+        var thumbnailListTemplate = _.template($("#ImageSimilarityTemplate").html(), thumbnailListVariables);
+        // Load the compiled HTML into the Backbone "el"
+
+        this.$el.html(thumbnailListTemplate);
+
+        //Create pagination
+        //var options = thumbnailPaginationOptions(this.meta);
+        //$('#pagination').bootstrapPaginator(options);
+
+        return this;
+    },
+    events: {
+        'click .yesItsTheSame': 'applySameAnnotations'
+    },
+    applySameAnnotations: function(event) {
+
+        //get the image
+        var similarImageIndex = $(event.target).attr("id");
+        var image = similarImages.at(similarImageIndex);
+        var annotationsForSimilarImage = new WholeImageAnnotations({});
+        var annotationsForImageInView = new WholeImageAnnotations({});
+
+        //fetch data #TODO this needs to be made synchronous
+        annotationsForImageInView.fetch({
+            async: false,
+            data:{"annotation_set": annotationSets.at(0).get('id'), "image": this.currentlySelectedImage.id}
+        });
+
+        annotationsForSimilarImage.fetch({
+            async: false,
+            data:{"annotation_set": annotationSets.at(0).get('id'), "image": image.get('id')}
+        });
+
+        //delete the annotations from the similar image
+        annotationsForSimilarImage.each(function(annotation, index) {
+            annotation.destroy({async: false});
+        });
+
+        //replace the annotations on the similar image
+        annotationsForImageInView.each(function(annotation, index) {
+            var newAnnotation = new WholeImageAnnotation({
+                annotation_set: annotationSets.at(0).url(),
+                image: image.url(),
+                annotation_caab_code:annotation.get("annotation_caab_code"),
+                qualifier_short_name: annotation.get("qualifier_short_name")
+            });
+            newAnnotation.save(null, {
+                async: false,
+                success: function(model, response, options) {
+                    $.pnotify({
+                        title: 'Success',
+                        text: 'Copied '+ annotation.get("annotation_caab_code") +' to the similar image.',
+                        type: "success",
+                        delay: 2000
+                    });
+                },
+                error: function(model, response, options) {
+                    $.pnotify({
+                        title: 'Error',
+                        text: 'Failed to copy '+ annotation.get("annotation_caab_code") +' to the similar image.',
+                        type: "error",
+                        delay: 2000
+                    });
+                }
+            });
+        });
+
+        this.refreshView();
+    },
+    refreshView: function() {
+        $(this.el).empty();
+
+        //refresh the thumbnails
+        this.renderSimilarImages(this.currentlySelectedImageIndex);
+    }
+});
+
+// helper functions, to be removed pending some API/server
 function caab_as_node(object){
     var node = {};
     node.name = object.code_name;

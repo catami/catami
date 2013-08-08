@@ -25,7 +25,7 @@ CampaignCollectionView = Backbone.View.extend({
                 "start_date": campaign.get("date_start"),
                 "end_date": campaign.get("date_end"),
                 "deployment_count": campaign.get("deployment_count"),
-                "researchers": campaign.get("associated_research_grant"),
+                "researchers": campaign.get("associated_researchers"),
                 "publications": campaign.get("associated_publications"),
                 "grant": campaign.get("associated_research_grant"),
                 "description": campaign.get("description"),

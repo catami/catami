@@ -15,6 +15,7 @@ from guardian.shortcuts import assign
 from userena.signals import signup_complete
 import logging
 import os
+from catamiPortal import settings
 
 logger = logging.getLogger(__name__)
 
@@ -187,6 +188,9 @@ class ImageManager(models.GeoManager):
         imgNameNoExt, imgExt = os.path.splitext(imageName)
         size = str(thumbnail_size[0]) + "x" + str(thumbnail_size[1])
         return os.path.normpath(thumbDest + imgNameNoExt + "_" + size + imgExt)
+
+    def get_image_path(self, image):
+        return settings.IMPORT_PATH + "/" + str(image.deployment.campaign.id) + "/" + str(image.deployment.id) + "/images/" + image.image_name
 
 
 class Image(models.Model):
