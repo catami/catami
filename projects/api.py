@@ -5,11 +5,13 @@ from django.conf.urls import url
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.http import HttpResponse
 from django.utils import simplejson
+import requests
 from tastypie import fields
 # import tastypie
 from tastypie.bundle import Bundle
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
+from catamiPortal import settings
 from catamidb.models import Image, ImageManager
 from projects.models import (Project,
                              AnnotationSet,
@@ -648,6 +650,7 @@ class AnnotationSetResource(ModelResource):
     def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/similar_images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_similar_images'), name="api_get_similar_images"),
         ]
 
     def get_images(self, request, **kwargs):
@@ -680,6 +683,76 @@ class AnnotationSetResource(ModelResource):
         # call the image resource to give us what we want
         image_resource = ImageResource()
         return image_resource.get_list(request, id__in=image_ids)
+
+    def get_similar_images(self, request, **kwargs):
+        """
+        This is a helper function which calls the external Lire service to find the similar images. The reason
+        we are using a wrapper here is so we don't have to use a proxy, and also to bundle up the image response
+        in the standard tastypie/backbone way.
+        """
+
+        # need to create a bundle for tastypie
+        basic_bundle = self.build_bundle(request=request)
+
+        try:
+            obj = self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI.")
+
+        # get all the images related to this project
+        annotation_set_images = AnnotationSet.objects.get(id=obj.pk).images.all()
+
+        # create the id string list to send to the next API call
+        # TODO: this is not ideal, best find a better way to deal with this
+        # extract only the images that have blank annotation lables
+        path_dict = {}
+        image_paths = ""
+        for image in annotation_set_images:
+
+            #get the labels for the image
+            annotations = WholeImageAnnotation.objects.filter(annotation_set=obj, image=image)
+
+            #check if all the labels are blank
+            all_blank = True
+            for annotation in annotations:
+                #if string is empty
+                if len(annotation.annotation_caab_code) != 0:
+                    all_blank = False
+
+            # if they are all blank, add the image to the list
+            if all_blank:
+                image_path = ImageManager().get_image_path(image)
+                image_paths += image_path + ","
+                path_dict[image_path] = image
+
+        # strip the comma from the end
+        image_paths = image_paths[:-1]
+
+        #get the path of the image we want to search with
+        image_id = request.GET["image"]
+        image_path = ImageManager().get_image_path(Image.objects.get(id=image_id))
+
+        #build the payload
+        payload = {"imagePath": image_path, "imageComparisonList": image_paths, "limit": "100", "similarityGreater": "0.9", "featureType": "cedd"}
+
+        #make the call
+        the_response = requests.post(settings.DOLLY_SEARCH_URL, params=payload)
+        print the_response.url
+        print the_response.text
+
+        #parse the response and get the image paths
+        similar_image_list = the_response.json()
+
+        image_ids = ""
+        for item in similar_image_list:
+            image_ids += path_dict[item["path"]].id.__str__() + ","
+        # strip the comma from the end
+        image_ids = image_ids[:-1]
+
+        #get the images from the image resource now
+        return ImageResource().get_list(request, id__in=image_ids)
 
     def do_point_sampling_operations(self, bundle):
         """ Helper function to hold all the sampling logic """
@@ -721,7 +794,7 @@ class AnnotationSetResource(ModelResource):
 
         #create the bundle
         super(AnnotationSetResource, self).obj_create(bundle)
-        print 'annotation_set_type',bundle.data['annotation_set_type']
+
         # generate anootation points
         if int(bundle.data['annotation_set_type']) == 0:
             try:

@@ -1211,9 +1211,9 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
-                                            point_sampling_methodology=2,
+                                            point_sampling_methodology=-1,
                                             image_sampling_methodology=0,
-                                            annotation_set_type=0)
+                                            annotation_set_type=1)
 
         assign_perm('view_annotationset', self.user_bill, bills_private_annotation_set)
 

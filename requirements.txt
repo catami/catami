@@ -28,3 +28,4 @@ django-dajaxice
 django-dajax
 django-bootstrap-toolkit
 PIL
+requests==1.2.3
