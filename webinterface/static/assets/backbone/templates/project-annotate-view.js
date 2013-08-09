@@ -31,6 +31,10 @@ var Images = Backbone.Tastypie.Collection.extend({
     }
 });
 
+var getBroadScaleClassificationCopyURL = function(annotationSetId) {
+    return "/api/dev/annotation_set/" + annotationSetId + "/copy_wholeimage_classification/"
+}
+
 var similarImages;
 var points = new PointAnnotations();
 var annotationSets = new AnnotationSets();
@@ -1197,108 +1201,35 @@ SimilarityImageView = Backbone.View.extend({
         'click .yesItsTheSame': 'applySameAnnotations'
     },
     applySameAnnotations: function(event) {
-
         //get the image
+        var parent = this;
         var similarImageIndex = $(event.target).attr("id");
         var image = similarImages.at(similarImageIndex);
-        var annotationsForSimilarImage = new WholeImageAnnotations({});
-        var annotationsForImageInView = new WholeImageAnnotations({});
 
-        $.pnotify({
-            title: 'Info',
-            text: 'Copying your broad scale classification to the similar image now.',
-            type: "info",
-            delay: 2000
-        });
-
-        //fetch data
-        annotationsForImageInView.fetch({
-            data:{"annotation_set": annotationSets.at(0).get('id'), "image": this.currentlySelectedImage.id},
-            success: function() {
-                annotationsForSimilarImage.fetch({
-                    data:{"annotation_set": annotationSets.at(0).get('id'), "image": image.get('id')},
-                    success: function() {
-                        deleteAnnotations();
-                        applyNewAnnotations();
-                    },
-                    error: function() {
-                        $.pnotify({
-                            title: 'Error',
-                            text: 'Copying to the similar image failed.',
-                            type: "error",
-                            delay: 2000
-                        });
-                    }
+        $.get(
+            getBroadScaleClassificationCopyURL(annotationSets.at(0).get('id')),
+            { source_image: this.currentlySelectedImage.id, destination_image: image.get('id') }
+        ).done(
+            function(data) {
+                $.pnotify({
+                    title: 'Info',
+                    text: 'Successfully copied broadscale classification.',
+                    type: "success",
+                    delay: 2000
                 });
-            },
-            error: function() {
+
+                parent.refreshView();
+            }
+        ).fail(
+            function() {
                 $.pnotify({
                     title: 'Error',
-                    text: 'Copying to the similar image failed.',
+                    text: 'Failed to copy broadscale classification.',
                     type: "error",
                     delay: 2000
                 });
             }
-        });
-
-        var deleteAnnotations = function() {
-            //delete the annotations from the similar image
-            annotationsForSimilarImage.each(function(annotation, index) {
-                annotation.destroy(null, {
-                    error: function() {
-                        $.pnotify({
-                            title: 'Error',
-                            text: 'Copying to the similar image failed. Unable to delete old annotations from the similar image.',
-                            type: "error",
-                            delay: 2000
-                        });
-                    }
-                });
-            });
-        }
-
-        var applyNewAnnotations = function() {
-            //replace the annotations on the similar image
-            annotationsForImageInView.each(function(annotation, index) {
-                //get the readable name to show the user
-                var annotationCodeReadable = "";
-
-                if(annotation.get('annotation_caab_code') != "")
-                    annotationCodeReadable = annotationCodeList.find(function(model) {
-                        return model.get('caab_code')===annotation.get('annotation_caab_code');
-                    }).get("code_name");
-
-                //create the annotation object
-                var newAnnotation = new WholeImageAnnotation({
-                    annotation_set: annotationSets.at(0).url(),
-                    image: image.url(),
-                    annotation_caab_code: annotation.get("annotation_caab_code"),
-                    qualifier_short_name: annotation.get("qualifier_short_name")
-                });
-
-                //save it
-                newAnnotation.save(null, {
-                    success: function(model, response, options) {
-                        /*$.pnotify({
-                            title: 'Success',
-                            text: 'Copied '+ annotationCodeReadable +' to the similar image.',
-                            type: "success",
-                            delay: 2000
-                        });*/
-                    },
-                    error: function(model, response, options) {
-                        $.pnotify({
-                            title: 'Error',
-                            text: 'Failed to copy '+ annotationCodeReadable +' to the similar image.',
-                            type: "error",
-                            delay: 2000
-                        });
-                    }
-                });
-            });
-        }
-
-        this.refreshView();
+        );
     },
     refreshView: function() {
         $(this.el).empty();
