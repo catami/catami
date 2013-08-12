@@ -942,7 +942,7 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
         var whole_image_points = new WholeImageAnnotations();
 
         whole_image_points.fetch({
-            data: { limit: 100, image: image.id, annotation_set: annotationSet.get('id') },
+            data: { limit: 999, image: image.id, annotation_set: annotationSet.get('id') },
             success: function (model, response, options) {
                 //loop through the points and apply them to the image
                 whole_image_points.each(function (whole_image_point) {

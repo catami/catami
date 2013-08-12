@@ -97,18 +97,18 @@
 		}
 		.wholeImageItem {
 		    list-style-position:outside;
-		    border-bottom: 2px solid white;
+		    border-bottom: 10px solid white;
 		    background-color: rgba(237,237,237,1);
-		    padding: 3px 5px 3px 5px;
+		    padding: 3px 5px;
 		    font-weight: bold;
 		}
 		.wholeImageHeader {
 		    list-style-position:outside;
-		    border-bottom: 2px solid #e99c1e;
+		    border-bottom: 5px solid #e99c1e;
 		    border-bottom-color: white;
 		    border-top-color: white;
 		    background-color: #ebe0cf;
-		    padding: 3px 5px 6px 5px;
+		    padding: 4px 5px 5px 5px;
 		    font-weight: bold;
 		}
 		.wholeImageFooter {
@@ -125,42 +125,92 @@
 		}
 
 		.wholeImageLabel{
+		   -moz-box-shadow: 0px 0px 3px rgba(0,0,0,0.8);
+			-webkit-box-shadow:0px 0px 3px rgba(0,0,0,0.8);
+			box-shadow:0px 0px 3px rgba(0,0,0,0.8);
+			margin-top: -4px;
 			padding-left: 10px;
 			padding-right: 10px;
+			padding-top: 4px;
+			padding-bottom: 4px;
 			font-weight: 500;
 			background-color: white;
-			font-size: smaller;
+			font-size: large;
 		}
 		
 		.wholeImageList a{
 /* 			color: black; */
 		}
 
-/*--------------------------------------------------------------
-1.0 - TOOLBAR http://codepen.io/cameronbaney/pen/dhKIo
---------------------------------------------------------------*/
-	.imageToolbar ul {
-		position:absolute;
-		background-color: gray;
-		border: 2px;
-		border-color: black;
-		top:50%;
-		border-radius: 4px;
-		box-shadow: 0 0 3px rgba(64,100,138,.3), 0 2px 4px #3b5c7f, 0 12px 18px rgba(64,100,138,.4);
-		list-style-type: none;
-	}
-	.imageToolbar li {
-		display: inline;
-		border-right: 2px;
-		border-left: 2px;
-		border-color: gray;
-	}
-	.imageToolbar a {
-		text-decoration: none;
-		border-right: 2px;
-		border-left: 2px;
-		border-color: gray;
-	}
+
+/* toolbar */ 
+
+		.toolbar {
+			position: relative;
+			bottom: 0;
+			left: 0;
+			z-index: 100;
+			padding: 0px 10px;
+			background: rgba(0,0,0, 0.85);
+		}
+		
+		.toolbar ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			text-align: center;
+		}
+		
+		.toolbar a {
+			text-decoration: none;
+		}
+			
+		.button-container-div{
+			width: 80%;
+			margin: 0 auto;
+		}
+		
+		.toolbar-entry-wide{
+			min-width: 80px;
+		}
+		.toolbar-entry-narrow{
+			float: left;
+			min-width: 40px;
+		}
+		.icon-button {
+			padding: 10px 10px;
+			border-radius: 0;
+		}
+		
+		.toolbar button:active {
+			background-color: #008aaa;
+		}
+		.toolbar li {
+			display: inline-block;
+			margin: 0 auto;
+		}
+	
+		.toolbar span{
+			display:inline-block;
+			font-size: smaller;
+		}
+		.icon-style {
+			color:white;
+			width: 100%;
+			margin: 0 auto;
+		}
+		.icon-style-text {
+			color:white;
+			display:block;
+			font-weight: bold;
+			width: 100%;
+			margin: 0 auto;
+		}
+		
+		.icon-style:active{
+			color:#4f68f8;
+		}
+	
 	</style>
 
 
@@ -175,18 +225,37 @@
         	<div class="row span12">
 	            <div id="ImageContainer"></div>
 	        </div>
-	        <div class="row span12" style="position: relative;">
-				    <ul class="imageToolbar cf">
-			            <li><a href="#" class="zoom-out"><i class="icon-zoom-out icon-2x"></i></a><span>Out</span></li>
-			            <li><a href="#" class="zoom-in"><i class="icon-zoom-in icon-2x"></i></a><span>In</span></li>
-						<li><a href="#" class="icon-border"><input type="range" class="zoom-range"></a><span>Image Zoom</span></li>
-<!--
-						<li><a class="btn btn-small reset">Reset Zoom</a> Reset Zoom</li>
-						<li><a id="hide_points_button" class="btn">Hide Points (click and hold me)</a></li>
-						<li><a id="deselect_points_button" class="btn">Deselect Points</a></li>
--->
-
+	        <div class="row span12 toolbar" style="margin-left:0px;">
+				<div class="button-container-div">
+				    <ul>
+		            	<li class="toolbar-entry-wide">
+		            		<div>
+			            		<a href="#" class="zoom-out icon-button toolbar-entry-wide"><i class="icon-minus-sign icon-2x icon-style"></i></a>
+								<input type="range" class="zoom-range">
+								<a href="#" class="zoom-in icon-button toolbar-entry-wide"><i class="icon-plus-sign icon-2x icon-style"></i></a>
+							</div>
+							<span class="link_title icon-style-text">Image Zoom</span>
+						</li>
+						<a href="#" class="icon-button toolbar-entry-wide reset">
+			            	<li class="">
+								<i class="icon-resize-full icon-2x icon-style"></i>
+								<span class="link_title icon-style-text">Reset Zoom</span>
+							</li>
+						</a>
+						<a href="#" id="hide_points_button" class="icon-button toolbar-entry-wide">
+			            	<li class="">
+								<i class="icon-check-empty icon-2x icon-style"></i>
+								<span class="link_title icon-style-text">Hide Points</span>
+							</li>
+						</a>
+						<a href= "#" id="deselect_points_button" class="icon-button toolbar-entry-wide">
+			            	<li class="">
+								<i class="icon-remove-circle icon-2x icon-style"></i>
+								<span class="link_title icon-style-text">Deselect</span>
+							</li>
+						</a>
 				    </ul>
+				</div>    
 	        </div>
         </section>
 
@@ -293,8 +362,8 @@
 		<div>
 			<ul class="wholeImageList">
 				<li class="wholeImageHeader"><span>Broad Scale Classes</span><a id="clear_all_broad_scale" class="btn btn-mini btn-danger pull-right">Reset All</a></li>
-				<a href='#' id="biota_annotation_label"><li class="wholeImageItem"><span><span>Dominant Biota</span><span class="wholeImageLabel pull-right" id="dominant_biota">Not Considered</span></span></li></a>
-				<a href='#' id="substrate_annotation_label"><li class="wholeImageItem"><span>Dominant Substrate</span><span class="wholeImageLabel pull-right" id="dominant_substrate" class="pull-right">Not Considered</span></li></a>
+				<a href='#' id="biota_annotation_label"><li class="wholeImageItem"><span><span>Biota</span><span class="wholeImageLabel pull-right" id="dominant_biota">Not Considered</span></span></li></a>
+				<a href='#' id="substrate_annotation_label"><li class="wholeImageItem"><span>Substrate</span><span class="wholeImageLabel pull-right" id="dominant_substrate" class="pull-right">Not Considered</span></li></a>
 				<a href='#' id="relief_annotation_label"><li class="wholeImageItem"><span>Relief</span><span class="wholeImageLabel pull-right" id="relief" class="pull-right">Not Considered</span></li></a>
 				<a href='#' id="bedform_annotation_label"><li class="wholeImageItem"><span>Bedform</span><span class="wholeImageLabel pull-right" id="bedform" class="pull-right">Not Considered</span></li></a>
 				<li class="wholeImageFooter"><span class="label label-info">Tip</span><em> Choose classes below</em></li>
