@@ -581,7 +581,7 @@ class ProjectResource(ModelResource):
             response['Location'] = self._build_reverse_url('api_dispatch_detail', kwargs = kwargs)
             return response
 
-        return self.create_response(request, "Not all fields were provided.", response_class=HttpBadRequest())
+        return self.create_response(request, "Not all fields were provided.", response_class=HttpBadRequest)
 
     def obj_create(self, bundle, **kwargs):
         """
@@ -651,6 +651,7 @@ class AnnotationSetResource(ModelResource):
         return [
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/similar_images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_similar_images'), name="api_get_similar_images"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/copy_wholeimage_classification%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('copy_wholeimage_classification'), name="api_copy_wholeimage_classification")
         ]
 
     def get_images(self, request, **kwargs):
@@ -752,6 +753,65 @@ class AnnotationSetResource(ModelResource):
         #get the images from the image resource now
         return ImageResource().get_list(request, id__in=image_ids)
 
+    def copy_wholeimage_classification(self, request, **kwargs):
+        """
+        This is a helper function for copying the whole image annotations from one image, to another image in the
+        annotation set.
+        """
+
+        # need to create a bundle for tastypie
+        basic_bundle = self.build_bundle(request=request)
+
+        try:
+            obj = self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI.")
+
+        #get the path of the image we want to search with
+        source_image = request.GET["source_image"]
+        destination_image = request.GET["destination_image"]
+
+        #check we have everything
+        if len(destination_image) == 0 or len(source_image) == 0:
+            return self.create_response(request, "Not all fields were provided.", response_class=HttpBadRequest)
+
+        # get whole image annotations for the source image
+        source_image_annotations = WholeImageAnnotation.objects.filter(annotation_set=obj.pk, image=source_image)
+
+        # get whole image annotations for the destination image
+        destination_image_annotations = WholeImageAnnotation.objects.filter(annotation_set=obj.pk, image=destination_image)
+
+        # delete the whole image annotations for the destination image
+        for annotation in destination_image_annotations:
+            WholeImageAnnotationResource().delete_detail(request, id=annotation.id)
+
+        #get tastypie friendly references
+        #annotation_set_bundle = AnnotationSetResource().obj_get(basic_bundle, id=obj.pk)
+        #destination_image_bundle = ImageResource().obj_get(basic_bundle, id=destination_image)
+
+        annotation_set_bundle = AnnotationSet.objects.get(id=obj.pk)
+        destination_image_bundle = Image.objects.get(id=destination_image)
+
+        print annotation_set_bundle
+        print destination_image_bundle
+
+        # replace the annotations for the destination image
+        for annotation in source_image_annotations:
+
+            annotation_bundle = Bundle()
+            annotation_bundle.request = request
+            annotation_bundle.data = dict(annotation_set=annotation_set_bundle,
+                                          image=destination_image_bundle,
+                                          annotation_caab_code=annotation.annotation_caab_code,
+                                          qualifier_short_name=annotation.qualifier_short_name,
+                                          )
+            WholeImageAnnotationResource().obj_create(annotation_bundle)
+
+        # everything went well
+        return self.create_response(request, "Copied whole broad scale classifications succesfully.")
+
     def do_point_sampling_operations(self, bundle):
         """ Helper function to hold all the sampling logic """
 
@@ -813,7 +873,6 @@ class AnnotationSetResource(ModelResource):
                 #return not implemented response
                 raise ImmediateHttpResponse(HttpNotImplemented("Unable to create whole image (broad scale) annotation set."))
         else:
-            print "poop"
             raise ImmediateHttpResponse(HttpNotImplemented("Unexpected annotation set request."))
 
         #make sure we apply permissions to this newly created object
@@ -853,6 +912,9 @@ class PointAnnotationResource(ModelResource):
 
         # get real user
         user = get_real_user_object(bundle.request.user)
+
+        #attach current user as the owner
+        bundle.data['owner'] = user
 
         super(PointAnnotationResource, self).obj_create(bundle)
 
@@ -897,6 +959,9 @@ class WholeImageAnnotationResource(ModelResource):
 
         # get real user
         user = get_real_user_object(bundle.request.user)
+
+        #attach current user as the owner
+        bundle.data['owner'] = user
 
         super(WholeImageAnnotationResource, self).obj_create(bundle)
 
