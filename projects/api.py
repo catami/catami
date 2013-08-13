@@ -384,6 +384,9 @@ class ProjectResourceLite(ModelResource):
             'id': 'exact'
         }
 
+    def dehydrate(self, bundle):
+        bundle.data['permissions'] = get_perms(get_real_user_object(bundle.request.user), bundle.obj)
+        return bundle
 
 class ModelResource(ModelResource):
     def prepend_urls(self):
@@ -622,6 +625,7 @@ class ProjectResource(ModelResource):
             map_extent = images.extent().__str__()
 
         bundle.data['map_extent'] = map_extent
+        bundle.data['permissions'] = get_perms(get_real_user_object(bundle.request.user), bundle.obj)
 
         return bundle
 

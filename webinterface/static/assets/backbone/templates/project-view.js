@@ -66,11 +66,18 @@ ProjectView = Backbone.View.extend({
     },
     render: function () {
 
+        var permissions = project.get("permissions");
+
+        var edit_content = $.inArray("change_project", permissions) ? "" : "hidden";
+        var delete_content = $.inArray("delete_project", permissions) ? "" : "hidden";
+
         //render the items to the main template
         var projectVariables = {
             "name": project.get("name"),
             "description": project.get("description"),
-            "map_extent": project.get("map_extent")
+            "map_extent": project.get("map_extent"),
+            "edit_content": edit_content,
+            "delete_content": delete_content
         };
 
         // Compile the template using underscore
@@ -210,7 +217,8 @@ ProjectView = Backbone.View.extend({
     events: {
         "click #configure_project_button": "doConfigure",
         "click #export_project_button": "doExport",
-        "click #start_annotating_button": "doStartAnnotating"
+        "click #start_annotating_button": "doStartAnnotating",
+        "click #delete_project_modal_button": "doDeleteProject"
     },
     doConfigure: function (event) {
         //redirect to configuration page
@@ -221,6 +229,25 @@ ProjectView = Backbone.View.extend({
     },
     doStartAnnotating: function(event) {
         window.location.replace("/projects/" + project.get("id") + "/annotate");
+    },
+    doDeleteProject: function(event) {
+        project.destroy({
+            success: function() {
+                //redirect away from this project
+                window.location.replace("/projects/");
+            },
+            error: function() {
+                $.pnotify({
+                    title: 'Error',
+                    text: "Failed to delete this project.",
+                    type: 'error', // success | info | error
+                    hide: true,
+                    icon: false,
+                    history: false,
+                    sticker: false
+                });
+            }
+        });
     }
 });
 
