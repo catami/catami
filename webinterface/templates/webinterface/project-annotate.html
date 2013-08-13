@@ -229,38 +229,9 @@
         	<div class="row span12">
 	            <div id="ImageContainer"></div>
 	        </div>
-	        <div class="row span12 toolbar" style="margin-left:0px;">
-				<div class="button-container-div">
-				    <ul>
-		            	<li class="toolbar-entry-wide">
-		            		<div>
-			            		<a href="#" class="zoom-out icon-button toolbar-entry-wide"><i class="icon-minus-sign icon-2x icon-style"></i></a>
-								<input type="range" class="zoom-range">
-								<a href="#" class="zoom-in icon-button toolbar-entry-wide"><i class="icon-plus-sign icon-2x icon-style"></i></a>
-							</div>
-							<span class="link_title icon-style-text">Image Zoom</span>
-						</li>
-						<a href="#" class="icon-button toolbar-entry-wide reset">
-			            	<li class="">
-								<i class="icon-resize-full icon-2x icon-style"></i>
-								<span class="link_title icon-style-text">Reset Zoom</span>
-							</li>
-						</a>
-						<a href="#" id="hide_points_button" class="icon-button toolbar-entry-wide">
-			            	<li class="">
-								<i class="icon-check-empty icon-2x icon-style"></i>
-								<span class="link_title icon-style-text">Hide Points</span>
-							</li>
-						</a>
-						<a href= "#" id="deselect_points_button" class="icon-button toolbar-entry-wide">
-			            	<li class="">
-								<i class="icon-remove-circle icon-2x icon-style"></i>
-								<span class="link_title icon-style-text">Deselect</span>
-							</li>
-						</a>
-				    </ul>
-				</div>    
-	        </div>
+
+	        <div id="ControlBarContainer"></div>
+
         </section>
 
 
@@ -357,8 +328,62 @@
 
 	</script>
 
-	<script type="text/template" id="ToolbarTemplate">
-	
+	<script type="text/template" id="PointControlBarTemplate">
+	    <div class="row span12 toolbar" style="margin-left:0px;">
+            <div class="button-container-div">
+                <ul>
+                    <li class="toolbar-entry-wide">
+                        <div>
+                            <a href="#" class="zoom-out icon-button toolbar-entry-wide"><i class="icon-minus-sign icon-2x icon-style"></i></a>
+                            <input type="range" class="zoom-range">
+                            <a href="#" class="zoom-in icon-button toolbar-entry-wide"><i class="icon-plus-sign icon-2x icon-style"></i></a>
+                        </div>
+                        <span class="link_title icon-style-text">Image Zoom</span>
+                    </li>
+                    <a href="#" class="icon-button toolbar-entry-wide reset">
+                        <li class="">
+                            <i class="icon-resize-full icon-2x icon-style"></i>
+                            <span class="link_title icon-style-text">Reset Zoom</span>
+                        </li>
+                    </a>
+                    <a href="#" id="hide_points_button" class="icon-button toolbar-entry-wide">
+                        <li class="">
+                            <i class="icon-check-empty icon-2x icon-style"></i>
+                            <span class="link_title icon-style-text">Hide Points</span>
+                        </li>
+                    </a>
+                    <a href= "#" id="deselect_points_button" class="icon-button toolbar-entry-wide">
+                        <li class="">
+                            <i class="icon-remove-circle icon-2x icon-style"></i>
+                            <span class="link_title icon-style-text">Deselect</span>
+                        </li>
+                    </a>
+                </ul>
+            </div>
+        </div>
+	</script>
+
+    <script type="text/template" id="WholeImageControlBarTemplate">
+	    <div class="row span12 toolbar" style="margin-left:0px;">
+            <div class="button-container-div">
+                <ul>
+                    <li class="toolbar-entry-wide">
+                        <div>
+                            <a href="#" class="zoom-out icon-button toolbar-entry-wide"><i class="icon-minus-sign icon-2x icon-style"></i></a>
+                            <input type="range" class="zoom-range">
+                            <a href="#" class="zoom-in icon-button toolbar-entry-wide"><i class="icon-plus-sign icon-2x icon-style"></i></a>
+                        </div>
+                        <span class="link_title icon-style-text">Image Zoom</span>
+                    </li>
+                    <a href="#" class="icon-button toolbar-entry-wide reset">
+                        <li class="">
+                            <i class="icon-resize-full icon-2x icon-style"></i>
+                            <span class="link_title icon-style-text">Reset Zoom</span>
+                        </li>
+                    </a>
+                </ul>
+            </div>
+        </div>
 	</script>
 	
 	<script type="text/template" id="WholeImageAnnotationTemplate">

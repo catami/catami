@@ -89,13 +89,13 @@ OrchestratorView = Backbone.View.extend({
         this.thumbnailStripView = new ThumbnailStripView({model : annotationSets});
         this.imagesAnnotateView = new ImageAnnotateView({model : annotationSets});
         this.chooseAnnotationView = new ChooseAnnotationView({});
-        this.imagePointsControlView = new ImagePointsControlView({});
-        this.imageZoomControlView = new ImageZoomControlView({});
 
         if (annotationSets.at(0).get('annotation_set_type') === 1){
             this.wholeImageAnnotationSelectorView = new WholeImageAnnotationSelectorView({});
+            this.wholeImageControlBarView = new WholeImageControlBarView({});
         } else {
             this.imagePointsPILSView = new ImagePointsPILSView({});
+            this.pointControlBarView = new PointControlBarView({});
         }
 
         this.imagePointsPILSView = new ImagePointsPILSView({});
@@ -109,14 +109,15 @@ OrchestratorView = Backbone.View.extend({
         this.assign(this.thumbnailStripView, '#ThumbnailStripContainer');
         this.assign(this.imagesAnnotateView, '#ImageContainer');
         this.assign(this.chooseAnnotationView, '#ChooseAnnotationContainer');
-        this.assign(this.imagePointsControlView, '#ImagePointsControlContainer');
-        this.assign(this.imageZoomControlView, '#ImageZoomControlContainer');
+
 
         if (annotationSets.at(0).get('annotation_set_type') === 1){
             this.assign(this.wholeImageAnnotationSelectorView, '#whole-image-annotation-selector');
             this.assign(this.similarityImageView, '#ImageSimilarityContainer');
+            this.assign(this.wholeImageControlBarView, '#ControlBarContainer');
         } else {
             this.assign(this.imagePointsPILSView, '#ImagePILSContainer');
+            this.assign(this.pointControlBarView, '#ControlBarContainer');
         }
 
         //trigger an event for selecting the first thumbanil in the list
@@ -628,6 +629,52 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
 
         // // Load the compiled HTML into the Backbone "el"
         this.$el.html(wholeImageTemplate);
+        return this.el;
+    }
+});
+
+//shown only for points annotations
+PointControlBarView = Backbone.View.extend({
+    initialize: function () {},
+    render: function () {
+        var imageZoomControlTemplate = _.template($("#PointControlBarTemplate").html(), {});
+
+        // // Load the compiled HTML into the Backbone "el"
+        this.$el.html(imageZoomControlTemplate);
+
+        $("#ImageContainer").panzoom({
+            $zoomIn: $(".zoom-in"),
+            $zoomOut: $(".zoom-out"),
+            $zoomRange: $(".zoom-range"),
+            $reset: $(".reset")
+        });
+
+        $('#hide_points_button').mousedown(function(){GlobalEvent.trigger("hide_points");});
+        $('#hide_points_button').mouseup(function() {GlobalEvent.trigger("show_points");});
+
+        //triggering the event for backbone so reference to this class get passed down the chain
+        $('#deselect_points_button').click(function(){GlobalEvent.trigger("deselect_points");});
+
+        return this.el;
+    }
+});
+
+//shown only for whole image annotations
+WholeImageControlBarView = Backbone.View.extend({
+    initialize: function () {},
+    render: function () {
+        var imageZoomControlTemplate = _.template($("#WholeImageControlBarTemplate").html(), {});
+
+        // // Load the compiled HTML into the Backbone "el"
+        this.$el.html(imageZoomControlTemplate);
+
+        $("#ImageContainer").panzoom({
+            $zoomIn: $(".zoom-in"),
+            $zoomOut: $(".zoom-out"),
+            $zoomRange: $(".zoom-range"),
+            $reset: $(".reset")
+        });
+
         return this.el;
     }
 });
