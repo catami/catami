@@ -5,7 +5,6 @@
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/elastislide.css" />
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/catami-api/css/bootstrapSwitch.css"/>
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/annotation_accordion.css" />
 
@@ -136,6 +135,11 @@
 			font-weight: 500;
 			background-color: white;
 			font-size: large;
+		}
+		
+		.wholeImageLabelStatus{
+			color:#57d357;
+			padding-left:5px;
 		}
 		
 		.wholeImageList a{
@@ -341,7 +345,6 @@
     <script type="text/template" id="ImagePointsControlTemplate">
         <div class="well">
             <a id="hide_points_button" class="btn">Hide Points (click and hold me)</a>
-            <!--<button id="zoom_toggle" type="button" class="btn" data-toggle="button">Zoom Toggle</button>-->
             <a id="deselect_points_button" class="btn">Deselect Points</a>
         </div>
     </script>
@@ -362,10 +365,34 @@
 		<div>
 			<ul class="wholeImageList">
 				<li class="wholeImageHeader"><span>Broad Scale Classes</span><a id="clear_all_broad_scale" class="btn btn-mini btn-danger pull-right">Reset All</a></li>
-				<a href='#' id="biota_annotation_label"><li class="wholeImageItem"><span><span>Biota</span><span class="wholeImageLabel pull-right" id="dominant_biota">Not Considered</span></span></li></a>
-				<a href='#' id="substrate_annotation_label"><li class="wholeImageItem"><span>Substrate</span><span class="wholeImageLabel pull-right" id="dominant_substrate" class="pull-right">Not Considered</span></li></a>
-				<a href='#' id="relief_annotation_label"><li class="wholeImageItem"><span>Relief</span><span class="wholeImageLabel pull-right" id="relief" class="pull-right">Not Considered</span></li></a>
-				<a href='#' id="bedform_annotation_label"><li class="wholeImageItem"><span>Bedform</span><span class="wholeImageLabel pull-right" id="bedform" class="pull-right">Not Considered</span></li></a>
+				<a href='#' id="biota_annotation_label">
+					<li class="wholeImageItem">
+						<span>Biota</span>
+<!-- 						<span class="wholeImageLabelStatus pull-right" id="dominant_biota_status"><i class="icon-check-sign"></i></span> -->
+						<span class="wholeImageLabel pull-right" id="dominant_biota">Not Considered</span>
+					</li>
+				</a>
+				<a href='#' id="substrate_annotation_label">
+					<li class="wholeImageItem">
+						<span>Substrate</span>
+<!-- 						<span class="wholeImageLabelStatus pull-right" id="dominant_substrate_status"><i class="icon-check-sign small-shadow"> </i></span> -->
+						<span class="wholeImageLabel pull-right" id="dominant_substrate" class="pull-right">Not Considered</span>
+					</li>
+				</a>
+				<a href='#' id="relief_annotation_label">
+					<li class="wholeImageItem">
+						<span>Relief</span>
+<!-- 						<span class="wholeImageLabelStatus pull-right" id="dominant_biota_status"><i class="icon-check-sign"> </i></span> -->
+						<span class="wholeImageLabel pull-right" id="relief" class="pull-right">Not Considered</span>
+					</li>
+				</a>
+				<a href='#' id="bedform_annotation_label">
+					<li class="wholeImageItem">
+						<span>Bedform</span>
+<!-- 						<span class="wholeImageLabelStatus pull-right" id="dominant_biota_status"><i class="icon-check-sign"> </i></span> -->
+						<span class="wholeImageLabel pull-right" id="bedform" class="pull-right">Not Considered</span>
+					</li>
+				</a>
 				<li class="wholeImageFooter"><span class="label label-info">Tip</span><em> Choose classes below</em></li>
 			</ul>
 		</div>
