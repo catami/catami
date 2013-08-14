@@ -555,7 +555,8 @@ class ImageResource(ModelResource):
             'date_time': ALL,
             'id': ALL
         }
-        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+        # patch and put added to permit bulk posting via patch_list
+        allowed_methods = ['get', 'post', 'patch', 'put'] #allow post to create campaign via Backbonejs
 
     #this gets called just before sending response. Careful as we are overwritting the method defined in BackboneCompaitibleResource
     def alter_list_data_to_serialize(self, request, data):
@@ -610,7 +611,8 @@ class CameraResource(ModelResource):
             'id': ALL,
             'name': ALL,
         }
-        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+        # patch and put added to permit bulk posting via patch_list
+        allowed_methods = ['get', 'post','patch','put'] #allow post to create campaign via Backbonejs
 
 
 class MeasurementsResource(ModelResource):     
@@ -632,7 +634,8 @@ class MeasurementsResource(ModelResource):
             'altitude': ALL,
             'id': ALL,
         }
-        allowed_methods = ['get', 'post'] #allow post to create campaign via Backbonejs
+        # patch and put added to permit bulk posting via patch_list
+        allowed_methods = ['get', 'post','patch','put'] #allow post to create campaign via Backbonejs
         filtering = {
             'image': ALL_WITH_RELATIONS,
         }
