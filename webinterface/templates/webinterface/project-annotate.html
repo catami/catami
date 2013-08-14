@@ -448,14 +448,29 @@
     </script>
 
     <script type="text/template" id="ThumbnailTemplate">
-        <li><div class='wrapper'><a href='#'><div class='description'></div><img src='<%= thumbnail_location %>' data-src='<%= thumbnail_location %>' alt='image'></a></div></li>
+        <li>
+            <div class='wrapper'>
+                <a href='#'>
+                    <div class='description'></div>
+                    <div>
+                        <img src='<%= thumbnail_location %>' data-src='<%= thumbnail_location %>' alt='image'>
+                        <%= annotation_status %>
+                    </div>
+                </a>
+            </div>
+        </li>
     </script>
 
     <script type="text/template" id="ImageTemplate">
         <img id="Image" src='<%= web_location %>' data-src='<%= web_location %>' alt='image'>
     </script>
 
+    <script type="text/template" id="StatusTemplate">
+        <span id="<%= image_id %>" style="color: red; position: absolute; top: 5%; right: 2%; font-size: 200%"><%=status%></span>
+    </script>
+
     <script src="{{ STATIC_URL }}assets/jquery/modernizr.custom.17475.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/catamiUtil.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.elastislide.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-model.js"></script>
@@ -467,7 +482,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.accordion.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.panzoom.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery.elevatezoom/jquery.elevateZoom-2.5.5.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>   
 
     <script type="text/javascript">
 
@@ -475,10 +490,6 @@
         var project = new Project({"id": projectId});
 
         var orchestratorView = new OrchestratorView();
-
-    </script>
-
-    <script>
 
     </script>
 

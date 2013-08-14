@@ -40,6 +40,7 @@ var points = new PointAnnotations();
 var annotationSets = new AnnotationSets();
 var annotationCodeList = new AnnotationCodeList();
 var currentImageInView;
+var map = { "images": [] }; //initiate map
 
 //yeah, it's a global.
 var nested_annotation_list;
@@ -218,30 +219,32 @@ ThumbnailStripView = Backbone.View.extend({
     initialize: function () {
         //bind to the global event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
-        // this.wholeImageAnnotationSelectorView = new WholeImageAnnotationSelectorView();
-
-        //this.render();
-
-        //this.configElastiSlide();
+        GlobalEvent.on("update_annotation", this.updateAnnotation, this);
     },
     render: function () {
 
         var annotationSetTypes = ["fine scale","broad scale"];
 
-        //get tall the images to be rendered
+        //get all the images to be rendered
         var imageTemplate = "";
 
         // enforcing only one annotation set per project for the time being, so
         // can assume the first one
         var annotationSet = annotationSets.at(0);
-
         var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
 
         var images = annotationSet.get("images");
 
-        for(var i=0; i < images.length; i++) {
+        for (var i = 0; i < images.length; i++) {
+            var im = images[i]
+            var statusVariables = { //initialise span for annotated flag using image ids as span id
+                "image_id": "image_" + im.id,
+                "status" : ""
+            }
+            statusTemplate = _.template($("#StatusTemplate").html(), statusVariables);
             var imageVariables = {
-                "thumbnail_location": images[i].thumbnail_location
+                "thumbnail_location": im.thumbnail_location,
+                "annotation_status": statusTemplate
             };
             imageTemplate += _.template($("#ThumbnailTemplate").html(), imageVariables);
         }
@@ -260,8 +263,99 @@ ThumbnailStripView = Backbone.View.extend({
         this.$el.html(projectTemplate);
 
         this.configElastiSlide();
+        this.buildAnnotationStatus();
+        this.renderAnnotationStatus();
 
         return this;
+    },
+    buildAnnotationStatus: function () {
+        var annotationSetTypes = ["fine scale", "broad scale"];
+
+        // enforcing only one annotation set per project for the time being, so
+        // can assume the first one
+        var annotationSet = annotationSets.at(0);
+        var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
+        if (annotationSetType === "broad scale") {
+            //var images = annotationSet.get("images");
+            var whole_image_points = new WholeImageAnnotations();
+            //alert('annotationSet.get(\'id\') : ' + annotationSet.get('id'));
+            whole_image_points.fetch({
+                async: false,
+                data: {
+                    annotation_set: annotationSet.get('id'),
+                    limit: 1000, //XXX TEMP fix til thumbnail pagination is implemented.
+                },
+                success: function (model, response, options) {
+                    //loop through the points and get caab                  
+                    whole_image_points.each(function (whole_image_point) {
+                        var imageId = catami_getIdFromUrl(whole_image_point.get('image'));
+                        var code = whole_image_point.get('annotation_caab_code');
+                        var name = whole_image_point.get('annotation_caab_name');
+                        var annotId = whole_image_point.get('id');
+                        if (typeof code != 'undefined') {
+                            var imageFound = false;
+                            $.each(map.images, function (i, im) {
+                                if (im.id == imageId) { //image found, add annotation to image                                    
+                                    var annot_new = {
+                                        "id": annotId,
+                                        "code": code,
+                                        "name": name
+                                    }
+                                    im.annotations.push(annot_new);                                     
+                                    imageFound = true;
+                                    return;
+                                }
+                            });
+                            if (!imageFound) { //create image with annotation if image not found                           
+                                var image_new = {
+                                    "id": imageId,
+                                    "annotations": [
+                                        {
+                                            "id": annotId,
+                                            "code": code,
+                                            "name": name
+                                        } 
+                                    ]
+                                }
+                                map.images.push(image_new);                                                                                                    
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    },//imageId, annotId, code, name
+    updateAnnotation: function (imageId, annotId, code, name) {        
+        updateAnnotation(imageId, annotId, code, name);
+        this.renderAnnotationStatus();
+    },
+    renderAnnotationStatus: function () {
+        //alert('in render map: ' + map.toSource());
+        var parent = this;
+        var annotationSetTypes = ["fine scale", "broad scale"];
+
+        // enforcing only one annotation set per project for the time being, so
+        // can assume the first one
+        var annotationSet = annotationSets.at(0);
+        var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
+        if (annotationSetType === "broad scale") {
+            var images = annotationSet.get("images");
+            var statusTemplate = "";                       
+            for (var i = 0; i < images.length; i++) {
+                var im = images[i]
+                var status = ""
+                //XXX in future implementation, use fraction, e.g. 1/4 to indicate 1 of 4 have been annotated (have CAAB)
+                var isAnnotated = false;               
+                $.each(map.images, function (i, image) {
+                    if (image.id == im.id) { //find respective image, and check if it is fully annotated
+                        isAnnotated = checkAnnotated(image);
+                        return;
+                    }
+                });
+                if (!isAnnotated) status = "*";
+                $('#image_' + im.id).text(status);
+            }
+        }
     },
     configElastiSlide: function() {
         console.log("initialising");
@@ -300,7 +394,7 @@ ImageAnnotateView = Backbone.View.extend({
     initialize: function () {
         var parent = this;
 
-        //bind to the blobal event, so we can get events from other views
+        //bind to the global event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
@@ -567,6 +661,8 @@ ImageAnnotateView = Backbone.View.extend({
                 }
             });
         });
+
+        GlobalEvent.trigger("annotation_triggered");
     },
     hidePoints: function () {
         //loop through the points and hide them
@@ -826,8 +922,7 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
         var annotationSet = annotationSets.at(0);
         var image = annotationSet.get("images")[currentImageInView];
         //based on that image query the API for the points
-        var whole_image_points = new WholeImageAnnotations();
-
+        var whole_image_points = new WholeImageAnnotations();       
         whole_image_points.fetch({
             data: { limit: 100, image: image.id, annotation_set: annotationSet.get('id') },
             success: function (model, response, options) {
@@ -849,7 +944,6 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
                         });
                     }
 
-
                     var modelRootCaabCode = getUsefulCaabRoot(annotationCode.get('id'));
 
                     if ((modelRootCaabCode === updateRootCaabCode) && updateRootCaabCode !== null) {
@@ -862,10 +956,13 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
                                 headers: {"cache-control": "no-cache"},
                                 success: function (model, xhr, options) {
                                     parent.renderPointsForImage(currentImageInView);
+                                    //imageId, annotId, code, name
+                                    GlobalEvent.trigger("update_annotation", image.id, pointId, updateCaabCode.caab_code, updateCaabCode.code_name);
                                 },
                                 error: function (model, xhr, options) {
                                     if (theXHR.status == "201" || theXHR.status == "202") {
                                         //other trouble
+                                        GlobalEvent.trigger("update_annotation", image.id, pointId, updateCaabCode.caab_code, updateCaabCode.code_name);
 
                                     } else if(theXHR.status == "401") {
                                         $.pnotify({
@@ -925,10 +1022,12 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
                                 headers: {"cache-control": "no-cache"},
                                 success: function (model, xhr, options) {
                                     parent.renderPointsForImage(currentImageInView);
+                                    GlobalEvent.trigger("update_annotation", image.id, pointId, updateCaabCode.caab_code, updateCaabCode.code_name);
                                 },
                                 error: function (model, xhr, options) {
                                     if (theXHR.status == "201" || theXHR.status == "202") {
                                         //other trouble
+                                        GlobalEvent.trigger("update_annotation", image.id, pointId, updateCaabCode.caab_code, updateCaabCode.code_name);
 
                                     } else if(theXHR.status == "401") {
                                         $.pnotify({
@@ -970,6 +1069,7 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
                 });
             }
         });
+        
     },
     renderPointsForImage: function(selected) {
         //get all whole image annotation points for selected image
@@ -1087,15 +1187,18 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
                 var properties = { 'annotation_caab_code': '' };
 
                 whole_image_points.each(function (whole_image_point) {
+                    var pointId = whole_image_point.get('id');
                     var theXHR = whole_image_point.save(properties, {
                         patch: true,
                         headers: {"cache-control": "no-cache"},
                         success: function (model, xhr, options) {
-                            console.log('Broad scale point was reset for ',image);
+                            console.log('Broad scale point was reset for ', image);
+                            GlobalEvent.trigger("update_annotation", image.id, pointId, "", "");
                         },
                         error: function (model, xhr, options) {
                             if (theXHR.status == "201" || theXHR.status == "202") {
                                 //other trouble
+                                GlobalEvent.trigger("update_annotation", image.id, pointId, "", "");
 
                             } else if(theXHR.status == "401") {
                                 $.pnotify({
@@ -1285,6 +1388,31 @@ SimilarityImageView = Backbone.View.extend({
         this.renderSimilarImages(this.currentlySelectedImageIndex);
     }
 });
+
+// helper function to check if image (json object) is annotated
+function checkAnnotated(image) {
+    var isAnnotated = true;
+    $.each(image.annotations, function (i, annotation) {
+        //alert(image.id + ' : ' + annotation.code + ' != "" : ' + (annotation.code != ""));
+        isAnnotated &= (annotation.code != "");
+    });
+    return isAnnotated
+}
+
+function updateAnnotation(imageId, annotId, code, name) {
+    $.each(map.images, function (i, image) {
+        if (image.id == imageId) {
+            $.each(image.annotations, function (i, annot) {
+                if (annot.id == annotId) {
+                    annot.code = code;
+                    annot.name = name;
+                    return; 
+                }
+            });
+            return;
+        }
+    });
+}
 
 // helper functions, to be removed pending some API/server
 function caab_as_node(object){

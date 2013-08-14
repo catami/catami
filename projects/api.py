@@ -978,6 +978,17 @@ class WholeImageAnnotationResource(ModelResource):
 
         return bundle
 
+    def dehydrate(self, bundle):
+        # Add an caab_name field to WholeImageAnnotationResource.
+        code_name = ''
+        code = bundle.data['annotation_caab_code']
+        if code and code is not u'':
+            annotation_code = AnnotationCodes.objects.filter(caab_code=code)
+            if annotation_code and annotation_code is not None and len(annotation_code) > 0:
+                code_name = annotation_code[0].code_name
+        bundle.data['annotation_caab_name'] = code_name
+        return bundle
+
 
 class AnnotationCodesResource(ModelResource):
     parent = fields.ForeignKey('projects.api.AnnotationCodesResource', 'parent', null=True)
