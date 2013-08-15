@@ -68,8 +68,8 @@ ProjectView = Backbone.View.extend({
 
         var permissions = project.get("permissions");
 
-        var edit_content = $.inArray("change_project", permissions) ? "" : "hidden";
-        var delete_content = $.inArray("delete_project", permissions) ? "" : "hidden";
+        var edit_content = $.inArray("change_project", permissions) > -1 ? "<a id=\"configure_project_button\" class=\"btn\" href=\"#\">Configure Project</a>" : "";
+        var delete_content = $.inArray("delete_project", permissions) > -1 ? "<a id=\"delete_project_button\" class=\"btn btn-danger\" href=\"#delete_modal\" data-toggle=\"modal\">Delete Project</a>" : "";
 
         //render the items to the main template
         var projectVariables = {

@@ -66,9 +66,9 @@
                 <p><b>Shared with: </b> Public </p>
 
                 <p>
-                    <a style="visibility:<%= edit_content %>" id="configure_project_button" class="btn" href="#">Configure Project</a>
+                    <%= edit_content %>
                     <a id="export_project_button" class="btn" href="#">Download CSV</a>
-                    <a style="visibility:<%= delete_content %>" id="delete_project_button" class="btn btn-danger" href="#delete_modal" data-toggle="modal">Delete Project</a>
+                    <%= delete_content %>
                 </p>
 
             </div>
@@ -85,7 +85,7 @@
 
               <div class="modal-footer">
                 <a href="" class="btn" data-dismiss="modal">No</a>
-                <a id="delete_project_modal_button" href="" class="btn btn-danger" data-dismiss="modal">Yes, Delete it forever.</a>
+                <a id="" href="" class="btn btn-danger" data-dismiss="modal">Yes, Delete it forever.</a>
               </div>
             </div>
 
