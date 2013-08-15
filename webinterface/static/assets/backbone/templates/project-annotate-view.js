@@ -358,13 +358,13 @@ ThumbnailStripView = Backbone.View.extend({
         }
     },
     configElastiSlide: function() {
-        console.log("initialising");
         $( '#carousel' ).elastislide( {
             orientation : 'horizontal',
             minItems : 5,
             onClick : function( el, position, evt ) {
                 //fire an event for backbone for backbone to pick up
                 GlobalEvent.trigger("thumbnail_selected", position);
+                return false;
             }
         });
     },
