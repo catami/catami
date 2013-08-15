@@ -22,7 +22,13 @@ DeploymentView = Backbone.View.extend({
             "campaignlist_url": CampaignListUrl,
             "campaign_url": CampaignUrl,
             "campaign_name": deployment.get("campaign_name"),
-            "deployment_name": deployment.get("short_name")            
+            "deployment_name": deployment.get("short_name"),
+            "start_time_stamp": deployment.get("start_time_stamp"),
+            "end_time_stamp": deployment.get("end_time_stamp"),
+            "mission_aim": deployment.get("mission_aim"),
+            "contact_person": deployment.get("contact_person"),
+            "license": deployment.get("license"),
+            "descriptive_keywords": deployment.get("descriptive_keywords")
         };
         var deploymentViewTemplate = _.template($("#DeploymentViewTemplate").html(), deploymentVariables);
         // Load the compiled HTML into the Backbone "el"
@@ -62,7 +68,8 @@ DeploymentView = Backbone.View.extend({
         plotMeasurement("/api/dev/image/?format=json&deployment=" + deploymentId + "&output=flot&limit=10000", "#placeholder_01", "Depth (m)")
         plotMeasurement("/api/dev/measurements/?format=json&image__deployment=" + deploymentId + "&mtype=salinity&limit=10000&output=flot", "#placeholder_02", "Salinity (psu)")
         plotMeasurement("/api/dev/measurements/?format=json&image__deployment=" + deploymentId + "&mtype=temperature&limit=10000&output=flot", "#placeholder_03", "Temperature (cel)")
-           
+        loadPage();
+
         return this;
     }
 });
@@ -80,7 +87,8 @@ DeploymentThumbanilView = Backbone.View.extend({
 
         images.each(function (image) {
             var imageVariables = {
-                "thumbnail_location": image.get('thumbnail_location')
+                "thumbnail_location": image.get('thumbnail_location'),
+                "web_location": image.get('web_location')
             };
             imageTemplate += _.template($("#ImageTemplate").html(), imageVariables);
         });
@@ -96,13 +104,12 @@ DeploymentThumbanilView = Backbone.View.extend({
         var options = thumbnailPaginationOptions(this.meta);
         $('#pagination').bootstrapPaginator(options);
 
-        return this;
+        $(".group1").colorbox({rel:'group1', maxWidth:'95%', maxHeight:'95%'});
     }
 });
 
 var images = new Images();
-
-loadPage();
+var thumbnailView;
 
 function loadPage(offset) {
     var off = {}
@@ -111,11 +118,12 @@ function loadPage(offset) {
     images.fetch({
         data: { offset: off, deployment: catami_getIdFromUrl() },
         success: function (model, response, options) {
-            var thumbnailView = new DeploymentThumbanilView({
+            thumbnailView = new DeploymentThumbanilView({
                 el: $("#ThumbnailListContainer"),
                 collection: images,
                 meta: images.meta //read from initiaisation method's "option" variable
             });
+
         },
         error: function (model, response, options) {
             alert('fetch failed: ' + response.status);

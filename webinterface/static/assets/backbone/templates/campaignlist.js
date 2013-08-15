@@ -28,7 +28,7 @@ CampaignCollectionView = Backbone.View.extend({
                 "researchers": campaign.get("associated_researchers"),
                 "publications": campaign.get("associated_publications"),
                 "grant": campaign.get("associated_research_grant"),
-                "description": campaign.get("description"),
+                "description": campaign.get("description")
             };
             campaignTemplate += _.template($("#CampaignTemplate").html(), campaignVariables);
         });
@@ -57,13 +57,12 @@ CampaignCollectionView = Backbone.View.extend({
         map.addLayer(layer);
         mapUtils.applyFilter(layer, []);
         
-
         campaignPicker = new OpenLayers.Control.GetFeature({
             protocol: OpenLayers.Protocol.WFS.fromWMSLayer(layer),
             box: false,
             clickTolerance: 10,
             title: 'identify features on click',
-            queryVisible: true,            
+            queryVisible: true
         });
         campaignPicker.infoFormat = 'application/vnd.ogc.gml';
         campaignPicker.events.register("featureselected", this, function (e) {
@@ -85,6 +84,14 @@ CampaignCollectionView = Backbone.View.extend({
         //Create pagination
         var options = catami_generatePaginationOptions(this.meta);
         $('#pagination').bootstrapPaginator(options);
+
+        //shrink the table text
+        $('td').truncate({
+            length: 20,
+            minTrail: 10,
+            moreText: '',
+            lessText: ''
+        });
 
         return this;
     }

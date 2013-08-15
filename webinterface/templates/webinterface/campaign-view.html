@@ -15,35 +15,65 @@
         </ul>
     </div>
 
-    <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Researchers</th>
-            <th>Publications</th>
-            <th>Grant</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><%= start_date %></td>
-            <td><%= end_date %></td>
-            <td><%= researchers %></td>
-            <td><%= publications %></td>
-            <td><%= grant %></td>
-            <td><%= description %></td>
-        </tr>
-    </tbody>
-    </table>
-    
-    <div id='deployment-map' style="height: 300px; width:100%; border: 2px">
+    <div class="row-fluid">
+
+        <div class="span4">
+            <div class="well">
+                <h2><%= campaign_name%></h2>
+
+                <p><b>Start Date: </b> <%= start_date %></p>
+                <p><b>End Date: </b> <%= end_date %> </p>
+                <p><b>Description </b> </p>
+                <p> <%= description %> </p>
+                <p><b>Researchers</b></p>
+                <p> <%= researchers %>  </p>
+                <p><b>Publications </b> </p>
+                <p> <%= publications %> </p>
+                <p><b>Grant </b> </p>
+                <p> <%= grant %> </p>
+
+            </div>
+            <!--
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Researchers</th>
+                        <th>Publications</th>
+                        <th>Grant</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><%= start_date %></td>
+                        <td><%= end_date %></td>
+                        <td><%= researchers %></td>
+                        <td><%= publications %></td>
+                        <td><%= grant %></td>
+                        <td><%= description %></td>
+                    </tr>
+                </tbody>
+            </table>
+            -->
+        </div>
+
+        <div class="span8">
+            <div class="row">
+                <!--<div id='deployment-map' style="height: 300px; width:100%; border: 2px"></div>-->
+                <div id='deployment-map' style="height: 300px;"></div>
+            </div>
+
+            <div class="row">
+                <div>
+                    <%= deploymentlist %>
+                </div>
+            </div>
+        </div>
+
     </div>
-    
-    <div>
-        <%= deploymentlist %>
-    </div>
+
 </script>
 
 <script type="text/template" id="DeploymentListTemplate">   
