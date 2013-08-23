@@ -28,7 +28,7 @@
     <link href="{{ STATIC_URL }}assets/pnotify/jquery.pnotify.default.css" media="all" rel="stylesheet" type="text/css" />
     
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/topmenu.css" type="text/css">
-
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/underscore.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/backbone.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/bootstrap-paginator.js"></script>    
@@ -36,7 +36,6 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/backbone-validation-min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/backbone.validation.bootstrap.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/catamiUtil.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/plugins/bootstrap-datepicker.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/spin.min.js"></script>
 
@@ -72,6 +71,11 @@
     
     </script>
 
+  <script type='text/javascript'>
+     $(document).ready(function () {
+     $("[rel=tooltip]").tooltip();
+   });
+  </script>
 </head>
 
 <body>
@@ -175,10 +179,12 @@
     </div>
 </div>
 
-<script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery-ui.js"></script>
+<!-- <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery-ui.js"></script> -->
+<!--
 <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tooltip.2.3.0.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-tab.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
+-->
 <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/plugins/popover-extra-placements.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.shorten.1.0.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}assets/pnotify/jquery.pnotify.min.js"></script>
