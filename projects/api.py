@@ -540,7 +540,18 @@ class ProjectResource(ModelResource):
             image_bundle = Bundle()
             image_bundle.request = request
             image_bundle.data = dict(deployment=deployment_id)
-            images = ImageResource().obj_get_list(image_bundle, deployment=deployment_id)
+
+            images = []
+
+            # If deployment_id is a list we'll need to iterate through to build the image list otherwise
+            # we've just been given a single deployment ID
+
+            if isinstance(deployment_id,basestring):
+                images.extend(ImageResource().obj_get_list(image_bundle, deployment=deployment_id))
+            else:
+                for deployment in deployment_id:
+                    print deployment
+                    images.extend(ImageResource().obj_get_list(image_bundle, deployment=deployment))
 
             #check the the sample size is not larger than the number of images in our image list
             if int(image_sample_size) > len(images):

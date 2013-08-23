@@ -98,7 +98,8 @@ ProjectCreateView = Backbone.View.extend({
 
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
-
+        $(".chosen-select").chosen();
+        
         return this;
     },
     events: {
