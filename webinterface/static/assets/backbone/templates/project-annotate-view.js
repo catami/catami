@@ -120,7 +120,7 @@ OrchestratorView = Backbone.View.extend({
             this.assign(this.imagePointsPILSView, '#ImagePILSContainer');
             this.assign(this.pointControlBarView, '#ControlBarContainer');
         }
-
+        
         //trigger an event for selecting the first thumbanil in the list
         GlobalEvent.trigger("thumbnail_selected", 0);
     },
@@ -478,7 +478,8 @@ ImageAnnotateView = Backbone.View.extend({
                     span.css('left', point.get('x')*$('#Image').width()-6) ;
                     span.css('z-index', 10000);
                     span.attr('caab_code', label);
-                    span.attr('data-toggle', 'tooltip');
+                    span.attr('rel', 'tooltip');
+                    span.attr('data-container','#ImageAppContainer');
 
                     if (labelClass === 'pointAnnotated'){
                         span.text(annotationCode.id);
@@ -486,7 +487,11 @@ ImageAnnotateView = Backbone.View.extend({
                     }
 
                     span.appendTo('#ImageContainer');
+                    span.tooltip();
                 });
+
+                $("[rel=tooltip]").tooltip();
+                console.log('setup points');
 
                 $("#ImageContainer").children('span').click(function(){
                     GlobalEvent.trigger("point_clicked", this);
@@ -516,6 +521,9 @@ ImageAnnotateView = Backbone.View.extend({
                 });
             }
         });
+
+        $("[rel=tooltip]").tooltip();
+
     },
     thumbnailSelected: function(selectedPosition) {
         selectedThumbnailPosition = selectedPosition;
