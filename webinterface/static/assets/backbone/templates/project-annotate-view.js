@@ -87,6 +87,7 @@ OrchestratorView = Backbone.View.extend({
         similarImages = new Images({"url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/similar_images/"});
 
         //load the views
+        this.breadcrumbNavigationView = new BreadcrumbNavigationView({});
         this.thumbnailStripView = new ThumbnailStripView({model : annotationSets});
         this.imagesAnnotateView = new ImageAnnotateView({model : annotationSets});
         this.chooseAnnotationView = new ChooseAnnotationView({});
@@ -107,6 +108,7 @@ OrchestratorView = Backbone.View.extend({
 
     },
     render: function () {
+        this.assign(this.breadcrumbNavigationView,'#BreadcrumbContainer');
         this.assign(this.thumbnailStripView, '#ThumbnailStripContainer');
         this.assign(this.imagesAnnotateView, '#ImageContainer');
         this.assign(this.chooseAnnotationView, '#ChooseAnnotationContainer');
@@ -129,6 +131,29 @@ OrchestratorView = Backbone.View.extend({
     }
 
 });
+
+
+BreadcrumbNavigationView = Backbone.View.extend({
+    el: $('div'),
+    initialize: function () {
+    },
+    render: function(){
+        var annotationSetVariables = {
+            "name": project.get("name"),
+            "id": project.get("id")
+        };
+
+        // Compile the template using underscore
+        var breadcrumbTemplate = _.template($("#BreadcrumbTemplate").html(), annotationSetVariables);
+
+        // Load the compiled HTML into the Backbone "el"
+        this.$el.html(breadcrumbTemplate);
+
+        return this;
+    },
+    events: {}
+});
+
 
 ChooseAnnotationView = Backbone.View.extend({
     model: AnnotationCodeList,
