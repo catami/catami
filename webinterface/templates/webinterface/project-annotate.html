@@ -218,13 +218,13 @@
 	</style>
 
 
-    <!-- elastislide thumbnail div -->
 	<section id="full-width-header" class="row-fluid span12" style="margin-left:0px;">
 		<div id="BreadcrumbContainer"></div>
 	</section>
-	
+
     <div class="row-fluid span12" style="margin-left:0px;">
         <div id="ThumbnailStripContainer"></div>
+        <div id="pagination"></div>
     </div>
 
     <div class="row-fluid">
@@ -430,39 +430,30 @@
 	<script type="text/template" id="BreadcrumbTemplate">
 		<div class="span12">
 		    <ul class="breadcrumb">
-		
+
 		        <li><a href="/projects/">Projects</a> <span
 		                class="divider">></span></li>
 		        <li><a href="/projects/<%=id%>/" ><%= name %></a> <span
 		                class="divider">></span></li>
 		        <li class="active">Annotate</li>
-		
+
 		    </ul>
 		</div>
 	</script>
-    <script type="text/template" id="ThumbnailStripTemplate">
-
+    <script type="text/template" id="ThumbnailStripTemplate">                  
         <div class='row-fluid'>
-            <div class="span12 thumbnail-pane catami-slide" id ="thumbnail-pane">
-                <ul id='carousel' class='elastislide-list'>
-                    <%=thumbnails%>
-                </ul>
-            </div>
+            <div class="span12" id ="thumbnail-pane">                
+                    <%=thumbnails%>                                 
+            </div>            
         </div>
     </script>
 
-    <script type="text/template" id="ThumbnailTemplate">
-        <li>
-            <div class='wrapper'>
-                <a href='#'>
-                    <div class='description'></div>
-                    <div>
-                        <img src='<%= thumbnail_location %>' data-src='<%= thumbnail_location %>' alt='image'>
-                        <%= annotation_status %>
-                    </div>
-                </a>
-            </div>
-        </li>
+    <script type="text/template" id="ThumbnailTemplate">        
+        <div class='wrapper' id='<%=thumbnailId%>' data-id='<%=thumbnailId%>' data-web_location='<%=web_location%>'>
+            <div class='description'></div>           
+            <img src='<%= thumbnail_location %>' data-src='<%= thumbnail_location %>' alt='image'>
+            <%= annotation_status %>
+        </div>        
     </script>
 
     <script type="text/template" id="ImageTemplate">

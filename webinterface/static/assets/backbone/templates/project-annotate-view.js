@@ -36,6 +36,7 @@ var getBroadScaleClassificationCopyURL = function(annotationSetId) {
 }
 
 var similarImages;
+var thumbnailImages;
 var points = new PointAnnotations();
 var annotationSets = new AnnotationSets();
 var annotationCodeList = new AnnotationCodeList();
@@ -84,12 +85,15 @@ OrchestratorView = Backbone.View.extend({
             },
             error: this.onLoadError
         });
-        similarImages = new Images({"url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/similar_images/"});
+        similarImages = new Images({ "url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/similar_images/" });
+        thumbnailImages = new Images({ "url": "/api/dev/annotation_set/" + projectId + "/project_images/?limit=10" });
+        fetchThumbnails();
+        createPagination(thumbnailImages.meta);
 
         //load the views
         this.breadcrumbNavigationView = new BreadcrumbNavigationView({});
         this.thumbnailStripView = new ThumbnailStripView({model : annotationSets});
-        this.imagesAnnotateView = new ImageAnnotateView({model : annotationSets});
+        this.imagesAnnotateView = new ImageAnnotateView({ model: annotationSets });        
         this.chooseAnnotationView = new ChooseAnnotationView({});
 
         if (annotationSets.at(0).get('annotation_set_type') === 1){
@@ -123,7 +127,7 @@ OrchestratorView = Backbone.View.extend({
             this.assign(this.pointControlBarView, '#ControlBarContainer');
         }
         
-        //trigger an event for selecting the first thumbanil in the list
+        //trigger an event for selecting the first thumbnail in the list
         GlobalEvent.trigger("thumbnail_selected", 0);
     },
     assign : function (view, selector) {
@@ -243,7 +247,7 @@ ThumbnailStripView = Backbone.View.extend({
     el: $('div'),
     initialize: function () {
         //bind to the global event, so we can get events from other views
-        GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
+        GlobalEvent.on("thumbnail_selected_by_id", this.thumbnailSelectedById, this);
         GlobalEvent.on("update_annotation", this.updateAnnotation, this);
     },
     render: function () {
@@ -258,21 +262,7 @@ ThumbnailStripView = Backbone.View.extend({
         var annotationSet = annotationSets.at(0);
         var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
 
-        var images = annotationSet.get("images");
-
-        for (var i = 0; i < images.length; i++) {
-            var im = images[i]
-            var statusVariables = { //initialise span for annotated flag using image ids as span id
-                "image_id": "image_" + im.id,
-                "status" : ""
-            }
-            statusTemplate = _.template($("#StatusTemplate").html(), statusVariables);
-            var imageVariables = {
-                "thumbnail_location": im.thumbnail_location,
-                "annotation_status": statusTemplate
-            };
-            imageTemplate += _.template($("#ThumbnailTemplate").html(), imageVariables);
-        }
+        imageTemplate = generateAllThumbnailTemplates(thumbnailImages);
 
         //render the items to the main template
         var annotationSetVariables = {
@@ -287,10 +277,11 @@ ThumbnailStripView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
 
-        this.configElastiSlide();
+        var im = thumbnailImages.first();
+        this.thumbnailSelectedById("thumbnail_" + im.get('id'), im.get('web_location'));       
         this.buildAnnotationStatus();
         this.renderAnnotationStatus();
-
+        
         return this;
     },
     buildAnnotationStatus: function () {
@@ -301,14 +292,19 @@ ThumbnailStripView = Backbone.View.extend({
         var annotationSet = annotationSets.at(0);
         var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
         if (annotationSetType === "broad scale") {
-            //var images = annotationSet.get("images");
-            var whole_image_points = new WholeImageAnnotations();
-            //alert('annotationSet.get(\'id\') : ' + annotationSet.get('id'));
+            var imageIds = "";
+            thumbnailImages.each(function (image) {
+                imageIds += image.get('id') + ',';
+            });
+            imageIds = imageIds.substring(0, imageIds.length - 1); //remove trailing comma
+            var whole_image_points = new WholeImageAnnotations({ "url": "/api/dev/whole_image_annotation/?image__in=" + imageIds });
+            //alert('annotationSet.get(\'id\') : ' + annotationSet.get('id'));            
+
             whole_image_points.fetch({
                 async: false,
                 data: {
                     annotation_set: annotationSet.get('id'),
-                    limit: 1000, //XXX TEMP fix til thumbnail pagination is implemented.
+                    limit: 200, //Each image should only contain at most 6-8 annotations
                 },
                 success: function (model, response, options) {
                     //loop through the points and get caab                  
@@ -382,28 +378,31 @@ ThumbnailStripView = Backbone.View.extend({
             }
         }
     },
-    configElastiSlide: function() {
-        $( '#carousel' ).elastislide( {
-            orientation : 'horizontal',
-            minItems : 5,
-            onClick : function( el, position, evt ) {
-                //fire an event for backbone for backbone to pick up
-                GlobalEvent.trigger("thumbnail_selected", position);
-                return false;
-            }
-        });
-    },
-    thumbnailSelected: function(position) {
-        $( "#carousel li" ).each(function( localindex ) {
-            if (localindex == position) {
+    thumbnailSelected: function (position) {
+        /* deprecated
+        $("#thumbnail").each(function (index) {
+            if (index == position) {
                 $(this).find('.description').html("<i class='icon-chevron-sign-down icon-2x'></i>");
             } else {
                 $(this).find('.description').html("");
             }
+        });*/
+    },    
+    thumbnailSelectedByEvent: function (event) {
+        var id = $(event.currentTarget).data("id");
+        var webLocation = $(event.currentTarget).data("web_location");
+        GlobalEvent.trigger("thumbnail_selected_by_id", id, webLocation);
+    },
+    thumbnailSelectedById: function (id, webLocation) {
+        $("#thumbnail-pane .wrapper").each(function (index, value) {
+            $(this).find('.description').html("");
         });
+        $('#' + id).find('.description').html("<i class='icon-chevron-sign-down icon-2x'></i>");
+        //$('#Image').attr("src", webLocation);
+        //$('#Image').attr("data-src", webLocation);
     },
     events: {
-        "thumbnail_selected": "thumbnailSelected"
+        'click .wrapper': 'thumbnailSelectedByEvent'
     }
 });
 
@@ -421,6 +420,7 @@ ImageAnnotateView = Backbone.View.extend({
 
         //bind to the global event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
+        GlobalEvent.on("thumbnail_selected_by_id", this.renderSelectedImageById, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
         GlobalEvent.on("point_mouseover", this.pointMouseOver, this);
@@ -431,8 +431,21 @@ ImageAnnotateView = Backbone.View.extend({
         GlobalEvent.on("show_points", this.showPoints, this);
         GlobalEvent.on("deselect_points", this.deselectPoints, this);
     },
+    renderSelectedImageById: function (id) {        
+        //get all the images to be rendered
+        var imageTemplate = "";
+        var imageVariables = {            
+            "web_location": $('#' + id).data("web_location")
+        };
+        imageTemplate += _.template($("#ImageTemplate").html(), imageVariables);
+
+        // Load the compiled HTML into the Backbone "el"
+        this.$el.html(imageTemplate);
+
+        return this;
+    },
     renderSelectedImage: function (selected) {
-        //ge tall the images to be rendered
+        //get all the images to be rendered
         var imageTemplate = "";
 
         // enforcing only one annotation set per project for the time being, so
@@ -1446,6 +1459,63 @@ function updateAnnotation(imageId, annotId, code, name) {
         }
     });
 }
+
+
+function loadPage(offset) {
+    fetchThumbnails(offset);
+    orchestratorView.thumbnailStripView.render();
+}
+
+function fetchThumbnails(offset) {
+    var off = {};
+    if (offset) off = offset;
+    thumbnailImages.fetch({
+        data: {
+            offset: off,
+        },
+        async: false,
+        success: function (model, response, options) {
+            currentOffset = offset;
+            //alert('currentOffset : ' + currentOffset + ' after fetching meta : ' + thumbnailImages.meta.toSource());
+        },
+        error: function (model, response, options) {
+            alert('Error fetching thumbnails : ' + response);
+        }
+    });
+}
+
+function generateAllThumbnailTemplates(thumbnailImages) {
+    var template = ""
+    var i = 0;
+    thumbnailImages.each(function (image) {
+        template += generateThumbnailTemplate(image, i);
+        i++;
+    });
+    return template;
+}
+function generateThumbnailTemplate(image) {
+    var id = image.get('id');
+    var statusVariables = { //initialise span for annotated flag using image ids as span id
+        "image_id": "image_" + id,
+        "status": ""
+    }
+    statusTemplate = _.template($("#StatusTemplate").html(), statusVariables);
+
+    var imageVariables = {
+        "thumbnailId": "thumbnail_" + id,
+        "thumbnail_location": image.get('thumbnail_location'),
+        "web_location": image.get('web_location'),
+        "annotation_status": statusTemplate
+    };
+    return _.template($("#ThumbnailTemplate").html(), imageVariables);
+}
+
+function createPagination(meta) {
+    //Create pagination
+    var options = thumbnailPaginationOptions(meta);
+    $('#pagination').bootstrapPaginator(options);
+}
+
 
 // helper functions, to be removed pending some API/server
 function caab_as_node(object){

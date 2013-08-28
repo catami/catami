@@ -664,10 +664,40 @@ class AnnotationSetResource(ModelResource):
 
     def prepend_urls(self):
         return [
+            url(r"^(?P<resource_name>%s)/(?P<project_id>\w[\w/-]*)/project_images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images_by_project_id'), name="api_get_images_by_project_id"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/similar_images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_similar_images'), name="api_get_similar_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/copy_wholeimage_classification%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('copy_wholeimage_classification'), name="api_copy_wholeimage_classification")
         ]
+
+    def get_images_by_project_id(self, request, **kwargs):        
+        """
+        This is a nested function so that we can do paginated thumbnail queries on the image resource
+        """
+
+        # need to create a bundle for tastypie
+        basic_bundle = self.build_bundle(request=request)
+
+        #get all annotation sets related to this project
+        sets = AnnotationSet.objects.filter(project=kwargs['project_id'])       
+        #enforcing only one annotation set per project for the time being, so
+        #can assume the first one
+
+        # get all the images related to this project
+        annotation_set_images = AnnotationSet.objects.get(id=sets[0].id).images.all()
+
+        # create the id string list to send to the next API call
+        # TODO: this is not ideal, best find a better way to deal with this
+        image_ids = ""
+        for image in annotation_set_images:
+            image_ids += image.id.__str__() + ","
+
+        # strip the comma from the end
+        image_ids = image_ids[:-1]
+
+        # call the image resource to give us what we want
+        image_resource = ImageResource()
+        return image_resource.get_list(request, id__in=image_ids)
 
     def get_images(self, request, **kwargs):
         """
@@ -957,7 +987,7 @@ class WholeImageAnnotationResource(ModelResource):
         detail_allowed_methods = ['get', 'post', 'put', 'delete','patch']
         list_allowed_methods = ['get', 'post', 'put', 'delete','patch']
         filtering = {
-            'image': 'exact',
+            'image': ALL,
             'owner': 'exact',
             'id': 'exact',
             'annotation_caab_code': 'exact',
