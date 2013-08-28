@@ -446,18 +446,24 @@
 		    </ul>
 		</div>
 	</script>
+
     <script type="text/template" id="ThumbnailStripTemplate">                  
+        <!--
         <div class='row-fluid'>
             <div class="span12" id ="thumbnail-pane">                
                     <%=thumbnails%>                                 
             </div>            
+        </div>
+        -->
+        <div id ="thumbnail-pane">
+                <%=thumbnails%>
         </div>
     </script>
 
     <script type="text/template" id="ThumbnailTemplate">        
         <div class='wrapper' id='<%=thumbnailId%>' data-id='<%=thumbnailId%>' data-web_location='<%=web_location%>'>
             <div class='description'></div>           
-            <img src='<%= thumbnail_location %>' data-src='<%= thumbnail_location %>' alt='image'>
+            <img src='<%= thumbnail_location %>' data-src='<%= thumbnail_location %>' alt='image' style="width: 100%">
             <%= annotation_status %>
         </div>        
     </script>
