@@ -249,6 +249,7 @@ ThumbnailStripView = Backbone.View.extend({
         //bind to the global event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected_by_id", this.thumbnailSelectedById, this);
         GlobalEvent.on("update_annotation", this.updateAnnotation, this);
+        GlobalEvent.on("thumbnails_loaded", this.render, this);
     },
     render: function () {
 
@@ -277,12 +278,12 @@ ThumbnailStripView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
 
-        var im = thumbnailImages.first();
-        this.thumbnailSelectedById("thumbnail_" + im.get('id'), im.get('web_location'));       
+        var image = thumbnailImages.first();
+
+        this.thumbnailSelectedById(image.get('id'), image.get('web_location'));
         this.buildAnnotationStatus();
         this.renderAnnotationStatus();
-        
-        return this;
+
     },
     buildAnnotationStatus: function () {
         var annotationSetTypes = ["fine scale", "broad scale"];
@@ -394,10 +395,12 @@ ThumbnailStripView = Backbone.View.extend({
         GlobalEvent.trigger("thumbnail_selected_by_id", id, webLocation);
     },
     thumbnailSelectedById: function (id, webLocation) {
+
         $("#thumbnail-pane .wrapper").each(function (index, value) {
             $(this).find('.description').html("");
         });
         $('#' + id).find('.description').html("<i class='icon-chevron-sign-down icon-2x'></i>");
+
         //$('#Image').attr("src", webLocation);
         //$('#Image').attr("data-src", webLocation);
     },
@@ -432,6 +435,7 @@ ImageAnnotateView = Backbone.View.extend({
         GlobalEvent.on("deselect_points", this.deselectPoints, this);
     },
     renderSelectedImageById: function (id) {        
+
         //get all the images to be rendered
         var imageTemplate = "";
         var imageVariables = {            
@@ -529,7 +533,6 @@ ImageAnnotateView = Backbone.View.extend({
                 });
 
                 $("[rel=tooltip]").tooltip();
-                console.log('setup points');
 
                 $("#ImageContainer").children('span').click(function(){
                     GlobalEvent.trigger("point_clicked", this);
@@ -1328,7 +1331,7 @@ function getUsefulCaabRoot(caab_code_id){
 
 
 SimilarityImageView = Backbone.View.extend({
-    currentlySelectedImageIndex: null,
+    currentlySelectedImageID: null,
     currentlySelectedImage: null,
     model: Images,
     meta: {},
@@ -1336,14 +1339,11 @@ SimilarityImageView = Backbone.View.extend({
         this.meta = options['meta']; //assign specified metadata to local var
 
         //bind to the event when a thumbnail is selected
-        GlobalEvent.on("thumbnail_selected", this.renderSimilarImages, this);
+        GlobalEvent.on("thumbnail_selected_by_id", this.renderSimilarImages, this);
     },
     renderSimilarImages: function (selected) {
         var parent = this;
-        var annotationSet = annotationSets.at(0);
-        var image = annotationSet.get("images")[selected];
-        this.currentlySelectedImage = image;
-        this.currentlySelectedImageIndex = selected;
+        this.currentlySelectedImageID = selected;
 
         //Show a loading status
         $(this.el).empty();
@@ -1355,7 +1355,7 @@ SimilarityImageView = Backbone.View.extend({
         //we need to fetch the similar images, and render them
         similarImages.fetch({
             cache: false,
-            data: {image: image.id},
+            data: {image: parent.currentlySelectedImageID},
             success: function(model, response, options) {
                 //remove the loading status
                 $(parent.el).empty();
@@ -1404,7 +1404,7 @@ SimilarityImageView = Backbone.View.extend({
 
         $.get(
             getBroadScaleClassificationCopyURL(annotationSets.at(0).get('id')),
-            { source_image: this.currentlySelectedImage.id, destination_image: image.get('id') }
+            { source_image: parent.currentlySelectedImageID, destination_image: image.get('id') }
         ).done(
             function(data) {
                 $.pnotify({
@@ -1431,7 +1431,7 @@ SimilarityImageView = Backbone.View.extend({
         $(this.el).empty();
 
         //refresh the thumbnails
-        this.renderSimilarImages(this.currentlySelectedImageIndex);
+        this.renderSimilarImages(this.currentlySelectedImageID);
     }
 });
 
@@ -1464,6 +1464,11 @@ function updateAnnotation(imageId, annotId, code, name) {
 function loadPage(offset) {
     fetchThumbnails(offset);
     orchestratorView.thumbnailStripView.render();
+
+    var image = thumbnailImages.first();
+    GlobalEvent.trigger("thumbnail_selected_by_id", image.get('id'), image.get('web_location'));
+    //
+
 }
 
 function fetchThumbnails(offset) {
@@ -1502,7 +1507,7 @@ function generateThumbnailTemplate(image) {
     statusTemplate = _.template($("#StatusTemplate").html(), statusVariables);
 
     var imageVariables = {
-        "thumbnailId": "thumbnail_" + id,
+        "thumbnailId": id,
         "thumbnail_location": image.get('thumbnail_location'),
         "web_location": image.get('web_location'),
         "annotation_status": statusTemplate
