@@ -128,7 +128,9 @@ OrchestratorView = Backbone.View.extend({
         }
         
         //trigger an event for selecting the first thumbnail in the list
-        GlobalEvent.trigger("thumbnail_selected", 0);
+        //GlobalEvent.trigger("thumbnail_selected", 0);
+        var image = thumbnailImages.first();
+        GlobalEvent.trigger("thumbnail_selected_by_id", image.get('id'), image.get('web_location'));
     },
     assign : function (view, selector) {
         view.setElement($(selector)).render();
@@ -1473,7 +1475,6 @@ function loadPage(offset) {
 
     var image = thumbnailImages.first();
     GlobalEvent.trigger("thumbnail_selected_by_id", image.get('id'), image.get('web_location'));
-
 }
 
 function fetchThumbnails(offset) {
