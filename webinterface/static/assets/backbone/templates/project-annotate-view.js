@@ -1347,10 +1347,12 @@ SimilarityImageView = Backbone.View.extend({
 
         //Show a loading status
         $(this.el).empty();
-        var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "<div id=\"Spinner\"></div>" });
+        //var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "<div id=\"Spinner\"></div>" });
+        var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "Loading similar images..." });
         this.$el.html(loadingTemplate);
         var target = document.getElementById('Spinner');
-        var spinner = new Spinner(spinnerOpts).spin(target);
+        //var spinner = new Spinner(spinnerOpts).spin(target);
+        $('#SimilarImageBadge').html("<i class=\"icon-refresh icon-spin\"></i>");
 
         //we need to fetch the similar images, and render them
         similarImages.fetch({
@@ -1382,12 +1384,16 @@ SimilarityImageView = Backbone.View.extend({
                 // Load the compiled HTML into the Backbone "el"
 
                 parent.$el.html(thumbnailListTemplate);
+
+                $('#SimilarImageBadge').html(similarImages.size());
             },
             error: function(model, response, options) {
                 //remove the loading status
                 $(parent.el).empty();
                 var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "<div class=\"alert alert-error\">An error occurred when trying to find similar images.</div>" });
                 parent.$el.html(loadingTemplate);
+
+                $('#SimilarImageBadge').html("-");
             }
         });
 
@@ -1467,7 +1473,6 @@ function loadPage(offset) {
 
     var image = thumbnailImages.first();
     GlobalEvent.trigger("thumbnail_selected_by_id", image.get('id'), image.get('web_location'));
-    //
 
 }
 

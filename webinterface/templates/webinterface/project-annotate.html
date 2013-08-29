@@ -235,44 +235,32 @@
         </div>
 
 
-        <div id="RightPane" class="span4">
+        <div id="RightPane" class="span4" style="visibility: hidden">
 
-<!--
-            <section>
-                <div id="ImageZoomControlContainer" ></div>
-            </section>
+            <ul class="nav nav-tabs">
+                <li class="active" ><a href="#AnnotationSelectionTab" data-toggle="tab">Annotation Selection</a></li>
+                <li><a href="#SimilarImageTab" data-toggle="tab">Similar Images <span id="SimilarImageBadge" class="badge badge-info"></span> </a></li>
+                <li><a href="#StatsTab" data-toggle="tab">Stats</a></li>
+            </ul>
 
-            <section>
-                <div id="ImagePointsControlContainer" ></div>
-            </section>
--->
+            <div class="tab-content">
+                <div class="tab-pane active" id="AnnotationSelectionTab">
+                    <div id="ChooseAnnotationContainer" ></div>
+                </div>
+                <div class="tab-pane" id="SimilarImageTab">
+                    <div id="ImageSimilarityContainer" ></div>
+                </div>
+                <div class="tab-pane" id="StatsTab">
+                    <div id="ImagePILSContainer" ></div>
+                </div>
+            </div>
 
-            <section>
-                <div id="ChooseAnnotationContainer" ></div>
-            </section>
-
-            <section>
-                <div id="ImagePILSContainer" ></div>
-            </section>
-
-            <section>
-                <div id="ImageSimilarityContainer" ></div>
-            </section>
         </div>
 
     </div>
 
-
-
-<!--
-    <div id="ImageSimilarityModalContainer"></div>
-    <script type="text/template" id="ImageSimilarityModalTemplate">
-
-    </script>
--->
-
     <script type="text/template" id="ImageSimilarityTemplate">
-        <h3>Similar Image Cluster</h3>
+        <h3></h3>
         <%=images%>
     </script>
 
@@ -490,6 +478,7 @@
         //TODO: this is a hacky way of applying a late style - think of a better way
         $(window).ready(function() {
             $('#ImageAppContainer').css("background-color", "#808080");
+            $('#RightPane').css("visibility", "visible");
 
             //var height = $('#ImageAppContainer').height();
             //$('#RightPane').css('height', height);
