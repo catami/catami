@@ -210,9 +210,6 @@ ProjectView = Backbone.View.extend({
             }
 
         });
-
-
-
     },
     events: {
         "click #configure_project_button": "doConfigure",

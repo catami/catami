@@ -643,7 +643,7 @@ class ProjectResource(ModelResource):
 
 class AnnotationSetResource(ModelResource):
     project = fields.ForeignKey(ProjectResource, 'project')
-    images = fields.ManyToManyField(ImageResource, 'images', full=True, blank=True, null=True)
+    #images = fields.ManyToManyField(ImageResource, 'images', full=True, blank=True, null=True)
 
     class Meta:
         queryset = AnnotationSet.objects.all()
