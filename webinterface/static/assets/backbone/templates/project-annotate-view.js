@@ -86,7 +86,7 @@ OrchestratorView = Backbone.View.extend({
             error: this.onLoadError
         });
         similarImages = new Images({ "url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/similar_images/" });
-        thumbnailImages = new Images({ "url": "/api/dev/annotation_set/" + projectId + "/project_images/?limit=10" });
+        thumbnailImages = new Images({ "url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/images/?limit=10" });
         fetchThumbnails();
         createPagination(thumbnailImages.meta);
 
