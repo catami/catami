@@ -105,7 +105,29 @@ ProjectCreateView = Backbone.View.extend({
     events: {
         'click #radio_point': 'pointAnnotationClicked',
         'click #radio_whole': 'wholeImageAnnotationClicked',
-        "click #create_button": "doCreate"
+        "click #create_button": "doCreate",
+        "change #point_image_sampling_methodology": "pointImageSamplingSelected",
+        "change #whole_image_sampling_methodology": "wholeImageSamplingSelected"
+    },
+    pointImageSamplingSelected: function(event) {
+        var methodology = $("#point_image_sampling_methodology").val();
+
+        //If ALL then hide the number list
+        if(methodology == "3") {
+            this.$('#point_number_of_images').hide();
+        } else {
+            this.$('#point_number_of_images').fadeIn();
+        }
+    },
+    wholeImageSamplingSelected: function(event) {
+        var methodology = $("#whole_image_sampling_methodology").val();
+
+        //If ALL then hide the number list
+        if(methodology == "3") {
+            this.$('#whole_number_of_images').hide();
+        } else {
+            this.$('#whole_number_of_images').fadeIn();
+        }
     },
     pointAnnotationClicked: function (event) {
         this.$('.wholeImage_annotation_annotation_div').hide();

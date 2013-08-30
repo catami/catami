@@ -78,6 +78,7 @@ class AnnotationSet(models.Model):
         (0, 'Random'),
         (1, 'Stratified'),
         (2, 'Spatial'),
+        (3, 'All'),
     )
 
     POINT_SAMPLING_METHODOLOGY_CHOICES = (

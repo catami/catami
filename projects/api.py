@@ -532,11 +532,11 @@ class ProjectResource(ModelResource):
         point_sample_size = json_data['point_sample_size']
         annotation_set_type = json_data['annotation_set_type']
 
-        #only proceed with all parameters
+        # only proceed with all parameters
         if (name and description and deployment_id and image_sampling_methodology and
             image_sample_size and point_sampling_methodology and point_sample_size) is not None:
 
-            #get the images we are interested in
+            # get the images we are interested in
             image_bundle = Bundle()
             image_bundle.request = request
             image_bundle.data = dict(deployment=deployment_id)
@@ -544,10 +544,15 @@ class ProjectResource(ModelResource):
             images = Image.objects.filter(deployment__in=deployment_id)
 
             # subsample and set the images
+            # random
             if image_sampling_methodology == '0':
                 image_subset = ImageManager().random_sample_images(images, image_sample_size)
+            # stratified
             elif image_sampling_methodology == '1':
                 image_subset = ImageManager().stratified_sample_images(images, image_sample_size)
+            # all
+            elif image_sampling_methodology == '3':
+                image_subset = images
             else:
                 raise Exception("Image sampling method not implemented.")
 
