@@ -653,11 +653,49 @@ class AnnotationSetResource(ModelResource):
 
     def prepend_urls(self):
         return [            
+            url(r"^(?P<resource_name>%s)/(?P<annotation_set_id>\w[\w/-]*)/(?P<image_id>\w[\w/-]*)/image_by_id%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images_by_id'), name="api_get_image_by_id"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/similar_images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_similar_images'), name="api_get_similar_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/copy_wholeimage_classification%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('copy_wholeimage_classification'), name="api_copy_wholeimage_classification")
         ]
 
+    def get_images_by_id(self, request, **kwargs):
+       # need to create a bundle for tastypie
+        basic_bundle = self.build_bundle(request=request)
+
+        
+        # get all the images related to this project
+        annotation_set_images = AnnotationSet.objects.get(id=kwargs['annotation_set_id']).images.all()
+        image_id = kwargs['image_id']
+        image_selected = None
+
+        # create the id string list to send to the next API call
+        # TODO: this is not ideal, best find a better way to deal with this
+        count = 0
+        pos = -1;
+        image_ids = ""
+        for image in annotation_set_images:
+            image_ids += image.id.__str__() + ","
+            #print "%s == %s : %s" %(image_id, image.id, image_id == image.id.__str__())
+            if image_id == image.id.__str__():
+                image_selected = image
+                pos = count
+            else : 
+                count = count + 1    
+
+        campaignId = str(image_selected.deployment.campaign.id)
+        deploymentId = str(image_selected.deployment_id)
+        name = image_selected.image_name
+        location = "http://" + basic_bundle.request.get_host() + "/images/" + campaignId + "/" + deploymentId  + "/images/" + name
+        
+        json_content = "{\"imageId\": \"" +image_id.__str__()
+        json_content += "\", \"web_location\": \"" + location
+        json_content += "\", \"position\": \"" + pos.__str__() 
+        json_content += "\", \"total\": \"" + count.__str__()+ "\"}"
+
+        return HttpResponse(content= json_content,
+                            status=200,
+                            content_type='application/json')
     def get_images(self, request, **kwargs):
         """
         This is a nested function so that we can do paginated thumbnail queries on the image resource

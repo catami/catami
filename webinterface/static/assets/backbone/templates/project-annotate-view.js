@@ -37,11 +37,15 @@ var getBroadScaleClassificationCopyURL = function(annotationSetId) {
 
 var similarImages;
 var thumbnailImages;
+var thumbnailsPerPage = 10;
 var points = new PointAnnotations();
 var annotationSets = new AnnotationSets();
 var annotationCodeList = new AnnotationCodeList();
 var currentImageInView;
 var map = { "images": [] }; //initiate map
+var bidResult;
+var selectedImageId = -1;
+var projectId = -1;
 
 //yeah, it's a global.
 var nested_annotation_list;
@@ -82,12 +86,36 @@ OrchestratorView = Backbone.View.extend({
             success: function (model, response, options) {
                 nested_annotation_list = classificationTreeBuilder(model.toJSON());
                 plain_annotation_list = model.toJSON();
+                projectId = project.id;
             },
             error: this.onLoadError
         });
-        similarImages = new Images({ "url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/similar_images/" });
-        thumbnailImages = new Images({ "url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/images/?limit=10" });
-        fetchThumbnails();
+
+        var ann_id = annotationSets.at(0).get('id')
+
+        var bookmarkedImageId = -1;
+        var bid = catami_getURLParameter("bid"); //get image id from bid param from URL
+        var fetchOffset = 0;        
+        if (bid && bid != 'null') bookmarkedImageId = bid;
+
+        if (bookmarkedImageId != -1) { //if there's an image id, get position of image within the annotation set
+            jQuery.ajax({
+                url: '/api/dev/annotation_set/'
+                        + ann_id + '/'
+                        + bookmarkedImageId
+                        + '/image_by_id/',
+                success: function (result) {
+                    bidResult = result;
+                    selectedImageId = result.imageId;
+                    fetchOffset = Math.floor(result.position / thumbnailsPerPage) * thumbnailsPerPage;                    
+                },
+                async: false
+            });            
+        }
+
+        similarImages = new Images({ "url": "/api/dev/annotation_set/" + ann_id + "/similar_images/" });
+        thumbnailImages = new Images({ "url": "/api/dev/annotation_set/" + ann_id + "/images/?limit=" + thumbnailsPerPage });
+        fetchThumbnails(fetchOffset);
         createPagination(thumbnailImages.meta);
 
         //load the views
@@ -109,7 +137,6 @@ OrchestratorView = Backbone.View.extend({
 
         //render the views
         this.render();
-
     },
     render: function () {
         this.assign(this.breadcrumbNavigationView,'#BreadcrumbContainer');
@@ -127,10 +154,16 @@ OrchestratorView = Backbone.View.extend({
             this.assign(this.pointControlBarView, '#ControlBarContainer');
         }
         
-        //trigger an event for selecting the first thumbnail in the list
-        //GlobalEvent.trigger("thumbnail_selected", 0);
         var image = thumbnailImages.first();
-        GlobalEvent.trigger("thumbnail_selected_by_id", image.get('id'), image.get('web_location'));
+
+        var image_id = image.get('id');
+        var web_location = image.get('web_location');        
+        if (bidResult) {
+            image_id = bidResult.imageId;
+            web_location = bidResult.web_location
+            bidResult = null;//reset
+        }
+        GlobalEvent.trigger("thumbnail_selected_by_id", image_id, web_location);
     },
     assign : function (view, selector) {
         view.setElement($(selector)).render();
@@ -280,9 +313,19 @@ ThumbnailStripView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
 
+        /*
         var image = thumbnailImages.first();
+        var image_id = image.get('id');
+        var web_location = image.get('web_location');
 
-        this.thumbnailSelectedById(image.get('id'), image.get('web_location'));
+        if (bidResult) {
+            image_id = bidResult.position % thumbnailsPerPage;
+            web_location = bidResult.web_location
+            //bidResult = null; //don't reset
+        }
+        this.thumbnailSelectedById(image_id, web_location);
+        */
+
         this.buildAnnotationStatus();
         this.renderAnnotationStatus();
 
@@ -392,9 +435,9 @@ ThumbnailStripView = Backbone.View.extend({
         });*/
     },    
     thumbnailSelectedByEvent: function (event) {
-        var id = $(event.currentTarget).data("id");
+        selectedImageId = $(event.currentTarget).data("id");
         var webLocation = $(event.currentTarget).data("web_location");
-        GlobalEvent.trigger("thumbnail_selected_by_id", id, webLocation);
+        GlobalEvent.trigger("thumbnail_selected_by_id", selectedImageId, webLocation);
     },
     thumbnailSelectedById: function (id, webLocation) {
 
@@ -443,6 +486,7 @@ ImageAnnotateView = Backbone.View.extend({
         var imageVariables = {            
             "web_location": $('#' + id).data("web_location")
         };
+
         imageTemplate += _.template($("#ImageTemplate").html(), imageVariables);
 
         // Load the compiled HTML into the Backbone "el"
@@ -1525,6 +1569,12 @@ function createPagination(meta) {
     //Create pagination
     var options = thumbnailPaginationOptions(meta);
     $('#pagination').bootstrapPaginator(options);
+}
+
+function createBookmark() {
+    var url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') 
+              + "/projects/" + projectId + "/annotate/?bid=";
+    window.prompt("Bookmark URL Generated", url + selectedImageId);
 }
 
 
