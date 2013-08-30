@@ -541,23 +541,7 @@ class ProjectResource(ModelResource):
             image_bundle.request = request
             image_bundle.data = dict(deployment=deployment_id)
 
-            images = []
-
-            # If deployment_id is a list we'll need to iterate through to build the image list otherwise
-            # we've just been given a single deployment ID
-
-            if isinstance(deployment_id,basestring):
-                images.extend(ImageResource().obj_get_list(image_bundle, deployment=deployment_id))
-            else:
-                for deployment in deployment_id:
-                    print deployment
-                    images.extend(ImageResource().obj_get_list(image_bundle, deployment=deployment))
-
-            #check the the sample size is not larger than the number of images in our image list
-            if int(image_sample_size) > len(images):
-                return HttpResponse(content="{\"error_message\": \"Your image sample size is larger than the number of images in the Deployment. Pick a smaller number.\"}",
-                                    status=400,
-                                    content_type='application/json')
+            images = Image.objects.filter(deployment__in=deployment_id)
 
             # subsample and set the images
             if image_sampling_methodology == '0':
@@ -839,7 +823,6 @@ class AnnotationSetResource(ModelResource):
             PointAnnotationManager().apply_random_sampled_points(bundle.obj, point_sample_size)
         else:
             raise Exception("Point sampling method not implemented.")
-
 
     def do_whole_image_point_operations(self, bundle):
         """ Helper function to hold whole image point assignment logic """
