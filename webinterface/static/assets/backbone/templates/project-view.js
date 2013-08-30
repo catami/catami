@@ -347,6 +347,7 @@ project.fetch({
                         model: project
                     });
 
+                    $('#Legend').css('visibility', 'visible');
                     projectView.renderProjectStats();
                 } else {
                     $.pnotify({

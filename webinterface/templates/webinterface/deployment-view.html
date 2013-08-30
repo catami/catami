@@ -39,7 +39,11 @@
         </div>
         <div class="span9">
 
-             <div class="span6" id='deployment-map' style="height: 600px;"></div>
+             <div class="span6" id='deployment-map' style="height: 600px; position: relative">
+                 <div style="right:0;position:absolute;z-index:2000" class="span1 well well-small" >
+                    <p><img src="{{ STATIC_URL }}images/depth-colorscale-22-30.png" alt="Depth colorscale 22m to 30m"/>Depth</br>(m)</p>
+                </div>
+             </div>
 
              <div class="span6" style="margin-bottom: 10px">
                  <div id="placeholder_01" style="height: 200px">Loading Depth...</div>
