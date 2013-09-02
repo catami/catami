@@ -42,7 +42,7 @@ var points = new PointAnnotations();
 var annotationSets = new AnnotationSets();
 var annotationCodeList = new AnnotationCodeList();
 var currentImageInView;
-var map = { "images": [] }; //initiate map
+var map;
 var bidResult;
 var selectedImageId = -1;
 var projectId = -1;
@@ -50,8 +50,6 @@ var projectId = -1;
 //yeah, it's a global.
 var nested_annotation_list;
 var plain_annotation_list;
-
-var wholeImageAnnotations = new WholeImageAnnotations();
 
 OrchestratorView = Backbone.View.extend({
     el: $('div'),
@@ -287,18 +285,8 @@ ThumbnailStripView = Backbone.View.extend({
         GlobalEvent.on("thumbnails_loaded", this.render, this);
     },
     render: function () {
-
-        var annotationSetTypes = ["fine scale","broad scale"];
-
         //get all the images to be rendered
-        var imageTemplate = "";
-
-        // enforcing only one annotation set per project for the time being, so
-        // can assume the first one
-        var annotationSet = annotationSets.at(0);
-        var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
-
-        imageTemplate = generateAllThumbnailTemplates(thumbnailImages);
+        var imageTemplate = generateAllThumbnailTemplates(thumbnailImages);
 
         //render the items to the main template
         var annotationSetVariables = {
@@ -318,95 +306,89 @@ ThumbnailStripView = Backbone.View.extend({
 
     },
     buildAnnotationStatus: function () {
+        map = { "images": [] }; //reset map
         var annotationSetTypes = ["fine scale", "broad scale"];
 
         // enforcing only one annotation set per project for the time being, so
         // can assume the first one
         var annotationSet = annotationSets.at(0);
         var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
-        if (annotationSetType === "broad scale") {
-            var imageIds = "";
-            thumbnailImages.each(function (image) {
-                imageIds += image.get('id') + ',';
-            });
-            imageIds = imageIds.substring(0, imageIds.length - 1); //remove trailing comma
-            var whole_image_points = new WholeImageAnnotations({ "url": "/api/dev/whole_image_annotation/?image__in=" + imageIds });
-            //alert('annotationSet.get(\'id\') : ' + annotationSet.get('id'));            
+        
+        var imageIds = "";
+        thumbnailImages.each(function (image) {
+            imageIds += image.get('id') + ',';
+        });
 
-            whole_image_points.fetch({
-                async: false,
-                data: {
-                    annotation_set: annotationSet.get('id'),
-                    limit: 200, //Each image should only contain at most 6-8 annotations
-                },
-                success: function (model, response, options) {
-                    //loop through the points and get caab                  
-                    whole_image_points.each(function (whole_image_point) {
-                        var imageId = catami_getIdFromUrl(whole_image_point.get('image'));
-                        var code = whole_image_point.get('annotation_caab_code');
-                        var name = whole_image_point.get('annotation_caab_name');
-                        var annotId = whole_image_point.get('id');
-                        if (typeof code != 'undefined') {
-                            var imageFound = false;
-                            $.each(map.images, function (i, im) {
-                                if (im.id == imageId) { //image found, add annotation to image                                    
-                                    var annot_new = {
+        imageIds = imageIds.substring(0, imageIds.length - 1); //remove trailing comma
+        var imageAnnotations;
+        if (annotationSetType === "broad scale") 
+            imageAnnotations = new WholeImageAnnotations({ "url": "/api/dev/whole_image_annotation/?image__in=" + imageIds });
+        else imageAnnotations = new PointAnnotations({ "url": "/api/dev/point_annotation/?image__in=" + imageIds });                            
+        imageAnnotations.fetch({
+            async: false,
+            data: {
+                annotation_set: annotationSet.get('id'),
+                limit: 200,
+            },
+            success: function (model, response, options) {
+                //loop through the points and get caab       
+                imageAnnotations.each(function (annotation) {
+                    var imageId = catami_getIdFromUrl(annotation.get('image'));
+                    var code = annotation.get('annotation_caab_code');
+                    var name = annotation.get('annotation_caab_name');
+                    var annotId = annotation.get('id');
+                    if (typeof code != 'undefined') {
+                        var imageFound = false;
+                        $.each(map.images, function (i, im) {
+                            if (im.id == imageId) { //image found, add annotation to image                                    
+                                var annot_new = {
+                                    "id": annotId,
+                                    "code": code,
+                                    "name": name
+                                }
+                                im.annotations.push(annot_new);
+                                imageFound = true;
+                                return;
+                            }
+                        });
+                        if (!imageFound) { //create image with annotation if image not found                           
+                            var image_new = {
+                                "id": imageId,
+                                "annotations": [
+                                    {
                                         "id": annotId,
                                         "code": code,
-                                        "name": name
-                                    }
-                                    im.annotations.push(annot_new);                                     
-                                    imageFound = true;
-                                    return;
-                                }
-                            });
-                            if (!imageFound) { //create image with annotation if image not found                           
-                                var image_new = {
-                                    "id": imageId,
-                                    "annotations": [
-                                        {
-                                            "id": annotId,
-                                            "code": code,
-                                            "name": name
-                                        } 
-                                    ]
-                                }
-                                map.images.push(image_new);                                                                                                    
+                                        "name": name                                        }
+                                ]
                             }
+                            map.images.push(image_new);
                         }
-                    });
-                }
-            });
-        }
+                    }
+                });
+            }
+        });
     },
     updateAnnotation: function (imageId, annotId, code, name) {        
         updateAnnotation(imageId, annotId, code, name);
         this.renderAnnotationStatus();
     },
     renderAnnotationStatus: function () {
-        //alert('in render map: ' + map.toSource());
-        var parent = this;
-        var annotationSetTypes = ["fine scale", "broad scale"];
-
         // enforcing only one annotation set per project for the time being, so
         // can assume the first one
         var annotationSet = annotationSets.at(0);
-        var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
-        if (annotationSetType === "broad scale") {
-            var images = annotationSet.get("images");            
-            for (var i = 0; i < images.length; i++) {
-                var im = images[i].split("/"); //value of format  "/api/dev/image/12/", need to split to get image id
-                var imid = im[im.length - 2];                               
-                var count = 0;
-                $.each(map.images, function (i, image) {
-                    if (image.id == imid) { //find respective image, and check if annotation is done
-                        count = countAnnotated(image);
-                        return;
-                    }
-                });
-                $('#image_' + imid).text(count);
-            }
-        }
+        var images = annotationSet.get("images");
+        for (var i = 0; i < images.length; i++) {
+            var im = images[i].split("/"); //value of format  "/api/dev/image/12/", need to split to get image id
+            var imid = im[im.length - 2];
+            var count = 0;
+            $.each(map.images, function (i, image) {
+                if (image.id == imid) { //find respective image, and check if annotation is done
+                    count = countAnnotated(image);
+                    return;
+                }
+            });
+            $('#image_' + imid).text(count);
+        }        
     },
     thumbnailSelected: function (position) {
         /* deprecated
