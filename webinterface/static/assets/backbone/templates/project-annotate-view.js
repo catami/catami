@@ -155,15 +155,15 @@ OrchestratorView = Backbone.View.extend({
         }
         
         var image = thumbnailImages.first();
+        selectedImageId = image.get('id');
 
-        var image_id = image.get('id');
         var web_location = image.get('web_location');        
         if (bidResult) {
-            image_id = bidResult.imageId;
+            selectedImageId = bidResult.imageId;
             web_location = bidResult.web_location
             bidResult = null;//reset
         }
-        GlobalEvent.trigger("thumbnail_selected_by_id", image_id, web_location);
+        GlobalEvent.trigger("thumbnail_selected_by_id", selectedImageId, web_location);
     },
     assign : function (view, selector) {
         view.setElement($(selector)).render();
@@ -1518,7 +1518,8 @@ function loadPage(offset) {
     orchestratorView.thumbnailStripView.render();
 
     var image = thumbnailImages.first();
-    GlobalEvent.trigger("thumbnail_selected_by_id", image.get('id'), image.get('web_location'));
+    selectedImageId = image.get('id');
+    GlobalEvent.trigger("thumbnail_selected_by_id", selectedImageId, image.get('web_location'));
 }
 
 function fetchThumbnails(offset) {
