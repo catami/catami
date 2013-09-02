@@ -313,20 +313,7 @@ ThumbnailStripView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
 
-        /*
-        var image = thumbnailImages.first();
-        var image_id = image.get('id');
-        var web_location = image.get('web_location');
-
-        if (bidResult) {
-            image_id = bidResult.position % thumbnailsPerPage;
-            web_location = bidResult.web_location
-            //bidResult = null; //don't reset
-        }
-        this.thumbnailSelectedById(image_id, web_location);
-        */
-
-        this.buildAnnotationStatus();
+        this.buildAnnotationStatus();        
         this.renderAnnotationStatus();
 
     },
@@ -391,7 +378,7 @@ ThumbnailStripView = Backbone.View.extend({
                 }
             });
         }
-    },//imageId, annotId, code, name
+    },
     updateAnnotation: function (imageId, annotId, code, name) {        
         updateAnnotation(imageId, annotId, code, name);
         this.renderAnnotationStatus();
@@ -406,21 +393,18 @@ ThumbnailStripView = Backbone.View.extend({
         var annotationSet = annotationSets.at(0);
         var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
         if (annotationSetType === "broad scale") {
-            var images = annotationSet.get("images");
-            var statusTemplate = "";                       
+            var images = annotationSet.get("images");            
             for (var i = 0; i < images.length; i++) {
-                var im = images[i]
-                var status = ""
-                //XXX in future implementation, use fraction, e.g. 1/4 to indicate 1 of 4 have been annotated (have CAAB)
-                var isAnnotated = false;               
+                var im = images[i].split("/"); //value of format  "/api/dev/image/12/", need to split to get image id
+                var imid = im[im.length - 2];                               
+                var count = 0;
                 $.each(map.images, function (i, image) {
-                    if (image.id == im.id) { //find respective image, and check if it is fully annotated
-                        isAnnotated = checkAnnotated(image);
+                    if (image.id == imid) { //find respective image, and check if annotation is done
+                        count = countAnnotated(image);
                         return;
                     }
                 });
-                if (!isAnnotated) status = "*";
-                $('#image_' + im.id).text(status);
+                $('#image_' + imid).text(count);
             }
         }
     },
@@ -1481,20 +1465,19 @@ SimilarityImageView = Backbone.View.extend({
     },
     refreshView: function() {
         $(this.el).empty();
-
         //refresh the thumbnails
         this.renderSimilarImages(this.currentlySelectedImageID);
     }
 });
 
-// helper function to check if image (json object) is annotated
-function checkAnnotated(image) {
-    var isAnnotated = true;
+// helper function to count the number of annotations done on the image (json object)
+function countAnnotated(image) {
+    var count = 0;
     $.each(image.annotations, function (i, annotation) {
         //alert(image.id + ' : ' + annotation.code + ' != "" : ' + (annotation.code != ""));
-        isAnnotated &= (annotation.code != "");
+        if (annotation.code != "") count++;
     });
-    return isAnnotated
+    return count
 }
 
 function updateAnnotation(imageId, annotId, code, name) {
