@@ -37,9 +37,10 @@ var getBroadScaleClassificationCopyURL = function(annotationSetId) {
 
 var similarImages;
 var points = new PointAnnotations();
+var broadScalePoints = new WholeImageAnnotations();
 var annotationSets = new AnnotationSets();
 var annotationCodeList = new AnnotationCodeList();
-var currentImageInView;
+var currentImageInView = 0;
 var map = { "images": [] }; //initiate map
 
 //yeah, it's a global.
@@ -112,7 +113,6 @@ OrchestratorView = Backbone.View.extend({
         this.assign(this.thumbnailStripView, '#ThumbnailStripContainer');
         this.assign(this.imagesAnnotateView, '#ImageContainer');
         this.assign(this.chooseAnnotationView, '#ChooseAnnotationContainer');
-
 
         if (annotationSets.at(0).get('annotation_set_type') === 1){
             this.assign(this.wholeImageAnnotationSelectorView, '#whole-image-annotation-selector');
@@ -768,7 +768,7 @@ PointControlBarView = Backbone.View.extend({
     render: function () {
         var imageZoomControlTemplate = _.template($("#PointControlBarTemplate").html(), {});
 
-        // // Load the compiled HTML into the Backbone "el"
+        // Load the compiled HTML into the Backbone "el"
         this.$el.html(imageZoomControlTemplate);
 
         $("#ImageContainer").panzoom({
@@ -888,298 +888,231 @@ ImagePointsPILSView = Backbone.View.extend({
 });
 
 
-WholeImageAnnotationSelectorView = Backbone.View.extend({
+var WholeImageAnnotationSelectorView = Backbone.View.extend({
     el: "#whole-image-annotation-selector",
     model: WholeImageAnnotations,
     events: {
-        "click #clear_all_broad_scale": "clearAllWholeImageAnnotations",
-        "click #biota_annotation_label": "highlightInterfaceForBiota",
-        "click #substrate_annotation_label": "highlightInterfaceForSubstrate",
-        "click #relief_annotation_label": "highlightInterfaceForRelief",
-        "click #bedform_annotation_label": "highlightInterfaceForBedform"
+        'click #clear_all_broad_scale': 'clearAllWholeImageAnnotations',
+        'click #delete_all_broad_scale': 'deleteAllBroadScaleAnnotations',
+        'click .dismiss_confirmation': 'dismissConfirmation',
+        'click #confirm_delete': 'deleteBroadScaleAnnotation',
+        'click .broadScaleRemoveButton': 'showDeleteConfirmation',
+        'click #add_new_broadscale_annotation': 'addNewBroadscaleAnnotation',
+        'click .wholeImageLabel': 'toggleAnnotationEditable',
+        'click #confirm_clear_all': 'confirmClearAllBroadScaleAnnotation',
+        'click #confirm_delete_all': 'confirmDeleteAllBroadScaleAnnotation'
     },
-
     initialize: function () {
-
-        var wholeImageTemplate = _.template($("#WholeImageAnnotationTemplate").html(),{});
-        
-        // Load the compiled HTML into the Backbone "el"
-        this.$el.html(wholeImageTemplate);
-
         GlobalEvent.on("annotation_to_be_set", this.wholeImageAnnotationChosen, this);
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
-
-        this.render();
-        this.initAllAnnotations();
     },
     render: function () {
-        var wholeImageTemplate = "";
+        //Show loading spinner
 
-        var wholeImageVariables = {};
-        wholeImageTemplate += _.template($("#WholeImageAnnotationTemplate").html(), wholeImageVariables);
-
-        // // Load the compiled HTML into the Backbone "el"
-        this.$el.html(wholeImageTemplate);
-        return this.el;
-    },
-    wholeImageAnnotationChosen: function(caab_code_id) {
-        // an annotation has been selected in the annotation chooser
-        // 
-        var rootTypeText = ['Biota', 'Substrate', 'Relief', 'Bedforms'];
-        var caabCodeRoots = ['80000000','82001000','82003000','82002000'];
-
-        var usefulRootCaabCode = getUsefulCaabRoot(caab_code_id);
-        var selectedCaabCode = plain_annotation_list[parseInt(caab_code_id,10)-1];
-
-        if (selectedCaabCode.caab_code === '00000001'){
-            // unscorable. Set all to unscorable
-            $('#dominant_biota').text('Unscorable');
-            $('#dominant_substrate').text('Unscorable');
-            $('#relief').text('Unscorable');
-            $('#bedform').text('Unscorable');
-        } else {
-            this.updatePointWithCaabcode(usefulRootCaabCode, selectedCaabCode);
-        }
-    },
-    updatePointWithCaabcode: function(updateRootCaabCode, updateCaabCode){
-        //update whole image point with selected caab_code
-        // - first check to see if the class of code specified in 'updateRootCaabCode'
-        //   already exists.  If it does, we just update that entry
-        //
-        // - If the class of code specified in updateRootCaabCode does not exist yet
-        //   in the set then take the first unspecified whole image annotation and 
-        //   set it with the selected caab_code
+        // get and display points if we got 'em
         var parent = this;
-
         //get the selected image
         var annotationSet = annotationSets.at(0);
         var image = annotationSet.get("images")[currentImageInView];
         //based on that image query the API for the points
-        var whole_image_points = new WholeImageAnnotations();       
-        whole_image_points.fetch({
+        //var whole_image_points = new WholeImageAnnotations();
+        var broadScaleAnnotationTemplate = "";
+
+        broadScalePoints.fetch({
             data: { limit: 100, image: image.id, annotation_set: annotationSet.get('id') },
             success: function (model, response, options) {
-                //loop through the points and apply them to the image
-                var modelWasUpdated = 0;
 
-                whole_image_points.each(function (whole_image_point) {
-                    var annotationCode;
-                    var pointId = whole_image_point.get('id');
-                    var label = whole_image_point.get('annotation_caab_code');
+                parent.renderBroadScalePoints();
 
-                    if (label === ""){
-                        annotationCode = annotationCodeList.find(function(model) {
-                            return model.get('caab_code')==='00000000';
-                        });
-                    } else {
-                        annotationCode = annotationCodeList.find(function(model) {
-                            return model.get('caab_code') === whole_image_point.get('annotation_caab_code');
-                        });
-                    }
-
-                    var modelRootCaabCode = getUsefulCaabRoot(annotationCode.get('id'));
-
-                    if ((modelRootCaabCode === updateRootCaabCode) && updateRootCaabCode !== null) {
-
-                        // update this ID with the new caab code 'updateCaabCode'
-                        var properties = { 'annotation_caab_code': updateCaabCode.caab_code };
-                        modelWasUpdated = 1;
-                        var theXHR = whole_image_point.save(properties, {
-                                patch: true,
-                                headers: {"cache-control": "no-cache"},
-                                success: function (model, xhr, options) {
-                                    parent.renderPointsForImage(currentImageInView);
-                                    //imageId, annotId, code, name
-                                    GlobalEvent.trigger("update_annotation", image.id, pointId, updateCaabCode.caab_code, updateCaabCode.code_name);
-                                },
-                                error: function (model, xhr, options) {
-                                    if (theXHR.status == "201" || theXHR.status == "202") {
-                                        //other trouble
-                                        GlobalEvent.trigger("update_annotation", image.id, pointId, updateCaabCode.caab_code, updateCaabCode.code_name);
-
-                                    } else if(theXHR.status == "401") {
-                                        $.pnotify({
-                                            title: 'You don\'t have permission to annotate this image.',
-                                            text: theXHR.response,
-                                            type: 'error', // success | info | error
-                                            hide: true,
-                                            icon: false,
-                                            history: false,
-                                            sticker: false
-                                        });
-                                    }
-                                    else {
-                                        $.pnotify({
-                                            title: 'Failed to save your annotations to the server.',
-                                            text: theXHR.response,
-                                            type: 'error', // success | info | error
-                                            hide: true,
-                                            icon: false,
-                                            history: false,
-                                            sticker: false
-                                        });
-                                    }
-                                }
-                            });
-                    }
-                });
-
-                if(modelWasUpdated === 0){
-                    // then model was not updated, this broad scale class was not previously set.
-                    // now we set it using the first available whole image point
-                    var properties = { 'annotation_caab_code': updateCaabCode.caab_code };
-
-                    whole_image_points.each(function (whole_image_point) {
-                        var annotationCode;
-                        var pointId = whole_image_point.get('id');
-                        var label = whole_image_point.get('annotation_caab_code');
-
-                        if (label === ""){
-                            annotationCode = annotationCodeList.find(function(model) {
-                                return model.get('caab_code')==='00000000';
-                            });
-                        } else {
-                            annotationCode = annotationCodeList.find(function(model) {
-                                return model.get('caab_code') === whole_image_point.get('annotation_caab_code');
-                            });
-                        }
-
-                        var newModelRootCaabCode = getUsefulCaabRoot(updateCaabCode.id);
-                        
-                        if ((label === '' || label === '00000000') && parseInt(modelWasUpdated,10) === 0 && newModelRootCaabCode !== null){
-                            // point is 'not considered', so we can use it
-                            modelWasUpdated = 1;
-
-                            var theXHR = whole_image_point.save(properties, {
-                                patch: true,
-                                headers: {"cache-control": "no-cache"},
-                                success: function (model, xhr, options) {
-                                    parent.renderPointsForImage(currentImageInView);
-                                    GlobalEvent.trigger("update_annotation", image.id, pointId, updateCaabCode.caab_code, updateCaabCode.code_name);
-                                },
-                                error: function (model, xhr, options) {
-                                    if (theXHR.status == "201" || theXHR.status == "202") {
-                                        //other trouble
-                                        GlobalEvent.trigger("update_annotation", image.id, pointId, updateCaabCode.caab_code, updateCaabCode.code_name);
-
-                                    } else if(theXHR.status == "401") {
-                                        $.pnotify({
-                                            title: 'You don\'t have permission to annotate this image.',
-                                            text: theXHR.response,
-                                            type: 'error', // success | info | error
-                                            hide: true,
-                                            icon: false,
-                                            history: false,
-                                            sticker: false
-                                        });
-                                    }
-                                    else {
-                                        $.pnotify({
-                                            title: 'Failed to save your annotations to the server.',
-                                            text: theXHR.response,
-                                            type: 'error', // success | info | error
-                                            hide: true,
-                                            icon: false,
-                                            history: false,
-                                            sticker: false
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
+                //hide the delete/clear/confirm UI
+                parent.$('.actionConfirmAlert').css('display', 'none');
+                parent.$('.editBroadScaleIndictor').css('display','none');
             },
-            error: function (model, response, options) {
-                $.pnotify({
-                    title: 'Failed to load broad scale annotations for this image. Try refreshing the page.',
-                    text: response.status,
-                    type: 'error', // success | info | error
-                    hide: true,
-                    icon: false,
-                    history: false,
-                    sticker: false
-                });
+            error: function (model, xhr, options) {
+                console.log('error');
+                console.log(xhr);
             }
         });
-        
-    },
-    renderPointsForImage: function(selected) {
-        //get all whole image annotation points for selected image
-        //and display them in the appropriate UI locations
 
-        var rootTypeText = ['Biota', 'Substrate', 'Relief', 'Bedforms'];
-        var caabCodeRoots = ['80000000','82001000','82003000','82002000'];
+        return this;
+    },
+    renderBroadScalePoints: function() {
+        var parent = this;
+        var broadScaleAnnotationTemplate = "";
+        console.log('all',broadScalePoints);
+
+        broadScalePoints.each(function (whole_image_point) {
+            var annotationCode;
+            var usefulRootCaabCode;
+            var pointId = whole_image_point.get('id');
+            console.log('render',pointId);
+            var label = whole_image_point.get('annotation_caab_code');
+            //console.log(model);
+            if (label === ""){
+                annotationCode = annotationCodeList.find(function(model) {
+                    return model.get('caab_code')==='00000000';
+                });
+            } else {
+                annotationCode = annotationCodeList.find(function(model) {
+                    return model.get('caab_code')===whole_image_point.get('annotation_caab_code');
+                });
+            }
+
+            if (label===""){
+                label = "Not Set";
+                usefulRootCaabCode = "No Group";
+            } else {
+                label = annotationCode.get('code_name');
+                usefulRootCaabCodeID = getUsefulCaabRoot(annotationCode.get('id'));
+                rootAnnotationCode = annotationCodeList.find(function(model) {
+                    return model.get('caab_code')===usefulRootCaabCodeID;
+                });
+                
+                if (!rootAnnotationCode){
+                    usefulRootCaabCode = 'No Group';
+                } else {
+                    usefulRootCaabCode = rootAnnotationCode.get('code_name');
+                }
+            }
+
+            var annotationVariables = {
+                "broadScaleClassParent": usefulRootCaabCode,
+                "broadScaleClass": label,
+                "model_id": pointId
+            };
+
+            broadScaleAnnotationTemplate += _.template($("#BroadScaleItemTemplate").html(), annotationVariables);
+        });
+
+        var wholeImageVariables = { "broadScaleAnnotations": broadScaleAnnotationTemplate };
+        var wholeImageTemplate = _.template($("#WholeImageAnnotationTemplate").html(), wholeImageVariables);
+        parent.$el.html(wholeImageTemplate);
+
+        return this;
+    },
+    wholeImageAnnotationChosen: function(caab_code_id) {
+        // an annotation has been selected in the annotation chooser
 
         var parent = this;
 
-        //get the selected image
+        var usefulRootCaabCode = getUsefulCaabRoot(caab_code_id);
+        var rootAnnotationCode = annotationCodeList.find(function(model) {
+                                    return model.get('caab_code')===usefulRootCaabCode;
+                                 });
+        var selectedCaabCode = plain_annotation_list[parseInt(caab_code_id,10)-1];
+        
+        var caab_object = annotationCodeList.get(caab_code_id);
+
+        // which annotations are tagged to be edited?
+        var editableAnnotations = $('.editable');
+
+        $.each(editableAnnotations, function(index, element) {
+            //var wholeImageAnnotation = new WholeImageAnnotation();
+
+            var properties = { 'annotation_caab_code': caab_object.get('caab_code') };
+            var pointId = $(element).data('model_id');
+            var theXHR  = broadScalePoints.get(pointId).save(properties, {
+                patch: true,
+                headers: {"cache-control": "no-cache"},
+                success: function (model, xhr, options) {
+                    $(element).html('<i class="icon-edit-sign editBroadScaleIndictor pull-left"></i>'+caab_object.get('code_name'));
+                    $(element).parent().find('.wholeImageClassLabel').text(rootAnnotationCode.get('code_name'));
+                },
+                error: function (model, xhr, options) {
+                    console.log('problem in wholeImageAnnotationChosen',xhr);
+                }
+            });
+        });
+
+    },
+    thumbnailSelected: function(selectedPosition) {
+        // thumbnail has been selected in the main UI. refresh UI for new loaded image
+        currentImageInView = selectedPosition;
+        this.render();
+    },
+    addNewBroadscaleAnnotation: function() {
+        //make a new Broad Scale annotation with no annotation type
+        var parent = this;
         var annotationSet = annotationSets.at(0);
-        var image = annotationSet.get("images")[selected];
+        var image = annotationSet.get("images")[currentImageInView];
 
-        // $('#dominant_biota').text('Not Considered');
-        // $('#dominant_substrate').text('Not Considered');
-        // $('#relief').text('Not Considered');
-        // $('#bedform').text('Not Considered');
+        var broad_scale_annotation = new WholeImageAnnotation({ 'annotation_caab_code': '', 'image':image.resource_uri, 'annotation_set':'/api/dev/annotation_set/'+annotationSet.get('id')+'/'});
 
-        //based on that image query the API for the points
-        var whole_image_points = new WholeImageAnnotations();
-
-        whole_image_points.fetch({
-            data: { limit: 999, image: image.id, annotation_set: annotationSet.get('id') },
-            success: function (model, response, options) {
-                //loop through the points and apply them to the image
-                whole_image_points.each(function (whole_image_point) {
-                    var annotationCode;
-                    var pointId = whole_image_point.get('id');
-                    var label = whole_image_point.get('annotation_caab_code');
-                    
-                    if (label === ""){
-                        annotationCode = annotationCodeList.find(function(model) {
-                            return model.get('caab_code')==='00000000';
-                        });
-                    } else {
-                        annotationCode = annotationCodeList.find(function(model) {
-                            return model.get('caab_code')===whole_image_point.get('annotation_caab_code');
-                        });
-                    }
-
-                    var usefulRootCaabCode = getUsefulCaabRoot(annotationCode.get('id'));
-
-                    if (usefulRootCaabCode === caabCodeRoots[0]) {
-                        // Biota
-                        $('#dominant_biota').text(annotationCode.get('code_name'));
-                    } else if (usefulRootCaabCode === caabCodeRoots[1]) {
-                        // Substrate
-                        $('#dominant_substrate').text(annotationCode.get('code_name'));
-                    } else if (usefulRootCaabCode === caabCodeRoots[2]) {
-                        // Relief
-                        $('#relief').text(annotationCode.get('code_name'));
-                    } else if (usefulRootCaabCode === caabCodeRoots[3]) {
-                        // Bedforms
-                        $('#bedform').text(annotationCode.get('code_name'));
-                    }
-                });
-
-            },
-            error: function (model, response, options) {
-                $.pnotify({
-                    title: 'Failed to load broad scale annotations for this image. Try refreshing the page.',
-                    text: response.status,
-                    type: 'error', // success | info | error
-                    hide: true,
-                    icon: false,
-                    history: false,
-                    sticker: false
-                });
+        // add spinnner TBD
+        broadScalePoints.create(broad_scale_annotation,{
+            success:function() {
+                parent.render();
+                //remove spinner TBD
             }
         });
     },
-    thumbnailSelected: function(selectedPosition) {
-        currentImageInView = selectedPosition;
+    toggleAnnotationEditable: function(ev){
+        if($(ev.currentTarget).hasClass('editable')){
+            $(ev.currentTarget).find('.editBroadScaleIndictor').css('display', 'none');
+            $(ev.currentTarget).removeClass('editable');
+        } else {
+            var model_id = $(ev.target).data('model_id');
+            $(ev.currentTarget).find('.editBroadScaleIndictor').css('display', 'block');
+            $(ev.currentTarget).addClass('editable');
+        }
+    },
+    clearEditableStatus: function(){
+        var editableAnnotations = $('.editable');
+        $.each(editableAnnotations, function(index, element) {
+            $(element).removeClass('editable');
+        });
+    },
+    showDeleteConfirmation: function(ev){
+        var model_id = $(ev.target).data('model_id');
+        $(ev.target).addClass('deleteStyle');
+        this.$('#DeleteBroadScaleConfirm').css('display', 'block');
+        this.$('#DeleteBroadScaleConfirm').data('model_id',model_id);
+    },
+    dismissConfirmation: function() {
+        this.$('.actionConfirmAlert').css('display', 'none');
+        var deletableAnnotations = $('.deleteStyle');
+        $.each(deletableAnnotations, function(index, element) {
+            $(element).removeClass('deleteStyle');
+        });
+    },
+    deleteBroadScaleAnnotation: function(annotation_id){
+        //delete specified annotation from server and update UI
+        var parent = this;
 
-        this.initAllAnnotations();
-        this.renderPointsForImage(selectedPosition);
+        var deleteId = this.$('#DeleteBroadScaleConfirm').data('model_id');
+        var objectsToRemove = broadScalePoints.get(this.$('#DeleteBroadScaleConfirm').data('model_id'));
+
+        objectsToRemove.destroy({
+            success: function(model, response, options) {
+                parent.render();
+            },
+            error: function (model, xhr, options) {
+                console.log('error');
+                console.log(xhr);
+            }
+        });
+        this.dismissDeleteConfirmation();
+    },
+    deleteAllBroadScaleAnnotations: function(){
+        //remove all annotations from the current image
+        this.$('#DeleteAllBroadScaleConfirm').css('display', 'block');
+        this.$('.broadScaleRemoveButton').addClass('deleteStyle');
+        console.log('really before',broadScalePoints);
+
+    },
+    confirmDeleteAllBroadScaleAnnotation: function(){
+        var parent = this;
+
+        this.$('#DeleteAllBroadScaleConfirm').css('display', 'none');
+        var model;
+
+        while (model = broadScalePoints.first()) {
+            for (var i = broadScalePoints.length - 1; i >= 0; i--){
+                broadScalePoints.at(i).destroy();
+            }
+        }
+
+        parent.render();
     },
     highlightInterfaceForBiota: function(){
         $('a[href=#biota_root_node]').trigger('activate-node');
@@ -1193,85 +1126,23 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
     highlightInterfaceForBedform: function(){
         $('a[href=#bedforms_root_node]').trigger('activate-node');
     },
-    initAllAnnotations: function() {
-        $('#dominant_biota').text('Not set');
-        $('#dominant_substrate').text('Not set');
-        $('#relief').text('Not set');
-        $('#bedform').text('Not set');
-    },
     clearAllWholeImageAnnotations: function(){
-        //set all to 'not considered'
+        console.log('clear all');
+        //set all to '' (ie: no annotation)
+        this.$('#ClearAllBroadScaleConfirm').css('display', 'block');
+    },
+    confirmClearAllBroadScaleAnnotation: function(){
         var parent = this;
-        //get the selected image
-        var annotationSet = annotationSets.at(0);
-        var image = annotationSet.get("images")[currentImageInView];
-        //based on that image query the API for the points
-        var whole_image_points = new WholeImageAnnotations();
+        this.$('#ClearAllBroadScaleConfirm').css('display', 'none');
 
-        $('#dominant_biota').text('Not set');
-        $('#dominant_substrate').text('Not set');
-        $('#relief').text('Not set');
-        $('#bedform').text('Not set');
+        var properties = { 'annotation_caab_code': '' };
 
-        whole_image_points.fetch({
-            data: { limit: 100, image: image.id, annotation_set: annotationSet.get('id') },
-            success: function (model, response, options) {
-                // 
-                var properties = { 'annotation_caab_code': '' };
-
-                whole_image_points.each(function (whole_image_point) {
-                    var pointId = whole_image_point.get('id');
-                    var theXHR = whole_image_point.save(properties, {
-                        patch: true,
-                        headers: {"cache-control": "no-cache"},
-                        success: function (model, xhr, options) {
-                            console.log('Broad scale point was reset for ', image);
-                            GlobalEvent.trigger("update_annotation", image.id, pointId, "", "");
-                        },
-                        error: function (model, xhr, options) {
-                            if (theXHR.status == "201" || theXHR.status == "202") {
-                                //other trouble
-                                GlobalEvent.trigger("update_annotation", image.id, pointId, "", "");
-
-                            } else if(theXHR.status == "401") {
-                                $.pnotify({
-                                    title: 'You don\'t have permission to annotate this image.',
-                                    text: theXHR.response,
-                                    type: 'error', // success | info | error
-                                    hide: true,
-                                    icon: false,
-                                    history: false,
-                                    sticker: false
-                                });
-                            }
-                            else {
-                                $.pnotify({
-                                    title: 'Failed to save your annotations to the server.',
-                                    text: theXHR.response,
-                                    type: 'error', // success | info | error
-                                    hide: true,
-                                    icon: false,
-                                    history: false,
-                                    sticker: false
-                                });
-                            }
-                        }
-                    });
-                });
-            },
-            error: function (model, response, options) {
-                $.pnotify({
-                    title: 'Failed to load broad scale annotations for this image. Try refreshing the page.',
-                    text: response.status,
-                    type: 'error', // success | info | error
-                    hide: true,
-                    icon: false,
-                    history: false,
-                    sticker: false
-                });
-            }
+        broadScalePoints.each(function (whole_image_point) {
+            whole_image_point.set(properties);
+            whole_image_point.save();
         });
 
+        parent.render();
     }
 });
 
@@ -1429,7 +1300,7 @@ function checkAnnotated(image) {
         //alert(image.id + ' : ' + annotation.code + ' != "" : ' + (annotation.code != ""));
         isAnnotated &= (annotation.code != "");
     });
-    return isAnnotated
+    return isAnnotated;
 }
 
 function updateAnnotation(imageId, annotId, code, name) {

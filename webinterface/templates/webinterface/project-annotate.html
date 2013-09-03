@@ -75,6 +75,11 @@
 		    to   {-webkit-transform: rotate(359deg);}
 		}
 
+		@-webkit-keyframes pulsate {
+		    0% {-webkit-transform: scale(.9, .9); opacity: 1.0;}
+		    50% {-webkit-transform: scale(1.1, 1.1); opacity: 1.0;}
+		    100% {-webkit-transform: scale(0.9, .9); opacity: 1.0;}
+		}
 		.pointSelected {
         	-moz-box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8), 0px 0px 3px rgba(0,0,0,0.8);
 			-webkit-box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8),  0px 0px 3px rgba(0,0,0,0.8);
@@ -96,7 +101,7 @@
 		}
 		.wholeImageItem {
 		    list-style-position:outside;
-		    border-bottom: 10px solid white;
+		    border-bottom: 1px solid white;
 		    background-color: rgba(237,237,237,1);
 		    padding: 3px 5px;
 		    font-weight: bold;
@@ -118,30 +123,73 @@
 		    background-color: #d7d1c7;
 			padding-left: 10px;
 			padding-right: 10px;
-			padding-bottom: 3px;
+			padding-bottom: 27px;
 			padding-top: 3px;
 			font-weight: 300;
 		}
+		.wholeImageClassLabel{
+		    -moz-box-shadow:inset 0px 0px 2px rgba(0,0,0,0.8);
+			-webkit-box-shadow:inset 0px 0px 2px rgba(0,0,0,0.8);
+			box-shadow:inset 0px 0px 2px rgba(0,0,0,0.8);
+/* 			text-shadow: 0px 0px 3px rgba(0,0,0,1.0);			 */
+			color:#707070;
+			background-color: rgba(237,237,237,1);
+			padding-left: 5px;
+			padding-right: 5px;
+			padding-bottom: 0px;
+			font-size: small;
 
+		}
 		.wholeImageLabel{
-		   -moz-box-shadow: 0px 0px 3px rgba(0,0,0,0.8);
-			-webkit-box-shadow:0px 0px 3px rgba(0,0,0,0.8);
-			box-shadow:0px 0px 3px rgba(0,0,0,0.8);
-			margin-top: -4px;
-			padding-left: 10px;
-			padding-right: 10px;
-			padding-top: 4px;
-			padding-bottom: 4px;
 			font-weight: 500;
-			background-color: white;
 			font-size: large;
 		}
 		
 		.wholeImageLabelStatus{
 			color:#57d357;
 			padding-left:5px;
+			text-shadow: 0px 0px 2px #000000;
+
 		}
-		
+		.editBroadScaleIndictor{
+			color:#3049ff;
+		    text-shadow: 0px 0px 2px rgba(191,255,0,0.8);
+			-webkit-animation: pulsate 2s ease-out;
+			-webkit-animation-iteration-count: infinite; 
+		}
+		.broadScaleRemoveButton{
+			color:rgba(192,192,192,1);
+			text-shadow: rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+			padding-left: 3px;
+			padding-right: 3px;
+			width: 100%;
+			margin: 0 auto;
+		}
+		.broadScaleRemoveButton:hover{
+			color:red;
+		}
+		.AddBroadScaleElement{
+			list-style-position:outside;
+		    border-bottom: 1px solid white;
+		    background-color: rgba(237,237,237,1);
+		    padding: 3px 5px;
+		    font-weight: bold;
+			padding-bottom: 8px;
+		}
+		.deleteStyle{
+			color:red;
+		}
+		.actionConfirmAlert{
+			list-style-position:outside;
+		    border-bottom: 1px solid white;
+		    color:white;
+		    background-color: rgba(238,147,37,1);
+		    padding: 3px 5px;
+		    font-weight: bold;
+			padding-bottom: 8px;
+			text-shadow: rgba(0, 0, 0, 0.247059) 0px -1px 0px;
+/* 			rgba(0, 0, 0, 0.247059) 0px -1px 0px */
+		}
 		.wholeImageList a{
 /* 			color: black; */
 		}
@@ -177,10 +225,12 @@
 		.toolbar-entry-wide{
 			min-width: 80px;
 		}
+		
 		.toolbar-entry-narrow{
 			float: left;
 			min-width: 40px;
 		}
+		
 		.icon-button {
 			padding: 10px 10px;
 			border-radius: 0;
@@ -203,6 +253,9 @@
 			width: 100%;
 			margin: 0 auto;
 		}
+		.icon-shadow {
+			text-shadow: 0px 0px 4px #0088cc;
+		}		
 		.icon-style-text {
 			color:white;
 			display:block;
@@ -392,45 +445,51 @@
 	
 	<script type="text/template" id="WholeImageAnnotationTemplate">
 		<div>
-			<ul class="wholeImageList">
-				<li class="wholeImageHeader"><span>Broad Scale Classes</span><a id="clear_all_broad_scale" class="btn btn-mini btn-danger pull-right">Reset All</a></li>
-				<a href='#' id="biota_annotation_label">
-					<li class="wholeImageItem">
-						<span>Biota</span>
-<!-- 						<span class="wholeImageLabelStatus pull-right" id="dominant_biota_status"><i class="icon-check-sign"></i></span> -->
-						<span class="wholeImageLabel pull-right" id="dominant_biota">Not Considered</span>
+			<ul id="broad_scale_list_view" class="wholeImageList">
+				<li class="wholeImageHeader"><span>Broad Scale Annotations</span></li>
+				<%=broadScaleAnnotations%>
+				<a id="add_new_broadscale_annotation">
+					<li class="AddBroadScaleElement">
+						<span>Add a new annotation</span>
+						<span class="pull-right"><i class="icon-plus-sign icon-2x icon-style icon-shadow"></i></span>
 					</li>
 				</a>
-				<a href='#' id="substrate_annotation_label">
-					<li class="wholeImageItem">
-						<span>Substrate</span>
-<!-- 						<span class="wholeImageLabelStatus pull-right" id="dominant_substrate_status"><i class="icon-check-sign small-shadow"> </i></span> -->
-						<span class="wholeImageLabel pull-right" id="dominant_substrate" class="pull-right">Not Considered</span>
-					</li>
-				</a>
-				<a href='#' id="relief_annotation_label">
-					<li class="wholeImageItem">
-						<span>Relief</span>
-<!-- 						<span class="wholeImageLabelStatus pull-right" id="dominant_biota_status"><i class="icon-check-sign"> </i></span> -->
-						<span class="wholeImageLabel pull-right" id="relief" class="pull-right">Not Considered</span>
-					</li>
-				</a>
-				<a href='#' id="bedform_annotation_label">
-					<li class="wholeImageItem">
-						<span>Bedform</span>
-<!-- 						<span class="wholeImageLabelStatus pull-right" id="dominant_biota_status"><i class="icon-check-sign"> </i></span> -->
-						<span class="wholeImageLabel pull-right" id="bedform" class="pull-right">Not Considered</span>
-					</li>
-				</a>
-				<li class="wholeImageFooter"><span class="label label-info">Tip</span><em> Choose classes below</em></li>
+				<li id="DeleteBroadScaleConfirm" class="actionConfirmAlert">
+					<span><i class="icon-warning-sign"></i> Remove item/s?</span>
+					<span class="btn btn-small pull-right dismiss_confirmation">No </i></span>
+					<span id="confirm_delete" class="btn btn-small btn-danger pull-right">Yes </i></span>
+				</li>
+				<li id="DeleteAllBroadScaleConfirm" class="actionConfirmAlert">
+					<span><i class="icon-warning-sign"></i> Remove all annotations?</span>
+					<span class="btn btn-small pull-right dismiss_confirmation">No </i></span>
+					<span id="confirm_delete_all" class="btn btn-small btn-danger pull-right">Yes </i></span>
+				</li>
+				<li id="ClearAllBroadScaleConfirm" class="actionConfirmAlert">
+					<span><i class="icon-warning-sign"></i> Clear all annotations?</span>
+					<span class="btn btn-small pull-right dismiss_confirmation">No </i></span>
+					<span id="confirm_clear_all" class="btn btn-small btn-danger pull-right">Yes </i></span>
+				</li>
+				<li class="wholeImageFooter"> 
+<!-- 					<a id="set_unscorable" class="btn btn-mini btn-warning pull-left"><i class="icon-question"></i> Unscorable</a>    -->
+					<a id="delete_all_broad_scale" class="btn btn-mini btn-danger pull-right"><i class="icon-minus-sign-alt"></i> Delete All</a>   
+					<a id="clear_all_broad_scale" class="btn btn-mini btn-danger pull-right"><i class="icon-refresh"></i> Reset All</a>
+				</li>
 			</ul>
 		</div>
 	</script>
 
+	<script type="text/template" id="BroadScaleItemTemplate">
+		<li class="wholeImageItem">
+			<a id="delete_selected_annotation" class="pull-right" ><i class="icon-trash broadScaleRemoveButton" data-model_id="<%=model_id%>"></i></a>
+			<span class="wholeImageLabel" class="pull-left" data-model_id="<%=model_id%>"><i class="icon-edit-sign editBroadScaleIndictor pull-left"></i><%=broadScaleClass%></span>
+			<span class="wholeImageClassLabel pull-right"><%=broadScaleClassParent%></span>
+		</li>
+	</script>
+	
 	<script type="text/template" id="BreadcrumbTemplate">
 		<div class="span12">
 		    <ul class="breadcrumb">
-		
+
 		        <li><a href="/projects/">Projects</a> <span
 		                class="divider">></span></li>
 		        <li><a href="/projects/<%=id%>/" ><%= name %></a> <span
@@ -440,6 +499,7 @@
 		    </ul>
 		</div>
 	</script>
+	
     <script type="text/template" id="ThumbnailStripTemplate">
 
         <div class='row-fluid'>
