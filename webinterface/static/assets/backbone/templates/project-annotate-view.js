@@ -1054,13 +1054,13 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 success: function (model, xhr, options) {
                     $(element).html('<i class="icon-edit-sign editBroadScaleIndictor pull-left"></i>'+caab_object.get('code_name'));
                     $(element).parent().find('.wholeImageClassLabel').text(rootAnnotationCode.get('code_name'));
+                    GlobalEvent.trigger("annotation_set_has_changed");
                 },
                 error: function (model, xhr, options) {
                     console.log('problem in wholeImageAnnotationChosen',xhr);
                 }
             });
         });
-        GlobalEvent.trigger("annotation_set_has_changed");
 
     },
     thumbnailSelected: function(selectedPosition) {
