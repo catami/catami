@@ -435,7 +435,7 @@ ImageAnnotateView = Backbone.View.extend({
 
         //bind to the global event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
-        GlobalEvent.on("thumbnail_selected_by_id", this.renderSelectedImageById, this);
+        GlobalEvent.on("thumbnail_selected_by_id", this.thumbnailSelectedWithId, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
         GlobalEvent.on("point_mouseover", this.pointMouseOver, this);
@@ -446,11 +446,11 @@ ImageAnnotateView = Backbone.View.extend({
         GlobalEvent.on("show_points", this.showPoints, this);
         GlobalEvent.on("deselect_points", this.deselectPoints, this);
     },
-    renderSelectedImageById: function (id) {        
+    renderSelectedImageById: function (id) {
 
         //get all the images to be rendered
         var imageTemplate = "";
-        var imageVariables = {            
+        var imageVariables = {
             "web_location": $('#' + id).data("web_location")
         };
 
@@ -501,16 +501,17 @@ ImageAnnotateView = Backbone.View.extend({
             }
         });
     },
-    renderPointsForImage: function(selected) {
+    renderPointsForImage: function() {
         var parent = this;
 
         //get the selected image
         var annotationSet = annotationSets.at(0);
-        var image = annotationSet.get("images")[selected];
+        //var image = annotationSet.get("images")[selected];
 
-        //based on that image query the API for the points
+        //query the API for the points for the current image
+
         points.fetch({
-            data: { limit: 100, image: image.id, annotation_set: annotationSet.get('id') },
+            data: { limit: 100, image: selectedImageId, annotation_set: annotationSet.get('id') },
             success: function (model, response, options) {
 
                 //loop through the points and apply them to the image
@@ -522,9 +523,7 @@ ImageAnnotateView = Backbone.View.extend({
                         return model.get('caab_code')===point.get('annotation_caab_code');
                     });
 
-                    var labelClass = (label === "")
-                        ? 'pointNotAnnotated'
-                        : 'pointAnnotated';
+                    var labelClass = (label === "") ? 'pointNotAnnotated' : 'pointAnnotated';
 
                     var span = $('<span>');
                     span.attr('id', pointId);
@@ -577,6 +576,16 @@ ImageAnnotateView = Backbone.View.extend({
         });
 
         $("[rel=tooltip]").tooltip();
+
+    },
+    thumbnailSelectedWithId: function(ImageId) {
+        this.renderSelectedImageById(ImageId);
+
+        var parent = this;
+        //now we have to wait for the image to load before we can draw points
+        $("#Image").imagesLoaded(function() {
+            parent.renderPointsForImage();
+        });
 
     },
     thumbnailSelected: function(selectedPosition) {
@@ -1127,7 +1136,6 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         //remove all annotations from the current image
         this.$('#DeleteAllBroadScaleConfirm').css('display', 'block');
         this.$('.broadScaleRemoveButton').addClass('deleteStyle');
-        console.log('really before',broadScalePoints);
 
     },
     confirmDeleteAllBroadScaleAnnotation: function(){
