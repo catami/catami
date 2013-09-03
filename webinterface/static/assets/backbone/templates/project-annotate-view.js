@@ -138,6 +138,9 @@ OrchestratorView = Backbone.View.extend({
         this.render();
     },
     render: function () {
+        var image = thumbnailImages.first();
+        selectedImageId = image.get('id');
+
         this.assign(this.breadcrumbNavigationView,'#BreadcrumbContainer');
         this.assign(this.thumbnailStripView, '#ThumbnailStripContainer');
         this.assign(this.imagesAnnotateView, '#ImageContainer');
@@ -152,10 +155,8 @@ OrchestratorView = Backbone.View.extend({
             this.assign(this.pointControlBarView, '#ControlBarContainer');
         }
         
-        var image = thumbnailImages.first();
-        selectedImageId = image.get('id');
-
         var web_location = image.get('web_location');        
+        
         if (bidResult) {
             selectedImageId = bidResult.imageId;
             web_location = bidResult.web_location
@@ -933,6 +934,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
     initialize: function () {
         GlobalEvent.on("annotation_to_be_set", this.wholeImageAnnotationChosen, this);
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
+        GlobalEvent.on("thumbnail_selected_by_id", this.render, this);
     },
     render: function () {
         //Show loading spinner
@@ -941,13 +943,13 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         var parent = this;
         //get the selected image
         var annotationSet = annotationSets.at(0);
-        var image = annotationSet.get("images")[currentImageInView];
+        //var image = annotationSet.get("images")[currentImageInView];
         //based on that image query the API for the points
         //var whole_image_points = new WholeImageAnnotations();
         var broadScaleAnnotationTemplate = "";
 
         broadScalePoints.fetch({
-            data: { limit: 100, image: image.id, annotation_set: annotationSet.get('id') },
+            data: { limit: 100, image: selectedImageId, annotation_set: annotationSet.get('id') },
             success: function (model, response, options) {
 
                 parent.renderBroadScalePoints();
@@ -967,13 +969,11 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
     renderBroadScalePoints: function() {
         var parent = this;
         var broadScaleAnnotationTemplate = "";
-        console.log('all',broadScalePoints);
 
         broadScalePoints.each(function (whole_image_point) {
             var annotationCode;
             var usefulRootCaabCode;
             var pointId = whole_image_point.get('id');
-            console.log('render',pointId);
             var label = whole_image_point.get('annotation_caab_code');
             //console.log(model);
             if (label === ""){
