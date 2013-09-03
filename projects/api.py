@@ -745,7 +745,7 @@ class AnnotationSetResource(ModelResource):
             return HttpMultipleChoices("More than one resource is found at this URI.")
 
         # get all the images related to this project
-        annotation_set_images = AnnotationSet.objects.get(id=obj.pk).images.all()
+        annotation_set_images = AnnotationSet.objects.get(id=obj.pk).images.all().prefetch_related('deployment')
 
         # create the id string list to send to the next API call
         # TODO: this is not ideal, best find a better way to deal with this
@@ -753,22 +753,9 @@ class AnnotationSetResource(ModelResource):
         path_dict = {}
         image_paths = ""
         for image in annotation_set_images:
-
-            #get the labels for the image
-            annotations = WholeImageAnnotation.objects.filter(annotation_set=obj, image=image)
-
-            #check if all the labels are blank
-            all_blank = True
-            for annotation in annotations:
-                #if string is empty
-                if len(annotation.annotation_caab_code) != 0:
-                    all_blank = False
-
-            # if they are all blank, add the image to the list
-            if all_blank:
-                image_path = ImageManager().get_image_path(image)
-                image_paths += image_path + ","
-                path_dict[image_path] = image
+            image_path = ImageManager().get_image_path(image)
+            image_paths += image_path + ","
+            path_dict[image_path] = image
 
         # strip the comma from the end
         image_paths = image_paths[:-1]
@@ -778,7 +765,7 @@ class AnnotationSetResource(ModelResource):
         image_path = ImageManager().get_image_path(Image.objects.get(id=image_id))
 
         #build the payload
-        payload = {"imagePath": image_path, "limit": "30", "similarityGreater": "0.9", "featureType": "cedd", "imageComparisonList": image_paths}
+        payload = {"imagePath": image_path, "limit": "10000", "similarityGreater": "0.9", "featureType": "cedd", "imageComparisonList": image_paths}
 
         #make the call
         the_response = requests.post(settings.DOLLY_SEARCH_URL, data=payload)
