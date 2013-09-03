@@ -36,18 +36,21 @@ var getBroadScaleClassificationCopyURL = function(annotationSetId) {
 }
 
 var similarImages;
+var thumbnailImages;
+var thumbnailsPerPage = 10;
 var points = new PointAnnotations();
 var broadScalePoints = new WholeImageAnnotations();
 var annotationSets = new AnnotationSets();
 var annotationCodeList = new AnnotationCodeList();
-var currentImageInView = 0;
-var map = { "images": [] }; //initiate map
+var currentImageInView;
+var map;
+var bidResult;
+var selectedImageId = -1;
+var projectId = -1;
 
 //yeah, it's a global.
 var nested_annotation_list;
 var plain_annotation_list;
-
-var wholeImageAnnotations = new WholeImageAnnotations();
 
 OrchestratorView = Backbone.View.extend({
     el: $('div'),
@@ -82,15 +85,42 @@ OrchestratorView = Backbone.View.extend({
             success: function (model, response, options) {
                 nested_annotation_list = classificationTreeBuilder(model.toJSON());
                 plain_annotation_list = model.toJSON();
+                projectId = project.id;
             },
             error: this.onLoadError
         });
-        similarImages = new Images({"url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/similar_images/"});
+
+        var ann_id = annotationSets.at(0).get('id')
+
+        var bookmarkedImageId = -1;
+        var bid = catami_getURLParameter("bid"); //get image id from bid param from URL
+        var fetchOffset = 0;        
+        if (bid && bid != 'null') bookmarkedImageId = bid;
+
+        if (bookmarkedImageId != -1) { //if there's an image id, get position of image within the annotation set
+            jQuery.ajax({
+                url: '/api/dev/annotation_set/'
+                        + ann_id + '/'
+                        + bookmarkedImageId
+                        + '/image_by_id/',
+                success: function (result) {
+                    bidResult = result;
+                    selectedImageId = result.imageId;
+                    fetchOffset = Math.floor(result.position / thumbnailsPerPage) * thumbnailsPerPage;                    
+                },
+                async: false
+            });            
+        }
+
+        similarImages = new Images({ "url": "/api/dev/annotation_set/" + ann_id + "/similar_images/" });
+        thumbnailImages = new Images({ "url": "/api/dev/annotation_set/" + ann_id + "/images/?limit=" + thumbnailsPerPage });
+        fetchThumbnails(fetchOffset);
+        createPagination(thumbnailImages.meta);
 
         //load the views
         this.breadcrumbNavigationView = new BreadcrumbNavigationView({});
         this.thumbnailStripView = new ThumbnailStripView({model : annotationSets});
-        this.imagesAnnotateView = new ImageAnnotateView({model : annotationSets});
+        this.imagesAnnotateView = new ImageAnnotateView({ model: annotationSets });        
         this.chooseAnnotationView = new ChooseAnnotationView({});
 
         if (annotationSets.at(0).get('annotation_set_type') === 1){
@@ -106,7 +136,6 @@ OrchestratorView = Backbone.View.extend({
 
         //render the views
         this.render();
-
     },
     render: function () {
         this.assign(this.breadcrumbNavigationView,'#BreadcrumbContainer');
@@ -123,8 +152,16 @@ OrchestratorView = Backbone.View.extend({
             this.assign(this.pointControlBarView, '#ControlBarContainer');
         }
         
-        //trigger an event for selecting the first thumbanil in the list
-        GlobalEvent.trigger("thumbnail_selected", 0);
+        var image = thumbnailImages.first();
+        selectedImageId = image.get('id');
+
+        var web_location = image.get('web_location');        
+        if (bidResult) {
+            selectedImageId = bidResult.imageId;
+            web_location = bidResult.web_location
+            bidResult = null;//reset
+        }
+        GlobalEvent.trigger("thumbnail_selected_by_id", selectedImageId, web_location);
     },
     assign : function (view, selector) {
         view.setElement($(selector)).render();
@@ -243,36 +280,13 @@ ThumbnailStripView = Backbone.View.extend({
     el: $('div'),
     initialize: function () {
         //bind to the global event, so we can get events from other views
-        GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
+        GlobalEvent.on("thumbnail_selected_by_id", this.thumbnailSelectedById, this);
         GlobalEvent.on("update_annotation", this.updateAnnotation, this);
+        GlobalEvent.on("thumbnails_loaded", this.render, this);
     },
     render: function () {
-
-        var annotationSetTypes = ["fine scale","broad scale"];
-
         //get all the images to be rendered
-        var imageTemplate = "";
-
-        // enforcing only one annotation set per project for the time being, so
-        // can assume the first one
-        var annotationSet = annotationSets.at(0);
-        var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
-
-        var images = annotationSet.get("images");
-
-        for (var i = 0; i < images.length; i++) {
-            var im = images[i]
-            var statusVariables = { //initialise span for annotated flag using image ids as span id
-                "image_id": "image_" + im.id,
-                "status" : ""
-            }
-            statusTemplate = _.template($("#StatusTemplate").html(), statusVariables);
-            var imageVariables = {
-                "thumbnail_location": im.thumbnail_location,
-                "annotation_status": statusTemplate
-            };
-            imageTemplate += _.template($("#ThumbnailTemplate").html(), imageVariables);
-        }
+        var imageTemplate = generateAllThumbnailTemplates(thumbnailImages);
 
         //render the items to the main template
         var annotationSetVariables = {
@@ -287,123 +301,122 @@ ThumbnailStripView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
 
-        this.configElastiSlide();
-        this.buildAnnotationStatus();
+        this.buildAnnotationStatus();        
         this.renderAnnotationStatus();
 
-        return this;
     },
     buildAnnotationStatus: function () {
+        map = { "images": [] }; //reset map
         var annotationSetTypes = ["fine scale", "broad scale"];
 
         // enforcing only one annotation set per project for the time being, so
         // can assume the first one
         var annotationSet = annotationSets.at(0);
         var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
-        if (annotationSetType === "broad scale") {
-            //var images = annotationSet.get("images");
-            var whole_image_points = new WholeImageAnnotations();
-            //alert('annotationSet.get(\'id\') : ' + annotationSet.get('id'));
-            whole_image_points.fetch({
-                async: false,
-                data: {
-                    annotation_set: annotationSet.get('id'),
-                    limit: 1000, //XXX TEMP fix til thumbnail pagination is implemented.
-                },
-                success: function (model, response, options) {
-                    //loop through the points and get caab                  
-                    whole_image_points.each(function (whole_image_point) {
-                        var imageId = catami_getIdFromUrl(whole_image_point.get('image'));
-                        var code = whole_image_point.get('annotation_caab_code');
-                        var name = whole_image_point.get('annotation_caab_name');
-                        var annotId = whole_image_point.get('id');
-                        if (typeof code != 'undefined') {
-                            var imageFound = false;
-                            $.each(map.images, function (i, im) {
-                                if (im.id == imageId) { //image found, add annotation to image                                    
-                                    var annot_new = {
+        
+        var imageIds = "";
+        thumbnailImages.each(function (image) {
+            imageIds += image.get('id') + ',';
+        });
+
+        imageIds = imageIds.substring(0, imageIds.length - 1); //remove trailing comma
+        var imageAnnotations;
+        if (annotationSetType === "broad scale") 
+            imageAnnotations = new WholeImageAnnotations({ "url": "/api/dev/whole_image_annotation/?image__in=" + imageIds });
+        else imageAnnotations = new PointAnnotations({ "url": "/api/dev/point_annotation/?image__in=" + imageIds });                            
+        imageAnnotations.fetch({
+            async: false,
+            data: {
+                annotation_set: annotationSet.get('id'),
+                limit: 200,
+            },
+            success: function (model, response, options) {
+                //loop through the points and get caab       
+                imageAnnotations.each(function (annotation) {
+                    var imageId = catami_getIdFromUrl(annotation.get('image'));
+                    var code = annotation.get('annotation_caab_code');
+                    var name = annotation.get('annotation_caab_name');
+                    var annotId = annotation.get('id');
+                    if (typeof code != 'undefined') {
+                        var imageFound = false;
+                        $.each(map.images, function (i, im) {
+                            if (im.id == imageId) { //image found, add annotation to image                                    
+                                var annot_new = {
+                                    "id": annotId,
+                                    "code": code,
+                                    "name": name
+                                }
+                                im.annotations.push(annot_new);
+                                imageFound = true;
+                                return;
+                            }
+                        });
+                        if (!imageFound) { //create image with annotation if image not found                           
+                            var image_new = {
+                                "id": imageId,
+                                "annotations": [
+                                    {
                                         "id": annotId,
                                         "code": code,
-                                        "name": name
-                                    }
-                                    im.annotations.push(annot_new);                                     
-                                    imageFound = true;
-                                    return;
-                                }
-                            });
-                            if (!imageFound) { //create image with annotation if image not found                           
-                                var image_new = {
-                                    "id": imageId,
-                                    "annotations": [
-                                        {
-                                            "id": annotId,
-                                            "code": code,
-                                            "name": name
-                                        } 
-                                    ]
-                                }
-                                map.images.push(image_new);                                                                                                    
+                                        "name": name                                        }
+                                ]
                             }
+                            map.images.push(image_new);
                         }
-                    });
-                }
-            });
-        }
-    },//imageId, annotId, code, name
+                    }
+                });
+            }
+        });
+    },
     updateAnnotation: function (imageId, annotId, code, name) {        
         updateAnnotation(imageId, annotId, code, name);
         this.renderAnnotationStatus();
     },
     renderAnnotationStatus: function () {
-        //alert('in render map: ' + map.toSource());
-        var parent = this;
-        var annotationSetTypes = ["fine scale", "broad scale"];
-
         // enforcing only one annotation set per project for the time being, so
         // can assume the first one
         var annotationSet = annotationSets.at(0);
-        var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
-        if (annotationSetType === "broad scale") {
-            var images = annotationSet.get("images");
-            var statusTemplate = "";                       
-            for (var i = 0; i < images.length; i++) {
-                var im = images[i]
-                var status = ""
-                //XXX in future implementation, use fraction, e.g. 1/4 to indicate 1 of 4 have been annotated (have CAAB)
-                var isAnnotated = false;               
-                $.each(map.images, function (i, image) {
-                    if (image.id == im.id) { //find respective image, and check if it is fully annotated
-                        isAnnotated = checkAnnotated(image);
-                        return;
-                    }
-                });
-                if (!isAnnotated) status = "*";
-                $('#image_' + im.id).text(status);
-            }
-        }
+        var images = annotationSet.get("images");
+        for (var i = 0; i < images.length; i++) {
+            var im = images[i].split("/"); //value of format  "/api/dev/image/12/", need to split to get image id
+            var imid = im[im.length - 2];
+            var count = 0;
+            $.each(map.images, function (i, image) {
+                if (image.id == imid) { //find respective image, and check if annotation is done
+                    count = countAnnotated(image);
+                    return;
+                }
+            });
+            $('#image_' + imid).text(count);
+        }        
     },
-    configElastiSlide: function() {
-        $( '#carousel' ).elastislide( {
-            orientation : 'horizontal',
-            minItems : 5,
-            onClick : function( el, position, evt ) {
-                //fire an event for backbone for backbone to pick up
-                GlobalEvent.trigger("thumbnail_selected", position);
-                return false;
-            }
-        });
-    },
-    thumbnailSelected: function(position) {
-        $( "#carousel li" ).each(function( localindex ) {
-            if (localindex == position) {
+    thumbnailSelected: function (position) {
+        /* deprecated
+        $("#thumbnail").each(function (index) {
+            if (index == position) {
                 $(this).find('.description').html("<i class='icon-chevron-sign-down icon-2x'></i>");
             } else {
                 $(this).find('.description').html("");
             }
+        });*/
+    },    
+    thumbnailSelectedByEvent: function (event) {
+        selectedImageId = $(event.currentTarget).data("id");
+        var webLocation = $(event.currentTarget).data("web_location");
+        GlobalEvent.trigger("thumbnail_selected_by_id", selectedImageId, webLocation);
+    },
+    thumbnailSelectedById: function (id, webLocation) {
+
+        $("#thumbnail-pane .wrapper").each(function (index, value) {
+            $(this).find('.description').html("");
         });
+        $('#' + id).find('.description').html("<i class='icon-chevron-sign-down icon-2x'></i>");
+
+        //$('#Image').attr("src", webLocation);
+        //$('#Image').attr("data-src", webLocation);
     },
     events: {
-        "thumbnail_selected": "thumbnailSelected"
+        'click .wrapper': 'thumbnailSelectedByEvent'
     }
 });
 
@@ -421,6 +434,7 @@ ImageAnnotateView = Backbone.View.extend({
 
         //bind to the global event, so we can get events from other views
         GlobalEvent.on("thumbnail_selected", this.thumbnailSelected, this);
+        GlobalEvent.on("thumbnail_selected_by_id", this.renderSelectedImageById, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
         GlobalEvent.on("point_mouseover", this.pointMouseOver, this);
@@ -431,8 +445,23 @@ ImageAnnotateView = Backbone.View.extend({
         GlobalEvent.on("show_points", this.showPoints, this);
         GlobalEvent.on("deselect_points", this.deselectPoints, this);
     },
+    renderSelectedImageById: function (id) {        
+
+        //get all the images to be rendered
+        var imageTemplate = "";
+        var imageVariables = {            
+            "web_location": $('#' + id).data("web_location")
+        };
+
+        imageTemplate += _.template($("#ImageTemplate").html(), imageVariables);
+
+        // Load the compiled HTML into the Backbone "el"
+        this.$el.html(imageTemplate);
+
+        return this;
+    },
     renderSelectedImage: function (selected) {
-        //ge tall the images to be rendered
+        //get all the images to be rendered
         var imageTemplate = "";
 
         // enforcing only one annotation set per project for the time being, so
@@ -516,7 +545,6 @@ ImageAnnotateView = Backbone.View.extend({
                 });
 
                 $("[rel=tooltip]").tooltip();
-                console.log('setup points');
 
                 $("#ImageContainer").children('span').click(function(){
                     GlobalEvent.trigger("point_clicked", this);
@@ -1186,7 +1214,7 @@ function getUsefulCaabRoot(caab_code_id){
 
 
 SimilarityImageView = Backbone.View.extend({
-    currentlySelectedImageIndex: null,
+    currentlySelectedImageID: null,
     currentlySelectedImage: null,
     model: Images,
     meta: {},
@@ -1194,26 +1222,25 @@ SimilarityImageView = Backbone.View.extend({
         this.meta = options['meta']; //assign specified metadata to local var
 
         //bind to the event when a thumbnail is selected
-        GlobalEvent.on("thumbnail_selected", this.renderSimilarImages, this);
+        GlobalEvent.on("thumbnail_selected_by_id", this.renderSimilarImages, this);
     },
     renderSimilarImages: function (selected) {
         var parent = this;
-        var annotationSet = annotationSets.at(0);
-        var image = annotationSet.get("images")[selected];
-        this.currentlySelectedImage = image;
-        this.currentlySelectedImageIndex = selected;
+        this.currentlySelectedImageID = selected;
 
         //Show a loading status
         $(this.el).empty();
-        var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "<div id=\"Spinner\"></div>" });
+        //var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "<div id=\"Spinner\"></div>" });
+        var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "Loading similar images..." });
         this.$el.html(loadingTemplate);
         var target = document.getElementById('Spinner');
-        var spinner = new Spinner(spinnerOpts).spin(target);
+        //var spinner = new Spinner(spinnerOpts).spin(target);
+        $('#SimilarImageBadge').html("<i class=\"icon-refresh icon-spin\"></i>");
 
         //we need to fetch the similar images, and render them
         similarImages.fetch({
             cache: false,
-            data: {image: image.id},
+            data: {image: parent.currentlySelectedImageID},
             success: function(model, response, options) {
                 //remove the loading status
                 $(parent.el).empty();
@@ -1240,12 +1267,16 @@ SimilarityImageView = Backbone.View.extend({
                 // Load the compiled HTML into the Backbone "el"
 
                 parent.$el.html(thumbnailListTemplate);
+
+                $('#SimilarImageBadge').html(similarImages.size());
             },
             error: function(model, response, options) {
                 //remove the loading status
                 $(parent.el).empty();
                 var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "<div class=\"alert alert-error\">An error occurred when trying to find similar images.</div>" });
                 parent.$el.html(loadingTemplate);
+
+                $('#SimilarImageBadge').html("-");
             }
         });
 
@@ -1262,7 +1293,7 @@ SimilarityImageView = Backbone.View.extend({
 
         $.get(
             getBroadScaleClassificationCopyURL(annotationSets.at(0).get('id')),
-            { source_image: this.currentlySelectedImage.id, destination_image: image.get('id') }
+            { source_image: parent.currentlySelectedImageID, destination_image: image.get('id') }
         ).done(
             function(data) {
                 $.pnotify({
@@ -1287,20 +1318,19 @@ SimilarityImageView = Backbone.View.extend({
     },
     refreshView: function() {
         $(this.el).empty();
-
         //refresh the thumbnails
-        this.renderSimilarImages(this.currentlySelectedImageIndex);
+        this.renderSimilarImages(this.currentlySelectedImageID);
     }
 });
 
-// helper function to check if image (json object) is annotated
-function checkAnnotated(image) {
-    var isAnnotated = true;
+// helper function to count the number of annotations done on the image (json object)
+function countAnnotated(image) {
+    var count = 0;
     $.each(image.annotations, function (i, annotation) {
         //alert(image.id + ' : ' + annotation.code + ' != "" : ' + (annotation.code != ""));
-        isAnnotated &= (annotation.code != "");
+        if (annotation.code != "") count++;
     });
-    return isAnnotated;
+    return count
 }
 
 function updateAnnotation(imageId, annotId, code, name) {
@@ -1317,6 +1347,73 @@ function updateAnnotation(imageId, annotId, code, name) {
         }
     });
 }
+
+
+function loadPage(offset) {
+    fetchThumbnails(offset);
+    orchestratorView.thumbnailStripView.render();
+
+    var image = thumbnailImages.first();
+    selectedImageId = image.get('id');
+    GlobalEvent.trigger("thumbnail_selected_by_id", selectedImageId, image.get('web_location'));
+}
+
+function fetchThumbnails(offset) {
+    var off = {};
+    if (offset) off = offset;
+    thumbnailImages.fetch({
+        data: {
+            offset: off,
+        },
+        async: false,
+        success: function (model, response, options) {
+            currentOffset = offset;
+            //alert('currentOffset : ' + currentOffset + ' after fetching meta : ' + thumbnailImages.meta.toSource());
+        },
+        error: function (model, response, options) {
+            alert('Error fetching thumbnails : ' + response);
+        }
+    });
+}
+
+function generateAllThumbnailTemplates(thumbnailImages) {
+    var template = ""
+    var i = 0;
+    thumbnailImages.each(function (image) {
+        template += generateThumbnailTemplate(image, i);
+        i++;
+    });
+    return template;
+}
+function generateThumbnailTemplate(image) {
+    var id = image.get('id');
+    var statusVariables = { //initialise span for annotated flag using image ids as span id
+        "image_id": "image_" + id,
+        "status": ""
+    }
+    statusTemplate = _.template($("#StatusTemplate").html(), statusVariables);
+
+    var imageVariables = {
+        "thumbnailId": id,
+        "thumbnail_location": image.get('thumbnail_location'),
+        "web_location": image.get('web_location'),
+        "annotation_status": statusTemplate
+    };
+    return _.template($("#ThumbnailTemplate").html(), imageVariables);
+}
+
+function createPagination(meta) {
+    //Create pagination
+    var options = thumbnailPaginationOptions(meta);
+    $('#pagination').bootstrapPaginator(options);
+}
+
+function createBookmark() {
+    var url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') 
+              + "/projects/" + projectId + "/annotate/?bid=";
+    window.prompt("Bookmark URL Generated", url + selectedImageId);
+}
+
 
 // helper functions, to be removed pending some API/server
 function caab_as_node(object){

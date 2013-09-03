@@ -267,67 +267,55 @@
 		.icon-style:active{
 			color:#4f68f8;
 		}
-	
+
 	</style>
 
 
-    <!-- elastislide thumbnail div -->
 	<section id="full-width-header" class="row-fluid span12" style="margin-left:0px;">
 		<div id="BreadcrumbContainer"></div>
 	</section>
-	
-    <div class="row-fluid span12" style="margin-left:0px;">
-        <div id="ThumbnailStripContainer"></div>
-    </div>
 
-    <div class="row-fluid">
+    <div id="ContentContainer" class="row-fluid">
 
-		<section id="ImageAppContainer" class="span9">
-        	<div class="row span12">
-	            <div id="ImageContainer"></div>
-	        </div>
+        <div class="span1">
+            <a onclick="createBookmark();">
+                <img src="/static/images/bookmark.jpg" /></a>
+            <div id="ThumbnailStripContainer"></div>
+            <div id="pagination"></div>           
+        </div>
 
-	        <div id="ControlBarContainer"></div>
+		<div id="ImageAppContainer" class="span7">
+            <div id="ImageContainer"></div>
+            <div id="ControlBarContainer" style="bottom:0;"></div>
+        </div>
 
-        </section>
 
+        <div id="RightPane" class="span4" style="visibility: hidden">
 
-        <div class="span3" style="margin-top: 10px;">
+            <ul class="nav nav-tabs">
+                <li class="active" ><a href="#AnnotationSelectionTab" data-toggle="tab">Annotation Selection</a></li>
+                <li><a href="#SimilarImageTab" data-toggle="tab">Similar Images <span id="SimilarImageBadge" class="badge badge-info"></span> </a></li>
+                <li><a href="#StatsTab" data-toggle="tab">Stats</a></li>
+            </ul>
 
-<!--
-            <section>
-                <div id="ImageZoomControlContainer" ></div>
-            </section>
+            <div class="tab-content">
+                <div class="tab-pane active" id="AnnotationSelectionTab">
+                    <div id="ChooseAnnotationContainer" ></div>
+                </div>
+                <div class="tab-pane" id="SimilarImageTab">
+                    <div id="ImageSimilarityContainer" ></div>
+                </div>
+                <div class="tab-pane" id="StatsTab">
+                    <div id="ImagePILSContainer" ></div>
+                </div>
+            </div>
 
-            <section>
-                <div id="ImagePointsControlContainer" ></div>
-            </section>
--->
-
-            <section>
-                <div id="ChooseAnnotationContainer" ></div>
-            </section>
-
-            <section>
-                <div id="ImagePILSContainer" ></div>
-            </section>
-
-            <section>
-                <div id="ImageSimilarityContainer" ></div>
-            </section>
         </div>
 
     </div>
 
-<!--
-    <div id="ImageSimilarityModalContainer"></div>
-    <script type="text/template" id="ImageSimilarityModalTemplate">
-
-    </script>
--->
-
     <script type="text/template" id="ImageSimilarityTemplate">
-        <h3>Similar Image Cluster</h3>
+        <h3></h3>
         <%=images%>
     </script>
 
@@ -391,25 +379,25 @@
                 <ul>
                     <li class="toolbar-entry-wide">
                         <div>
-                            <a href="#" class="zoom-out icon-button toolbar-entry-wide"><i class="icon-minus-sign icon-2x icon-style"></i></a>
+                            <a class="zoom-out icon-button toolbar-entry-wide"><i class="icon-minus-sign icon-2x icon-style"></i></a>
                             <input type="range" class="zoom-range">
-                            <a href="#" class="zoom-in icon-button toolbar-entry-wide"><i class="icon-plus-sign icon-2x icon-style"></i></a>
+                            <a class="zoom-in icon-button toolbar-entry-wide"><i class="icon-plus-sign icon-2x icon-style"></i></a>
                         </div>
                         <span class="link_title icon-style-text">Image Zoom</span>
                     </li>
-                    <a href="#" class="icon-button toolbar-entry-wide reset">
+                    <a class="icon-button toolbar-entry-wide reset">
                         <li class="">
                             <i class="icon-resize-full icon-2x icon-style"></i>
                             <span class="link_title icon-style-text">Reset Zoom</span>
                         </li>
                     </a>
-                    <a href="#" id="hide_points_button" class="icon-button toolbar-entry-wide">
+                    <a id="hide_points_button" class="icon-button toolbar-entry-wide">
                         <li class="">
                             <i class="icon-check-empty icon-2x icon-style"></i>
                             <span class="link_title icon-style-text">Hide Points</span>
                         </li>
                     </a>
-                    <a href= "#" id="deselect_points_button" class="icon-button toolbar-entry-wide">
+                    <a id="deselect_points_button" class="icon-button toolbar-entry-wide">
                         <li class="">
                             <i class="icon-remove-circle icon-2x icon-style"></i>
                             <span class="link_title icon-style-text">Deselect</span>
@@ -495,34 +483,23 @@
 		        <li><a href="/projects/<%=id%>/" ><%= name %></a> <span
 		                class="divider">></span></li>
 		        <li class="active">Annotate</li>
-		
+
 		    </ul>
 		</div>
 	</script>
-	
-    <script type="text/template" id="ThumbnailStripTemplate">
 
-        <div class='row-fluid'>
-            <div class="span12 thumbnail-pane catami-slide" id ="thumbnail-pane">
-                <ul id='carousel' class='elastislide-list'>
-                    <%=thumbnails%>
-                </ul>
-            </div>
+    <script type="text/template" id="ThumbnailStripTemplate">                  
+        <div id ="thumbnail-pane">
+                <%=thumbnails%>
         </div>
     </script>
 
-    <script type="text/template" id="ThumbnailTemplate">
-        <li>
-            <div class='wrapper'>
-                <a href='#'>
-                    <div class='description'></div>
-                    <div>
-                        <img src='<%= thumbnail_location %>' data-src='<%= thumbnail_location %>' alt='image'>
-                        <%= annotation_status %>
-                    </div>
-                </a>
-            </div>
-        </li>
+    <script type="text/template" id="ThumbnailTemplate">        
+        <div class='wrapper' id='<%=thumbnailId%>' data-id='<%=thumbnailId%>' data-web_location='<%=web_location%>'>
+            <div class='description'></div>           
+            <img src='<%= thumbnail_location %>' data-src='<%= thumbnail_location %>' alt='image' style="width: 100%">
+            <%= annotation_status %>
+        </div>        
     </script>
 
     <script type="text/template" id="ImageTemplate">
@@ -530,7 +507,7 @@
     </script>
 
     <script type="text/template" id="StatusTemplate">
-        <span id="<%= image_id %>" style="color: red; position: absolute; top: 5%; right: 2%; font-size: 200%"><%=status%></span>
+        <span class="badge badge-info" id="<%= image_id %>" style="position: absolute; top: 5%; right: 2%;"><%=status%></span>
     </script>
 
     <script src="{{ STATIC_URL }}assets/jquery/modernizr.custom.17475.js"></script>
@@ -546,14 +523,40 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.accordion.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.panzoom.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery.elevatezoom/jquery.elevateZoom-2.5.5.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>   
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
+
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.autoResizeImages.js"></script>
+
+
 
     <script type="text/javascript">
 
         var projectId = "{{ project_id }}";
-        var project = new Project({"id": projectId});
+        var project = new ProjectLite({"id": projectId});
 
         var orchestratorView = new OrchestratorView();
+
+        //TODO: this is a hacky way of applying a late style - think of a better way
+        $(window).ready(function() {
+            $('#ImageAppContainer').css("background-color", "#808080");
+            $('#RightPane').css("visibility", "visible");
+        });
+
+        /*
+        $(window).resize(function() {
+            var height = $('#ImageAppContainer').height();
+            $('#RightPane').css('height', height);
+        });
+        */
+
+        $("#Image").imagesLoaded(function() {
+            var divWidth = $("#ImageAppContainer").width();
+            var divHeight = $("#ImageAppContainer").height();
+
+            var max = (divWidth > divHeight) ? divHeight : divWidth;
+            $('#Image').autoResizeImages({maxSize: max});
+        });
+
 
     </script>
 

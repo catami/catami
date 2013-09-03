@@ -532,38 +532,27 @@ class ProjectResource(ModelResource):
         point_sample_size = json_data['point_sample_size']
         annotation_set_type = json_data['annotation_set_type']
 
-        #only proceed with all parameters
+        # only proceed with all parameters
         if (name and description and deployment_id and image_sampling_methodology and
             image_sample_size and point_sampling_methodology and point_sample_size) is not None:
 
-            #get the images we are interested in
+            # get the images we are interested in
             image_bundle = Bundle()
             image_bundle.request = request
             image_bundle.data = dict(deployment=deployment_id)
 
-            images = []
-
-            # If deployment_id is a list we'll need to iterate through to build the image list otherwise
-            # we've just been given a single deployment ID
-
-            if isinstance(deployment_id,basestring):
-                images.extend(ImageResource().obj_get_list(image_bundle, deployment=deployment_id))
-            else:
-                for deployment in deployment_id:
-                    print deployment
-                    images.extend(ImageResource().obj_get_list(image_bundle, deployment=deployment))
-
-            #check the the sample size is not larger than the number of images in our image list
-            if int(image_sample_size) > len(images):
-                return HttpResponse(content="{\"error_message\": \"Your image sample size is larger than the number of images in the Deployment. Pick a smaller number.\"}",
-                                    status=400,
-                                    content_type='application/json')
+            images = Image.objects.filter(deployment__in=deployment_id)
 
             # subsample and set the images
+            # random
             if image_sampling_methodology == '0':
                 image_subset = ImageManager().random_sample_images(images, image_sample_size)
+            # stratified
             elif image_sampling_methodology == '1':
                 image_subset = ImageManager().stratified_sample_images(images, image_sample_size)
+            # all
+            elif image_sampling_methodology == '3':
+                image_subset = images
             else:
                 raise Exception("Image sampling method not implemented.")
 
@@ -643,7 +632,7 @@ class ProjectResource(ModelResource):
 
 class AnnotationSetResource(ModelResource):
     project = fields.ForeignKey(ProjectResource, 'project')
-    images = fields.ManyToManyField(ImageResource, 'images', full=True, blank=True, null=True)
+    images = fields.ManyToManyField(ImageResource, 'images')
 
     class Meta:
         queryset = AnnotationSet.objects.all()
@@ -663,12 +652,50 @@ class AnnotationSetResource(ModelResource):
         }
 
     def prepend_urls(self):
-        return [
+        return [            
+            url(r"^(?P<resource_name>%s)/(?P<annotation_set_id>\w[\w/-]*)/(?P<image_id>\w[\w/-]*)/image_by_id%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images_by_id'), name="api_get_image_by_id"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/similar_images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_similar_images'), name="api_get_similar_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/copy_wholeimage_classification%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('copy_wholeimage_classification'), name="api_copy_wholeimage_classification")
         ]
 
+    def get_images_by_id(self, request, **kwargs):
+       # need to create a bundle for tastypie
+        basic_bundle = self.build_bundle(request=request)
+
+        
+        # get all the images related to this project
+        annotation_set_images = AnnotationSet.objects.get(id=kwargs['annotation_set_id']).images.all()
+        image_id = kwargs['image_id']
+        image_selected = None
+
+        # create the id string list to send to the next API call
+        # TODO: this is not ideal, best find a better way to deal with this
+        count = 0
+        pos = -1;
+        image_ids = ""
+        for image in annotation_set_images:
+            image_ids += image.id.__str__() + ","
+            #print "%s == %s : %s" %(image_id, image.id, image_id == image.id.__str__())
+            if image_id == image.id.__str__():
+                image_selected = image
+                pos = count
+            else : 
+                count = count + 1    
+
+        campaignId = str(image_selected.deployment.campaign.id)
+        deploymentId = str(image_selected.deployment_id)
+        name = image_selected.image_name
+        location = "http://" + basic_bundle.request.get_host() + "/images/" + campaignId + "/" + deploymentId  + "/images/" + name
+        
+        json_content = "{\"imageId\": \"" +image_id.__str__()
+        json_content += "\", \"web_location\": \"" + location
+        json_content += "\", \"position\": \"" + pos.__str__() 
+        json_content += "\", \"total\": \"" + count.__str__()+ "\"}"
+
+        return HttpResponse(content= json_content,
+                            status=200,
+                            content_type='application/json')
     def get_images(self, request, **kwargs):
         """
         This is a nested function so that we can do paginated thumbnail queries on the image resource
@@ -751,7 +778,7 @@ class AnnotationSetResource(ModelResource):
         image_path = ImageManager().get_image_path(Image.objects.get(id=image_id))
 
         #build the payload
-        payload = {"imagePath": image_path, "limit": "12", "similarityGreater": "0.9", "featureType": "cedd", "imageComparisonList": image_paths}
+        payload = {"imagePath": image_path, "limit": "30", "similarityGreater": "0.9", "featureType": "cedd", "imageComparisonList": image_paths}
 
         #make the call
         the_response = requests.post(settings.DOLLY_SEARCH_URL, data=payload)
@@ -840,7 +867,6 @@ class AnnotationSetResource(ModelResource):
         else:
             raise Exception("Point sampling method not implemented.")
 
-
     def do_whole_image_point_operations(self, bundle):
         """ Helper function to hold whole image point assignment logic """
         WholeImageAnnotationManager().apply_whole_image_points(bundle.obj)
@@ -910,7 +936,7 @@ class PointAnnotationResource(ModelResource):
         detail_allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
         list_allowed_methods = ['get', 'post', 'put', 'delete', 'patch']
         filtering = {
-            'image': 'exact',
+            'image': ALL,
             'owner': 'exact',
             'id': 'exact',
             'annotation_caab_code': 'exact',
@@ -942,6 +968,17 @@ class PointAnnotationResource(ModelResource):
 
         return bundle
 
+    def dehydrate(self, bundle):
+        # Add an caab_name field to PointAnnotationResource.
+        code_name = ''
+        code = bundle.data['annotation_caab_code']
+        if code and code is not u'':
+            annotation_code = AnnotationCodes.objects.filter(caab_code=code)
+            if annotation_code and annotation_code is not None and len(annotation_code) > 0:
+                code_name = annotation_code[0].code_name
+        bundle.data['annotation_caab_name'] = code_name
+        return bundle
+
 
 class WholeImageAnnotationResource(ModelResource):
     annotation_set = fields.ForeignKey(AnnotationSetResource, 'annotation_set')
@@ -957,7 +994,7 @@ class WholeImageAnnotationResource(ModelResource):
         detail_allowed_methods = ['get', 'post', 'put', 'delete','patch']
         list_allowed_methods = ['get', 'post', 'put', 'delete','patch']
         filtering = {
-            'image': 'exact',
+            'image': ALL,
             'owner': 'exact',
             'id': 'exact',
             'annotation_caab_code': 'exact',

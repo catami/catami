@@ -210,9 +210,6 @@ ProjectView = Backbone.View.extend({
             }
 
         });
-
-
-
     },
     events: {
         "click #configure_project_button": "doConfigure",
@@ -350,6 +347,7 @@ project.fetch({
                         model: project
                     });
 
+                    $('#Legend').css('visibility', 'visible');
                     projectView.renderProjectStats();
                 } else {
                     $.pnotify({

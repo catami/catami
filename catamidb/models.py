@@ -154,13 +154,14 @@ class ImageManager(models.GeoManager):
     def random_sample_images(self, images, sample_size):
         """ Randomly sample images from a set """
 
-        return sample(images, int(sample_size))
+        #return sample(images, int(sample_size))
+        return images.order_by('?')[:sample_size]
 
     def stratified_sample_images(self, images, sample_size):
         """ Stratified sample images from a set """
 
+        images.order_by('deployment', 'date_time')
         every_nth = images.count()/int(sample_size)
-
         sampled_images = images[0:images.count():every_nth]
 
         return sampled_images

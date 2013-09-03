@@ -20,7 +20,7 @@ NOSE_ARGS = [
     #    '--coverage-exclude=../*migrations*'
 ]
 
-DOLLY_SEARCH_URL = "http://localhost:8090/search"
+DOLLY_SEARCH_URL = "http://localhost:8090/dolly/search"
 WMS_URL = "http://localhost:8080/geoserver/wms" # standard config for local host
 WFS_URL = "http://localhost:8080/geoserver/wfs"
 LAYER_IMAGES = "catami:catamidb_images"

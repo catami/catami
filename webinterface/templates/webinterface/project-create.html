@@ -58,6 +58,7 @@
                         Broad Scale
                     </button>
                 </div>
+
                 <div class="point_annotation_div">
                     <br>
                     <div class="control-group">
@@ -67,10 +68,11 @@
                             <select class="input-xlarge" id="point_image_sampling_methodology" name="point_image_sampling_methodology">
                                 <option value="0">Random</option>
                                 <option value="1">Stratified</option>
+                                <option value="3">All</option>
                             </select>
                         </div>
                     </div>
-                    <div class="control-group">
+                    <div id="point_number_of_images" class="control-group">
                         <label class="control-label" for="image_sample_size_point">
                             Number of Images:</label>
                         <div class="controls">
@@ -96,6 +98,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="wholeImage_annotation_annotation_div" style="display: none">
                     <br>
                     <div class="control-group">
@@ -105,10 +108,11 @@
                             <select class="input-xlarge" id="whole_image_sampling_methodology" name="whole_image_sampling_methodology">
                                 <option value="0">Random</option>
                                 <option value="1">Stratified</option>
+                                <option value="3">All</option>
                             </select>
                         </div>
                     </div>
-                    <div class="control-group">
+                    <div id="whole_number_of_images" class="control-group">
                         <label class="control-label" for="image_sample_size_whole">
                             Number of Images:</label>
                         <div class="controls">
