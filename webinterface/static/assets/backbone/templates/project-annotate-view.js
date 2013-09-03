@@ -1051,20 +1051,22 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 }
             });
         });
+        GlobalEvent.trigger("annotation_set_has_changed");
 
     },
     thumbnailSelected: function(selectedPosition) {
+        //deprecated
         // thumbnail has been selected in the main UI. refresh UI for new loaded image
-        currentImageInView = selectedPosition;
-        this.render();
+        // currentImageInView = selectedPosition;
+        // this.render();
     },
     addNewBroadscaleAnnotation: function() {
         //make a new Broad Scale annotation with no annotation type
         var parent = this;
         var annotationSet = annotationSets.at(0);
-        var image = annotationSet.get("images")[currentImageInView];
+        //var image = annotationSet.get("images")[currentImageInView];
 
-        var broad_scale_annotation = new WholeImageAnnotation({ 'annotation_caab_code': '', 'image':image.resource_uri, 'annotation_set':'/api/dev/annotation_set/'+annotationSet.get('id')+'/'});
+        var broad_scale_annotation = new WholeImageAnnotation({ 'annotation_caab_code': '', 'image':'/api/dev/image/'+selectedImageId+'/', 'annotation_set':'/api/dev/annotation_set/'+annotationSet.get('id')+'/'});
 
         // add spinnner TBD
         broadScalePoints.create(broad_scale_annotation,{
