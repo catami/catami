@@ -946,7 +946,6 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         GlobalEvent.on("thumbnail_selected_by_id", this.render, this);
     },
     render: function () {
-        //Show loading spinner
 
         // get and display points if we got 'em
         var parent = this;
@@ -966,6 +965,8 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 //hide the delete/clear/confirm UI
                 parent.$('.actionConfirmAlert').css('display', 'none');
                 parent.$('.editBroadScaleIndictor').css('display','none');
+
+                //hide spinner
             },
             error: function (model, xhr, options) {
                 console.log('error');
@@ -978,13 +979,13 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
     renderBroadScalePoints: function() {
         var parent = this;
         var broadScaleAnnotationTemplate = "";
-
+        // show spinner (TBD)
         broadScalePoints.each(function (whole_image_point) {
             var annotationCode;
             var usefulRootCaabCode;
             var pointId = whole_image_point.get('id');
             var label = whole_image_point.get('annotation_caab_code');
-            //console.log(model);
+
             if (label === ""){
                 annotationCode = annotationCodeList.find(function(model) {
                     return model.get('caab_code')==='00000000';
@@ -1143,14 +1144,20 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
 
         this.$('#DeleteAllBroadScaleConfirm').css('display', 'none');
         var model;
+        
+        var successCallback = _.after(broadScalePoints.length, function() {
+            parent.render(); // render after all deletes are done (destorys are async)
+        });
 
-        while (model = broadScalePoints.first()) {
-            for (var i = broadScalePoints.length - 1; i >= 0; i--){
-                broadScalePoints.at(i).destroy();
-            }
+        for (var i = broadScalePoints.length - 1; i >= 0; i--){
+            broadScalePoints.at(i).destroy({
+                success: successCallback,
+                error: function(model, response){
+                    console.log('problem reseting Broad Scale Points',xhr);
+                }
+            });
         }
 
-        parent.render();
     },
     highlightInterfaceForBiota: function(){
         $('a[href=#biota_root_node]').trigger('activate-node');
@@ -1165,7 +1172,6 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         $('a[href=#bedforms_root_node]').trigger('activate-node');
     },
     clearAllWholeImageAnnotations: function(){
-        console.log('clear all');
         //set all to '' (ie: no annotation)
         this.$('#ClearAllBroadScaleConfirm').css('display', 'block');
     },
@@ -1175,12 +1181,20 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
 
         var properties = { 'annotation_caab_code': '' };
 
-        broadScalePoints.each(function (whole_image_point) {
-            whole_image_point.set(properties);
-            whole_image_point.save();
+        var successCallback = _.after(broadScalePoints.length, function() {
+            parent.render(); // render after all saves are done (saves are async)
         });
 
-        parent.render();
+        broadScalePoints.each(function (whole_image_point) {
+            whole_image_point.save(properties,{
+                patch: true,
+                headers: {"cache-control": "no-cache"},
+                success: successCallback,
+                error: function (model, xhr, options) {
+                    console.log('problem reseting Broad Scale Points',xhr);
+                }
+            });
+        });
     }
 });
 
