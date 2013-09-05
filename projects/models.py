@@ -220,3 +220,4 @@ class WholeImageAnnotation(Annotation):
     """
 
     annotation_set = models.ForeignKey('projects.AnnotationSet')
+    coverage_percentage = models.IntegerField(validators = [MinValueValidator(-1), MaxValueValidator(100)], default = -1)
