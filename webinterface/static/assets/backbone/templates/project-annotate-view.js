@@ -324,12 +324,14 @@ ThumbnailStripView = Backbone.View.extend({
         var imageAnnotations;
         if (annotationSetType === "broad scale") 
             imageAnnotations = new WholeImageAnnotations({ "url": "/api/dev/whole_image_annotation/?image__in=" + imageIds });
-        else imageAnnotations = new PointAnnotations({ "url": "/api/dev/point_annotation/?image__in=" + imageIds });                            
+        else imageAnnotations = new PointAnnotations({ "url": "/api/dev/point_annotation/?image__in=" + imageIds });
+
         imageAnnotations.fetch({
             async: false,
             data: {
                 annotation_set: annotationSet.get('id'),
-                limit: 200,
+                image__in: imageIds,
+                limit: 200
             },
             success: function (model, response, options) {
                 //loop through the points and get caab       
@@ -1322,7 +1324,7 @@ SimilarityImageView = Backbone.View.extend({
             function(data) {
                 $.pnotify({
                     title: 'Info',
-                    text: 'Successfully copied broadscale classification.',
+                    text: 'Successfully copied broad scale classification.',
                     type: "success",
                     delay: 2000
                 });
@@ -1333,17 +1335,19 @@ SimilarityImageView = Backbone.View.extend({
             function() {
                 $.pnotify({
                     title: 'Error',
-                    text: 'Failed to copy broadscale classification.',
+                    text: 'Failed to copy broad scale classification.',
                     type: "error",
                     delay: 2000
                 });
+
+                parent.refreshView();
             }
         );
     },
     refreshView: function() {
-        $(this.el).empty();
+        //$(this.el).empty();
         //refresh the thumbnails
-        this.renderSimilarImages(this.currentlySelectedImageID);
+        //this.renderSimilarImages(this.currentlySelectedImageID);
     }
 });
 

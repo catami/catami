@@ -800,6 +800,66 @@ class TestAnnotationSetResource(ResourceTestCase):
 
         self.assertHttpNotImplemented(response)
 
+    def test_copy_wholeimage_classification(self):
+
+        # create some annotations on an image
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_one,
+                             owner=self.user_bob,
+                             annotation_caab_code="one",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_one,
+                             owner=self.user_bob,
+                             annotation_caab_code="two",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_one,
+                             owner=self.user_bob,
+                             annotation_caab_code="three",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_one,
+                             owner=self.user_bob,
+                             annotation_caab_code="four",
+                             qualifier_short_name="").save()
+
+        # try and copy without permissions
+        response = self.bill_api_client.get(self.annotation_set_url +
+                                            str(self.annotation_set_bobs.id) +
+                                            "/copy_wholeimage_classification/" +
+                                            "?source_image=" + self.mock_image_one.id.__str__() +
+                                            "&destination_image=" + self.mock_image_two.id.__str__(),
+                                            format='json')
+
+        # check unauthorised, and annotations not copied
+        self.assertHttpUnauthorized(response)
+
+        annotation_objects = WholeImageAnnotation.objects.filter(image=self.mock_image_two,
+                                                                   annotation_set=self.annotation_set_bobs)
+
+        self.assertEqual(annotation_objects.count(), 0)
+
+        # try and copy with permissions
+        response = self.bob_api_client.get(self.annotation_set_url +
+                                            str(self.annotation_set_bobs.id) +
+                                            "/copy_wholeimage_classification/" +
+                                            "?source_image=" + self.mock_image_one.id.__str__() +
+                                            "&destination_image=" + self.mock_image_two.id.__str__(),
+                                            format='json')
+
+        # check OK and annotations copied
+        self.assertHttpOK(response)
+
+        annotation_objects = WholeImageAnnotation.objects.filter(image=self.mock_image_two,
+                                                                   annotation_set=self.annotation_set_bobs)
+
+        self.assertEqual(annotation_objects.count(), 4)
+
+
 class TestPointAnnotationResource(ResourceTestCase):
 
     def setUp(self):

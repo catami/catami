@@ -1,8 +1,9 @@
-from django.db import models
+from django.db import models, transaction
 from datetime import datetime
 from dateutil.tz import tzutc
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
+from guardian.shortcuts import get_perms
 from catamidb.models import Image, Deployment
 from random import sample
 from django.db.utils import IntegrityError
@@ -195,6 +196,31 @@ class WholeImageAnnotationManager(models.Manager):
 
         # do the bulk save - for performance
         WholeImageAnnotation.objects.bulk_create(points_to_bulk_save)
+
+    @transaction.commit_on_success
+    def copy_annotations_to_image(self, annotation_set_id, source_image_id, destination_image_id):
+        """
+        Copies whole image annotations from one image to another
+        """
+
+        # get whole image annotations for the source image
+        source_image_annotations = WholeImageAnnotation.objects.filter(annotation_set=annotation_set_id,
+                                                                       image=source_image_id)
+
+        # get whole image annotations for the destination image
+        destination_image_annotations = WholeImageAnnotation.objects.filter(annotation_set=annotation_set_id,
+                                                                            image=destination_image_id)
+
+        # delete the annotations from destination
+        for annotation in destination_image_annotations:
+            annotation.delete()
+
+        # copy annotations from source
+        for annotation in source_image_annotations:
+            WholeImageAnnotation(annotation_set_id=annotation_set_id,
+                                    image_id=destination_image_id,
+                                    annotation_caab_code=annotation.annotation_caab_code,
+                                    qualifier_short_name=annotation.qualifier_short_name).save()
 
 
 class PointAnnotation(Annotation):

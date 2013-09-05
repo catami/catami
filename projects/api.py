@@ -1,3 +1,4 @@
+import json
 import traceback
 import csv
 import StringIO
@@ -806,40 +807,18 @@ class AnnotationSetResource(ModelResource):
         if len(destination_image) == 0 or len(source_image) == 0:
             return self.create_response(request, "Not all fields were provided.", response_class=HttpBadRequest)
 
-        # get whole image annotations for the source image
-        source_image_annotations = WholeImageAnnotation.objects.filter(annotation_set=obj.pk, image=source_image)
+        # check the user has permission to go ahead - get permissions from the annotation set,
+        # as per tastypie resource checks
+        if 'change_annotationset' not in get_perms(get_real_user_object(request.user), AnnotationSet.objects.get(pk=obj.pk)):
+            return HttpResponse("You don't have permission to perform this operation.",
+                                status=401)
 
-        # get whole image annotations for the destination image
-        destination_image_annotations = WholeImageAnnotation.objects.filter(annotation_set=obj.pk, image=destination_image)
-
-        # delete the whole image annotations for the destination image
-        for annotation in destination_image_annotations:
-            WholeImageAnnotationResource().delete_detail(request, id=annotation.id)
-
-        #get tastypie friendly references
-        #annotation_set_bundle = AnnotationSetResource().obj_get(basic_bundle, id=obj.pk)
-        #destination_image_bundle = ImageResource().obj_get(basic_bundle, id=destination_image)
-
-        annotation_set_bundle = AnnotationSet.objects.get(id=obj.pk)
-        destination_image_bundle = Image.objects.get(id=destination_image)
-
-        print annotation_set_bundle
-        print destination_image_bundle
-
-        # replace the annotations for the destination image
-        for annotation in source_image_annotations:
-
-            annotation_bundle = Bundle()
-            annotation_bundle.request = request
-            annotation_bundle.data = dict(annotation_set=annotation_set_bundle,
-                                          image=destination_image_bundle,
-                                          annotation_caab_code=annotation.annotation_caab_code,
-                                          qualifier_short_name=annotation.qualifier_short_name,
-                                          )
-            WholeImageAnnotationResource().obj_create(annotation_bundle)
+        # do the copy
+        WholeImageAnnotationManager().copy_annotations_to_image(obj.pk, source_image, destination_image)
 
         # everything went well
-        return self.create_response(request, "Copied whole broad scale classifications succesfully.")
+        return HttpResponse("Copied whole broad scale classifications successfully.",
+                            status=200)
 
     def do_point_sampling_operations(self, bundle):
         """ Helper function to hold all the sampling logic """
