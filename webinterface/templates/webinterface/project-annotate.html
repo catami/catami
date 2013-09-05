@@ -128,16 +128,6 @@
 			font-weight: 300;
 		}
 		.wholeImageClassLabel{
-		    -moz-box-shadow:inset 0px 0px 2px rgba(0,0,0,0.8);
-			-webkit-box-shadow:inset 0px 0px 2px rgba(0,0,0,0.8);
-			box-shadow:inset 0px 0px 2px rgba(0,0,0,0.8);
-/* 			text-shadow: 0px 0px 3px rgba(0,0,0,1.0);			 */
-			color:#707070;
-			background-color: rgba(237,237,237,1);
-			padding-left: 5px;
-			padding-right: 5px;
-			padding-bottom: 0px;
-			font-size: small;
 
 		}
 		.wholeImageLabel{
@@ -168,6 +158,17 @@
 		.broadScaleRemoveButton:hover{
 			color:red;
 		}
+		.addPercentageQualifier{
+			margin-right: 5px;
+		}
+		.percentageControl{
+			margin-right:10px;			
+		}
+		.broadScaleControlContainer{
+			background-color: rgba(255,255,255,0.76);
+			padding-top:20px;
+			padding-bottom: 20px;
+		}
 		.AddBroadScaleElement{
 			list-style-position:outside;
 		    border-bottom: 1px solid white;
@@ -194,7 +195,61 @@
 /* 			color: black; */
 		}
 
-
+/* percentage selector */
+		.percentageSelector{
+			
+		}
+		.percent_none{
+			color:red;
+			background-color: white;
+		}
+		.percent_0{
+			color:black;
+			background-color: white;
+		}
+		.percent_10{
+			color:black;
+			background-color: white;
+		}
+		.percent_20{
+			color:black;
+			background-color: white;
+		}
+		.percent_30{
+			color:black;
+			background-color: white;
+		}
+		.percent_40{
+			color:black;
+			background-color: white;
+		}
+		.percent_50{
+			color:black;
+			background-color: white;
+		}
+		.percent_60{
+			color:black;
+			background-color: white;
+		}
+		.percent_70{
+			color:black;
+			background-color: white;
+		}
+		.percent_80{
+			color:black;
+			background-color: white;
+		}
+		.percent_90{
+			color:black;
+			background-color: white;
+		}
+		.percent_100{
+			color:black;
+			background-color: white;
+		}
+		.percentValue{
+			border: 1px solid black;
+		}
 /* toolbar */ 
 
 		.toolbar {
@@ -467,10 +522,28 @@
 	</script>
 
 	<script type="text/template" id="BroadScaleItemTemplate">
-		<li class="wholeImageItem">
+		<li class="wholeImageItem" data-model_id="<%=model_id%>">
 			<a id="delete_selected_annotation" class="pull-right" ><i class="icon-trash broadScaleRemoveButton" data-model_id="<%=model_id%>"></i></a>
 			<span class="wholeImageLabel" class="pull-left" data-model_id="<%=model_id%>"><i class="icon-edit-sign editBroadScaleIndictor pull-left"></i><%=broadScaleClass%></span>
-			<span class="wholeImageClassLabel pull-right"><%=broadScaleClassParent%></span>
+			<span class="wholeImageClassLabel badge pull-right"><%=broadScaleClassParent%></span>
+			<span class="broadScalePercentage badge pull-right"><%=broadScalePercentage%></span>
+			<span class="broadScaleTools pull-right" data-model_id="<%=model_id%>"><i class="icon-cog"></i></span>
+			<div class="broadScaleControlContainer" data-model_id="<%=model_id%>">
+				<div class="percentageSelector pull-right">
+					<span class="percent_none percentValue"><i class='icon-ban-circle'></i></span>
+					<span class='percentValue percent_0' data-percentage='0' data-model_id="<%=model_id%>">0</span>
+					<span class="percentValue percent_10" data-percentage='10' data-model_id="<%=model_id%>">10</span>
+					<span class="percentValue percent_20" data-percentage='20' data-model_id="<%=model_id%>">20</span>
+					<span class="percentValue percent_30" data-percentage='30' data-model_id="<%=model_id%>">30</span>
+					<span class="percentValue percent_40" data-percentage='40' data-model_id="<%=model_id%>">40</span>
+					<span class="percentValue percent_50" data-percentage='50' data-model_id="<%=model_id%>">50</span>
+					<span class="percentValue percent_60" data-percentage='60' data-model_id="<%=model_id%>">60</span>
+					<span class="percentValue percent_70" data-percentage='70' data-model_id="<%=model_id%>">70</span>
+					<span class="percentValue percent_80" data-percentage='80' data-model_id="<%=model_id%>">80</span>
+					<span class="percentValue percent_90" data-percentage='90' data-model_id="<%=model_id%>">90</span>
+					<span class="percentValue percent_100" data-percentage='100' data-model_id="<%=model_id%>">100</span>
+				</div>
+			</div>
 		</li>
 	</script>
 	

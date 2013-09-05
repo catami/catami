@@ -1,5 +1,13 @@
 var GlobalEvent = _.extend({}, Backbone.Events);
 
+var QualifierCode = Backbone.Model.extend({
+    urlRoot: "/api/dev/qualifier_code/",
+    url: function() {
+        var origUrl = Backbone.Model.prototype.url.call(this);
+        return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
+    }
+});
+
 var AnnotationCode = Backbone.Model.extend({
     urlRoot: "/api/dev/annotation_code/",
     url: function() {
@@ -938,7 +946,9 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         'click #add_new_broadscale_annotation': 'addNewBroadscaleAnnotation',
         'click .wholeImageLabel': 'toggleAnnotationEditable',
         'click #confirm_clear_all': 'confirmClearAllBroadScaleAnnotation',
-        'click #confirm_delete_all': 'confirmDeleteAllBroadScaleAnnotation'
+        'click #confirm_delete_all': 'confirmDeleteAllBroadScaleAnnotation',
+        'click .percentValue': 'percentCoverageSelected',
+        'click .broadScaleTools': 'toggleBroadScaleTools'
     },
     initialize: function () {
         GlobalEvent.on("annotation_to_be_set", this.wholeImageAnnotationChosen, this);
@@ -963,8 +973,9 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 parent.renderBroadScalePoints();
 
                 //hide the delete/clear/confirm UI
-                parent.$('.actionConfirmAlert').css('display', 'none');
-                parent.$('.editBroadScaleIndictor').css('display','none');
+                parent.$('.actionConfirmAlert').hide();
+                parent.$('.editBroadScaleIndictor').hide();
+                parent.$('.broadScaleControlContainer').hide();
 
                 //hide spinner
             },
@@ -1016,6 +1027,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
             var annotationVariables = {
                 "broadScaleClassParent": usefulRootCaabCode,
                 "broadScaleClass": label,
+                "broadScalePercentage": '-- %',
                 "model_id": pointId
             };
 
@@ -1087,6 +1099,8 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         });
     },
     toggleAnnotationEditable: function(ev){
+        //this.clearEditableStatus();  //permit no similataneous edits
+
         if($(ev.currentTarget).hasClass('editable')){
             $(ev.currentTarget).find('.editBroadScaleIndictor').css('display', 'none');
             $(ev.currentTarget).removeClass('editable');
@@ -1195,6 +1209,21 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 }
             });
         });
+    },
+    toggleBroadScaleTools: function(ev){
+        //ugh
+        var model_id = $(ev.target).parent().data('model_id');
+        console.log(model_id);
+        // $('.wholeImageItem').find("[data-model_id='"+model_id+"']").css('display','block');
+        var control = $('#ChooseAnnotationContainer').find("[data-model_id='"+model_id+"'] .broadScaleControlContainer");
+        //control.show();
+
+        control.toggle();
+    },
+    percentCoverageSelected: function(ev) {
+        var selected_percentage = $(ev.target).data('percentage');
+        var model_id = $(ev.target).data('model_id');
+        $('#ChooseAnnotationContainer').find("[data-model_id='"+model_id+"'] .broadScalePercentage").html(selected_percentage+" %");
     }
 });
 
