@@ -268,6 +268,10 @@
 			color:#4f68f8;
 		}
 
+        .nav-stacked ul {
+        	margin-left: 15px !important;
+        }
+
 	</style>
 
 
@@ -295,7 +299,7 @@
             <ul class="nav nav-tabs">
                 <li class="active" ><a href="#AnnotationSelectionTab" data-toggle="tab">Annotation Selection</a></li>
                 <li><a href="#SimilarImageTab" data-toggle="tab">Similar Images <span id="SimilarImageBadge" class="badge badge-info"></span> </a></li>
-                <li><a href="#StatsTab" data-toggle="tab">Stats</a></li>
+                <li><a href="#StatsTab" data-toggle="tab">Statistics</a></li>
             </ul>
 
             <div class="tab-content">
@@ -306,7 +310,7 @@
                     <div id="ImageSimilarityContainer" ></div>
                 </div>
                 <div class="tab-pane" id="StatsTab">
-                    <div id="ImagePILSContainer" ></div>
+                    <div id="AnnotationStatusContainer"></div>
                 </div>
             </div>
 
@@ -338,13 +342,26 @@
         </div>
     </script>
 
-    <script type="text/template" id="ImagePILSTemplate">
+    <script type="text/template" id="AnnotationStatusTemplate">
 
         <div>
-			<h3>Image Labels</h3>
-			<ul id="LabelPils" class="nav nav-pills"></ul>
+            <ul>
+                <li class="label label-inverse">Annotation Set Id:</li><li class="label"><%=annotation_set_id%></li><br>
+                <li class="label label-inverse">Annotation Set Type:</li><li class="label"><%=annotation_set_type%></li><br>
+                <li class="label label-inverse">Total Annotations:</li><li class="label"><%=total%></li><br>
+                <li class="label label-inverse">Unannotated:</li><li class="label"><%=unannotated%></li><br>
+                <li class="label label-inverse">Annotated:</li><li class="label"><%=annotated%></li><br>
+                <ul class="nav-stacked">
+                    <%=annotated_sub%>
+                </ul>
+            </ul>
+            
         </div>
 
+    </script>
+
+    <script type="text/template" id="AnnotationStatusSubTemplate">
+        <li class="label label-inverse"><%=sub_label%>:</li><li class="label"><%=sub_value%></li><br>
     </script>
 
     <script type="text/template" id="ImageZoomControlTemplate">

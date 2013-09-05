@@ -127,11 +127,10 @@ OrchestratorView = Backbone.View.extend({
             this.wholeImageAnnotationSelectorView = new WholeImageAnnotationSelectorView({});
             this.wholeImageControlBarView = new WholeImageControlBarView({});
         } else {
-            this.imagePointsPILSView = new ImagePointsPILSView({});
             this.pointControlBarView = new PointControlBarView({});
         }
 
-        this.imagePointsPILSView = new ImagePointsPILSView({});
+        this.annotationStatusView = new AnnotationStatusView({});
         this.similarityImageView = new SimilarityImageView({});
 
         //render the views
@@ -145,13 +144,13 @@ OrchestratorView = Backbone.View.extend({
         this.assign(this.thumbnailStripView, '#ThumbnailStripContainer');
         this.assign(this.imagesAnnotateView, '#ImageContainer');
         this.assign(this.chooseAnnotationView, '#ChooseAnnotationContainer');
+        this.assign(this.annotationStatusView, '#AnnotationStatusContainer');
 
         if (annotationSets.at(0).get('annotation_set_type') === 1){
             this.assign(this.wholeImageAnnotationSelectorView, '#whole-image-annotation-selector');
             this.assign(this.similarityImageView, '#ImageSimilarityContainer');
             this.assign(this.wholeImageControlBarView, '#ControlBarContainer');
         } else {
-            this.assign(this.imagePointsPILSView, '#ImagePILSContainer');
             this.assign(this.pointControlBarView, '#ControlBarContainer');
         }
         
@@ -284,6 +283,7 @@ ThumbnailStripView = Backbone.View.extend({
         GlobalEvent.on("thumbnail_selected_by_id", this.thumbnailSelectedById, this);
         GlobalEvent.on("update_annotation", this.updateAnnotation, this);
         GlobalEvent.on("thumbnails_loaded", this.render, this);
+        GlobalEvent.on("annotation_set_has_changed", this.buildAnnotationStatus, this);        
     },
     render: function () {
         //get all the images to be rendered
@@ -302,9 +302,7 @@ ThumbnailStripView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
 
-        this.buildAnnotationStatus();        
-        this.renderAnnotationStatus();
-
+        this.buildAnnotationStatus();               
     },
     buildAnnotationStatus: function () {
         map = { "images": [] }; //reset map
@@ -323,9 +321,8 @@ ThumbnailStripView = Backbone.View.extend({
         imageIds = imageIds.substring(0, imageIds.length - 1); //remove trailing comma
         var imageAnnotations;
         if (annotationSetType === "broad scale") 
-            imageAnnotations = new WholeImageAnnotations({ "url": "/api/dev/whole_image_annotation/?image__in=" + imageIds });
-        else imageAnnotations = new PointAnnotations({ "url": "/api/dev/point_annotation/?image__in=" + imageIds });
-
+            imageAnnotations = new WholeImageAnnotations({ "url": "/api/dev/whole_image_annotation/" });
+        else imageAnnotations = new PointAnnotations({ "url": "/api/dev/point_annotation/" });                            
         imageAnnotations.fetch({
             async: false,
             data: {
@@ -370,6 +367,7 @@ ThumbnailStripView = Backbone.View.extend({
                 });
             }
         });
+        this.renderAnnotationStatus();
     },
     updateAnnotation: function (imageId, annotId, code, name) {        
         updateAnnotation(imageId, annotId, code, name);
@@ -690,6 +688,7 @@ ImageAnnotateView = Backbone.View.extend({
 
                     //update the pil sidebar
                     GlobalEvent.trigger("image_points_updated", this);
+                    GlobalEvent.trigger("annotation_set_has_changed");
                 },
                 error: function (model, xhr, options) {
                     if (theXHR.status == "201" || theXHR.status == "202") {
@@ -885,46 +884,52 @@ ImagePointsControlView = Backbone.View.extend({
     }
 });
 
-ImagePointsPILSView = Backbone.View.extend({
+AnnotationStatusView = Backbone.View.extend({
     initialize: function () {
-        //when points are updated, update the pils
-        GlobalEvent.on("image_points_updated", this.updatePils, this);
+        //when annotation is updated, update this
+        GlobalEvent.on("annotation_set_has_changed", this.render, this);
     },
-    render: function () {
-        var imagePILSTemplate = _.template($("#ImagePILSTemplate").html(), {});
+    render: function () {        
+        var statusVariables = {};
+        $.ajax({
+            url:  '/api/dev/annotation_set/'
+                     + annotationSets.at(0).get('id')
+                     + '/annotation_status/',
+            dataType: "json",
+            async: false,
+            success: function (response, textStatus, jqXHR) {
+                var type = response.annotation_set_type;
+                var total = response.total;
+                var unannotated = response.unannotated;
+                statusVariables['annotation_set_id'] = response.annotation_set_id;
+                statusVariables['annotation_set_type'] = type;
+                statusVariables['total'] = total;
+                statusVariables['unannotated'] = unannotated + " (" + (unannotated / total * 100).toFixed(2) + "%)";
+                statusVariables['annotated'] = total - unannotated + " (" + ((total - unannotated) / total * 100).toFixed(2) + "%)";;
+                var statusSubTemplate ="";
+                var statusSubVariables = {};
+                var annotated = response.annotated;
+                var names = Object.keys(annotated);
+                for (var i = 0; i < names.length; i++) {
+                    var name = names[i];
+                    statusSubVariables['sub_label'] = name;
+                    statusSubVariables['sub_value'] = annotated[name] + " (" + (annotated[name] / total * 100).toFixed(2) + "%)";;;
+                    statusSubTemplate += _.template($("#AnnotationStatusSubTemplate").html(), statusSubVariables);
+                }
+                statusVariables['annotated_sub'] = statusSubTemplate;
+            },
+            error: function (request, status, error) {
+                alert(request.responseText);
+            }
+        });   
+
+        var statusTemplate = _.template($("#AnnotationStatusTemplate").html(), statusVariables);
 
         // // Load the compiled HTML into the Backbone "el"
-        this.$el.html(imagePILSTemplate);
-
-        this.updatePils();
+        this.$el.html(statusTemplate);
 
         return this.el;
     },
-    updatePils: function() {
-
-        var pilHtml = "";
-        annotationCodeList.each(function (annotationCode) {
-            var caab_code = annotationCode.get('caab_code');
-            var count = points.filter(
-                function(point) {
-                    return point.get("annotation_caab_code") == caab_code;
-                }
-            ).length;
-
-            if(count > 0) {
-                pilHtml += "<li class='active'> <a>("+annotationCode.id+") "+annotationCode.get('code_name')+" <span class='badge badge-info'><b>"+ count +"</b></span> </a> </li>";
-            }
-        });
-
-        if(pilHtml == "") {
-            $("#LabelPils").empty();
-            $("#LabelPils").append('<li class="active"> <a>This image is not labelled.</a> </li>');
-        } else {
-            $("#LabelPils").empty();
-            $("#LabelPils").append(pilHtml);
-        }
-
-    }
 });
 
 
@@ -1084,6 +1089,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         broadScalePoints.create(broad_scale_annotation,{
             success:function() {
                 parent.render();
+                GlobalEvent.trigger("annotation_set_has_changed");
                 //remove spinner TBD
             }
         });
@@ -1127,6 +1133,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         objectsToRemove.destroy({
             success: function(model, response, options) {
                 parent.render();
+                GlobalEvent.trigger("annotation_set_has_changed");
             },
             error: function (model, xhr, options) {
                 console.log('error');
@@ -1159,7 +1166,8 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 }
             });
         }
-
+        GlobalEvent.trigger("annotation_set_has_changed");
+        parent.render();
     },
     highlightInterfaceForBiota: function(){
         $('a[href=#biota_root_node]').trigger('activate-node');
@@ -1186,6 +1194,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         var successCallback = _.after(broadScalePoints.length, function() {
             parent.render(); // render after all saves are done (saves are async)
         });
+        GlobalEvent.trigger("annotation_set_has_changed");
 
         broadScalePoints.each(function (whole_image_point) {
             whole_image_point.save(properties,{
