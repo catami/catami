@@ -659,7 +659,8 @@ class AnnotationSetResource(ModelResource):
             url(r"^(?P<resource_name>%s)/(?P<annotation_set_id>\w[\w/-]*)/(?P<image_id>\w[\w/-]*)/image_by_id%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images_by_id'), name="api_get_image_by_id"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/similar_images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_similar_images'), name="api_get_similar_images"),
-            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/copy_wholeimage_classification%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('copy_wholeimage_classification'), name="api_copy_wholeimage_classification")
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/copy_wholeimage_classification%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('copy_wholeimage_classification'), name="api_copy_wholeimage_classification"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/get_image_similarity_status%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_image_similarity_status'), name="api_get_image_similarity_status")
         ]
 
     def get_status(self, request, **kwargs):
@@ -744,6 +745,7 @@ class AnnotationSetResource(ModelResource):
         return HttpResponse(content= json_content,
                             status=200,
                             content_type='application/json')
+    
     def get_images(self, request, **kwargs):
         """
         This is a nested function so that we can do paginated thumbnail queries on the image resource
@@ -865,6 +867,38 @@ class AnnotationSetResource(ModelResource):
 
         # everything went well
         return HttpResponse("Copied whole broad scale classifications successfully.",
+                            status=200)
+
+    def get_image_similarity_status(self, request, **kwargs):
+        """
+        Helper function to check whether an image has the same broad scale annotation as another
+        """
+
+        # need to create a bundle for tastypie
+        basic_bundle = self.build_bundle(request=request)
+
+        try:
+            obj = self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI.")
+
+        #get the path of the image we want to search with
+        source_image = request.GET["source_image"]
+        comparison_image = request.GET["comparison_image"]
+
+        #check we have everything
+        if len(comparison_image) == 0 or len(source_image) == 0:
+            return self.create_response(request, "Not all fields were provided.", response_class=HttpBadRequest)
+
+        # do the check
+        same = WholeImageAnnotationManager().check_if_images_have_same_annotations(obj.pk, source_image, comparison_image)
+
+        jsondict = {'same': same}
+
+        return HttpResponse(simplejson.dumps(jsondict),
+                            content_type='application/json',
                             status=200)
 
     def do_point_sampling_operations(self, bundle):

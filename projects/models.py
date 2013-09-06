@@ -222,6 +222,43 @@ class WholeImageAnnotationManager(models.Manager):
                                     annotation_caab_code=annotation.annotation_caab_code,
                                     qualifier_short_name=annotation.qualifier_short_name).save()
 
+    def check_if_images_have_same_annotations(self, annotation_set_id, image_one, image_two):
+
+        # get whole image annotations for the source image
+        image_one_annotations = WholeImageAnnotation.objects.filter(annotation_set=annotation_set_id,
+                                                                    image=image_one)
+
+        # get whole image annotations for the destination image
+        image_two_annotations = WholeImageAnnotation.objects.filter(annotation_set=annotation_set_id,
+                                                                    image=image_two)
+
+        results_one = image_one_annotations.filter(annotation_caab_code="")
+        results_two = image_two_annotations.filter(annotation_caab_code="")
+
+        # if there are no annoatations on either, then not the same
+        if (image_one_annotations.count() or image_two_annotations.count()) == 0:
+            return "false"
+
+        if results_one.count() == image_one_annotations.count():
+            return "false"
+
+        if results_two.count() == image_two_annotations.count():
+            return "false"
+
+        #if sizes are different, then they are not the same
+        if image_one_annotations.count() != image_two_annotations.count():
+            return "false"
+
+        # loop through and check if A and B have the same contents
+        for annotation in image_one_annotations:
+            results = image_two_annotations.filter(annotation_caab_code=annotation.annotation_caab_code)
+
+            # no ? then these lists are not the same
+            if results.count() == 0:
+                return "false"
+
+        return "true"
+
 
 class PointAnnotation(Annotation):
     """

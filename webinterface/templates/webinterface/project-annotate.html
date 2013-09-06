@@ -383,6 +383,43 @@
         	margin-left: 15px !important;
         }
 
+    .SimilarThumbnailContainer {
+        position:relative;
+        display:inline-block;
+        text-align:center;
+    }
+
+    .SimilarSameButton {
+        position:absolute;
+        bottom:0px;
+        left:0px;
+        display: none;
+    }
+
+    #SimilarNotSameButton {
+        position:absolute;
+        bottom:0px;
+        right:0px;
+    }
+
+    .SimilarModalButton {
+        position:absolute;
+        top:0px;
+        left:0px;
+        display: none;
+    }
+
+    .SimilarSameLayer {
+        position:absolute;
+        text-align:center;
+        color: #ffffff;
+        top:25px;
+        left:50px;
+        text-shadow: 6px 6px 18px rgba(0,0,0,0.5);
+        display: none;
+        /*background-color: rgba(0, 0, 0, .4);*/
+    }
+
 	</style>
 
 
@@ -431,11 +468,33 @@
 
     <script type="text/template" id="ImageSimilarityTemplate">
         <h3></h3>
-        <%=images%>
+
+        <div class="row-fluid">
+            <%=controls%>
+
+        </div>
+
+        <div style="padding-top: 10px" class="row-fluid">
+            <%=images%>
+        </div>
+
+    </script>
+
+    <script type="text/template" id="SimilaritySelectAllTemplate">
+        <button id="SimilarSameAll" class="btn btn btn-success" type="button"><i class="icon-ok"></i> Yes, apply same labels to all similar images.</button>
     </script>
 
     <script type="text/template" id="SimilarityThumbnailTemplate">
-        <a href="#<%= index %>-modal" data-toggle="modal"> <img id="<%= index %>" class="similarThumbnail" src="<%= thumbnail_location %>" style="padding-bottom: 5px;"> </a>
+        <!--<a href="#<%= index %>-modal" data-toggle="modal"> <img id="<%= index %>" class="similarThumbnail" src="<%= thumbnail_location %>" style="padding-bottom: 5px;"> </a>-->
+
+        <div id="<%= index %>" class="SimilarThumbnailContainer">
+            <img id="<%= index %>" class="similarThumbnail" src="<%= thumbnail_location %>" style="padding-bottom: 5px;">
+            <button id="SimilarSameButton<%= index %>" class="btn btn-small btn-success SimilarSameButton" type="button" title="Yes, this image is the same."><i class="icon-ok"></i></button>
+            <!--<button id="SimilarNotSameButton" class="btn btn-mini btn-danger" type="button"><i class="icon-remove"></i></button>-->
+            <a href="#<%= index %>-modal" data-toggle="modal" id="SimilarModalButton<%= index %>" class="btn btn-small SimilarModalButton" type="button" title="Take a closer look."><i class="icon-search"></i></a>
+
+            <span id="SimilarSameLayer<%= index %>" class="SimilarSameLayer"><i class="icon-ok icon-3x"></i></span>
+        </div>
 
         <!-- Modal -->
         <div id="<%= index %>-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -447,7 +506,7 @@
             <img src="<%= web_location %>">
           </div>
           <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
             <button id="<%= index %>" data-dismiss="modal" class="btn btn-primary yesItsTheSame">Yes</button>
           </div>
         </div>
@@ -572,18 +631,18 @@
 				</a>
 				<li id="DeleteBroadScaleConfirm" class="actionConfirmAlert">
 					<span><i class="icon-warning-sign"></i> Remove item/s?</span>
-					<span class="btn btn-small pull-right dismiss_confirmation">No </i></span>
-					<span id="confirm_delete" class="btn btn-small btn-danger pull-right">Yes </i></span>
+					<span class="btn btn-small pull-right dismiss_confirmation">No </span>
+					<span id="confirm_delete" class="btn btn-small btn-danger pull-right">Yes </span>
 				</li>
 				<li id="DeleteAllBroadScaleConfirm" class="actionConfirmAlert">
 					<span><i class="icon-warning-sign"></i> Remove all annotations?</span>
-					<span class="btn btn-small pull-right dismiss_confirmation">No </i></span>
-					<span id="confirm_delete_all" class="btn btn-small btn-danger pull-right">Yes </i></span>
+					<span class="btn btn-small pull-right dismiss_confirmation">No </span>
+					<span id="confirm_delete_all" class="btn btn-small btn-danger pull-right">Yes</span>
 				</li>
 				<li id="ClearAllBroadScaleConfirm" class="actionConfirmAlert">
 					<span><i class="icon-warning-sign"></i> Clear all annotations?</span>
-					<span class="btn btn-small pull-right dismiss_confirmation">No </i></span>
-					<span id="confirm_clear_all" class="btn btn-small btn-danger pull-right">Yes </i></span>
+					<span class="btn btn-small pull-right dismiss_confirmation">No </span>
+					<span id="confirm_clear_all" class="btn btn-small btn-danger pull-right">Yes </span>
 				</li>
 				<li class="wholeImageFooter"> 
 <!-- 					<a id="set_unscorable" class="btn btn-mini btn-warning pull-left"><i class="icon-question"></i> Unscorable</a>    -->

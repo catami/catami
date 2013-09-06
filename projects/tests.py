@@ -859,6 +859,95 @@ class TestAnnotationSetResource(ResourceTestCase):
 
         self.assertEqual(annotation_objects.count(), 4)
 
+    def test_same_get_image_similarity_status(self):
+
+        # create some annotations on images
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_one,
+                             owner=self.user_bob,
+                             annotation_caab_code="one",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_one,
+                             owner=self.user_bob,
+                             annotation_caab_code="two",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_two,
+                             owner=self.user_bob,
+                             annotation_caab_code="one",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_two,
+                             owner=self.user_bob,
+                             annotation_caab_code="two",
+                             qualifier_short_name="").save()
+
+        # try and copy with permissions
+        response = self.bob_api_client.get(self.annotation_set_url +
+                                            str(self.annotation_set_bobs.id) +
+                                            "/get_image_similarity_status/" +
+                                            "?source_image=" + self.mock_image_one.id.__str__() +
+                                            "&comparison_image=" + self.mock_image_two.id.__str__(),
+                                            format='json')
+
+        self.assertEqual(self.deserialize(response)['same'], "true")
+
+        # make them different, and check false response
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_two,
+                             owner=self.user_bob,
+                             annotation_caab_code="three",
+                             qualifier_short_name="").save()
+
+        #self.assertEqual(self.deserialize(response)['same'], "false")
+
+    def test_notsame_get_image_similarity_status(self):
+
+        # create some annotations on images
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_one,
+                             owner=self.user_bob,
+                             annotation_caab_code="one",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_one,
+                             owner=self.user_bob,
+                             annotation_caab_code="two",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_two,
+                             owner=self.user_bob,
+                             annotation_caab_code="one",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_two,
+                             owner=self.user_bob,
+                             annotation_caab_code="two",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_two,
+                             owner=self.user_bob,
+                             annotation_caab_code="three",
+                             qualifier_short_name="").save()
+
+        # try and copy with permissions
+        response = self.bob_api_client.get(self.annotation_set_url +
+                                            str(self.annotation_set_bobs.id) +
+                                            "/get_image_similarity_status/" +
+                                            "?source_image=" + self.mock_image_one.id.__str__() +
+                                            "&comparison_image=" + self.mock_image_two.id.__str__(),
+                                            format='json')
+
+        self.assertEqual(self.deserialize(response)['same'], "false")
+
 
 class TestPointAnnotationResource(ResourceTestCase):
 
