@@ -16,6 +16,7 @@ from userena.signals import signup_complete
 import logging
 import os
 from catamiPortal import settings
+from django.core.validators import MinValueValidator
 
 logger = logging.getLogger(__name__)
 
@@ -207,6 +208,7 @@ class Image(models.Model):
     date_time = models.DateTimeField()
     position = models.PointField()
     depth = models.FloatField()
+    depth_uncertainty = models.FloatField(null=True, validators=[MinValueValidator(0.0)])
     objects = models.GeoManager()
 
     class Meta:
