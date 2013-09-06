@@ -1003,6 +1003,9 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
             var usefulRootCaabCode;
             var pointId = whole_image_point.get('id');
             var label = whole_image_point.get('annotation_caab_code');
+            var fov_percentage = whole_image_point.get('coverage_percentage');
+
+            if (fov_percentage < 0){fov_percentage='--';}
 
             if (label === ""){
                 annotationCode = annotationCodeList.find(function(model) {
@@ -1034,7 +1037,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
             var annotationVariables = {
                 "broadScaleClassParent": usefulRootCaabCode,
                 "broadScaleClass": label,
-                "broadScalePercentage": '-- %',
+                "broadScalePercentage": fov_percentage+' %',
                 "model_id": pointId
             };
 
@@ -1224,17 +1227,29 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
     toggleBroadScaleTools: function(ev){
         //ugh
         var model_id = $(ev.target).parent().data('model_id');
-        console.log(model_id);
-        // $('.wholeImageItem').find("[data-model_id='"+model_id+"']").css('display','block');
+
         var control = $('#ChooseAnnotationContainer').find("[data-model_id='"+model_id+"'] .broadScaleControlContainer");
-        //control.show();
 
         control.toggle();
     },
     percentCoverageSelected: function(ev) {
         var selected_percentage = $(ev.target).data('percentage');
         var model_id = $(ev.target).data('model_id');
-        $('#ChooseAnnotationContainer').find("[data-model_id='"+model_id+"'] .broadScalePercentage").html(selected_percentage+" %");
+
+//        $('#ChooseAnnotationContainer').find("[data-model_id='"+model_id+"'] .broadScalePercentage").html(selected_percentage+" %");
+
+        //set % in the model
+        var properties = { 'coverage_percentage': selected_percentage};
+        var theXHR  = broadScalePoints.get(model_id).save(properties, {
+            patch: true,
+            headers: {"cache-control": "no-cache"},
+            success: function (model, xhr, options) {
+                $('#ChooseAnnotationContainer').find("[data-model_id='"+model_id+"'] .broadScalePercentage").html(selected_percentage+" %");
+            },
+            error: function (model, xhr, options) {
+                console.log('problem in percentCoverageSelected',xhr);
+            }
+        });
     }
 });
 

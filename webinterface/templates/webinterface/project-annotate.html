@@ -127,8 +127,13 @@
 			padding-top: 3px;
 			font-weight: 300;
 		}
+		.broadScalePercentage{
+			margin-left:1px;
+			margin-right:1px			
+		}
 		.wholeImageClassLabel{
-
+			margin-left:1px;
+			margin-right:1px
 		}
 		.wholeImageLabel{
 			font-weight: 500;
@@ -166,8 +171,8 @@
 		}
 		.broadScaleControlContainer{
 			background-color: rgba(255,255,255,0.76);
-			padding-top:20px;
-			padding-bottom: 20px;
+			padding-top:10px;
+			padding-bottom: 30px;
 		}
 		.AddBroadScaleElement{
 			list-style-position:outside;
@@ -199,56 +204,107 @@
 		.percentageSelector{
 			
 		}
+		.percentageSelectorLabel{
+			margin-left: 2px;
+		}
 		.percent_none{
 			color:red;
 			background-color: white;
 		}
 		.percent_0{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #c1c1c1;
 		}
 		.percent_10{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #a7a7a7;
 		}
 		.percent_20{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #9b9b9b;
 		}
 		.percent_30{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #8d8d8d;
 		}
 		.percent_40{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #858585;
 		}
 		.percent_50{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #7a7a7a;
 		}
 		.percent_60{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #6b6b6b;
 		}
 		.percent_70{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #5b5b5b;
 		}
 		.percent_80{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #4f4f4f;
 		}
 		.percent_90{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #3b3b3b;
 		}
 		.percent_100{
-			color:black;
-			background-color: white;
+			color:white;
+			background-color: #2c2b2b;
+		}
+		.percent_0:hover{
+			color:white;
+			background-color: #38b07e;
+		}
+		.percent_10:hover{
+			color:white;
+			background-color: #38b090;
+		}
+		.percent_20:hover{
+			color:white;
+			background-color: #38b0a6;
+		}
+		.percent_30:hover{
+			color:white;
+			background-color: #38a0b0;
+		}
+		.percent_40:hover{
+			color:white;
+			background-color: #3884b0;
+		}
+		.percent_50:hover{
+			color:white;
+			background-color: #386ab0;
+		}
+		.percent_60:hover{
+			color:white;
+			background-color: #3854b0;
+		}
+		.percent_70:hover{
+			color:white;
+			background-color: #3840b0;
+		}
+		.percent_80:hover{
+			color:white;
+			background-color: #4238b0;
+		}
+		.percent_90:hover{
+			color:white;
+			background-color: #5638b0;
+		}
+		.percent_100:hover{
+			color:white;
+			background-color: #7238b0;
 		}
 		.percentValue{
-			border: 1px solid black;
+			border: 1px solid white;
+			margin-left: -2px;
+			margin-right: -2px;
+			padding-right: 5px;
+			padding-left: 5px;
 		}
 /* toolbar */ 
 
@@ -542,12 +598,13 @@
 		<li class="wholeImageItem" data-model_id="<%=model_id%>">
 			<a id="delete_selected_annotation" class="pull-right" ><i class="icon-trash broadScaleRemoveButton" data-model_id="<%=model_id%>"></i></a>
 			<span class="wholeImageLabel" class="pull-left" data-model_id="<%=model_id%>"><i class="icon-edit-sign editBroadScaleIndictor pull-left"></i><%=broadScaleClass%></span>
-			<span class="wholeImageClassLabel badge pull-right"><%=broadScaleClassParent%></span>
-			<span class="broadScalePercentage badge pull-right"><%=broadScalePercentage%></span>
+			<span class="wholeImageClassLabel label label-info pull-right"><%=broadScaleClassParent%></span>
+			<span class="broadScalePercentage label label-info pull-right"><%=broadScalePercentage%></span>
 			<span class="broadScaleTools pull-right" data-model_id="<%=model_id%>"><i class="icon-cog"></i></span>
 			<div class="broadScaleControlContainer" data-model_id="<%=model_id%>">
 				<div class="percentageSelector pull-right">
-					<span class="percent_none percentValue"><i class='icon-ban-circle'></i></span>
+					<p class="percentageSelectorLabel pull-right">FOV Coverage</p>
+					<span class="percentValue percent_none" data-percentage='-1' data-model_id="<%=model_id%>">--</span>
 					<span class='percentValue percent_0' data-percentage='0' data-model_id="<%=model_id%>">0</span>
 					<span class="percentValue percent_10" data-percentage='10' data-model_id="<%=model_id%>">10</span>
 					<span class="percentValue percent_20" data-percentage='20' data-model_id="<%=model_id%>">20</span>
