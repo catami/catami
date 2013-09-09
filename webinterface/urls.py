@@ -27,7 +27,7 @@ urlpatterns = patterns(
     url(r'^howto', 'howto'),
     url(r'^about', 'about'),
     url(r'^proxy/$', 'proxy'),
-
+    url(r'^classification', 'classification'),
     #url(r'^viewcollection$', 'viewcollection'),
 
     #Staging

@@ -87,7 +87,10 @@ def about(request):
 
 def howto(request):
     return render_to_response('webinterface/howto.html', {},
+                              RequestContext(request))
 
+def classification(request):
+    return render_to_response('webinterface/classification.html', {},
                               RequestContext(request))
 
 
