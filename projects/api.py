@@ -661,7 +661,8 @@ class AnnotationSetResource(ModelResource):
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/similar_images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_similar_images'), name="api_get_similar_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/copy_wholeimage_classification%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('copy_wholeimage_classification'), name="api_copy_wholeimage_classification"),
-            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/get_image_similarity_status%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_image_similarity_status'), name="api_get_image_similarity_status")
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/get_image_similarity_status%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_image_similarity_status'), name="api_get_image_similarity_status"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/get_percentage_complete%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_percentage_complete'), name="api_get_percentage_complete")
         ]
 
     def get_status(self, request, **kwargs):
@@ -904,6 +905,43 @@ class AnnotationSetResource(ModelResource):
                             content_type='application/json',
                             status=200)
 
+    def get_percentage_complete(self, request, **kwargs):
+        """
+        Helper function which returns the percentage completeness of the annotation set.
+        """
+
+        # need to create a bundle for tastypie
+        basic_bundle = self.build_bundle(request=request)
+
+        try:
+            obj = self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI.")
+
+        # get point and whole image annotations which have been labelled
+        whole_image_count = WholeImageAnnotation.objects.filter(annotation_set=obj.pk).exclude(annotation_caab_code="").count()
+        point_count = PointAnnotation.objects.filter(annotation_set=obj.pk).exclude(annotation_caab_code="").count()
+
+        completed_combined_count = whole_image_count + point_count
+
+        # get point and whole image annotations which have not been labelled
+        whole_image_count = WholeImageAnnotation.objects.filter(annotation_set=obj.pk).count()
+        point_count = PointAnnotation.objects.filter(annotation_set=obj.pk).count()
+
+        total_count = whole_image_count + point_count
+
+        # calculate percentage complete
+        percentage_complete = (float(completed_combined_count) / float(total_count)) * 100.0
+        percentage_complete = round(percentage_complete, 2)
+
+        jsondict = {'percentage_complete': percentage_complete}
+
+        return HttpResponse(simplejson.dumps(jsondict),
+                            content_type='application/json',
+                            status=200)
+
     def do_point_sampling_operations(self, bundle):
         """ Helper function to hold all the sampling logic """
 
@@ -971,6 +1009,26 @@ class AnnotationSetResource(ModelResource):
                 
         return bundle
 
+    def dehydrate(self, bundle):
+        """
+        Appending some additional details to the output
+        """
+
+        # get the number of images on this annotation set
+        image_count = bundle.obj.images.all().count()
+
+        # points per image
+        point_count = PointAnnotation.objects.filter(annotation_set=bundle.obj).count()
+
+        bundle.data['points_per_image'] = point_count/image_count
+
+        # whole image labels per image
+        whole_image_annotation_count = WholeImageAnnotation.objects.filter(annotation_set=bundle.obj).count()
+        whole_image_annotation_count = round(float(whole_image_annotation_count)/float(image_count), 2)
+
+        bundle.data['whole_image_annotations_per_image'] = whole_image_annotation_count
+
+        return bundle
 
 class PointAnnotationResource(ModelResource):
     annotation_set = fields.ForeignKey(AnnotationSetResource, 'annotation_set')

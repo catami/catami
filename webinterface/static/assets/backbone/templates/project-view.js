@@ -58,6 +58,10 @@ var Projects = Backbone.Tastypie.Collection.extend({
     model: Project
 });
 
+function getPercentageCompleteURL(annotationSetId) {
+    return "/api/dev/annotation_set/" + annotationSetId + "/get_percentage_complete/";
+}
+
 ProjectView = Backbone.View.extend({
     model: Project,
     el: $('div'),
@@ -101,6 +105,18 @@ ProjectView = Backbone.View.extend({
 
         var annotationSetImages = new Images({"url": "/api/dev/annotation_set/" + annotationSets.at(0).get('id') + "/images/"});
 
+        $.get(
+                getPercentageCompleteURL(annotationSets.at(0).get('id'))
+        ).done(
+            function(data) {
+                $('#percentage_complete').html(data.percentage_complete + "%");
+            }
+        ).fail(
+            function() {
+                $('#percentage_complete').html("-%");
+            }
+        );
+
         //get total images
         annotationSetImages.fetch({
             data: { limit: 1, offset: 0},
@@ -111,92 +127,19 @@ ProjectView = Backbone.View.extend({
 
                 //get points total and calculate completeness
                 if (annotationSetType == annotationSetTypes[0]){
-                    points.fetch({ //assuming annotation sets have been fetched and succeeded
-                        data: { limit: 100000, annotation_set: annotationSets.at(0).get('id') },
-                        success: function (model, response, options) {
-
-                            //points per image set
-                            var totalPoints = points.meta.total_count;
-                            var totalImages = annotationSetImages.meta.total_count;
-                            $('#annotation_type_label').html('Fine Scale Annotation')
-                            $('#points_per_image').html(totalPoints/totalImages);
-                            $('#point_sampling_method').html(pointSampling);
-
-                            console.log("total points " + totalPoints);
-
-                            var pointsAnnotatedCounter = 0;
-                            //loop through the points calculate completeness
-                            points.each(function (point) {
-                                if(point.get('annotation_caab_code') != "")
-                                    pointsAnnotatedCounter++;
-                            });
-
-                            $('#percentage_complete').html(Math.floor((pointsAnnotatedCounter/totalPoints)*100) + "%");
-
-                        },
-                        error: function (model, response, options) {
-                            $('#points_per_image').html("?");
-                            $('#percentage_complete').html("?");
-
-                            $.pnotify({
-                                title: 'Failed to load the project stats. Try refreshing the page.',
-                                text: response.status,
-                                type: 'error', // success | info | error
-                                hide: true,
-                                icon: false,
-                                history: false,
-                                sticker: false
-                            });
-                        }
-                    });
+                    $('#annotation_type_label').html('Fine Scale Annotation')
+                    $('#points_per_image').html(annotationSets.at(0).get('annotation_set_type'));
+                    $('#point_sampling_method').html(pointSampling);
                 }
-                if (annotationSetType == annotationSetTypes[1]){
-                    whole_image_points.fetch({ //assuming annotation sets have been fetched and succeeded
-                        data: { limit: 100000, annotation_set: annotationSets.at(0).get('id') },
-                        success: function (model, response, options) {
-
-                            //points per image set
-                            var totalPoints = whole_image_points.meta.total_count;
-                            var totalImages = annotationSetImages.meta.total_count;
-                            $('#annotation_type_label').html('Broad Scale Annotation')
-                            $('#points_per_image').html(totalPoints/totalImages);
-                            $('#point_sampling_method').html('whole image');
-
-                            console.log("total points " + totalPoints);
-
-                            var pointsAnnotatedCounter = 0;
-                            //loop through the points calculate completeness
-                            whole_image_points.each(function (whole_image_point) {
-                                if(whole_image_point.get('annotation_caab_code') !== ""){
-                                    pointsAnnotatedCounter++;
-                                }
-                            });
-                            console.log('pointsAnnotatedCounter '+pointsAnnotatedCounter)
-                            $('#percentage_complete').html(Math.floor((pointsAnnotatedCounter/totalPoints)*100) + "%");
-
-                        },
-                        error: function (model, response, options) {
-                            $('#points_per_image').html("?");
-                            $('#percentage_complete').html("?");
-
-                            $.pnotify({
-                                title: 'Failed to load the project stats. Try refreshing the page.',
-                                text: response.status,
-                                type: 'error', // success | info | error
-                                hide: true,
-                                icon: false,
-                                history: false,
-                                sticker: false
-                            });
-                        }
-                    });
+                else if (annotationSetType == annotationSetTypes[1]){
+                    $('#annotation_type_label').html('Broad Scale Annotation')
+                    $('#points_per_image').html(annotationSets.at(0).get('whole_image_annotations_per_image'));
+                    $('#point_sampling_method').html('whole image');
                 }
 
             },
             error: function (model, response, options) {
                 $('#total_images').html("?");
-                $('#points_per_image').html("?");
-                $('#percentage_complete').html("?");
 
                 $.pnotify({
                     title: 'Failed to load the project stats. Try refreshing the page.',

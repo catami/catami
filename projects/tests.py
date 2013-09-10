@@ -950,6 +950,60 @@ class TestAnnotationSetResource(ResourceTestCase):
 
         self.assertEqual(self.deserialize(response)['same'], "false")
 
+    def test_get_percentage_complete(self):
+
+        # create some annotations on images
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_one,
+                             owner=self.user_bob,
+                             annotation_caab_code="one",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_one,
+                             owner=self.user_bob,
+                             annotation_caab_code="two",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_two,
+                             owner=self.user_bob,
+                             annotation_caab_code="three",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_two,
+                             owner=self.user_bob,
+                             annotation_caab_code="four",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_two,
+                             owner=self.user_bob,
+                             annotation_caab_code="five",
+                             qualifier_short_name="").save()
+
+        WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
+                             image=self.mock_image_two,
+                             owner=self.user_bob,
+                             annotation_caab_code="",
+                             qualifier_short_name="").save()
+
+        PointAnnotation(annotation_set=self.annotation_set_bobs,
+                        x=22.0,
+                        y=16.0,
+                        annotation_caab_code = '10000903',
+                        image=self.mock_image_two,
+                        owner=self.user_bob).save()
+
+        # try and copy with permissions
+        response = self.bob_api_client.get(self.annotation_set_url +
+                                            str(self.annotation_set_bobs.id) +
+                                            "/get_percentage_complete/",
+                                            format='json')
+
+        self.assertEqual(self.deserialize(response)['percentage_complete'], 85.71)
+
 
 class TestPointAnnotationResource(ResourceTestCase):
 
