@@ -2,7 +2,7 @@
 {% block title %}Catami Project - Project List {% endblock %}
 
 {% block content %}
-
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/dojo/dijit/themes/claro/claro.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/elastislide.css" />
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/catami-api/css/bootstrapSwitch.css"/>
@@ -537,20 +537,38 @@
 
     <script type="text/template" id="AnnotationStatusTemplate">
 
-        <div>
-            <ul>
-                <li class="label label-inverse">Annotation Set Id:</li><li class="label"><%=annotation_set_id%></li><br>
-                <li class="label label-inverse">Annotation Set Type:</li><li class="label"><%=annotation_set_type%></li><br>
-                <li class="label label-inverse">Total Annotations:</li><li class="label"><%=total%></li><br>
-                <li class="label label-inverse">Unannotated:</li><li class="label"><%=unannotated%></li><br>
-                <li class="label label-inverse">Annotated:</li><li class="label"><%=annotated%></li><br>
-                <ul class="nav-stacked">
-                    <%=annotated_sub%>
-                </ul>
-            </ul>
-            
+        <div class="claro">
+            <div id="summary" style="width: 300px; height: 500px; display: none;">
+                <ul>
+                    <li class="label label-inverse">Annotation Set Id:</li><li class="label"><%=annotation_set_id%></li><br>
+                    <li class="label label-inverse">Annotation Set Type:</li><li class="label"><%=annotation_set_type%></li><br>
+                    <li class="label label-inverse">Total Annotations:</li><li class="label"><%=total%></li><br>
+                    <li class="label label-inverse">Unannotated:</li><li class="label"><%=unannotated%></li><br>
+                    <li class="label label-inverse">Annotated:</li><li class="label"><%=annotated%></li><br>
+                    <ul class="nav-stacked">
+                        <%=annotated_sub%>
+                    </ul>
+                </ul>             
+            </div>       
+                            
+            <div id="chart_project" style="width: 300px; height: 500px;"></div>
+            <div id="chart_annotated" style="width: 300px; height: 500px; display: none;"></div>
+            <div id="chart_topfive" style="width: 300px; height: 500px; display: none;"></div>
+            <div class="btn-group" data-toggle="buttons-radio">
+            <button type="button" class="btn active" id="radio_project">
+                Project Progress
+            </button>
+            <button type="button" class="btn" id="radio_annotated">
+                Project Annotated
+            </button>
+            <button type="button" class="btn" id="radio_topfive">
+                Top 5 Annotated
+            </button>
+            <button type="button" class="btn" id="radio_summary">
+                Summary
+            </button>
+            </div>                             
         </div>
-
     </script>
 
     <script type="text/template" id="AnnotationStatusSubTemplate">
@@ -747,7 +765,6 @@
 
     <script src="{{ STATIC_URL }}assets/jquery/modernizr.custom.17475.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/catami-api/js/catamiUtil.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/jquery.elastislide.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/point-annotation-model.js"></script>
@@ -759,8 +776,8 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.panzoom.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery.elevatezoom/jquery.elevateZoom-2.5.5.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
-
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.autoResizeImages.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/dojo/dojo/dojo.js"></script>
 
     <script type="text/javascript">
 
@@ -789,7 +806,6 @@
             var max = (divWidth > divHeight) ? divHeight : divWidth;
             $('#Image').autoResizeImages({maxSize: max});
         });
-
 
     </script>
 

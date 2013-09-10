@@ -903,6 +903,13 @@ AnnotationStatusView = Backbone.View.extend({
     },
     render: function () {        
         var statusVariables = {};
+        var chartVariables = { "project": {}, "annotated": {}, "topfive": {} };
+        var series_project = [];
+        var series_annotated = [];
+        var series_topfive = [];
+        var labels_X_axis_topfive = [];
+        var colours = ["red", "green", "yellow", "blue", "violet", "orange", "indigo"];
+
         $.ajax({
             url:  '/api/dev/annotation_set/'
                      + annotationSets.at(0).get('id')
@@ -917,7 +924,11 @@ AnnotationStatusView = Backbone.View.extend({
                 statusVariables['annotation_set_type'] = type;
                 statusVariables['total'] = total;
                 statusVariables['unannotated'] = unannotated + " (" + (unannotated / total * 100).toFixed(2) + "%)";
-                statusVariables['annotated'] = total - unannotated + " (" + ((total - unannotated) / total * 100).toFixed(2) + "%)";;
+                statusVariables['annotated'] = total - unannotated + " (" + ((total - unannotated) / total * 100).toFixed(2) + "%)";
+
+                chartVariables['project']['unannotated'] = (unannotated / total * 100).toFixed(2);
+                chartVariables['project']['annotated'] = ((total - unannotated) / total * 100).toFixed(2);
+                
                 var statusSubTemplate ="";
                 var statusSubVariables = {};
                 var annotated = response.annotated;
@@ -925,10 +936,19 @@ AnnotationStatusView = Backbone.View.extend({
                 for (var i = 0; i < names.length; i++) {
                     var name = names[i];
                     statusSubVariables['sub_label'] = name;
-                    statusSubVariables['sub_value'] = annotated[name] + " (" + (annotated[name] / total * 100).toFixed(2) + "%)";;;
+                    statusSubVariables['sub_value'] = annotated[name] + " (" + (annotated[name] / total * 100).toFixed(2) + "%)";
+                    chartVariables['annotated'][name] = (annotated[name] / total * 100).toFixed(2);                    
                     statusSubTemplate += _.template($("#AnnotationStatusSubTemplate").html(), statusSubVariables);
                 }
                 statusVariables['annotated_sub'] = statusSubTemplate;
+
+                var topfive = response.top_five_annotated
+                var keys = Object.keys(topfive);
+                for (var i = 0; i < keys.length; i++) {
+                    var key = keys[i];
+                    chartVariables['topfive'][key] = topfive[key];
+                }
+                //chartVariables['topfive']['total'] = total;
             },
             error: function (request, status, error) {
                 alert(request.responseText);
@@ -940,8 +960,136 @@ AnnotationStatusView = Backbone.View.extend({
         // // Load the compiled HTML into the Backbone "el"
         this.$el.html(statusTemplate);
 
+        require(["dojox/charting/Chart", "dojox/charting/plot2d/Columns", "dojox/charting/axis2d/Default",
+         "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
+         "dojox/charting/action2d/MoveSlice", "dojox/charting/action2d/Tooltip",
+         "dojox/charting/themes/MiamiNice", "dojox/charting/widget/Legend", "dojo/ready"],
+            function (Chart, Columns, Default, Pie, Highlight, MoveSlice, Tooltip, MiamiNice, Legend, ready) {
+                ready(function () {
+
+                    var chart_project = new Chart("chart_project");
+                    chart_project.setTheme(MiamiNice).addPlot("default", {
+                        type: Pie,
+                        font: "normal normal 11pt Tahoma",
+                        fontColor: "black",
+                        labelOffset: -30,
+                        radius: 200
+                    });
+
+                    var chart_annotated = new Chart("chart_annotated");
+                    chart_annotated.setTheme(MiamiNice).addPlot("default", {
+                        type: Pie,
+                        font: "normal normal 11pt Tahoma",
+                        fontColor: "black",
+                        labelOffset: -30,
+                        radius: 200
+                    });
+
+
+                    var chart_topfive = new Chart("chart_topfive");                    
+                    chart_topfive.setTheme(MiamiNice).addPlot("default", {
+                        type: Columns,
+                        gap: 3
+                    }).addAxis("y", {
+                        vertical: true,
+                        min: 0
+                    });
+
+                    var keys_project = Object.keys(chartVariables['project']);
+
+                    for (var i = 0; i < keys_project.length; i++) {
+                        var key = keys_project[i];
+                        series_project.push(
+                            {
+                                y: chartVariables['project'][key] * 100,
+                                text: key,
+                                stroke: "black",
+                                tooltip: chartVariables['project'][key] + "%",
+                                color: colours[i] 
+                            });
+                    }
+
+                    var keys_annotated = Object.keys(chartVariables['annotated']);                                        
+                    for (var i = 0; i < keys_annotated.length; i++) {
+                        var key = keys_annotated[i];
+                        //series.push({ y: 4, text: "Red", stroke: "black", tooltip: "Red is 50%" });
+                        series_annotated.push(
+                            {
+                                y: chartVariables['annotated'][key] * 100,
+                                stroke: "black",
+                                tooltip: key,
+                                color: "#"+(Math.random().toString(16) + '000000').slice(2, 8) //randomly generate RGB in hex to fill pie segment
+                            });
+                    }
+
+                    var keys_topfive = Object.keys(chartVariables['topfive']);
+                    labels_X_Axis_topfive = [];
+                    for (var i = 0; i < keys_topfive.length; i++) {
+                        var key = keys_topfive[i];
+                        //series_topfive.push({ x: key, y: chartVariables['topfive'][key]});
+                        series_topfive.push({ y: chartVariables['topfive'][key], fill: colours[i] });
+                        labels_X_Axis_topfive.push({value: i + 1, text: key });
+                    }                  
+
+                    chart_project.addSeries("Chart Project", series_project);
+                    chart_annotated.addSeries("Chart Annotated", series_annotated);
+                    chart_topfive.addAxis("x", {
+                        labels: labels_X_Axis_topfive,
+                        font: "normal normal 11pt Tahoma",
+                        rotation: -90,
+                    });
+                    chart_topfive.addSeries("Chart Top Five", series_topfive);
+
+                    var chart_project_anim_a = new MoveSlice(chart_project, "default");
+                    var chart_project_anim_b = new Highlight(chart_project, "default");
+                    var chart_project_anim_c = new Tooltip(chart_project, "default");
+
+                    var chart_annotated_anim_a = new MoveSlice(chart_annotated, "default");
+                    var chart_annotated_anim_b = new Highlight(chart_annotated, "default");
+                    var chart_annotated_anim_c = new Tooltip(chart_annotated, "default");
+
+                    //var chart_topfive_anim_a = new MoveSlice(chart_topfive, "default");
+                    var chart_topfive_anim_b = new Highlight(chart_topfive, "default");
+                    //var chart_topfive_anim_c = new Tooltip(chart_topfive, "default");
+
+                    chart_project.render();
+                    chart_annotated.render();
+                    chart_topfive.render();
+                });
+            }
+        );
         return this.el;
     },
+    events: {
+        'click #radio_project': 'projectClicked',
+        'click #radio_annotated': 'annotatedClicked',
+        'click #radio_topfive': 'topfiveClicked',
+        'click #radio_summary': 'summaryClicked'
+    },
+    projectClicked: function (event) {
+        this.$('#summary').hide();
+        this.$('#chart_annotated').hide();
+        this.$('#chart_topfive').hide();        
+        this.$('#chart_project').fadeIn();
+    },
+    annotatedClicked: function (event) {
+        this.$('#summary').hide();
+        this.$('#chart_project').hide();
+        this.$('#chart_topfive').hide();
+        this.$('#chart_annotated').fadeIn();
+    },
+    topfiveClicked: function (event) {
+        this.$('#summary').hide();
+        this.$('#chart_project').hide();
+        this.$('#chart_annotated').hide();
+        this.$('#chart_topfive').fadeIn();
+    },
+    summaryClicked: function (event) {
+        this.$('#chart_annotated').hide();        
+        this.$('#chart_project').hide();
+        this.$('#chart_topfive').hide();
+        this.$('#summary').fadeIn();
+    }
 });
 
 
