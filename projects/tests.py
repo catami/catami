@@ -866,25 +866,29 @@ class TestAnnotationSetResource(ResourceTestCase):
                              image=self.mock_image_one,
                              owner=self.user_bob,
                              annotation_caab_code="one",
-                             qualifier_short_name="").save()
+                             qualifier_short_name="",
+                             coverage_percentage=50).save()
 
         WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
                              image=self.mock_image_one,
                              owner=self.user_bob,
                              annotation_caab_code="two",
-                             qualifier_short_name="").save()
+                             qualifier_short_name="",
+                             coverage_percentage=60).save()
 
         WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
                              image=self.mock_image_two,
                              owner=self.user_bob,
                              annotation_caab_code="one",
-                             qualifier_short_name="").save()
+                             qualifier_short_name="",
+                             coverage_percentage=50).save()
 
         WholeImageAnnotation(annotation_set=self.annotation_set_bobs,
                              image=self.mock_image_two,
                              owner=self.user_bob,
                              annotation_caab_code="two",
-                             qualifier_short_name="").save()
+                             qualifier_short_name="",
+                             coverage_percentage=60).save()
 
         # try and copy with permissions
         response = self.bob_api_client.get(self.annotation_set_url +
@@ -902,8 +906,6 @@ class TestAnnotationSetResource(ResourceTestCase):
                              owner=self.user_bob,
                              annotation_caab_code="three",
                              qualifier_short_name="").save()
-
-        #self.assertEqual(self.deserialize(response)['same'], "false")
 
     def test_notsame_get_image_similarity_status(self):
 

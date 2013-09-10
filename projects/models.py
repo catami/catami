@@ -220,7 +220,8 @@ class WholeImageAnnotationManager(models.Manager):
             WholeImageAnnotation(annotation_set_id=annotation_set_id,
                                     image_id=destination_image_id,
                                     annotation_caab_code=annotation.annotation_caab_code,
-                                    qualifier_short_name=annotation.qualifier_short_name).save()
+                                    qualifier_short_name=annotation.qualifier_short_name,
+                                    coverage_percentage=annotation.coverage_percentage).save()
 
     def check_if_images_have_same_annotations(self, annotation_set_id, image_one, image_two):
 
@@ -251,7 +252,8 @@ class WholeImageAnnotationManager(models.Manager):
 
         # loop through and check if A and B have the same contents
         for annotation in image_one_annotations:
-            results = image_two_annotations.filter(annotation_caab_code=annotation.annotation_caab_code)
+            results = image_two_annotations.filter(annotation_caab_code=annotation.annotation_caab_code,
+                                                   coverage_percentage=annotation.coverage_percentage)
 
             # no ? then these lists are not the same
             if results.count() == 0:
@@ -283,4 +285,6 @@ class WholeImageAnnotation(Annotation):
     """
 
     annotation_set = models.ForeignKey('projects.AnnotationSet')
+
+    # -1 signifies that no percentage cover has been given
     coverage_percentage = models.IntegerField(validators = [MinValueValidator(-1), MaxValueValidator(100)], default = -1)
