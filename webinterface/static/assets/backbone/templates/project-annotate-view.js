@@ -1117,18 +1117,16 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         //this.clearEditableStatus();  //permit no similataneous edits
         var parent = this;
 
-        if($(ev.currentTarget).hasClass('editable')){
-            $(ev.currentTarget).find('.editBroadScaleIndictor').css('display', 'none');
-            $(ev.currentTarget).removeClass('editable');
+        if($(ev.currentTarget).parent().hasClass('editable')){
+            parent.clearEditableStatus();
         } else {
             parent.clearEditableStatus();
             var model_id = $(ev.target).data('model_id');
             $(ev.currentTarget).find('.editBroadScaleIndictor').css('display', 'block');
-            $(ev.currentTarget).addClass('editable');
+            $(ev.currentTarget).parent().addClass('editable');
         }
     },
     clearEditableStatus: function(){
-        console.log('be real clear baby');
         var editableAnnotations = $('.editable');
         $.each(editableAnnotations, function(index, element) {
             $(element).removeClass('editable');
