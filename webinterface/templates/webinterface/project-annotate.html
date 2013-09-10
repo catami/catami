@@ -211,14 +211,13 @@
 		}
 		.actionConfirmAlert{
 			list-style-position:outside;
-		    border-bottom: 1px solid white;
-		    color:white;
-		    background-color: rgba(238,147,37,1);
 		    padding: 3px 5px;
 		    font-weight: bold;
-			padding-bottom: 8px;
+			padding-bottom: 12px;
 			text-shadow: rgba(0, 0, 0, 0.247059) 0px -1px 0px;
-/* 			rgba(0, 0, 0, 0.247059) 0px -1px 0px */
+		}
+		.alert{
+			margin-bottom: 2px;
 		}
 		.wholeImageList a{
 /* 			color: black; */
@@ -653,20 +652,25 @@
 						<span class="pull-right"><i class="icon-plus-sign icon-2x icon-style icon-shadow"></i></span>
 					</li>
 				</a>
-				<li id="DeleteBroadScaleConfirm" class="actionConfirmAlert">
+				<li id="DeleteBroadScaleConfirm" class="actionConfirmAlert alert alert-danger">
 					<span><i class="icon-warning-sign"></i> Remove item/s?</span>
 					<span class="btn btn-small pull-right dismiss_confirmation">No </span>
 					<span id="confirm_delete" class="btn btn-small btn-danger pull-right">Yes </span>
 				</li>
-				<li id="DeleteAllBroadScaleConfirm" class="actionConfirmAlert">
+				<li id="DeleteAllBroadScaleConfirm" class="actionConfirmAlert alert alert-danger">
 					<span><i class="icon-warning-sign"></i> Remove all annotations?</span>
 					<span class="btn btn-small pull-right dismiss_confirmation">No </span>
 					<span id="confirm_delete_all" class="btn btn-small btn-danger pull-right">Yes</span>
 				</li>
-				<li id="ClearAllBroadScaleConfirm" class="actionConfirmAlert">
+				<li id="ClearAllBroadScaleConfirm" class="actionConfirmAlert alert alert-danger">
 					<span><i class="icon-warning-sign"></i> Clear all annotations?</span>
 					<span class="btn btn-small pull-right dismiss_confirmation">No </span>
 					<span id="confirm_clear_all" class="btn btn-small btn-danger pull-right">Yes </span>
+				</li>
+				<li id="SetImageUnscorable" class="actionConfirmAlert alert alert-danger">
+					<span><i class="icon-warning-sign"></i> Set this image unscorable? This will clear all annotations.</span>
+					<span class="btn btn-small pull-right dismiss_confirmation">No </span>
+					<span id="confirm_set_unscorable" class="btn btn-small btn-danger pull-right">Yes </span>
 				</li>
 				<li class="wholeImageFooter"> 
 <!-- 					<a id="set_unscorable" class="btn btn-mini btn-warning pull-left"><i class="icon-question"></i> Unscorable</a>    -->
