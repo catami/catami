@@ -1071,7 +1071,6 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         var editableAnnotations = $('.editable');
 
         $.each(editableAnnotations, function(index, element) {
-            //var wholeImageAnnotation = new WholeImageAnnotation();
 
             var properties = { 'annotation_caab_code': caab_object.get('caab_code') };
             var pointId = $(element).data('model_id');
@@ -1079,8 +1078,8 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 patch: true,
                 headers: {"cache-control": "no-cache"},
                 success: function (model, xhr, options) {
-                    $(element).html('<i class="icon-edit editBroadScaleIndictor pull-left"></i>'+caab_object.get('code_name'));
-                    $(element).parent().find('.wholeImageClassLabel').text(rootAnnotationCode.get('code_name'));
+                    $(element).find('.wholeImageLabel').html('<i class="icon-edit editBroadScaleIndictor pull-left"></i>'+caab_object.get('code_name'));
+                    $(element).find('.wholeImageClassLabel').text(rootAnnotationCode.get('code_name'));
                     GlobalEvent.trigger("annotation_set_has_changed");
                 },
                 error: function (model, xhr, options) {
