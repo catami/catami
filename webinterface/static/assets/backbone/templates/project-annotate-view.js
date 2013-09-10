@@ -1079,7 +1079,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 patch: true,
                 headers: {"cache-control": "no-cache"},
                 success: function (model, xhr, options) {
-                    $(element).html('<i class="icon-edit-sign editBroadScaleIndictor pull-left"></i>'+caab_object.get('code_name'));
+                    $(element).html('<i class="icon-edit editBroadScaleIndictor pull-left"></i>'+caab_object.get('code_name'));
                     $(element).parent().find('.wholeImageClassLabel').text(rootAnnotationCode.get('code_name'));
                     GlobalEvent.trigger("annotation_set_has_changed");
                 },
@@ -1634,34 +1634,35 @@ function buildList(node, isSub){
     var html = '';
     if (isSub === false){html += '<ul class="accordion">';}
 
-    // html += '<li>';
-    // html += '<a href="#">' + node.name + '</a>';
+    try{
+        if(node.children){
+            html += '<li>';
 
-    if(node.children){
-        html += '<li>';
-
-        if (parseInt(node.caabcode_id,10) === 2) {
-            html += '<a href="#biota_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
-        } else if (parseInt(node.caabcode_id,10) === 239){
-            html += '<a href="#substrate_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
-        } else if (parseInt(node.caabcode_id,10) === 256){
-            html += '<a href="#relief_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
-        } else if (parseInt(node.caabcode_id,10) === 264){
-            html += '<a href="#bedforms_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+            if (parseInt(node.caabcode_id,10) === 2) {
+                html += '<a href="#biota_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+            } else if (parseInt(node.caabcode_id,10) === 239){
+                html += '<a href="#substrate_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+            } else if (parseInt(node.caabcode_id,10) === 256){
+                html += '<a href="#relief_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+            } else if (parseInt(node.caabcode_id,10) === 264){
+                html += '<a href="#bedforms_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+            } else {
+                html += '<a href="#" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+            }
+            html += '<ul>';
+            for (var i = node.children.length - 1; i >= 0; i--) {
+                html += buildList(node.children[i], true);
+            }
+            html += '</ul>';
         } else {
-            html += '<a href="#" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+            html += '<li>';
+            html += '<a class="endpoint" href="#" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
         }
-        html += '<ul>';
-        for (var i = node.children.length - 1; i >= 0; i--) {
-            html += buildList(node.children[i], true);
-        }
-        html += '</ul>';
-    } else {
-        html += '<li>';
-        html += '<a class="endpoint" href="#" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+        html += '</li>';
+    } catch(e){
+        //node.children is undefined.  Usually this means you need to load the catami classification table
+        html += '<div class="alert alert-error"><p>I\'ve hit a problem making the annotation view.  <br>Please contact the CATAMI admin team for help.</p></div';
     }
-    html += '</li>';
-
     if (isSub === false){html += '</ul>';}
     return html;
 }

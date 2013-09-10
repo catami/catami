@@ -80,6 +80,12 @@
 		    50% {-webkit-transform: scale(1.1, 1.1); opacity: 1.0;}
 		    100% {-webkit-transform: scale(0.9, .9); opacity: 1.0;}
 		}
+		
+		@-webkit-keyframes color-pulsate {
+		    0% {color:#7886f2; opacity: 1.0;}
+		    50% {color:#002d92;  opacity: 1.0;}
+		    100% {color:#7886f2; opacity: 1.0;}
+		}
 		.pointSelected {
         	-moz-box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8), 0px 0px 3px rgba(0,0,0,0.8);
 			-webkit-box-shadow:inset 0px 0px 3px rgba(0,0,0,0.8),  0px 0px 3px rgba(0,0,0,0.8);
@@ -105,6 +111,13 @@
 		    background-color: rgba(237,237,237,1);
 		    padding: 3px 5px;
 		    font-weight: bold;
+		}
+		.wholeImageItem:hover{
+		    background-color: rgba(208,212,243,.75);
+		    cursor:pointer;
+		}
+		.editable{
+		    background-color: rgba(208,212,243,.75);
 		}
 		.wholeImageHeader {
 		    list-style-position:outside;
@@ -132,14 +145,21 @@
 			margin-right:1px			
 		}
 		.wholeImageClassLabel{
+			padding-right:auto;
 			margin-left:1px;
 			margin-right:1px
+		}
+		
+		.broadScaleTools:hover {
+			color:blue;
+			
 		}
 		.wholeImageLabel{
 			font-weight: 500;
 			font-size: large;
+			display:block; !important
 		}
-		
+
 		.wholeImageLabelStatus{
 			color:#57d357;
 			padding-left:5px;
@@ -149,9 +169,10 @@
 		.editBroadScaleIndictor{
 			color:#3049ff;
 		    text-shadow: 0px 0px 2px rgba(191,255,0,0.8);
-			-webkit-animation: pulsate 2s ease-out;
+			-webkit-animation: color-pulsate 2s ease-out;
 			-webkit-animation-iteration-count: infinite; 
 		}
+		
 		.broadScaleRemoveButton{
 			color:rgba(192,192,192,1);
 			text-shadow: rgba(0, 0, 0, 0.247059) 0px -1px 0px;
@@ -181,6 +202,9 @@
 		    padding: 3px 5px;
 		    font-weight: bold;
 			padding-bottom: 8px;
+		}
+		.AddBroadScaleElement:hover{
+		    cursor:pointer;
 		}
 		.deleteStyle{
 			color:red;
@@ -656,10 +680,11 @@
 	<script type="text/template" id="BroadScaleItemTemplate">
 		<li class="wholeImageItem" data-model_id="<%=model_id%>">
 			<a id="delete_selected_annotation" class="pull-right" ><i class="icon-trash broadScaleRemoveButton" data-model_id="<%=model_id%>"></i></a>
-			<span class="wholeImageLabel" class="pull-left" data-model_id="<%=model_id%>"><i class="icon-edit-sign editBroadScaleIndictor pull-left"></i><%=broadScaleClass%></span>
 			<span class="wholeImageClassLabel label label-info pull-right"><%=broadScaleClassParent%></span>
 			<span class="broadScalePercentage label label-info pull-right"><%=broadScalePercentage%></span>
 			<span class="broadScaleTools pull-right" data-model_id="<%=model_id%>"><i class="icon-cog"></i></span>
+			<span class="wholeImageLabel" class="pull-left" data-model_id="<%=model_id%>"><i class="icon-edit editBroadScaleIndictor pull-left"></i><%=broadScaleClass%></span>
+
 			<div class="broadScaleControlContainer" data-model_id="<%=model_id%>">
 				<div class="percentageSelector pull-right">
 					<p class="percentageSelectorLabel pull-right">FOV Coverage</p>
@@ -732,8 +757,6 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
 
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.autoResizeImages.js"></script>
-
-
 
     <script type="text/javascript">
 
