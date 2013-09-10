@@ -959,7 +959,9 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         'click #confirm_clear_all': 'confirmClearAllBroadScaleAnnotation',
         'click #confirm_delete_all': 'confirmDeleteAllBroadScaleAnnotation',
         'click .percentValue': 'percentCoverageSelected',
-        'click .broadScaleTools': 'toggleBroadScaleTools'
+        'click .broadScaleTools': 'toggleBroadScaleTools',
+        'click #confirm_set_unscorable': 'confirmSetImageUnscorable',
+        'click #set_image_unscorable': 'showUnscorableConfirmation'
     },
     initialize: function () {
         GlobalEvent.on("annotation_to_be_set", this.wholeImageAnnotationChosen, this);
@@ -1241,8 +1243,6 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         var selected_percentage = $(ev.target).data('percentage');
         var model_id = $(ev.target).data('model_id');
 
-//        $('#ChooseAnnotationContainer').find("[data-model_id='"+model_id+"'] .broadScalePercentage").html(selected_percentage+" %");
-
         //set % in the model
         var properties = { 'coverage_percentage': selected_percentage};
         var theXHR  = broadScalePoints.get(model_id).save(properties, {
@@ -1255,6 +1255,42 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 console.log('problem in percentCoverageSelected',xhr);
             }
         });
+    },
+    confirmSetImageUnscorable: function(){
+        var parent = this;
+        var model;
+        
+        var successCallback = _.after(broadScalePoints.length, function() {
+            var unscorableCode = '00000001';
+
+            var annotationSet = annotationSets.at(0);
+
+            var broad_scale_annotation = new WholeImageAnnotation({ 'annotation_caab_code': unscorableCode, 'image':'/api/dev/image/'+selectedImageId+'/', 'annotation_set':'/api/dev/annotation_set/'+annotationSet.get('id')+'/'});
+
+            // add spinnner TBD
+            broadScalePoints.create(broad_scale_annotation,{
+                success:function() {
+                    parent.render();
+                    GlobalEvent.trigger("annotation_set_has_changed");
+                    //remove spinner TBD
+                }
+            });
+            parent.render(); // render after all deletes are done (destorys are async)
+        });
+
+        for (var i = broadScalePoints.length - 1; i >= 0; i--){
+            broadScalePoints.at(i).destroy({
+                success: successCallback,
+                error: function(model, response){
+                    console.log('problem reseting Broad Scale Points',xhr);
+                }
+            });
+        }
+        GlobalEvent.trigger("annotation_set_has_changed");
+        parent.render();
+    },
+    showUnscorableConfirmation: function(){
+        this.$('#SetImageUnscorable').css('display', 'block');
     }
 });
 
