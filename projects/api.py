@@ -40,6 +40,7 @@ from datetime import datetime
 # from random import sample
 from tastypie.exceptions import ImmediateHttpResponse
 from tastypie.http import HttpNotImplemented, HttpBadRequest, HttpGone, HttpMultipleChoices
+from operator import itemgetter
 # import random
 import logging
 
@@ -703,6 +704,8 @@ class AnnotationSetResource(ModelResource):
                         status["invalid_code"] = 1
             else:
                 status["unannotated"] = status["unannotated"] + 1
+            
+        status["top_five_annotated"] = dict(sorted(status["annotated"].iteritems(), key=itemgetter(1), reverse=True)[:5])
 
         return HttpResponse(content= json.dumps(status,sort_keys=True),
                             status=200,
