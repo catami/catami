@@ -23,7 +23,7 @@
     <div class="row-fluid">
         <div class="span3">
             <div class="well">
-                <h2><%= deployment_name %></h2>
+                <h2 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= deployment_name %></h2>
 
                 <p><b>Start Time: </b> <%= start_time_stamp %></p>
                 <p><b>End Time: </b> <%= end_time_stamp %> </p>
@@ -82,20 +82,6 @@
 
 
 <script type="text/javascript">
-
-    function showFancybox(imageLocation){
-        $.fancybox({
-                'autoScale': true,
-                'transitionIn': 'elastic',
-                'transitionOut': 'elastic',
-                'speedIn': 100,
-                'speedOut': 50,
-                'autoDimensions': true,
-                'centerOnScroll': true,
-                'title': "",
-                'href' : imageLocation
-            });
-    }
 
     //Init js variables which is used by Backbone to render html template
     var WMS_URL = "{{ WMS_URL }}";
