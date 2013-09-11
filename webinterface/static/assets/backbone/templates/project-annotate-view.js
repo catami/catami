@@ -1312,7 +1312,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 console.log(xhr);
             }
         });
-        this.dismissDeleteConfirmation();
+        //this.dismissConfirmation();
     },
     deleteAllBroadScaleAnnotations: function(){
         //remove all annotations from the current image
