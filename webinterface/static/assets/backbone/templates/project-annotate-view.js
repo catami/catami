@@ -320,6 +320,8 @@ ThumbnailStripView = Backbone.View.extend({
         this.buildAnnotationStatus();               
     },
     buildAnnotationStatus: function () {
+        var parent = this;
+
         map = { "images": [] }; //reset map
         var annotationSetTypes = ["fine scale", "broad scale"];
 
@@ -339,7 +341,7 @@ ThumbnailStripView = Backbone.View.extend({
             imageAnnotations = new WholeImageAnnotations({ "url": "/api/dev/whole_image_annotation/" });
         else imageAnnotations = new PointAnnotations({ "url": "/api/dev/point_annotation/" });                            
         imageAnnotations.fetch({
-            async: false,
+            //async: false,
             data: {
                 annotation_set: annotationSet.get('id'),
                 image__in: imageIds,
@@ -379,10 +381,12 @@ ThumbnailStripView = Backbone.View.extend({
                             map.images.push(image_new);
                         }
                     }
+
+                    parent.renderAnnotationStatus();
                 });
             }
         });
-        this.renderAnnotationStatus();
+
     },
     updateAnnotation: function (imageId, annotId, code, name) {        
         updateAnnotation(imageId, annotId, code, name);
@@ -677,6 +681,13 @@ ImageAnnotateView = Backbone.View.extend({
         //get the selected points
         var selectedPoints = $('.pointSelected');
         caab_object = annotationCodeList.get(caab_code_id);
+
+        var afterAllSavedCallback = _.after(selectedPoints.length, function() {
+            //send out an event for all the other listeners
+            GlobalEvent.trigger("image_points_updated", this);
+            GlobalEvent.trigger("annotation_set_has_changed");
+        });
+
         //save the annotations
         $.each(selectedPoints, function(index, pointSpan) {
 
@@ -702,8 +713,9 @@ ImageAnnotateView = Backbone.View.extend({
                     //$('#'+idOfSaved).text(caab_code_id);
 
                     //update the pil sidebar
-                    GlobalEvent.trigger("image_points_updated", this);
-                    GlobalEvent.trigger("annotation_set_has_changed");
+                    //GlobalEvent.trigger("image_points_updated", this);
+                    //GlobalEvent.trigger("annotation_set_has_changed");
+                    afterAllSavedCallback();
                 },
                 error: function (model, xhr, options) {
                     if (theXHR.status == "201" || theXHR.status == "202") {
@@ -722,7 +734,9 @@ ImageAnnotateView = Backbone.View.extend({
                         //$('#'+idOfSaved).text(caab_code_id);
 
                         //update the pil sidebar
-                        GlobalEvent.trigger("image_points_updated", this);
+                        //GlobalEvent.trigger("image_points_updated", this);
+                        afterAllSavedCallback();
+
                     } else if(theXHR.status == "401") {
                         $.pnotify({
                             title: 'You don\'t have permission to annotate this image.',
@@ -905,6 +919,8 @@ AnnotationStatusView = Backbone.View.extend({
         GlobalEvent.on("annotation_set_has_changed", this.render, this);
     },
     render: function () {        
+
+        var parent = this;
         var statusVariables = {};
         var chartVariables = { "project": {}, "annotated": {}, "topfive": {} };
         var series_project = [];
@@ -913,12 +929,113 @@ AnnotationStatusView = Backbone.View.extend({
         var labels_X_axis_topfive = [];
         var colours = ["red", "green", "yellow", "blue", "violet", "orange", "indigo"];
 
+        var chartRenderCallback = function() {
+            require(["dojox/charting/Chart", "dojox/charting/plot2d/Columns", "dojox/charting/axis2d/Default",
+                 "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
+                 "dojox/charting/action2d/MoveSlice", "dojox/charting/action2d/Tooltip",
+                 "dojox/charting/themes/MiamiNice", "dojox/charting/widget/Legend", "dojo/ready"],
+                    function (Chart, Columns, Default, Pie, Highlight, MoveSlice, Tooltip, MiamiNice, Legend, ready) {
+                        ready(function () {
+
+                            var chart_project = new Chart("chart_project");
+                            chart_project.setTheme(MiamiNice).addPlot("default", {
+                                type: Pie,
+                                font: "normal normal 11pt Tahoma",
+                                fontColor: "black",
+                                labelOffset: -30,
+                                radius: 200
+                            });
+
+                            var chart_annotated = new Chart("chart_annotated");
+                            chart_annotated.setTheme(MiamiNice).addPlot("default", {
+                                type: Pie,
+                                font: "normal normal 11pt Tahoma",
+                                fontColor: "black",
+                                labelOffset: -30,
+                                radius: 200
+                            });
+
+
+                            var chart_topfive = new Chart("chart_topfive");
+                            chart_topfive.setTheme(MiamiNice).addPlot("default", {
+                                type: Columns,
+                                gap: 3
+                            }).addAxis("y", {
+                                vertical: true,
+                                min: 0
+                            });
+
+                            var keys_project = Object.keys(chartVariables['project']);
+
+                            for (var i = 0; i < keys_project.length; i++) {
+                                var key = keys_project[i];
+                                series_project.push(
+                                    {
+                                        y: chartVariables['project'][key] * 100,
+                                        text: key,
+                                        stroke: "black",
+                                        tooltip: chartVariables['project'][key] + "%",
+                                        color: colours[i]
+                                    });
+                            }
+
+                            var keys_annotated = Object.keys(chartVariables['annotated']);
+                            for (var i = 0; i < keys_annotated.length; i++) {
+                                var key = keys_annotated[i];
+                                //series.push({ y: 4, text: "Red", stroke: "black", tooltip: "Red is 50%" });
+                                series_annotated.push(
+                                    {
+                                        y: chartVariables['annotated'][key] * 100,
+                                        stroke: "black",
+                                        tooltip: key,
+                                        color: "#"+(Math.random().toString(16) + '000000').slice(2, 8) //randomly generate RGB in hex to fill pie segment
+                                    });
+                            }
+
+                            var keys_topfive = Object.keys(chartVariables['topfive']);
+                            labels_X_Axis_topfive = [];
+                            for (var i = 0; i < keys_topfive.length; i++) {
+                                var key = keys_topfive[i];
+                                //series_topfive.push({ x: key, y: chartVariables['topfive'][key]});
+                                series_topfive.push({ y: chartVariables['topfive'][key], fill: colours[i] });
+                                labels_X_Axis_topfive.push({value: i + 1, text: key });
+                            }
+
+                            chart_project.addSeries("Chart Project", series_project);
+                            chart_annotated.addSeries("Chart Annotated", series_annotated);
+                            chart_topfive.addAxis("x", {
+                                labels: labels_X_Axis_topfive,
+                                font: "normal normal 11pt Tahoma",
+                                rotation: -90,
+                            });
+                            chart_topfive.addSeries("Chart Top Five", series_topfive);
+
+                            var chart_project_anim_a = new MoveSlice(chart_project, "default");
+                            var chart_project_anim_b = new Highlight(chart_project, "default");
+                            var chart_project_anim_c = new Tooltip(chart_project, "default");
+
+                            var chart_annotated_anim_a = new MoveSlice(chart_annotated, "default");
+                            var chart_annotated_anim_b = new Highlight(chart_annotated, "default");
+                            var chart_annotated_anim_c = new Tooltip(chart_annotated, "default");
+
+                            //var chart_topfive_anim_a = new MoveSlice(chart_topfive, "default");
+                            var chart_topfive_anim_b = new Highlight(chart_topfive, "default");
+                            //var chart_topfive_anim_c = new Tooltip(chart_topfive, "default");
+
+                            chart_project.render();
+                            chart_annotated.render();
+                            chart_topfive.render();
+                        });
+                    }
+                );
+        };
+
         $.ajax({
             url:  '/api/dev/annotation_set/'
                      + annotationSets.at(0).get('id')
                      + '/annotation_status/',
             dataType: "json",
-            async: false,
+            //async: false,
             success: function (response, textStatus, jqXHR) {
                 var type = response.annotation_set_type;
                 var total = response.total;
@@ -952,116 +1069,21 @@ AnnotationStatusView = Backbone.View.extend({
                     chartVariables['topfive'][key] = topfive[key];
                 }
                 //chartVariables['topfive']['total'] = total;
+
+                var statusTemplate = _.template($("#AnnotationStatusTemplate").html(), statusVariables);
+
+                // // Load the compiled HTML into the Backbone "el"
+                parent.$el.html(statusTemplate);
+
+                //render the charts
+                chartRenderCallback();
             },
             error: function (request, status, error) {
                 alert(request.responseText);
             }
         });   
 
-        var statusTemplate = _.template($("#AnnotationStatusTemplate").html(), statusVariables);
-
-        // // Load the compiled HTML into the Backbone "el"
-        this.$el.html(statusTemplate);
-
-        require(["dojox/charting/Chart", "dojox/charting/plot2d/Columns", "dojox/charting/axis2d/Default",
-         "dojox/charting/plot2d/Pie", "dojox/charting/action2d/Highlight",
-         "dojox/charting/action2d/MoveSlice", "dojox/charting/action2d/Tooltip",
-         "dojox/charting/themes/MiamiNice", "dojox/charting/widget/Legend", "dojo/ready"],
-            function (Chart, Columns, Default, Pie, Highlight, MoveSlice, Tooltip, MiamiNice, Legend, ready) {
-                ready(function () {
-
-                    var chart_project = new Chart("chart_project");
-                    chart_project.setTheme(MiamiNice).addPlot("default", {
-                        type: Pie,
-                        font: "normal normal 11pt Tahoma",
-                        fontColor: "black",
-                        labelOffset: -30,
-                        radius: 200
-                    });
-
-                    var chart_annotated = new Chart("chart_annotated");
-                    chart_annotated.setTheme(MiamiNice).addPlot("default", {
-                        type: Pie,
-                        font: "normal normal 11pt Tahoma",
-                        fontColor: "black",
-                        labelOffset: -30,
-                        radius: 200
-                    });
-
-
-                    var chart_topfive = new Chart("chart_topfive");                    
-                    chart_topfive.setTheme(MiamiNice).addPlot("default", {
-                        type: Columns,
-                        gap: 3
-                    }).addAxis("y", {
-                        vertical: true,
-                        min: 0
-                    });
-
-                    var keys_project = Object.keys(chartVariables['project']);
-
-                    for (var i = 0; i < keys_project.length; i++) {
-                        var key = keys_project[i];
-                        series_project.push(
-                            {
-                                y: chartVariables['project'][key] * 100,
-                                text: key,
-                                stroke: "black",
-                                tooltip: chartVariables['project'][key] + "%",
-                                color: colours[i] 
-                            });
-                    }
-
-                    var keys_annotated = Object.keys(chartVariables['annotated']);                                        
-                    for (var i = 0; i < keys_annotated.length; i++) {
-                        var key = keys_annotated[i];
-                        //series.push({ y: 4, text: "Red", stroke: "black", tooltip: "Red is 50%" });
-                        series_annotated.push(
-                            {
-                                y: chartVariables['annotated'][key] * 100,
-                                stroke: "black",
-                                tooltip: key,
-                                color: "#"+(Math.random().toString(16) + '000000').slice(2, 8) //randomly generate RGB in hex to fill pie segment
-                            });
-                    }
-
-                    var keys_topfive = Object.keys(chartVariables['topfive']);
-                    labels_X_Axis_topfive = [];
-                    for (var i = 0; i < keys_topfive.length; i++) {
-                        var key = keys_topfive[i];
-                        //series_topfive.push({ x: key, y: chartVariables['topfive'][key]});
-                        series_topfive.push({ y: chartVariables['topfive'][key], fill: colours[i] });
-                        labels_X_Axis_topfive.push({value: i + 1, text: key });
-                    }                  
-
-                    chart_project.addSeries("Chart Project", series_project);
-                    chart_annotated.addSeries("Chart Annotated", series_annotated);
-                    chart_topfive.addAxis("x", {
-                        labels: labels_X_Axis_topfive,
-                        font: "normal normal 11pt Tahoma",
-                        rotation: -90,
-                    });
-                    chart_topfive.addSeries("Chart Top Five", series_topfive);
-
-                    var chart_project_anim_a = new MoveSlice(chart_project, "default");
-                    var chart_project_anim_b = new Highlight(chart_project, "default");
-                    var chart_project_anim_c = new Tooltip(chart_project, "default");
-
-                    var chart_annotated_anim_a = new MoveSlice(chart_annotated, "default");
-                    var chart_annotated_anim_b = new Highlight(chart_annotated, "default");
-                    var chart_annotated_anim_c = new Tooltip(chart_annotated, "default");
-
-                    //var chart_topfive_anim_a = new MoveSlice(chart_topfive, "default");
-                    var chart_topfive_anim_b = new Highlight(chart_topfive, "default");
-                    //var chart_topfive_anim_c = new Tooltip(chart_topfive, "default");
-
-                    chart_project.render();
-                    chart_annotated.render();
-                    chart_topfive.render();
-                });
-            }
-        );
-        return this.el;
+    //    return this.el;
     },
     events: {
         'click #radio_project': 'projectClicked',
