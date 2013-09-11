@@ -322,7 +322,8 @@ ThumbnailStripView = Backbone.View.extend({
     buildAnnotationStatus: function () {
         var parent = this;
 
-        map = { "images": [] }; //reset map
+        var localMap = { "images": [] }; //reset map
+
         var annotationSetTypes = ["fine scale", "broad scale"];
 
         // enforcing only one annotation set per project for the time being, so
@@ -356,7 +357,7 @@ ThumbnailStripView = Backbone.View.extend({
                     var annotId = annotation.get('id');
                     if (typeof code != 'undefined') {
                         var imageFound = false;
-                        $.each(map.images, function (i, im) {
+                        $.each(localMap.images, function (i, im) {
                             if (im.id == imageId) { //image found, add annotation to image                                    
                                 var annot_new = {
                                     "id": annotId,
@@ -378,12 +379,16 @@ ThumbnailStripView = Backbone.View.extend({
                                         "name": name                                        }
                                 ]
                             }
-                            map.images.push(image_new);
+                            localMap.images.push(image_new);
                         }
                     }
 
-                    parent.renderAnnotationStatus();
+
                 });
+
+                map = localMap;
+
+                parent.renderAnnotationStatus();
             }
         });
 
@@ -1245,6 +1250,12 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         // which annotations are tagged to be edited?
         var editableAnnotations = $('.editable');
 
+        var finishedSavingCallback = _.after(editableAnnotations.length, function() {
+            GlobalEvent.trigger("annotation_set_has_changed");
+
+            //console.log("called");
+        });
+
         $.each(editableAnnotations, function(index, element) {
 
             var properties = { 'annotation_caab_code': caab_object.get('caab_code') };
@@ -1255,10 +1266,13 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 success: function (model, xhr, options) {
                     $(element).find('.wholeImageLabel').html('<i class="icon-edit editBroadScaleIndictor pull-left"></i>'+caab_object.get('code_name'));
                     $(element).find('.wholeImageClassLabel').text(rootAnnotationCode.get('code_name'));
-                    GlobalEvent.trigger("annotation_set_has_changed");
+
+                    //GlobalEvent.trigger("annotation_set_has_changed");
+                    finishedSavingCallback();
                 },
                 error: function (model, xhr, options) {
-                    console.log('problem in wholeImageAnnotationChosen',xhr);
+                    //console.log('problem in wholeImageAnnotationChosen',xhr);
+                    finishedSavingCallback();
                 }
             });
         });
