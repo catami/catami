@@ -453,8 +453,6 @@
     <div id="ContentContainer" class="row-fluid">
 
         <div class="span1">
-            <a onclick="createBookmark();">
-                <img src="/static/images/bookmark.jpg" /></a>
             <div id="ThumbnailStripContainer"></div>
             <div id="pagination"></div>           
         </div>
@@ -471,6 +469,8 @@
                 <li class="active" ><a href="#AnnotationSelectionTab" data-toggle="tab">Annotation Selection</a></li>
                 <li><a href="#SimilarImageTab" data-toggle="tab">Similar Images <span id="SimilarImageBadge" class="badge badge-info"></span> </a></li>
                 <li><a href="#StatsTab" data-toggle="tab">Statistics</a></li>
+                <!--<li><a onclick="createBookmark();"> <img src="/static/images/bookmark.jpg" /> </a></li>-->
+                <li><a href="#" onclick="createBookmark();"> Bookmark </a></li>
             </ul>
 
             <div class="tab-content">

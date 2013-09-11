@@ -128,7 +128,7 @@ ProjectView = Backbone.View.extend({
                 //get points total and calculate completeness
                 if (annotationSetType == annotationSetTypes[0]){
                     $('#annotation_type_label').html('Fine Scale Annotation')
-                    $('#points_per_image').html(annotationSets.at(0).get('annotation_set_type'));
+                    $('#points_per_image').html(annotationSets.at(0).get('points_per_image'));
                     $('#point_sampling_method').html(pointSampling);
                 }
                 else if (annotationSetType == annotationSetTypes[1]){
