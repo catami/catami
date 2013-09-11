@@ -138,12 +138,15 @@ OrchestratorView = Backbone.View.extend({
         if (annotationSets.at(0).get('annotation_set_type') === 1){
             this.wholeImageAnnotationSelectorView = new WholeImageAnnotationSelectorView({});
             this.wholeImageControlBarView = new WholeImageControlBarView({});
+            this.similarityImageView = new SimilarityImageView({});
         } else {
+            //hide similarity for point view
+            $('#SimilarImageTabButton').hide();
+
             this.pointControlBarView = new PointControlBarView({});
         }
 
         this.annotationStatusView = new AnnotationStatusView({});
-        this.similarityImageView = new SimilarityImageView({});
 
         //render the views
         this.render();
