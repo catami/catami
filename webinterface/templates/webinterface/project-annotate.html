@@ -13,11 +13,15 @@
 		    float:left; /* important */
 		    position:relative; /* important(so we can absolutely position the description div */
 		}
+
 		div.description{
 		    position:absolute; /* absolute position (so we can position it where we want)*/
-		    bottom:5px;
-		    left:0px;
-		    width:100%;
+            padding-top: 25%;
+            min-height:100%;
+            top: 0px;
+            bottom: 0px;
+            right:0px;
+		    left: auto;
 		    background-color:rgba(0,0,0,0.2);
 		    font-family: 'helvetica';
 		    font-size:15px;
@@ -453,7 +457,9 @@
     <div id="ContentContainer" class="row-fluid">
 
         <div class="span1">
-            <div id="ThumbnailStripContainer"></div>
+            <div id="span12">
+                <div id="ThumbnailStripContainer"></div>
+            </div>
             <div id="pagination"></div>           
         </div>
 

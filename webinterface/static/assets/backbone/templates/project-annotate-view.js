@@ -426,7 +426,7 @@ ThumbnailStripView = Backbone.View.extend({
         $("#thumbnail-pane .wrapper").each(function (index, value) {
             $(this).find('.description').html("");
         });
-        $('#' + id).find('.description').html("<i class='icon-chevron-sign-down icon-2x'></i>");
+        $('#' + id).find('.description').html("<i class='icon-chevron-sign-right icon-2x'></i>");
 
         //$('#Image').attr("src", webLocation);
         //$('#Image').attr("data-src", webLocation);
