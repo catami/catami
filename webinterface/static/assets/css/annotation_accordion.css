@@ -29,3 +29,5 @@
 /* Level 6 */
 .accordion li ul li ul li ul li ul li ul li { background: #f2ecdc; font-size: 0.9em; }
 .accordion li ul li ul li ul li ul li ul li a { padding: 0 60px; }
+
+.disable {opacity: .3;}

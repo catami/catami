@@ -108,7 +108,7 @@
 		.wholeImageItem {
 		    list-style-position:outside;
 		    border-bottom: 1px solid white;
-		    background-color: rgba(237,237,237,1);
+		    background-color: rgba(245,236,211,1);
 		    padding: 3px 5px;
 		    font-weight: bold;
 		}
@@ -133,7 +133,7 @@
 		    border-bottom: 2px solid #e99c1e;
 		    border-bottom-color: white;
 		    border-top-color: white;
-		    background-color: #d7d1c7;
+		    background-color: rgba(243,230,178,1);
 			padding-left: 10px;
 			padding-right: 10px;
 			padding-bottom: 27px;
@@ -198,10 +198,10 @@
 		.AddBroadScaleElement{
 			list-style-position:outside;
 		    border-bottom: 1px solid white;
-		    background-color: rgba(237,237,237,1);
-		    padding: 3px 5px;
-		    font-weight: bold;
-			padding-bottom: 8px;
+		    background-color:rgba(245,236,211,1);
+		    padding: 3px 5px 8px 5px;
+		    font-size: large;
+		    font-weight: 500;
 		}
 		.AddBroadScaleElement:hover{
 		    cursor:pointer;
@@ -222,7 +222,31 @@
 		.wholeImageList a{
 /* 			color: black; */
 		}
+		.BroadScaleEditBox{
+			padding: 0px 5px;
+			border: 2px dashed #d8b02d;
+			background-color: rgba(239,230,204,0.05);
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+			margin-bottom: 10px;
+		}
 
+		.AnnotationChooserBox{
+			color: #000000;
+			padding: 0px 5px;
+			border: 2px dashed #d8b02d;
+			background-color: rgba(239,230,204,0.05);
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+		}
+		.AnnotationChooserBox disable{
+			color: #b7b7b7;
+			padding: 0px 5px;
+			border: 2px dashed #d8b02d;
+			background-color: rgba(239,230,204,0.05);
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+		}		
 /* percentage selector */
 		.percentageSelector{
 			
@@ -594,10 +618,15 @@
     </script>
 
     <script type="text/template" id="ChooseAnnotationTemplate">
-
-        <div class="whole-image-annotation-selector" id="whole-image-annotation-selector"></div>
-    	<div id="annotation-chooser"></div>
-
+        
+        <div class="BroadScaleEditBox">    
+	        <h4>1. Make/Edit Broad Scale Annotations</h4>
+	        <div class="whole-image-annotation-selector" id="whole-image-annotation-selector"></div>
+        </div>
+        <div class="AnnotationChooserBox">
+	        <h4>2. Select the CATAMI annotation</h4>
+	    	<div id="annotation-chooser"></div>
+        </div>
 
 	</script>
 
@@ -662,12 +691,12 @@
 	<script type="text/template" id="WholeImageAnnotationTemplate">
 		<div>
 			<ul id="broad_scale_list_view" class="wholeImageList">
-				<li class="wholeImageHeader"><span>Broad Scale Annotations</span></li>
+<!-- 				<li class="wholeImageHeader"><span>1. Edit Broad Scale Annotations</span></li> -->
 				<%=broadScaleAnnotations%>
 				<a id="add_new_broadscale_annotation">
 					<li class="AddBroadScaleElement">
 						<span>Add a new annotation</span>
-						<span class="pull-right"><i class="icon-plus-sign icon-2x icon-style icon-shadow"></i></span>
+						<span class="pull-right"><i class="icon-plus-sign icon-style icon-shadow"></i></span>
 					</li>
 				</a>
 				<li id="DeleteBroadScaleConfirm" class="actionConfirmAlert alert alert-danger">

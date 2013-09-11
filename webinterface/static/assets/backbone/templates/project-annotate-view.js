@@ -1200,6 +1200,10 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
 
         var wholeImageVariables = { "broadScaleAnnotations": broadScaleAnnotationTemplate };
         var wholeImageTemplate = _.template($("#WholeImageAnnotationTemplate").html(), wholeImageVariables);
+
+        // disable annotation view
+        this.disableAnnotationSelector();
+
         parent.$el.html(wholeImageTemplate);
 
         return this;
@@ -1265,14 +1269,15 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
     toggleAnnotationEditable: function(ev){
         //this.clearEditableStatus();  //permit no similataneous edits
         var parent = this;
-
         if($(ev.currentTarget).parent().hasClass('editable')){
             parent.clearEditableStatus();
+            parent.disableAnnotationSelector();
         } else {
             parent.clearEditableStatus();
             var model_id = $(ev.target).data('model_id');
             $(ev.currentTarget).find('.editBroadScaleIndictor').css('display', 'block');
             $(ev.currentTarget).parent().addClass('editable');
+            parent.enableAnnotationSelector();
         }
     },
     clearEditableStatus: function(){
@@ -1364,9 +1369,9 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         var properties = { 'annotation_caab_code': '' };
 
         var successCallback = _.after(broadScalePoints.length, function() {
+            GlobalEvent.trigger("annotation_set_has_changed");
             parent.render(); // render after all saves are done (saves are async)
         });
-        GlobalEvent.trigger("annotation_set_has_changed");
 
         broadScalePoints.each(function (whole_image_point) {
             whole_image_point.save(properties,{
@@ -1439,6 +1444,14 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
     },
     showUnscorableConfirmation: function(){
         this.$('#SetImageUnscorable').css('display', 'block');
+    },
+    enableAnnotationSelector: function(){
+        $('.AnnotationChooserBox').removeClass('disable');
+        $('a[href=#overall_root_node]').trigger('activate-node');
+    },
+    disableAnnotationSelector: function(){
+        $('.AnnotationChooserBox').addClass('disable');
+        $('.accordion').accordion({active: false});
     }
 });
 
@@ -1831,6 +1844,8 @@ function buildList(node, isSub){
                 html += '<a href="#relief_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
             } else if (parseInt(node.caabcode_id,10) === 264){
                 html += '<a href="#bedforms_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
+            } else if (parseInt(node.caabcode_id,10) === 1){
+                html += '<a href="#overall_root_node" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
             } else {
                 html += '<a href="#" data-id=' + node.caabcode_id + '>' + node.name + '</a>';
             }
