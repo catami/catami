@@ -657,6 +657,7 @@ class AnnotationSetResource(ModelResource):
     def prepend_urls(self):
         return [            
             url(r"^(?P<resource_name>%s)/(?P<annotation_set_id>\w[\w/-]*)/annotation_status%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_status'), name="api_get_status"),
+            url(r"^(?P<resource_name>%s)/(?P<annotation_set_id>\w[\w/-]*)/(?P<image_id>\w[\w/-]*)/image_status%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_image_status'), name="api_get_image_status"),
             url(r"^(?P<resource_name>%s)/(?P<annotation_set_id>\w[\w/-]*)/(?P<image_id>\w[\w/-]*)/image_by_id%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images_by_id'), name="api_get_image_by_id"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/similar_images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_similar_images'), name="api_get_similar_images"),
@@ -708,6 +709,49 @@ class AnnotationSetResource(ModelResource):
             
         status["top_five_annotated"] = dict(sorted(status["annotated"].iteritems(), key=itemgetter(1), reverse=True)[:5])
 
+        return HttpResponse(content= json.dumps(status,sort_keys=True),
+                            status=200,
+                            content_type='application/json') 
+
+    def get_image_status(self, request, **kwargs):
+       # need to create a bundle for tastypie
+        basic_bundle = self.build_bundle(request=request)
+
+        set_id = kwargs['annotation_set_id']
+        image_id = kwargs['image_id']
+        set = AnnotationSet.objects.get(id=set_id)              
+        # 0 - Point, 1 - Whole Image    
+        annotation_set_type = set.annotation_set_type   
+        
+        status = {}             
+        status["annotation_set_id"] = set_id
+        status["annotation_set_type"] = 'Point' if (int(annotation_set_type) == 0) else 'Whole'
+        status["image_id"] = image_id
+        status["total"] = 0
+        status["unannotated"] = 0
+        status["annotated"] = {}        
+
+        if annotation_set_type == 0:
+            annotations = PointAnnotation.objects.filter(annotation_set=set_id, image=image_id) 
+            status["total"] = annotations.count()
+            for annot in annotations: 
+                code_name = ''
+                if annot.annotation_caab_code and annot.annotation_caab_code is not u'':
+                    code = AnnotationCodes.objects.filter(caab_code=annot.annotation_caab_code)
+                    if code and code is not None and len(code) > 0:
+                        code_name = code[0].code_name
+                        if code_name in status["annotated"]: #check if similar code has been added
+                            status["annotated"][code_name] = status["annotated"][code_name] + 1
+                        else:
+                            status["annotated"][code_name] = 1
+                    else: #if code lookup fails
+                        if "invalid_code" in status:
+                            status["invalid_code"] = status["invalid_code"] + 1
+                        else:
+                            status["invalid_code"] = 1
+                else:
+                    status["unannotated"] = status["unannotated"] + 1           
+        
         return HttpResponse(content= json.dumps(status,sort_keys=True),
                             status=200,
                             content_type='application/json') 

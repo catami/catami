@@ -578,8 +578,29 @@
 
     <script type="text/template" id="AnnotationStatusTemplate">
 
-        <div class="claro">
-            <div id="summary" style="width: 300px; height: 500px; display: none;">
+        <div class="claro">       
+            <div id="progress_tab" style="width: 300px; height: 570px;">       
+                <div id="progress_image">
+                    <b>Image Progress:</b>                   
+                    <div id="chart_image_progress" style="width: 300px; height: 250px;"></div>
+                </div>
+                <b>Project Progress:</b>
+                <div id="chart_project_progress" style="width: 300px; height: 250px;"></div>
+            </div>
+            <div id="distribution_tab" style="width: 300px; height: 570px; display: none;">
+                <div id="distribution_image">
+                    <b>Image Distribution:</b>
+                    <div id="chart_image_distribution" style="width: 300px; height: 250px;"></div>
+                </div>
+                <b>Project Distribution:</b>
+                <div id="chart_project_distribution" style="width: 300px; height: 250px;"></div>
+            </div>
+            <div id="topfive_tab" style="width: 300px; height: 570px; display: none;">
+                <b>Top Five Annotations:</b>
+                <div id="chart_topfive"></div>
+            </div>
+            <div id="summary_tab" style="width: 300px; height: 570px; display: none;">
+                <b>Summary:</b>
                 <ul>
                     <li class="label label-inverse">Annotation Set Id:</li><li class="label"><%=annotation_set_id%></li><br>
                     <li class="label label-inverse">Annotation Set Type:</li><li class="label"><%=annotation_set_type%></li><br>
@@ -590,17 +611,14 @@
                         <%=annotated_sub%>
                     </ul>
                 </ul>             
-            </div>       
-                            
-            <div id="chart_project" style="width: 300px; height: 500px;"></div>
-            <div id="chart_annotated" style="width: 300px; height: 500px; display: none;"></div>
-            <div id="chart_topfive" style="width: 300px; height: 500px; display: none;"></div>
+            </div>            
+            
             <div class="btn-group" data-toggle="buttons-radio">
-            <button type="button" class="btn active" id="radio_project">
-                Project Progress
+            <button type="button" class="btn active" id="radio_progress">
+                Progress
             </button>
-            <button type="button" class="btn" id="radio_annotated">
-                Project Annotated
+            <button type="button" class="btn" id="radio_distribution">
+                Distribution
             </button>
             <button type="button" class="btn" id="radio_topfive">
                 Top 5 Annotated
