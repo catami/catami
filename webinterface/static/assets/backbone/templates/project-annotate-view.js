@@ -236,7 +236,7 @@ ChooseAnnotationView = Backbone.View.extend({
         $('#annotation-chooser ul').accordion();
 
         //make the first item expanded
-        this.initTreeToTopItem();
+        //this.initTreeToTopItem();
 
         return this;
     },
@@ -285,8 +285,8 @@ ChooseAnnotationView = Backbone.View.extend({
     },
     initTreeToTopItem: function(){
         //make the first item expanded
-        $('ul.accordion > li').addClass('active', 'true');
-        $('ul.accordion > li > ul').css('display', 'block');
+        // $('ul.accordion > li').addClass('active', 'true');
+        // $('ul.accordion > li > ul').css('display', 'block');
     }
 });
 ChooseAnnotationView.current_annotation = null;
@@ -318,7 +318,7 @@ ThumbnailStripView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
 
-        this.buildAnnotationStatus();               
+        this.buildAnnotationStatus();              
     },
     buildAnnotationStatus: function () {
 
@@ -815,16 +815,21 @@ ImageAnnotateView = Backbone.View.extend({
         //refresh
         this.refreshPointLabelsForImage();
         this.disableAnnotationSelector();
-    },   
+    },
     enableAnnotationSelector: function(){
-        console.log('enable');
         $('.AnnotationChooserBox').removeClass('disable');
-        // $('a[href=#overall_root_node]').trigger('activate-node');
+        $('a[href=#overall_root_node]').trigger('activate-node');
     },
     disableAnnotationSelector: function(){
-        console.log('disable');
         $('.AnnotationChooserBox').addClass('disable');
-        // $('.accordion').accordion({active: false});
+        this.closeAnnotationSelector();
+    },
+    closeAnnotationSelector: function() {
+        $('#annotation-chooser').find('ul').each(function(index,item){
+            if (index > 0){
+                $(item).hide();
+            }
+        });
     }
 });
 
@@ -1492,10 +1497,15 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         $('a[href=#overall_root_node]').trigger('activate-node');
     },
     disableAnnotationSelector: function(){
-        console.log('disable broad');
         $('.AnnotationChooserBox').addClass('disable');
-        $('.accordion #overall_root_node').accordion({active: false});
-        //$('a[href=#overall_root_node]').attr('active', false);
+        this.closeAnnotationSelector();
+    },
+    closeAnnotationSelector: function() {
+        $('#annotation-chooser').find('ul').each(function(index,item){
+            if (index > 0){
+                $(item).hide();
+            }
+        });
     }
 });
 
