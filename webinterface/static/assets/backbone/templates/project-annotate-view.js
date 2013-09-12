@@ -482,6 +482,7 @@ ImageAnnotateView = Backbone.View.extend({
 
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(imageTemplate);
+        $('.FineScaleEditBox').show();
 
         return this;
     },
@@ -531,6 +532,8 @@ ImageAnnotateView = Backbone.View.extend({
         //get the selected image
         var annotationSet = annotationSets.at(0);
         //var image = annotationSet.get("images")[selected];
+        
+        this.disableAnnotationSelector();
 
         //query the API for the points for the current image
 
@@ -640,7 +643,10 @@ ImageAnnotateView = Backbone.View.extend({
     pointClicked: function(thePoint) {
         var theClass = $(thePoint).attr('class');
         var theCaabCode = $(thePoint).attr('caab_code');
+    
 
+        this.enableAnnotationSelector();
+    
         if(theClass == 'pointSelected' && theCaabCode == ""){
             $(thePoint).attr('class', 'pointNotAnnotated');
         } else if(theClass == 'pointSelected' && theCaabCode != ""){
@@ -815,6 +821,17 @@ ImageAnnotateView = Backbone.View.extend({
 
         //refresh
         this.refreshPointLabelsForImage();
+        this.disableAnnotationSelector();
+    },   
+    enableAnnotationSelector: function(){
+        console.log('enable');
+        $('.AnnotationChooserBox').removeClass('disable');
+        // $('a[href=#overall_root_node]').trigger('activate-node');
+    },
+    disableAnnotationSelector: function(){
+        console.log('disable');
+        $('.AnnotationChooserBox').addClass('disable');
+        // $('.accordion').accordion({active: false});
     }
 });
 
@@ -1230,8 +1247,10 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
 
         var wholeImageVariables = { "broadScaleAnnotations": broadScaleAnnotationTemplate };
         var wholeImageTemplate = _.template($("#WholeImageAnnotationTemplate").html(), wholeImageVariables);
-
+        $('.FineScaleEditBox').hide();
+        $('.BroadScaleEditBox').show();
         // disable annotation view
+        
         this.disableAnnotationSelector();
 
         parent.$el.html(wholeImageTemplate);
@@ -1489,8 +1508,10 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         $('a[href=#overall_root_node]').trigger('activate-node');
     },
     disableAnnotationSelector: function(){
+        console.log('disable broad');
         $('.AnnotationChooserBox').addClass('disable');
-        $('.accordion').accordion({active: false});
+        $('.accordion #overall_root_node').accordion({active: false});
+        //$('a[href=#overall_root_node]').attr('active', false);
     }
 });
 

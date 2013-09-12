@@ -233,6 +233,17 @@
 			-moz-border-radius: 5px;
 			border-radius: 5px;
 			margin-bottom: 10px;
+			display:none;
+		}
+		
+		.FineScaleEditBox{
+			padding: 0px 5px;
+			border: 2px dashed #d8b02d;
+			background-color: rgba(239,230,204,0.05);
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+			margin-bottom: 10px;
+			display:none;
 		}
 
 		.AnnotationChooserBox{
@@ -624,7 +635,9 @@
     </script>
 
     <script type="text/template" id="ChooseAnnotationTemplate">
-        
+        <div class="FineScaleEditBox">    
+	        <h4>1. Select points in image to edit</h4>
+        </div>       
         <div class="BroadScaleEditBox">    
 	        <h4>1. Make/Edit Broad Scale Annotations</h4>
 	        <div class="whole-image-annotation-selector" id="whole-image-annotation-selector"></div>
