@@ -268,8 +268,9 @@ ChooseAnnotationView = Backbone.View.extend({
     },
     annotationFinalised: function(){
         //make it so
+        /*
         this.$('#assign_annotation_button').css('visibility', 'hidden');
-        GlobalEvent.trigger("annotation_to_be_set", this.current_annotation);
+        GlobalEvent.trigger("annotation_to_be_set", this.current_annotation);*/
     },
     new_parent_node: function(new_parent_id){
         this.current_annotation = new_parent_id;
@@ -320,6 +321,7 @@ ThumbnailStripView = Backbone.View.extend({
         this.buildAnnotationStatus();               
     },
     buildAnnotationStatus: function () {
+
         var parent = this;
 
         var localMap = { "images": [] }; //reset map
@@ -693,14 +695,17 @@ ImageAnnotateView = Backbone.View.extend({
         var selectedPoints = $('.pointSelected');
         caab_object = annotationCodeList.get(caab_code_id);
 
-        var afterAllSavedCallback = _.after(selectedPoints.length, function() {
-            //send out an event for all the other listeners
-            GlobalEvent.trigger("image_points_updated", this);
-            GlobalEvent.trigger("annotation_set_has_changed");
-        });
+        //only need a callback function if points greater than 0
+        var afterAllSavedCallback;
+        if(selectedPoints.length > 0)
+            afterAllSavedCallback = _.after(selectedPoints.length, function() {
+                //send out an event for all the other listeners
+                GlobalEvent.trigger("annotation_set_has_changed");
+            });
 
         //save the annotations
         $.each(selectedPoints, function(index, pointSpan) {
+
 
             //need to specify the properties to patch
             var properties = { 'annotation_caab_code': caab_object.get('caab_code') };
@@ -718,14 +723,7 @@ ImageAnnotateView = Backbone.View.extend({
                     $('#'+idOfSaved).tooltip("destroy");
                     $('#'+idOfSaved).tooltip("show");
 
-                    //change the point to annotated
-                    //var idOfSaved = model.get("id");
-                    //$('#'+idOfSaved).attr('class', 'pointAnnotated');
-                    //$('#'+idOfSaved).text(caab_code_id);
-
-                    //update the pil sidebar
-                    //GlobalEvent.trigger("image_points_updated", this);
-                    //GlobalEvent.trigger("annotation_set_has_changed");
+                    GlobalEvent.trigger("image_points_updated", this);
                     afterAllSavedCallback();
                 },
                 error: function (model, xhr, options) {
@@ -740,12 +738,7 @@ ImageAnnotateView = Backbone.View.extend({
                         $('#'+idOfSaved).tooltip("destroy");
                         $('#'+idOfSaved).tooltip("show");
 
-                        //var idOfSaved = model.get("id");
-                        //$('#'+idOfSaved).attr('class', 'pointAnnotated');
-                        //$('#'+idOfSaved).text(caab_code_id);
-
-                        //update the pil sidebar
-                        //GlobalEvent.trigger("image_points_updated", this);
+                        GlobalEvent.trigger("image_points_updated", this);
                         afterAllSavedCallback();
 
                     } else if(theXHR.status == "401") {
@@ -1188,7 +1181,6 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 //hide spinner
             },
             error: function (model, xhr, options) {
-                console.log('error');
                 console.log(xhr);
             }
         });
@@ -1273,12 +1265,6 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         // which annotations are tagged to be edited?
         var editableAnnotations = $('.editable');
 
-        var finishedSavingCallback = _.after(editableAnnotations.length, function() {
-            GlobalEvent.trigger("annotation_set_has_changed");
-
-            //console.log("called");
-        });
-
         $.each(editableAnnotations, function(index, element) {
 
             var properties = { 'annotation_caab_code': caab_object.get('caab_code') };
@@ -1290,12 +1276,10 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                     $(element).find('.wholeImageLabel').html('<i class="icon-edit editBroadScaleIndictor pull-left"></i>'+caab_object.get('code_name'));
                     $(element).find('.wholeImageClassLabel').text(rootAnnotationCode.get('code_name'));
 
-                    //GlobalEvent.trigger("annotation_set_has_changed");
-                    finishedSavingCallback();
+                    GlobalEvent.trigger("annotation_set_has_changed");
                 },
                 error: function (model, xhr, options) {
-                    //console.log('problem in wholeImageAnnotationChosen',xhr);
-                    finishedSavingCallback();
+                    GlobalEvent.trigger("annotation_set_has_changed");
                 }
             });
         });
@@ -1320,7 +1304,6 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
             success:function() {
                 parent.render();
                 GlobalEvent.trigger("annotation_set_has_changed");
-                //remove spinner TBD
             }
         });
     },
@@ -1371,7 +1354,6 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 GlobalEvent.trigger("annotation_set_has_changed");
             },
             error: function (model, xhr, options) {
-                console.log('error');
                 console.log(xhr);
             }
         });
@@ -1401,6 +1383,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 }
             });
         }
+
         GlobalEvent.trigger("annotation_set_has_changed");
         parent.render();
     },
@@ -1497,6 +1480,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 }
             });
         }
+
         GlobalEvent.trigger("annotation_set_has_changed");
         parent.render();
     },
@@ -1653,15 +1637,10 @@ SimilarityImageView = Backbone.View.extend({
             { source_image: parent.currentlySelectedImageID, destination_image: image.get('id') }
         ).done(
             function(data) {
-                /*
-                $.pnotify({
-                    title: 'Info',
-                    text: 'Successfully copied broad scale classification.',
-                    type: "success",
-                    delay: 2000
-                });
-                */
                 parent.renderSimilarityStatus();
+
+                //notify eveyone something has happened
+                GlobalEvent.trigger("annotation_set_has_changed");
             }
         ).fail(
             function() {
