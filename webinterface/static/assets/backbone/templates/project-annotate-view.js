@@ -523,12 +523,16 @@ ImageAnnotateView = Backbone.View.extend({
                     var annotation_object = annotationCodeList.find(function(listmodel) {
                         return listmodel.get('caab_code')===newpoint.get('annotation_caab_code');
                     });
-                    $(pointSpan).text(annotation_object.id);
+                    $(pointSpan).text(annotation_object.get("cpc_code"));
                 }});
             }
         });
     },
     renderPointsForImage: function() {
+
+        //destroy all the tooltips before loading new points
+        this.pointMouseOut();
+
         var parent = this;
 
         //get the selected image
@@ -565,7 +569,7 @@ ImageAnnotateView = Backbone.View.extend({
                     span.attr('data-container','#ImageAppContainer');
 
                     if (labelClass === 'pointAnnotated'){
-                        span.text(annotationCode.id);
+                        span.text(annotationCode.get("cpc_code"));
                         span.attr('title', annotationCode.get("code_name"));
                     }
 
@@ -608,6 +612,10 @@ ImageAnnotateView = Backbone.View.extend({
 
     },
     thumbnailSelectedWithId: function(ImageId) {
+
+        //destroy the tooltips
+        this.pointMouseOut();
+
         this.renderSelectedImageById(ImageId);
 
         var parent = this;
@@ -618,6 +626,10 @@ ImageAnnotateView = Backbone.View.extend({
 
     },
     thumbnailSelected: function(selectedPosition) {
+
+        //destroy the tooltips
+        this.pointMouseOut();
+
         selectedThumbnailPosition = selectedPosition;
         this.renderSelectedImage(selectedPosition);
 
@@ -682,7 +694,7 @@ ImageAnnotateView = Backbone.View.extend({
             $("#"+samePoints[i].get("id")).tooltip('show');
         }
     },
-    pointMouseOut: function(thePoint) {
+    pointMouseOut: function() {
         //remove labels from all points
         points.each(function(point) {
             $("#"+point.get("id")).tooltip('destroy');
