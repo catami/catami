@@ -1493,7 +1493,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
             });
         }
 
-        GlobalEvent.trigger("annotation_set_has_changed");
+        //GlobalEvent.trigger("annotation_set_has_changed");
         parent.render();
     },
     showUnscorableConfirmation: function(){
