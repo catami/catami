@@ -59,6 +59,7 @@ var map;
 var bidResult;
 var selectedImageId = -1;
 var projectId = -1;
+var selectedThumbnailPosition = 0;
 
 //yeah, it's a global.
 var nested_annotation_list;
@@ -290,9 +291,6 @@ ChooseAnnotationView = Backbone.View.extend({
     }
 });
 ChooseAnnotationView.current_annotation = null;
-
-
-var selectedThumbnailPosition = 0;
 
 ImageAnnotateView = Backbone.View.extend({
     model: new PointAnnotation(),
@@ -1386,32 +1384,6 @@ SimilarityImageView = Backbone.View.extend({
         });
     }
 });
-
-// helper function to count the number of annotations done on the image (json object)
-function countAnnotated(image) {
-    var count = 0;
-    $.each(image.annotations, function (i, annotation) {
-        //alert(image.id + ' : ' + annotation.code + ' != "" : ' + (annotation.code != ""));
-        if (annotation.code != "") count++;
-    });
-    return count
-}
-
-function updateAnnotation(imageId, annotId, code, name) {
-    $.each(map.images, function (i, image) {
-        if (image.id == imageId) {
-            $.each(image.annotations, function (i, annot) {
-                if (annot.id == annotId) {
-                    annot.code = code;
-                    annot.name = name;
-                    return; 
-                }
-            });
-            return;
-        }
-    });
-}
-
 
 function loadPage(offset) {
     fetchThumbnails(offset);

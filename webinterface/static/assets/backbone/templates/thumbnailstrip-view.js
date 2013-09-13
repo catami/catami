@@ -142,6 +142,32 @@ ThumbnailStripView = Backbone.View.extend({
     }
 });
 
+
+// helper function to count the number of annotations done on the image (json object)
+function countAnnotated(image) {
+    var count = 0;
+    $.each(image.annotations, function (i, annotation) {
+        //alert(image.id + ' : ' + annotation.code + ' != "" : ' + (annotation.code != ""));
+        if (annotation.code != "") count++;
+    });
+    return count
+}
+
+function updateAnnotation(imageId, annotId, code, name) {
+    $.each(map.images, function (i, image) {
+        if (image.id == imageId) {
+            $.each(image.annotations, function (i, annot) {
+                if (annot.id == annotId) {
+                    annot.code = code;
+                    annot.name = name;
+                    return;
+                }
+            });
+            return;
+        }
+    });
+}
+
 function generateAllThumbnailTemplates(thumbnailImages) {
     var template = ""
     var i = 0;
