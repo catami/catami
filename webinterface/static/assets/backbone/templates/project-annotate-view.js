@@ -1173,13 +1173,18 @@ function getUsefulCaabRoot(caab_code_id){
     }
     var currentCode = plain_annotation_list[parseInt(caab_code_id,10)-1];
 
-    if (currentCode.caab_code === '82000000' || currentCode.caab_code === '00000000'){
-        // not useful as roots for broad classification
-        return null;
+    if (currentCode.caab_code === '82000000'){
+        // Physical ... not useful as roots for broad classification
+        return '82000000';
+    }
+
+    if (currentCode.caab_code === '00000000'){
+        //Not Considered ... not useful as roots for broad classification
+        return '00000000';
     }
 
     if (currentCode.caab_code === '00000001'){
-        //unscorable
+        //unscorable ... not useful as roots for broad classification
         return '00000001';
     }
 
