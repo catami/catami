@@ -544,6 +544,10 @@ class ProjectResource(ModelResource):
             image_bundle.request = request
             image_bundle.data = dict(deployment=deployment_id)
 
+            # filter __in operand should be list()
+            if not isinstance(deployment_id,list):
+                deployment_id = [deployment_id]
+
             images = Image.objects.filter(deployment__in=deployment_id)
 
             # subsample and set the images
