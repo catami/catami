@@ -497,7 +497,7 @@ class TestImageResource(ResourceTestCase):
                                       data=self.post_data))
 
         # test that we can NOT modify
-        self.assertHttpMethodNotAllowed(
+        self.assertHttpUnauthorized(
             self.anon_api_client.put(
                 self.image_url + self.deployment_bobs.id.__str__() + "/",
                 format='json',
@@ -513,7 +513,7 @@ class TestImageResource(ResourceTestCase):
         )
 
         # test that we can NOT modify authenticated
-        self.assertHttpMethodNotAllowed(
+        self.assertHttpUnauthorized(
             self.bob_api_client.put(
                 self.image_url + self.deployment_bobs.id.__str__() + "/",
                 format='json',
@@ -650,7 +650,6 @@ class TestCameraResource(ResourceTestCase):
         #some post data for testing camera creation
         self.post_data = []
 
-    # can only do GET at this stage
     def test_camera_operations_disabled(self):
         # test that we can NOT create
 
@@ -660,7 +659,7 @@ class TestCameraResource(ResourceTestCase):
                                       data=self.post_data))
 
         # test that we can NOT modify
-        self.assertHttpMethodNotAllowed(
+        self.assertHttpUnauthorized(
             self.anon_api_client.put(
                 self.camera_url + self.deployment_bobs.id.__str__() + "/",
                 format='json',
@@ -677,7 +676,7 @@ class TestCameraResource(ResourceTestCase):
         )
 
         # test that we can NOT modify authenticated
-        self.assertHttpMethodNotAllowed(
+        self.assertHttpUnauthorized(
             self.bob_api_client.put(
                 self.camera_url + self.deployment_bobs.id.__str__() + "/",
                 format='json',
@@ -831,7 +830,7 @@ class TestMeasurementsResource(ResourceTestCase):
     # can only do GET at this stage
     def test_measurement_operations_disabled(self):
         # test that we can NOT modify
-        self.assertHttpMethodNotAllowed(
+        self.assertHttpUnauthorized(
             self.anon_api_client.put(
                 self.image_measurement_url +
                 self.deployment_bobs.id.__str__() + "/",
@@ -850,7 +849,7 @@ class TestMeasurementsResource(ResourceTestCase):
         )
 
         # test that we can NOT modify authenticated
-        self.assertHttpMethodNotAllowed(
+        self.assertHttpUnauthorized(
             self.bob_api_client.put(
                 self.image_measurement_url +
                 self.deployment_bobs.id.__str__() + "/",
