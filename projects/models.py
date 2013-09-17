@@ -125,6 +125,10 @@ class Annotation(models.Model):
     #loose reference to qualifier table
     qualifier_short_name = models.CharField(max_length=200)
 
+    #secondary annotation code and qualifier 
+    annotation_caab_code_secondary = models.CharField(max_length=200, blank=True)
+    qualifier_short_name_secondary = models.CharField(max_length=200, blank=True)
+
     class Meta:
         """Defines Metaparameters of the model."""
         abstract = True
