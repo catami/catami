@@ -502,7 +502,7 @@ class ProjectResource(ModelResource):
                             code = AnnotationCodes.objects.filter(caab_code=point.annotation_caab_code)
                             if code and code is not None and len(code) > 0:
                                 code_name = code[0].code_name
-                        writer.writerow(['Point', image.image_name, image.deployment.campaign.short_name, 
+                        writer.writerow(['Fine Scale', image.image_name, image.deployment.campaign.short_name, 
                                         image.deployment.short_name, image.position, 
                                         (str(point.x) + ' , ' + str(point.y)), 
                                         point.annotation_caab_code, code_name])
@@ -514,7 +514,7 @@ class ProjectResource(ModelResource):
                             code = AnnotationCodes.objects.filter(caab_code=whole.annotation_caab_code)                    
                             if code and code is not None and len(code) > 0:
                                 code_name = code[0].code_name
-                        writer.writerow(['Whole Image', image.image_name, image.deployment.campaign.short_name, 
+                        writer.writerow(['Broad Scale', image.image_name, image.deployment.campaign.short_name, 
                                         image.deployment.short_name, image.position, '',                                         
                                         whole.annotation_caab_code, code_name])
         return response
