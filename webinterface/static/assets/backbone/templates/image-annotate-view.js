@@ -1,3 +1,8 @@
+// events triggered
+// point_selected:  a fine scale point in selected in the main image view
+// point_clicked:  a fine scale point in clicked in the main image view
+// point_mouseover: mouse over event happened for a fine scale point in the image view
+
 ImageAnnotateView = Backbone.View.extend({
     model: new PointAnnotation(),
     el: $('div'),

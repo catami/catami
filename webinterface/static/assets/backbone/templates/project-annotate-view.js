@@ -133,7 +133,7 @@ OrchestratorView = Backbone.View.extend({
         //load the views
         this.breadcrumbNavigationView = new BreadcrumbNavigationView({});
         this.thumbnailStripView = new ThumbnailStripView({model : annotationSets});
-        this.imagesAnnotateView = new ImageAnnotateView({ model: annotationSets });        
+        this.imagesAnnotateView = new ImageAnnotateView({ model: annotationSets });
         this.chooseAnnotationView = new ChooseAnnotationView({});
 
         if (annotationSets.at(0).get('annotation_set_type') === 1){
@@ -143,7 +143,7 @@ OrchestratorView = Backbone.View.extend({
         } else {
             //hide similarity for point view
             $('#SimilarImageTabButton').hide();
-
+            this.fineScaleSelectorView = new FineScaleAnnotationSelectorView({});
             this.pointControlBarView = new PointControlBarView({});
         }
 
@@ -167,6 +167,7 @@ OrchestratorView = Backbone.View.extend({
             this.assign(this.similarityImageView, '#ImageSimilarityContainer');
             this.assign(this.wholeImageControlBarView, '#ControlBarContainer');
         } else {
+            this.assign(this.fineScaleSelectorView, '#fine-scale-annotation-selector');
             this.assign(this.pointControlBarView, '#ControlBarContainer');
         }
         

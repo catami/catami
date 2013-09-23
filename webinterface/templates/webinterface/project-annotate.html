@@ -104,6 +104,42 @@
 			border-bottom-left-radius: 50%;
 			border-bottom-right-radius: 50%;
 		}
+		
+		.fineScaleList{
+			list-style-type: none;
+			padding: 0px;
+			margin: 0px 0px 14px 0px;
+		}
+		.fineScaleItem {
+		    list-style-position:outside;
+/* 		    border-bottom: 2px solid white; */
+		    background-color: rgba(245,236,211,1);
+		    padding: 5px 5px;
+		    font-weight: normal;
+		    margin-bottom: 2px;
+		}
+		.fineScaleBadge{
+			color: white;
+			background-color:  rgba(202,194,168,0.89);
+			padding: 0px 4px 4px 4px;
+			border-top-left-radius: 50%;
+			border-top-right-radius: 50%;
+			border-bottom-left-radius: 50%;
+			border-bottom-right-radius: 50%;
+			font-weight: bold;
+		}
+		.fineScaleSeperator{
+			background-color: rgba(245,238,211,0);
+			margin-top: -10px;
+			margin-bottom: -5px;
+			padding-left: 20px;
+		}
+		.fineScaleLabel{
+			font-weight: 500;
+			font-size: large;
+			display:block;			
+		}		
+		
 		.wholeImageList{
 			list-style-type: none;
 			padding: 0px;
@@ -368,6 +404,7 @@
 			padding-right: 5px;
 			padding-left: 5px;
 		}
+		
 /* toolbar */ 
 
 		.toolbar {
@@ -654,7 +691,8 @@
 
     <script type="text/template" id="ChooseAnnotationTemplate">
         <div class="FineScaleEditBox">    
-	        <h4>1. Select points in image to edit</h4>
+	        <h4>1. View/Edit Fine Scale Annotation</h4>
+	        <div class="fine-scale-annotation-selector" id="fine-scale-annotation-selector"></div>
         </div>       
         <div class="BroadScaleEditBox">    
 	        <h4>1. Make/Edit Broad Scale Annotations</h4>
@@ -793,6 +831,21 @@
 		</li>
 	</script>
 	
+	<script type="text/template" id="FineScaleAnnotionTemplate">
+		<ul class="fineScaleList">
+		<li class="fineScaleItem">
+			<span id="add_secondary_annotation" class="label addSecondaryButton pull-right"><i class="icon-plus-sign"></i> Alternate</span>
+			<span id="fine_scale_class_label" class="wholeImageClassLabel label label-info pull-right"><%=fineScaleClassParent%></span>
+			<span id="fine_scale_label" class="fineScaleLabel" class="pull-left" data-model_id="<%=model_id%>"><i class="pull-left"></i><%=fineScaleClass%></span>
+		</li>
+		<li class="fineScaleSeperator"><span id="fineScaleBadge" class="fineScaleBadge">or</span></li>
+		<li id="secondaryLabel" class="fineScaleItem">
+			<span id="remove_secondary_annotation" class="label addSecondaryButton pull-right"><i class="icon-minus-sign"></i> Alternate</span>
+			<span class="wholeImageClassLabel label label-info pull-right"><%=fineScaleClassSecondaryParent%></span>
+			<span id="fine_scale_label_secondary" class="fineScaleLabel" class="pull-left" data-model_id="<%=model_id%>"><i class="pull-left"></i><%=fineScaleClassSecondary%></span>
+		</ul>
+	</script>
+	
 	<script type="text/template" id="BreadcrumbTemplate">
 		<div class="span12">
 		    <ul class="breadcrumb">
@@ -838,6 +891,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-annotate-view.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/broadscale-select-view.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/fine-scale-selector-view.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/image-annotate-view.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/thumbnailstrip-view.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/choose-annotation-view.js"></script>
