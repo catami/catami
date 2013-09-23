@@ -113,7 +113,7 @@
 {% endblock %}
 
 {% block add_script %}
-<script src="http://www.openlayers.org/dev/OpenLayers.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/OpenLayers/OpenLayers.js"></script>
 <script src="{{ STATIC_URL }}assets/OpenLayers/LoadingPanel.js"></script>
 <script src="{{ STATIC_URL }}assets/OpenLayers/AnimatedCluster.js"></script>
 <script src='{{ STATIC_URL }}assets/catami-api/js/MapUtils.js'></script>
