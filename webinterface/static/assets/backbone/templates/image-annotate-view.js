@@ -109,6 +109,14 @@ ImageAnnotateView = Backbone.View.extend({
                         return model.get('caab_code')===point.get('annotation_caab_code');
                     });
 
+                    var annotationCodeSecondary = '';
+
+                    if (point.get('annotation_caab_code_secondary') !== '') {
+                        annotationCodeSecondary = annotationCodeList.find(function(model) {
+                            return model.get('caab_code')===point.get('annotation_caab_code_secondary');
+                        });
+                    }
+
                     var labelClass = (label === "") ? 'pointNotAnnotated' : 'pointAnnotated';
 
                     var span = $('<span>');
@@ -123,7 +131,14 @@ ImageAnnotateView = Backbone.View.extend({
 
                     if (labelClass === 'pointAnnotated'){
                         span.text(annotationCode.get("cpc_code"));
-                        span.attr('title', annotationCode.get("code_name"));
+                        if (annotationCodeSecondary === ''){
+                            span.text(annotationCode.get("cpc_code"));
+                            span.attr('title', annotationCode.get("code_name"));
+                        } else {
+                            span.text(annotationCode.get("cpc_code")+'/'+annotationCodeSecondary.get("cpc_code"));
+                            span.attr('title', annotationCode.get("code_name")+'/'+annotationCodeSecondary.get("code_name"));
+
+                        }
                     }
 
                     span.appendTo('#ImageContainer');
@@ -253,87 +268,6 @@ ImageAnnotateView = Backbone.View.extend({
             $("#"+point.get("id")).tooltip('destroy');
         });
     },
-    annotationChosen: function(caab_code_id) {
-        var parent = this;
-
-        //get the selected points
-        var selectedPoints = $('.pointSelected');
-        caab_object = annotationCodeList.get(caab_code_id);
-
-        //only need a callback function if points greater than 0
-        var afterAllSavedCallback;
-        if(selectedPoints.length > 0)
-            afterAllSavedCallback = _.after(selectedPoints.length, function() {
-                //send out an event for all the other listeners
-                GlobalEvent.trigger("annotation_set_has_changed");
-            });
-
-        //save the annotations
-        $.each(selectedPoints, function(index, pointSpan) {
-
-
-            //need to specify the properties to patch
-            var properties = { 'annotation_caab_code': caab_object.get('caab_code') };
-
-            var theXHR = points.get(pointSpan.id).save(properties, {
-                patch: true,
-                headers: {"cache-control": "no-cache"},
-                success: function (model, xhr, options) {
-
-                    //show label on annotated point
-                    var idOfSaved = model.get("id");
-                    $('#'+idOfSaved).addClass('pointLabelledStillSelected'); //this means the point stays selected, we are just assigning the class to this point to keep that state
-                    $('#'+idOfSaved).attr('title', annotationCodeList.get(caab_code_id).get("code_name"));
-                    $('#'+idOfSaved).attr('caab_code', caab_object.get('caab_code'));
-                    $('#'+idOfSaved).tooltip("destroy");
-                    $('#'+idOfSaved).tooltip("show");
-
-                    GlobalEvent.trigger("image_points_updated", this);
-                    afterAllSavedCallback();
-                },
-                error: function (model, xhr, options) {
-                    if (theXHR.status == "201" || theXHR.status == "202") {
-                        alert("202");
-
-                        //show label on annotated point
-                        var idOfSaved = model.get("id");
-                        $('#'+idOfSaved).addClass('pointLabelledStillSelected'); //this means the point stays selected, we are just assigning the class to this point to keep that state
-                        $('#'+idOfSaved).attr('title', annotationCodeList.get(caab_code_id).get("code_name"));
-                        $('#'+idOfSaved).attr('caab_code', caab_object.get('caab_code'));
-                        $('#'+idOfSaved).tooltip("destroy");
-                        $('#'+idOfSaved).tooltip("show");
-
-                        GlobalEvent.trigger("image_points_updated", this);
-                        afterAllSavedCallback();
-
-                    } else if(theXHR.status == "401") {
-                        $.pnotify({
-                            title: 'You don\'t have permission to annotate this image.',
-                            text: theXHR.response,
-                            type: 'error', // success | info | error
-                            hide: true,
-                            icon: false,
-                            history: false,
-                            sticker: false
-                        });
-                    }
-                    else {
-                        $.pnotify({
-                            title: 'Failed to save your annotations to the server.',
-                            text: theXHR.response,
-                            type: 'error', // success | info | error
-                            hide: true,
-                            icon: false,
-                            history: false,
-                            sticker: false
-                        });
-                    }
-                }
-            });
-        });
-
-        GlobalEvent.trigger("annotation_triggered");
-    },
     hidePoints: function () {
         //loop through the points and hide them
         points.each(function (point) {
@@ -380,6 +314,9 @@ ImageAnnotateView = Backbone.View.extend({
         //refresh
         this.refreshPointLabelsForImage();
         this.disableAnnotationSelector();
+
+        GlobalEvent.trigger('finescale_points_deselected');
+
     },
     enableAnnotationSelector: function(){
         $('.AnnotationChooserBox').removeClass('disable');

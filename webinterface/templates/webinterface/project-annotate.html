@@ -118,6 +118,14 @@
 		    font-weight: normal;
 		    margin-bottom: 2px;
 		}
+		.fineScaleItem:hover{
+		    background-color: rgba(208,212,243,.75);
+		    cursor:pointer;
+		}
+		.fineScaleItemSelected{
+		    background-color: rgba(208,212,243,.75);
+		    cursor:pointer;
+		}
 		.fineScaleBadge{
 			color: white;
 			background-color:  rgba(202,194,168,0.89);
@@ -833,7 +841,7 @@
 	
 	<script type="text/template" id="FineScaleAnnotionTemplate">
 		<ul class="fineScaleList">
-		<li class="fineScaleItem">
+		<li id="primarylabel" class="fineScaleItem">
 			<span id="add_secondary_annotation" class="label addSecondaryButton pull-right"><i class="icon-plus-sign"></i> Alternate</span>
 			<span id="fine_scale_class_label" class="wholeImageClassLabel label label-info pull-right"><%=fineScaleClassParent%></span>
 			<span id="fine_scale_label" class="fineScaleLabel" class="pull-left" data-model_id="<%=model_id%>"><i class="pull-left"></i><%=fineScaleClass%></span>
