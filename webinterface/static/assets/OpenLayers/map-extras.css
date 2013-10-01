@@ -1,0 +1,3 @@
+/*Fixes squashed tile map error
+*/
+.olMap img { max-width:none; }

@@ -1,4 +1,8 @@
 {% extends "base-topmenu.html" %}
+{% block tail_head %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/OpenLayers/map-extras.css" type="text/css">
+{% endblock %}
+
 {% block content %}
 
 <ul class="breadcrumb">
@@ -48,9 +52,9 @@
 {% endblock %}
 
 {% block add_script %}
-<script src="http://openlayers.org/api/2.13.1/OpenLayers.js"></script>
+<script src="{{ STATIC_URL }}assets/OpenLayers/OpenLayers.js"></script>
 <script src="{{ STATIC_URL }}assets/OpenLayers/LoadingPanel.js"></script>
-<script src='{{ STATIC_URL }}assets/js/MapUtils.js'></script>
+<script src="{{ STATIC_URL }}assets/js/MapUtils.js"></script>
 
 <script type="text/javascript">
     //Init js variables which is used by Backbone to render html template
