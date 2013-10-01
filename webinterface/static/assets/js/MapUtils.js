@@ -69,11 +69,12 @@ MapUtils.prototype.createLayer = function (gsUrl, gslayerName, layerName, isBase
  * Called to zoom into Australia
  */
 MapUtils.prototype.zoomToAustralia = function () { 
-    var bounds = new OpenLayers.Bounds(
-        -108, -10,
-        157, -46
-    );
-    this.map.zoomToExtent(bounds.transform(this.dataProjection, this.baseProjection))
+
+    var bounds = new OpenLayers.Bounds();
+    bounds.extend(new OpenLayers.LonLat(110, -10).transform(new OpenLayers.Projection("EPSG:4326"), this.map.getProjectionObject()));
+    bounds.extend(new OpenLayers.LonLat(170, -46).transform(new OpenLayers.Projection("EPSG:4326"), this.map.getProjectionObject()));
+
+    this.map.zoomToExtent(bounds);
 };
 
 
