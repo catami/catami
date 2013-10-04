@@ -112,3 +112,7 @@ p.login-extras {
 	padding: 5px 0 10px 180px;
 	margin: 0px;
 }
+
+.header-padding{
+    padding-top: 60px;
+}
