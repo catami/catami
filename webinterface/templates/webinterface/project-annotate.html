@@ -15,7 +15,7 @@
 		    height: 100%;
 		}
 		.container-fluid {
-		    margin: 0 auto;
+		    margin: 0;
 		    height: 100%;
 /* 		    padding: 0px 0; */
 		    -moz-box-sizing: border-box;
@@ -29,16 +29,17 @@
 		.columns {
 		    height: 100%;		   
 		}
+
 		.content-area{
-		    background: rgba(0,0,0,0);
+		    /*background: rgba(0,0,0,0);*/
+
 		    overflow:auto;
 		    height: 100%;
 		}
 		.footer {
-		margin-top: -60px;
-			  background: red;
-			  height: 20px;
-			}
+            margin-top: -60px;
+            height: 20px;
+        }
 		div.wrapper{
 		    float:left; /* important */
 		    position:relative; /* important(so we can absolutely position the description div */
@@ -309,7 +310,7 @@
 		}
 		.BroadScaleEditBox{
 			padding: 0px 5px;
-			border: 2px dashed #d8b02d;
+
 			background-color: rgba(239,230,204,0.05);
 			-moz-border-radius: 5px;
 			border-radius: 5px;
@@ -319,7 +320,7 @@
 		
 		.FineScaleEditBox{
 			padding: 0px 5px;
-			border: 2px dashed #d8b02d;
+
 			background-color: rgba(239,230,204,0.05);
 			-moz-border-radius: 5px;
 			border-radius: 5px;
@@ -330,7 +331,7 @@
 		.AnnotationChooserBox{
 			color: #000000;
 			padding: 0px 5px;
-			border: 2px dashed #d8b02d;
+
 			background-color: rgba(239,230,204,0.05);
 			-moz-border-radius: 5px;
 			border-radius: 5px;
@@ -338,7 +339,7 @@
 		.AnnotationChooserBox disable{
 			color: #b7b7b7;
 			padding: 0px 5px;
-			border: 2px dashed #d8b02d;
+
 			background-color: rgba(239,230,204,0.05);
 			-moz-border-radius: 5px;
 			border-radius: 5px;
@@ -453,11 +454,9 @@
 /* toolbar */ 
 
 		.toolbar {
-			position: relative;
-			bottom: 0;
-			left: 0;
+            width: 100%;
+			margin: 0;
 			z-index: 100;
-			padding: 0px 10px;
 			background: rgba(0,0,0, 0.85);
 		}
 		
@@ -580,9 +579,13 @@
         </div>
 
 		
-		<div id="ImageAppContainer" class="span7 container-fluid">
-            <div id="ImageContainer" class="content-area panzoom"></div>
-            <div id="ControlBarContainer" class="footer"></div>
+		<div id="ImageAppContainer" class="span7" style="margin-bottom: 0; height: 100%">
+
+            <div id="ControlBarContainer" ></div>
+
+            <div class="container-fluid">
+                <div id="ImageContainer" class="content-area panzoom"></div>
+            </div>
         </div>
 
 
@@ -751,7 +754,7 @@
 	</script>
 
 	<script type="text/template" id="PointControlBarTemplate">
-	    <div class="row span12 toolbar" style="margin-left:0px;">
+	    <div class="row toolbar">
             <div class="button-container-div">
                 <ul>
                     <li class="toolbar-entry-wide">
@@ -786,7 +789,7 @@
 	</script>
 
     <script type="text/template" id="WholeImageControlBarTemplate">
-	    <div class="row span12 toolbar" style="margin-left:0px;">
+	    <div class="row toolbar">
             <div class="button-container-div">
                 <ul>
                     <li class="toolbar-entry-wide">
@@ -969,20 +972,20 @@
             $('#RightPane').css('height', height);
         });
         */
-/*
+
 		$(document).ready(function(){
 		    $('#ImageAppContainer').height($(window).height());
 		});
-*/
+
 
         $("#Image").imagesLoaded(function() {
-/*
+
             var divWidth = $("#ImageAppContainer").width();
             var divHeight = $("#ImageAppContainer").height();
 
             var max = (divWidth > divHeight) ? divHeight : divWidth;
             $('#Image').autoResizeImages({maxSize: max});
-*/
+
         });
 
     </script>
