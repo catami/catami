@@ -551,8 +551,8 @@ project.fetch({
                     projectView.renderProjectStats();
                 } else {
                     $.pnotify({
-                        title: 'Failed to load annotation set details. Try refreshing the page.',
-                        text: '',
+                        title: 'Error',
+                        text: 'Failed to load annotation set details. Try refreshing the page.',
                         type: 'error', // success | info | error
                         hide: true,
                         icon: false,
@@ -563,8 +563,8 @@ project.fetch({
             },
             error: function (model, response, options) {
                 $.pnotify({
-                    title: 'Failed to load annotation set details. Try refreshing the page.',
-                    text: response.status,
+                    title: response.status,
+                    text: 'Failed to load annotation set details. Try refreshing the page.',
                     type: 'error', // success | info | error
                     hide: true,
                     icon: false,
@@ -575,15 +575,29 @@ project.fetch({
         });
     },
     error: function (model, response, options) {
-        $.pnotify({
-            title: 'Failed to load project details. Try refreshing the page.',
-            text: response.status,
-            type: 'error', // success | info | error
-            hide: true,
-            icon: false,
-            history: false,
-            sticker: false
-        });
+
+        if(response.status == 401) {
+            $.pnotify({
+                title: 'Sorry',
+                text: 'You do not have permission to view this project.',
+                type: 'error', // success | info | error
+                hide: true,
+                icon: false,
+                history: false,
+                sticker: false
+            });
+        }
+        else {
+            $.pnotify({
+                title: response.status,
+                text: 'Failed to load project details. Try refreshing the page.',
+                type: 'error', // success | info | error
+                hide: true,
+                icon: false,
+                history: false,
+                sticker: false
+            });
+        }
     }
 });
 
