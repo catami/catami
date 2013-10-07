@@ -1,7 +1,10 @@
 {% extends "base-topmenu.html" %}
+{% block tail_head %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/OpenLayers/map-extras.css" type="text/css">
+{% endblock %}
 
 {% block content %}
-<div id="CampaignViewContainer" class="header-padding"></div>
+<div id="CampaignViewContainer" class=""></div>
 
 <script type="text/template" id="CampaignViewTemplate">
 

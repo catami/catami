@@ -9,12 +9,13 @@
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/annotation_accordion.css" />
 
     <style type="text/css">
-    html, body {
+        html, body {
 		    margin: 0;
 		    padding: 0;
 		    height: 100%;
 		}
-		.container-fluid {
+
+		.image-container-fluid {
 		    margin: 0;
 		    height: 100%;
 /* 		    padding: 0px 0; */
@@ -23,9 +24,7 @@
 		    box-sizing: border-box;
 		    overflow: hidden;
 		}
-		.header-padding{
-			padding-top: 60px;
-		}
+
 		.columns {
 		    height: 100%;		   
 		}
@@ -564,7 +563,14 @@
     }
 
 	</style>
-    <div id="ContentContainer" class="container-fluid header-padding">
+
+    <div id="load-error-div" class="alert alert-error" style="display: none">
+        <strong>
+            <span id="load-error-message"></span>
+        </strong>
+    </div>
+
+    <div id="ContentContainer" class="">
 <!--
     	<section id="full-width-header" class="row-fluid span12" style="margin-left:0px;">
 		<div id="BreadcrumbContainer"></div>
@@ -583,7 +589,7 @@
 
             <div id="ControlBarContainer" ></div>
 
-            <div class="container-fluid">
+            <div class="image-container-fluid">
                 <div id="ImageContainer" class="content-area panzoom"></div>
             </div>
         </div>

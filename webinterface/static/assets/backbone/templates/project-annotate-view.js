@@ -70,15 +70,14 @@ OrchestratorView = Backbone.View.extend({
     events: {
     },
     onLoadError: function(model, response, options) {
-        $.pnotify({
-            title: 'Error',
-            text: "Failed to load the annotation code list. Try refreshing the page.",
-            type: 'error', // success | info | error
-            hide: true,
-            icon: false,
-            history: false,
-            sticker: false
-        });
+        if(response.status == 401) {
+            $("#load-error-message").html("You do not have permission to view this project.");
+        }
+        else {
+            $("#load-error-message").html("An error occurred trying to load this project. Try refreshing the page.");
+        }
+
+        $("#load-error-div").show();
     },
     initialize: function () {
 

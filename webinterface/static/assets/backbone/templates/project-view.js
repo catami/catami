@@ -577,27 +577,13 @@ project.fetch({
     error: function (model, response, options) {
 
         if(response.status == 401) {
-            $.pnotify({
-                title: 'Sorry',
-                text: 'You do not have permission to view this project.',
-                type: 'error', // success | info | error
-                hide: true,
-                icon: false,
-                history: false,
-                sticker: false
-            });
+            $("#load-error-message").html("You do not have permission to view this project.");
         }
         else {
-            $.pnotify({
-                title: response.status,
-                text: 'Failed to load project details. Try refreshing the page.',
-                type: 'error', // success | info | error
-                hide: true,
-                icon: false,
-                history: false,
-                sticker: false
-            });
+            $("#load-error-message").html("An error occurred trying to load this project. Try refreshing the page.");
         }
+
+        $("#load-error-div").show();
     }
 });
 
