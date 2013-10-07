@@ -58,9 +58,20 @@ var Projects = Backbone.Tastypie.Collection.extend({
     model: Project
 });
 
+var ProjectPermissions = Backbone.Model.extend({
+    url: function(){
+        return this.instanceUrl;
+    },
+    initialize: function(props){
+        this.instanceUrl = props.url;
+    }
+});
+
 function getPercentageCompleteURL(annotationSetId) {
     return "/api/dev/annotation_set/" + annotationSetId + "/get_percentage_complete/";
 }
+
+
 
 ProjectView = Backbone.View.extend({
     model: Project,
@@ -70,10 +81,12 @@ ProjectView = Backbone.View.extend({
     },
     render: function () {
 
+        var owner = project.get("owner").username;
         var permissions = project.get("permissions");
 
         var edit_content = $.inArray("change_project", permissions) > -1 ? "<a id=\"configure_project_button\" class=\"btn\" href=\"#\">Configure Project</a>" : "";
         var delete_content = $.inArray("delete_project", permissions) > -1 ? "<a id=\"delete_project_button\" class=\"btn btn-danger\" href=\"#delete_modal\" data-toggle=\"modal\">Delete Project</a>" : "";
+        var share_content = (owner == currentUsername) ? "<a id=\"share_project_button\" class=\"btn btn-info\">Share Project</a>" : "";
 
         //render the items to the main template
         var projectVariables = {
@@ -81,7 +94,8 @@ ProjectView = Backbone.View.extend({
             "description": project.get("description"),
             "map_extent": project.get("map_extent"),
             "edit_content": edit_content,
-            "delete_content": delete_content
+            "delete_content": delete_content,
+            "share_content": share_content
         };
 
         // Compile the template using underscore
@@ -158,7 +172,8 @@ ProjectView = Backbone.View.extend({
         "click #configure_project_button": "doConfigure",
         "click #export_project_button": "doExport",
         "click #start_annotating_button": "doStartAnnotating",
-        "click #delete_project_modal_button": "doDeleteProject"
+        "click #delete_project_modal_button": "doDeleteProject",
+        "click #share_project_button": "doShareProject"
     },
     doConfigure: function (event) {
         //redirect to configuration page
@@ -188,6 +203,246 @@ ProjectView = Backbone.View.extend({
                 });
             }
         });
+    },
+    doShareProject: function(event) {
+
+        projectPermissions.fetch({
+            success: function (model, response, options) {
+                //load the project
+                if(projectPermissionsView == null)
+                    projectPermissionsView = new ProjectPermissionsView({
+                        el: $("#ProjectPermissionsContainer"),
+                        model: projectPermissions
+                    });
+
+                projectPermissionsView.render();
+                $("#share_modal").modal('show');
+            },
+            error: function (model, response, options) {
+                $.pnotify({
+                    title: 'Failed to load project details. Try refreshing the page.',
+                    text: response.status,
+                    type: 'error', // success | info | error
+                    hide: true,
+                    icon: false,
+                    history: false,
+                    sticker: false
+                });
+            }
+        });
+
+    }
+});
+
+
+
+ProjectPermissionsView = Backbone.View.extend({
+    typeaheadUsers: [],
+    model: ProjectPermissions,
+    el: $('div'),
+    initialize: function () {
+        this.render();
+    },
+    render: function () {
+
+        //get tall the images to be rendered
+        var permissionTemplate = "";
+
+        // get the permissions
+        var project_permissions = projectPermissions.get("project_permissions");
+
+        // get the permissions of each of the users
+        for (var i=0; i<project_permissions.length; i++) {
+
+            var view_selected = "";
+            var edit_selected = "";
+
+            // select the appropriate permissions
+            $.inArray("change_project", project_permissions[i].permissions) > -1 ? edit_selected = "selected" : view_selected = "selected";
+
+            var userPermissionsVariables = {
+                "display_name": project_permissions[i].display_name,
+                "username": project_permissions[i].username,
+                "view_selected": view_selected,
+                "edit_selected": edit_selected
+            };
+
+            permissionTemplate += _.template($("#UserProjectPermissionsTemplate").html(), userPermissionsVariables);
+        }
+
+        // publicly visible?
+        var public_selected = "";
+        var private_selected = "";
+
+        (projectPermissions.get("is_public") == true) ? public_selected = "selected" : private_selected = "selected";
+
+        // render the permissions public/private
+        var projectPermissionsVariables = {
+            "project_permissions": permissionTemplate,
+            "private_selected": private_selected,
+            "public_selected": public_selected
+        };
+
+        // Compile the template using underscore
+        var projectPermissionsTemplate = _.template($("#ProjectPermissionsTemplate").html(), projectPermissionsVariables);
+
+        // Load the compiled HTML into the Backbone "el"
+        this.$el.html(projectPermissionsTemplate);
+
+        //$(projectPermissionsTemplate).appendTo('#ProjectPermissionsContainer');
+
+        //for the user lookup add permissions
+        this.renderTypeahead();
+
+        return this;
+    },
+    renderTypeahead: function() {
+        var parent = this;
+
+        // this is for the typeahead lookup
+        $('.typeahead').typeahead({
+            name: 'users',
+            remote: {
+                // this API call excludes the logged in user
+                url: '/api/dev/users/?format=json&first_name__icontains=%QUERY&first_name__iregex=^((?!'+currentUsername+').)*$&limit=10',
+                filter: function(parsedResponse) {
+                    parent.typeaheadUsers = [];
+                    for(i = 0; i < parsedResponse.objects.length; i++) {
+                        parent.typeaheadUsers.push({
+                             "display_name": parsedResponse.objects[i].first_name + " " + parsedResponse.objects[i].last_name,
+                             "value": parsedResponse.objects[i].username
+                        });
+                    }
+                    return parent.typeaheadUsers;
+                }
+            }
+        });
+    },
+    events: {
+        "change select": "selectChanged",
+        "click .remove-button": "removePermission",
+        "click #permissions-save": "doSave",
+        "click #add-permission": "addPermission"
+    },
+    selectChanged: function(event) {
+        //update the relative permission
+        var project_permissions = projectPermissions.get('project_permissions');
+
+        //username which has been updated
+        var username = $(event.target).attr("id");
+        var newPermission = $(event.target).val();
+
+        //update public/private status
+        if(username == "is_public")
+            if(newPermission == "public") {
+                projectPermissions.set("is_public", true);
+            }
+            else {
+                projectPermissions.set("is_public", false);
+            }
+
+        //update permissions for users
+        for(var i=0; i<project_permissions.length; i++) {
+            if(project_permissions[i].username == username)
+                if(newPermission == "change_project") {
+                    project_permissions[i].permissions = ['change_project', 'view_project'];
+                } else {
+                    project_permissions[i].permissions = ['view_project'];
+                }
+        }
+
+    },
+    removePermission: function(event) {
+        var username = $(event.target).attr("id");
+
+        //remove the relative permission
+        var project_permissions = projectPermissions.get('project_permissions');
+
+        // remove from model
+        for(var i=0; i<project_permissions.length; i++) {
+            if(project_permissions[i].username == username)
+                project_permissions.splice(i, 1);
+        }
+
+        //remove from user interface
+        $("#"+username+"-row").remove();
+    },
+    addPermission: function(event) {
+        $("#user-typeahead-error-div").hide();
+
+        //the username entered
+        var username = $("#user-typeahead").val();
+        var display_name = username;
+
+        //username validation bool
+        var usernameValid = false;
+
+        // check that this user actually exists
+        for (var i=0; i < this.typeaheadUsers.length; i++) {
+            if(username = this.typeaheadUsers[i].value) {
+                usernameValid = true;
+                display_name = this.typeaheadUsers[i].display_name;
+                break;
+            }
+        };
+
+        // permission already set bool
+        var permissionAlreadySet = false;
+
+        // check that the user does not already have a permission set
+        var project_permissions = projectPermissions.get('project_permissions');
+        for(var i=0; i<project_permissions.length; i++) {
+            if(project_permissions[i].username == username) {
+                permissionAlreadySet = true;
+                break;
+            }
+        }
+
+        if(!usernameValid) {
+            $("#user-typeahead-error-message").html("User '" + username + "' does not exist.");
+            $("#user-typeahead-error-div").show();
+        }
+        else if (!permissionAlreadySet){
+            // add the user to the list with default permission
+            var userPermissionsVariables = {
+                "display_name": display_name,
+                "username": username,
+                "view_selected": "selected",
+                "edit_selected": ""
+            };
+
+            var permissionTemplate = _.template($("#UserProjectPermissionsTemplate").html(), userPermissionsVariables);
+            $("#permission_table_body").append(permissionTemplate);
+
+            //also have to add to the model
+            var project_permissions = projectPermissions.get('project_permissions');
+            var newPermission = {};
+            newPermission.username = username;
+            newPermission.display_name = display_name;
+            newPermission.permissions = ['view_project'];
+            project_permissions.push(newPermission);
+        }
+
+    },
+    doSave: function() {
+        //save away
+        var theXHR = projectPermissions.save(null, {
+            success: function (model, xhr, options) {
+                // no need to do anything
+            },
+            error: function (model, xhr, options) {
+                // notify the users something went wrong
+                $.pnotify({
+                    title: 'Error',
+                    text: "Failed to save permissions",
+                    type: 'error', // success | info | error
+                    hide: true,
+                    icon: false,
+                    history: false,
+                    sticker: false
+                });
+            }
+        })
     }
 });
 
@@ -253,10 +508,12 @@ function loadPage(offset) {
 }
 
 var project = new Project({ id: projectId });
+var projectPermissions = new ProjectPermissions({ "url": "/api/dev/project/" + projectId + "/share_project/" });
 var images;
 var annotationSets = new AnnotationSets();
 var points = new PointAnnotations();
 var whole_image_points = new WholeImageAnnotations();
+var projectPermissionsView;
 
 project.fetch({
 
@@ -329,6 +586,8 @@ project.fetch({
         });
     }
 });
+
+
 
 
  

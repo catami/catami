@@ -351,7 +351,6 @@ function getUsefulCaabRoot(caab_code_id){
     return return_code;
 }
 
-
 function loadPage(offset) {
     fetchThumbnails(offset);
     orchestratorView.thumbnailStripView.render();

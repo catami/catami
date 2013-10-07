@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+import json
 import guardian
 from guardian.core import ObjectPermissionChecker
 from guardian.shortcuts import assign_perm
@@ -88,12 +89,19 @@ class TestProjectResource(ResourceTestCase):
                                                  'bob@example.com',
                                                  self.user_bob_password)
 
-        # Create a user bob.
+        # Create a user bill.
         self.user_bill_username = 'bill'
         self.user_bill_password = 'bill'
         self.user_bill = User.objects.create_user(self.user_bill_username,
                                                   'bill@example.com',
                                                   self.user_bill_password)
+
+        # Create a user joe.
+        self.user_joe_username = 'joe'
+        self.user_joe_password = 'joe'
+        self.user_joe = User.objects.create_user(self.user_joe_username,
+                                                  'joe@example.com',
+                                                  self.user_joe_password)
 
         self.bob_api_client.client.login(username='bob', password='bob')
         self.bill_api_client.client.login(username='bill', password='bill')
@@ -106,6 +114,7 @@ class TestProjectResource(ResourceTestCase):
         public_group, created = Group.objects.get_or_create(name='Public')
         self.user_bob.groups.add(public_group)
         self.user_bill.groups.add(public_group)
+        self.user_joe.groups.add(public_group)
         guardian.utils.get_anonymous_user().groups.add(public_group)
 
         #make a couple of projects and save
@@ -285,7 +294,6 @@ class TestProjectResource(ResourceTestCase):
 
         #check the right number of images are on the associated annotation set
         self.assertEqual(10, len(AnnotationSet.objects.get(project=project_id).images.all()))
-
 
     def test_create_project_helper_function_whole_image_type(self):
         create_project_url = self.project_url + "create_project/"
@@ -472,6 +480,112 @@ class TestProjectResource(ResourceTestCase):
             # due to numerical precision the POINT values will vary.  This test needs re thinking.
             # self.assertTrue(row == expectedList2[i], msg=None)
             i = i + 1
+
+    def test_configure(self):
+
+        ### create some objects
+        # create a campaign that only bill can see
+        bills_project = mommy.make_one(Project,
+                                        name="bills",
+                                        owner=self.user_bill,
+                                        creation_date=datetime.now(),
+                                        modified_date=datetime.now(),
+                                        images=[self.mock_image_one, self.mock_image_two])
+
+        assign_perm('view_project', self.user_bill, bills_project)
+        assign_perm('change_project', self.user_bill, bills_project)
+
+        bills_annotation_set = mommy.make_one(AnnotationSet,
+                                            project=bills_project,
+                                            owner=self.user_bill,
+                                            creation_date=datetime.now(),
+                                            modified_date=datetime.now(),
+                                            images=[self.mock_image_one, self.mock_image_two],
+                                            point_sampling_methodology=2,
+                                            image_sampling_methodology=0,
+                                            annotation_set_type=0)
+
+        assign_perm('view_annotationset', self.user_bill, bills_annotation_set)
+        assign_perm('change_annotationset', self.user_bill, bills_annotation_set)
+
+        ### test we can get the information down
+        # check that bill can get to the object itself
+        response = self.bill_api_client.get(self.project_url + bills_project.id.__str__() + "/share_project/",
+                                            format='json')
+
+        # check that there are no permissions on the object
+        project_data = self.deserialize(response)
+
+        project_permissions = project_data['project_permissions']
+
+        self.assertEqual(project_permissions, [])
+
+        ### test we can adjust permissions - give bob view permission
+        bobs_permissions = [{'username': 'bob', 'display_name': '', 'permissions': ['view_project']}]
+        project_data['is_public'] = "true"
+        project_data['project_permissions'] = bobs_permissions
+
+        response = self.bill_api_client.put(
+                self.project_url + bills_project.id.__str__() + "/share_project/",
+                format='json',
+                data=project_data)
+
+        self.assertHttpCreated(response)
+
+        ### verify that the permissions stuck
+        response = self.bill_api_client.get(self.project_url + bills_project.id.__str__() + "/share_project/",
+                                            format='json')
+
+        # check that there are permissions on the object
+        project_data = self.deserialize(response)
+        project_permissions = project_data['project_permissions']
+
+        self.assertEqual(len(project_permissions), len(bobs_permissions))
+        self.assertEqual(project_permissions[0]['username'], bobs_permissions[0]['username'])
+        self.assertEqual(project_permissions[0]['permissions'][0], bobs_permissions[0]['permissions'][0])
+        self.assertEqual(project_data["is_public"], True)
+
+        # check the permissions get applied to the underlying annotation sets
+        for annotation_set in AnnotationSet.objects.filter(project=bills_project):
+            permissions_table = authorization.get_detailed_annotation_set_permissions(self.user_bill, annotation_set)
+            is_public = authorization.annotation_set_is_public(annotation_set)
+
+            self.assertEqual(permissions_table[0]['username'], bobs_permissions[0]['username'])
+            self.assertEqual(permissions_table[0]['permissions'][0], 'view_annotationset')
+            self.assertEqual(is_public, True)
+
+        ### now revoke the permissions and check
+
+        # revoke permissions
+        bobs_permissions = []
+        project_data['is_public'] = "false"
+        project_data['project_permissions'] = bobs_permissions
+
+        response = self.bill_api_client.put(
+                self.project_url + bills_project.id.__str__() + "/share_project/",
+                format='json',
+                data=project_data)
+
+        self.assertHttpCreated(response)
+
+        # check that they got applied
+        response = self.bill_api_client.get(self.project_url + bills_project.id.__str__() + "/share_project/",
+                                            format='json')
+
+        # check that there are permissions on the object
+        project_data = self.deserialize(response)
+        project_permissions = project_data['project_permissions']
+
+        self.assertEqual(project_permissions, bobs_permissions)
+        self.assertEqual(project_data["is_public"], False)
+
+        # check the permissions get applied to the underlying annotation sets
+        for annotation_set in AnnotationSet.objects.filter(project=bills_project):
+            permissions_table = authorization.get_detailed_annotation_set_permissions(self.user_bill, annotation_set)
+            is_public = authorization.annotation_set_is_public(annotation_set)
+
+            self.assertEqual(permissions_table, [])
+            self.assertEqual(is_public, False)
 
 
 class TestAnnotationSetResource(ResourceTestCase):

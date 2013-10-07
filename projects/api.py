@@ -1,8 +1,5 @@
-import json
-import traceback
 import csv
 import json
-import StringIO
 from django.conf.urls import url
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.http import HttpResponse
@@ -433,23 +430,30 @@ class ProjectResource(ModelResource):
         return [
             url(r"^(?P<project>%s)/create_project%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('create_project'), name="create_project"),
             url(r"^(?P<project>%s)/(?P<pk>\w[\w/-]*)/csv%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_csv'), name="api_get_csv"),
-            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),            
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/share_project%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('share_project'), name="api_share_project"),
         ]
+
+    def get_project_object(self, request, **kwargs):
+        """
+        Gets the project object based on the request. For prepend urls functions.
+        """
+        # need to create a bundle for tastypie
+        basic_bundle = self.build_bundle(request=request)
+
+        try:
+            return self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
+        except ObjectDoesNotExist:
+            return HttpGone()
+        except MultipleObjectsReturned:
+            return HttpMultipleChoices("More than one resource is found at this URI.")
 
     def get_images(self, request, **kwargs):
         """
         This is a nested function so that we can do paginated thumbnail queries on the image resource
         """
 
-        # need to create a bundle for tastypie
-        basic_bundle = self.build_bundle(request=request)
-
-        try:
-            obj = self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
-        except ObjectDoesNotExist:
-            return HttpGone()
-        except MultipleObjectsReturned:
-            return HttpMultipleChoices("More than one resource is found at this URI.")
+        obj = self.get_project_object(request, kwargs)
 
         # get all the images related to this project
         project_images = Project.objects.get(id=obj.pk).images.all()
@@ -593,6 +597,64 @@ class ProjectResource(ModelResource):
 
         return self.create_response(request, "Not all fields were provided.", response_class=HttpBadRequest)
 
+    def share_project(self, request, **kwargs):
+        """
+        Helper function for permissions are sharing of projects. Using this because overriding
+        obj_update and applying permissions there did not act the way one would expect.
+        """
+
+        current_user = get_real_user_object(request.user)
+        obj = self.get_project_object(request, **kwargs)
+
+        ## does the current user have permission to be poking around in here? only the owner can do this
+        #if not current_user.has_perm('projects.change_project', obj):
+        if not obj.owner == current_user:
+            return HttpResponse(content="You don't have permission to modify this project.",
+                                status=401,
+                                content_type='application/json')
+
+        ## if GET, send back permissions
+        if request.method == 'GET':
+            # Bundle up the extended permissions on this project
+            is_public = authorization.project_is_public(obj)
+            project_permissions = authorization.get_detailed_project_permissions(current_user, obj)
+
+            json_response = {
+                "is_public": is_public,
+                "project_permissions": project_permissions
+            }
+
+            return HttpResponse(content=json.dumps(json_response,sort_keys=True),
+                                status=200,
+                                content_type='application/json')
+
+        ## if PUT, POST, PATCH:
+        if request.method == 'POST' or request.method == 'PUT' or request.method == 'PATCH':
+            json_data = simplejson.loads(request.body)
+
+            # pull the query parameters out
+            is_public = json_data['is_public']
+            project_permissions = json_data['project_permissions']
+
+            # check the content is not None
+            if is_public is None or project_permissions is None:
+                return HttpResponse(content="Invalid request, not all permission content was supplied.",
+                                status=400,
+                                content_type='application/json')
+
+            # apply the permissions to the project
+            authorization.set_detailed_project_permissions(current_user, project_permissions, obj)
+            authorization.set_project_is_public(is_public, obj)
+
+            # apply the permissions to all the annotation sets
+            for annotation_set in AnnotationSet.objects.filter(project=obj):
+                authorization.set_detailed_annotation_set_permissions(current_user, project_permissions, annotation_set)
+                authorization.set_annotation_set_is_public(is_public, annotation_set)
+
+            # OK
+            return HttpResponse(status=201,
+                                content_type='application/json')
+
     def obj_create(self, bundle, **kwargs):
         """
         We are overiding this function so we can get access to the newly
@@ -619,6 +681,27 @@ class ProjectResource(ModelResource):
 
         return bundle
 
+    def obj_update(self, bundle, **kwargs):
+        """
+        Using this function for extracting updated permissions from
+        the project configure. project_permissions is attached during
+        the dehydrate process.
+        """
+
+        #user = get_real_user_object(bundle.request.user)
+
+        # check we are allowed to edit permissions
+        #if user.has_perm('projects.change_project', bundle.obj):
+
+        # update other contents
+        super(ProjectResource, self).obj_update(bundle)
+
+        # change permissions if we are allowed
+        #project_permissions = bundle.data['project_permissions']
+        #authorization.set_detailed_project_permissions(project_permissions, bundle.obj)
+
+        return bundle
+
     def dehydrate(self, bundle):
         # Add an image_count field to ProjectResource.
         bundle.data['image_count'] = Project.objects.get(pk=bundle.data[
@@ -631,8 +714,11 @@ class ProjectResource(ModelResource):
         if len(images) != 0:
             map_extent = images.extent().__str__()
 
+        current_user = get_real_user_object(bundle.request.user)
+
+        # Bundle up other information
         bundle.data['map_extent'] = map_extent
-        bundle.data['permissions'] = get_perms(get_real_user_object(bundle.request.user), bundle.obj)
+        bundle.data['permissions'] = get_perms(current_user, bundle.obj)
 
         return bundle
 

@@ -17,6 +17,7 @@
 
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/jquery-ui-1.8.23.custom.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}assets/typeahead/typeahead.js-bootstrap.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/fullscreenMap.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/overlay-basic.css" type="text/css">
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/bootstrap/css/bootstrap-responsive.css">
@@ -26,6 +27,7 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/pnotify/jquery.pnotify.default.css" type="text/css" media="all" />    
     <link rel="stylesheet" href="{{ STATIC_URL }}assets/css/topmenu.css" type="text/css">    
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/typeahead/typeahead.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/underscore.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/backbone.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-paginator.js"></script>    
@@ -113,10 +115,13 @@
                     <li class="dropdown {% ifequal request.path "/projects" %}active{% endifequal %}">
                     <a href="{% url webinterface.views.projects %}"><i class="icon-list-alt "></i> Projects</a>
 
+                    <li class="dropdown {% ifequal request.path "/projects" %}active{% endifequal %}">
+                    <a href="{% url webinterface.views.classification %}"> Classification </a>
+
                     <!--<li class="divider-vertical"></li>-->
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign "></i>
-                            <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                             More <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="{% url webinterface.views.about %}"><i class="icon-info-sign"></i> About</a>
                             </li>

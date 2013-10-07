@@ -67,7 +67,7 @@ SimilarityImageView = Backbone.View.extend({
             error: function(model, response, options) {
                 //remove the loading status
                 $(parent.el).empty();
-                var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "<div class=\"alert alert-error\">An error occurred when trying to find similar images.</div>" });
+                var loadingTemplate = _.template($("#ImageSimilarityTemplate").html(), { "images": "<div class=\"alert alert-error\">An error occurred when trying to find similar images.</div>", "controls": "" });
                 parent.$el.html(loadingTemplate);
 
                 $('#SimilarImageBadge').html("-");
