@@ -183,7 +183,7 @@ class TestProjectResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.project_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.project_url + bills_project.id.__str__() + "/",
@@ -194,7 +194,7 @@ class TestProjectResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.project_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 1)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.project_url + bills_project.id.__str__() + "/",
@@ -204,7 +204,7 @@ class TestProjectResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.project_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 0)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.project_url + bills_project.id.__str__() + "/",
@@ -228,7 +228,7 @@ class TestProjectResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.project_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 4)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.project_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
@@ -245,7 +245,7 @@ class TestProjectResource(ResourceTestCase):
                 format='json',
                 data=self.bill_put_data)
 
-        self.assertHttpAccepted(response)
+        self.assertEquals(response.status_code, 201)
 
         response = self.bill_api_client.get(self.project_url + "?name=myName&owner=" + self.user_bill.id.__str__(),
                                             format='json')
@@ -661,7 +661,7 @@ class TestAnnotationSetResource(ResourceTestCase):
 
         self.annotation_set_bills = mommy.make_one(AnnotationSet,
                                             project=self.project_bills,
-                                            owner=self.user_bob,
+                                            owner=self.user_bill,
                                             creation_date=datetime.now(),
                                             modified_date=datetime.now(),
                                             images=[self.mock_image_one, self.mock_image_two],
@@ -732,7 +732,7 @@ class TestAnnotationSetResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.annotation_set_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.annotation_set_url + bills_annotation_set.id.__str__() + "/",
@@ -743,7 +743,7 @@ class TestAnnotationSetResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.annotation_set_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 1)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.annotation_set_url + bills_annotation_set.id.__str__() + "/",
@@ -753,7 +753,7 @@ class TestAnnotationSetResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.annotation_set_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 0)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.annotation_set_url + bills_annotation_set.id.__str__() + "/",
@@ -788,7 +788,7 @@ class TestAnnotationSetResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.annotation_set_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 4)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.annotation_set_url + "?name=myName2&owner=" + self.user_bill.id.__str__(),
@@ -821,7 +821,7 @@ class TestAnnotationSetResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.annotation_set_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
     def test_point_annotation_set_creation_random(self):
         #some post data for testing project creation
@@ -1274,7 +1274,7 @@ class TestPointAnnotationResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.point_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.point_annotation_url + bills_private_point_annotation.id.__str__() + "/",
@@ -1285,7 +1285,7 @@ class TestPointAnnotationResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.point_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 1)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.point_annotation_url + bills_private_point_annotation.id.__str__() + "/",
@@ -1295,7 +1295,7 @@ class TestPointAnnotationResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.point_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 0)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.point_annotation_url + bills_private_point_annotation.id.__str__() + "/",
@@ -1323,7 +1323,7 @@ class TestPointAnnotationResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.point_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 4)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.point_annotation_url + "?annotation_caab_code=caab1",
@@ -1354,7 +1354,7 @@ class TestPointAnnotationResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.point_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
 
 class TestAnnotationCodesResource(ResourceTestCase):
@@ -1549,7 +1549,7 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.whole_image_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.whole_image_annotation_url + bills_private_whole_image_annotation.id.__str__() + "/",
@@ -1560,7 +1560,7 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
         # permission validation
         response = self.bob_api_client.get(self.whole_image_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 1)
 
         # check bob can NOT get to the hidden object
         response = self.bob_api_client.get(self.whole_image_annotation_url + bills_private_whole_image_annotation.id.__str__() + "/",
@@ -1570,7 +1570,7 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
         #check that anonymous can see public ones as well
         response = self.anon_api_client.get(self.whole_image_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 2)
+        self.assertEqual(len(self.deserialize(response)['objects']), 0)
 
         #check anonymous can NOT get to the hidden object
         response = self.anon_api_client.get(self.whole_image_annotation_url + bills_private_whole_image_annotation.id.__str__() + "/",
@@ -1595,7 +1595,7 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.whole_image_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 4)
+        self.assertEqual(len(self.deserialize(response)['objects']), 3)
 
         # check that bill can get to the object itself
         response = self.bill_api_client.get(self.whole_image_annotation_url + "?annotation_caab_code=caab1",
@@ -1626,5 +1626,5 @@ class TestWholeImageAnnotationResource(ResourceTestCase):
         # check that bill can see via the API
         response = self.bill_api_client.get(self.whole_image_annotation_url, format='json')
         self.assertValidJSONResponse(response)
-        self.assertEqual(len(self.deserialize(response)['objects']), 3)
+        self.assertEqual(len(self.deserialize(response)['objects']), 2)
 
