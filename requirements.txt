@@ -13,7 +13,7 @@ mox
 mock
 python-dateutil
 django_coverage
-django-userena
+django-userena==1.2.1
 django-guardian==1.1.1
 django-nose
 python-memcached
