@@ -307,6 +307,68 @@ ImagePointsControlView = Backbone.View.extend({
     }
 });
 
+var PointUtil = {
+    /**
+     * Returns a point object based on a given id
+     * @param pointId
+     * @returns {*}
+     */
+    getPointWithId: function(pointId) {
+        // get the point from the collection
+        var point = points.find(function(model) {
+            return model.get('id') == pointId;
+        });
+
+        return point;
+    },
+    /**
+     * Returns an AnnotationCode object for the primary annotation of a given point
+     * @param pointId
+     * @returns {*}
+     */
+    getAnnotationCodeForPointId: function(pointId) {
+        // get the point from the collection
+        var point = this.getPointWithId(pointId);
+
+        //get the code
+        return this.getAnnotationCodeForPoint(point);
+    },
+    /**
+     * Returns an AnnotationCode object for the secondary annotation of a given point
+     * @param pointId
+     * @returns {*}
+     */
+    getSecondaryAnnotationCodeForPointId: function(pointId) {
+        // get the point from the collection
+        var point = this.getPointWithId(pointId);
+
+        //get the code
+        return this.getSecondaryAnnotationCodeForPoint(point);
+    },
+    /**
+     * Returns an AnnotationCode object for the primary annotation of a given point
+     * @param point
+     * @returns {*}
+     */
+    getAnnotationCodeForPoint: function(point) {
+        //get the code
+        return annotationCodeList.find(function(listmodel) {
+            return listmodel.get('caab_code')===point.get('annotation_caab_code');
+        });
+    },
+    /**
+     * Returns an AnnotationCode object for the secondary annotation of a given point
+     * @param point
+     * @returns {*}
+     */
+    getSecondaryAnnotationCodeForPoint: function(point) {
+        //get the code
+        return annotationCodeList.find(function(listmodel) {
+            return listmodel.get('caab_code')===point.get('annotation_caab_code_secondary');
+        });
+    }
+};
+
 
 // helper functions, to be (possibly) removed pending some API/server changes
 

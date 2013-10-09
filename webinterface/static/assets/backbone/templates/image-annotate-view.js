@@ -60,24 +60,55 @@ ImageAnnotateView = Backbone.View.extend({
 
         return this;
     },
+    /**
+     * Refreshes the mouse over labels for points on an image.
+     */
     refreshPointLabelsForImage: function() {
-        //checks annotated point list in view.  If any label has blank label text, then
-        //get it from the relevant API call.
-        //
-        //labels are made blank when a previouslt labeled point is once again selected
+        //get all the points on the image
+        var allPoints = $('#ImageContainer > span');
 
-        var annotatedPoints = $('.pointAnnotated');
+        //loop through
+        $.each(allPoints, function(index, pointSpan) {
 
-        $.each(annotatedPoints, function(index, pointSpan) {
-            // refresh annotated
-            if ($(pointSpan).text() === ""){
-                var newpoint = new PointAnnotation({id: pointSpan.id});
-                newpoint.fetch({success:function(model) {
-                    var annotation_object = annotationCodeList.find(function(listmodel) {
-                        return listmodel.get('caab_code')===newpoint.get('annotation_caab_code');
-                    });
-                    $(pointSpan).text(annotation_object.get("cpc_code"));
-                }});
+            // get the point from the collection
+            var point = PointUtil.getPointWithId(pointSpan.id);
+
+            //get the primary annotation for the point
+            var annotationCode = PointUtil.getAnnotationCodeForPoint(point);
+
+            //get the secondary annotation for the point
+            var annotationCodeSecondary = PointUtil.getSecondaryAnnotationCodeForPoint(point);
+
+            // check if a point is selected or not
+            var classes = $(pointSpan).attr('class').split(/\s+/);
+            var pointIsSelected = $.inArray("pointSelected", classes) > -1 ? true : false;
+
+            // update the labels for the point
+            // if a point is currently selected, then we don't want to populate the text, only the title,
+            // otherwise we get spinny text on points
+            if ((annotationCodeSecondary == '' || annotationCodeSecondary == null) && (annotationCode != '' && annotationCode != null)){
+
+                if(pointIsSelected)
+                    $(pointSpan).text("");
+                else
+                    $(pointSpan).text(annotationCode.get("cpc_code"));
+
+                $(pointSpan).attr('title', annotationCode.get("code_name"));
+
+            } else if (annotationCodeSecondary != '' && annotationCodeSecondary != null && annotationCode != '' && annotationCode != null) {
+
+                if(pointIsSelected)
+                    $(pointSpan).text("");
+                else
+                    $(pointSpan).text(annotationCode.get("cpc_code")+'/'+annotationCodeSecondary.get("cpc_code"));
+
+                $(pointSpan).attr('title', annotationCode.get("code_name")+'/'+annotationCodeSecondary.get("code_name"));
+            }
+
+            // if the point is currently selected, show the label
+            if(pointIsSelected){
+                $(pointSpan).tooltip("destroy");
+                $(pointSpan).tooltip("show");
             }
         });
     },
@@ -125,13 +156,13 @@ ImageAnnotateView = Backbone.View.extend({
                     span.css('top', point.get('y')*$('#Image').height()-6);
                     span.css('left', point.get('x')*$('#Image').width()-6) ;
                     span.css('z-index', 10000);
-                    span.attr('caab_code', label);
+                    //span.attr('caab_code', label);
                     span.attr('rel', 'tooltip');
                     span.attr('data-container','#ImageAppContainer');
 
-                    if (labelClass === 'pointAnnotated'){
+                    if (labelClass == 'pointAnnotated'){
                         span.text(annotationCode.get("cpc_code"));
-                        if (annotationCodeSecondary === ''){
+                        if (annotationCodeSecondary == ''){
                             span.text(annotationCode.get("cpc_code"));
                             span.attr('title', annotationCode.get("code_name"));
                         } else {
@@ -224,16 +255,19 @@ ImageAnnotateView = Backbone.View.extend({
     },
     pointClicked: function(thePoint) {
         var theClass = $(thePoint).attr('class');
-        var theCaabCode = $(thePoint).attr('caab_code');
-    
 
-        this.enableAnnotationSelector();
-    
+        //var theCaabCode = $(thePoint).attr('caab_code');
+        var annotationCode = PointUtil.getAnnotationCodeForPointId($(thePoint).attr('id'));
+        var theCaabCode = (annotationCode == null) ? "" : annotationCode.get("caab_code");
+
+
         if(theClass == 'pointSelected' && theCaabCode == ""){
             $(thePoint).attr('class', 'pointNotAnnotated');
         } else if(theClass == 'pointSelected' && theCaabCode != ""){
             $(thePoint).attr('class', 'pointAnnotated');
-        } else {
+        } else if(theClass == 'pointSelected pointLabelledStillSelected'){
+            $(thePoint).attr('class', 'pointAnnotated');
+        }else {
 
             //firstly we need to check if we need to deselect already labelled points
             $(".pointLabelledStillSelected").each(function (index, pointSpan) {
@@ -242,18 +276,49 @@ ImageAnnotateView = Backbone.View.extend({
 
             //then we make the current points selected
             $(thePoint).attr('class', 'pointSelected');
+
             //hide the label, if there is one
-            $(thePoint).text("");
+            //$(thePoint).text("");
             GlobalEvent.trigger("point_is_selected", this);
         }
 
+        //if there are no points selected we need to disable annotation selector
+        var pointsSelected =  $('.pointSelected');
+        if(pointsSelected.length == 0) {
+            this.disableAnnotationSelector();
+            GlobalEvent.trigger('finescale_points_deselected');
+        }
+        else
+            this.enableAnnotationSelector();
+
+        //refresh the point labels
         this.refreshPointLabelsForImage();
     },
     pointMouseOver: function(thePoint) {
+
+        // get the codes of the hovered point
+        var pointId = $(thePoint).attr('id');
+        var point = points.find(function(model) {
+            return model.get('id') == pointId;
+        });
+
+        var thePointCaabCode = point.get('annotation_caab_code');
+        var thePointCaabCodeSecondary = point.get('annotation_caab_code_secondary');
+
         //get points which have the same caab code assigned
         var samePoints = points.filter(
             function(point) {
-                return point.get("annotation_caab_code") == $(thePoint).attr('caab_code');
+
+                // if there is not caab code for the point, don't look for others
+                if(thePointCaabCode == "")
+                    return false;
+
+                // if secondary is blank, only look at primary
+                if(thePointCaabCodeSecondary == "")
+                    return (point.get("annotation_caab_code") == thePointCaabCode || point.get("annotation_caab_code_secondary") == thePointCaabCode);
+                else // search all
+                    return (point.get("annotation_caab_code") == thePointCaabCode || point.get("annotation_caab_code") == thePointCaabCodeSecondary ||
+                            point.get("annotation_caab_code_secondary") == thePointCaabCode || point.get("annotation_caab_code_secondary") == thePointCaabCodeSecondary);
             }
         );
 
@@ -302,7 +367,9 @@ ImageAnnotateView = Backbone.View.extend({
 
         //deselect any points that are selected
         $(".pointSelected").each(function(index, pointSpan) {
-            var theCaabCode = $(pointSpan).attr('caab_code');
+            //var theCaabCode = $(pointSpan).attr('caab_code');
+            var annotationCode = PointUtil.getAnnotationCodeForPointId($(thePoint).attr('id'));
+            var theCaabCode = (annotationCode == null) ? "" : annotationCode.get("caab_code");
 
             if(theCaabCode === "") {
                 $(pointSpan).attr('class', 'pointNotAnnotated');

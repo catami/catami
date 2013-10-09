@@ -49,52 +49,49 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         return this;
     },
     fineScalePointSelected: function(){
-        // var theClass = $(thePoint).attr('class');
-        // var theCaabCode = $(thePoint).attr('caab_code');
-        // var theCaabCode_id = $(thePoint).attr('id');
 
-        // console.log(thePoint);
-        // annotationCode = annotationCodeList.find(function(model) {
-        //     return model.get('caab_code') === $(thePoint).attr('caab_code');
-        // });
-        // console.log('fineScalePointSelected ',annotationCode.get('cpc_code'),annotationCode.get('code_name'));
-
+        // get the selected points
         var selectedPoints = $('.pointSelected');
+
+        // if there are no selected points then don't continue
+        if(selectedPoints.length <= 0)
+            return;
+
         var mixedDisplayText = selectedPoints.length+' points selected: ';
         var labelSet ='';
-        var mixedSet = 0;
 
-        // if (selectedPoints.length === 1) {
-        //     mixedSet = 0; // unmixed set
-        // } else {
-        //     mixedSet = 1; // mixed set
-        // }
+        // mixed set means whether the points selected have all the same primary annotation value or not
+        var mixedSet = false;
 
-        // need to check we are looking at multiple selection points with the same code
-        // if so, we can simplify how we draw the annotation selection
-
-        var initialPoint = points.get(selectedPoints[0].id);
+        // Need to check we are looking at multiple selection points with the same code.
+        // If so, we can simplify how we draw the annotation selection.
+        // In this loop compare the first point to all it's peers, if they clash, we know it's mixed.
         $.each(selectedPoints, function(index, point) {
+            var initialPoint = points.get(selectedPoints[0].id);
             var localPoint = points.get(point.id);
-            console.log(index, initialPoint.get('annotation_caab_code'), localPoint.get('annotation_caab_code'));
+
             if (initialPoint.get('annotation_caab_code') !== localPoint.get('annotation_caab_code')){
                 //this is a mixed set
-                mixedSet = 1;
+                mixedSet = true;
             }
         });
 
-        if (mixedSet === 0){
-            console.log('unmixed set');
+        // If the primary codes for the points selected are not all the same, we need to vary the way we display the
+        // selection.
+        if (mixedSet === false){
+
             var localPoint = points.get(selectedPoints[0].id);
+
             if ( localPoint.get('annotation_caab_code') === ''){
                 $('#fine_scale_label').text('Select a CAAB code...');
             } else {
+
                 annotationCode = annotationCodeList.find(function(model) {
                     return model.get('caab_code') === localPoint.get('annotation_caab_code');
                 });
                 
                 $('#fine_scale_label').text(annotationCode.get('code_name')+' ');
-                console.log('selectedPoints.length',selectedPoints.length);
+
                 if (selectedPoints.length >1) {
                     $('#fine_scale_label').append('<div class="label label-info"> x'+selectedPoints.length+'</div>');
                 }
@@ -115,7 +112,6 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
                 $("#fine_scale_class_label").show();
             }
         } else {
-            console.log('mixed set');
             $.each(selectedPoints, function(index, point) {
                 var localpoint = points.get(point.id);
                 var local_caabcode = localpoint.get('annotation_caab_code');
@@ -135,8 +131,6 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         this.editPrimaryLabel();
 
         $('#fine_scale_label').append(labelSet);
-
-       // $('#fine_scale_label').text(displayText);
 
     },
     selectedFineScalePointsAssigned: function() {
@@ -159,8 +153,11 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         }
     },
     addSecondaryAnnotation: function() {
-        console.log('addSecondaryAnnotation');
+        var parent = this;
+
+        //get the selected points
         var selectedPoints = $('.pointSelected');
+
         //save the annotations
         //only need a callback function if points greater than 0
         var afterAllSavedCallback;
@@ -172,14 +169,21 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
                     return model.get('caab_code') === localPoint.get('annotation_caab_code_secondary');
                 });
 
+                // show the secondary annotation views
                 $("#secondaryLabel").show();
                 $("#fine_scale_label_secondary").text(annotationCode.get('code_name')+' ');
                 $("#remove_secondary_annotation").show();
                 $("#add_secondary_annotation").hide();
                 $("#fineScaleBadge").show();
+
+                // make the secondary annotation editable
+                parent.editSecondaryLabel();
+
+                //update the point labels
+                GlobalEvent.trigger("refresh_point_labels_for_image");
             });
 
-
+        // save the initial value for the newly created secondary annotation
         $.each(selectedPoints, function(index, localPoint) {
             //need to specify the properties to patch
             var properties = { 'annotation_caab_code_secondary': '00000000' };
@@ -190,13 +194,21 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
                     afterAllSavedCallback();
                 },
                 error: function (model, xhr, options) {
+                    $.pnotify({
+                        title: theXHR.response,
+                        text: 'Failed to save the secondary annotation to the server.',
+                        type: 'error', // success | info | error
+                        hide: true,
+                        icon: false,
+                        history: false,
+                        sticker: false
+                    });
                 }
             });
         });
 
     },
     editSecondaryLabel: function() {
-        console.log('editSecondaryLabel');
         this.closeEditPrimaryLabel();
 
         $("#secondaryLabel").show();
@@ -207,7 +219,6 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         $("#secondaryLabel").removeClass('fineScaleItemSelected');
     },
     editPrimaryLabel: function() {
-        console.log('editPrimaryLabel');
         this.closeEditSecondaryLabel();
         $("#primarylabel").addClass('fineScaleItemSelected');
     },
@@ -215,22 +226,25 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         $("#primarylabel").removeClass('fineScaleItemSelected');
     },
     removeSecondaryAnnotation: function(){
-        console.log('removeSecondaryAnnotation');
         var selectedPoints = $('.pointSelected');
-        //save the annotations
+
         //only need a callback function if points greater than 0
         var afterAllSavedCallback;
         if(selectedPoints.length > 0)
             afterAllSavedCallback = _.after(selectedPoints.length, function() {
 
+                //remove the secondary annotation views
                 $("#secondaryLabel").hide();
                 $("#fine_scale_label_secondary").text(annotationCode.get('code_name')+' ');
                 $("#remove_secondary_annotation").hide();
                 $("#add_secondary_annotation").show();
                 $("#fineScaleBadge").hide();
+
+                //update the point labels
+                GlobalEvent.trigger("refresh_point_labels_for_image");
             });
 
-
+        // set the secondary annotation to blank for each of the selected points
         $.each(selectedPoints, function(index, localPoint) {
             //need to specify the properties to patch
             var properties = { 'annotation_caab_code_secondary': '' };
@@ -238,9 +252,23 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
                 patch: true,
                 headers: {"cache-control": "no-cache"},
                 success: function (model, xhr, options) {
+
+                    //update div attributes
+                    var idOfSaved = model.get("id");
+                    $('#'+idOfSaved).addClass('pointLabelledStillSelected'); //this means the point stays selected, we are just assigning the class to this point to keep that state
+
                     afterAllSavedCallback();
                 },
                 error: function (model, xhr, options) {
+                    $.pnotify({
+                        title: theXHR.response,
+                        text: 'Failed to remove the secondary annotation.',
+                        type: 'error', // success | info | error
+                        hide: true,
+                        icon: false,
+                        history: false,
+                        sticker: false
+                    });
                 }
             });
         });
@@ -258,6 +286,8 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
             afterAllSavedCallback = _.after(selectedPoints.length, function() {
                 //send out an event for all the other listeners
                 GlobalEvent.trigger("annotation_set_has_changed");
+                GlobalEvent.trigger("image_points_updated", this);
+                GlobalEvent.trigger("refresh_point_labels_for_image", this);
             });
 
         //save the annotations
@@ -266,6 +296,7 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
             //need to specify the properties to patch
             var properties  = {};
 
+            // working out here whether we are assigning to the primary or secondary annotation
             if ($("#primarylabel").hasClass('fineScaleItemSelected')){
                 properties = { 'annotation_caab_code': caab_object.get('caab_code') };
             }
@@ -276,38 +307,33 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
             var theXHR = points.get(pointSpan.id).save(properties, {
                 patch: true,
                 headers: {"cache-control": "no-cache"},
-                success: function (model, xhr, options) {
+                success: function (savedModel, xhr, options) {
 
-                    //show label on annotated point
-                    var idOfSaved = model.get("id");
+                    //update div attributes
+                    var idOfSaved = savedModel.get("id");
                     $('#'+idOfSaved).addClass('pointLabelledStillSelected'); //this means the point stays selected, we are just assigning the class to this point to keep that state
-                    $('#'+idOfSaved).attr('title', annotationCodeList.get(caab_code_id).get("code_name"));
-                    $('#'+idOfSaved).attr('caab_code', caab_object.get('caab_code'));
-                    $('#'+idOfSaved).tooltip("destroy");
-                    $('#'+idOfSaved).tooltip("show");
-                    
+                    //$('#'+idOfSaved).attr('caab_code', caab_object.get('caab_code'));
+
+                    // updating the sidebar labels for the selected points
                     if ($("#primarylabel").hasClass('fineScaleItemSelected')){
                         $("#fine_scale_label").text(caab_object.get('code_name')+' ');
                     }
                     if ($("#secondaryLabel").hasClass('fineScaleItemSelected')){
                         $("#fine_scale_label_secondary").text(caab_object.get('code_name')+' ');
                     }
-                    GlobalEvent.trigger("image_points_updated", this);
+
+                    // do the after save functions
                     afterAllSavedCallback();
                 },
                 error: function (model, xhr, options) {
                     if (theXHR.status == "201" || theXHR.status == "202") {
-                        alert("202");
 
-                        //show label on annotated point
+                        //update div attributes
                         var idOfSaved = model.get("id");
                         $('#'+idOfSaved).addClass('pointLabelledStillSelected'); //this means the point stays selected, we are just assigning the class to this point to keep that state
-                        $('#'+idOfSaved).attr('title', annotationCodeList.get(caab_code_id).get("code_name"));
-                        $('#'+idOfSaved).attr('caab_code', caab_object.get('caab_code'));
-                        $('#'+idOfSaved).tooltip("destroy");
-                        $('#'+idOfSaved).tooltip("show");
+                        //$('#'+idOfSaved).attr('caab_code', caab_object.get('caab_code'));
 
-                        GlobalEvent.trigger("image_points_updated", this);
+                        // do the after save functions
                         afterAllSavedCallback();
 
                     } else if(theXHR.status == "401") {
