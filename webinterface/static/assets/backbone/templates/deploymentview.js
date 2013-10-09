@@ -46,9 +46,9 @@ DeploymentView = Backbone.View.extend({
         mapUtils.map = map; //assign map to mapUtils, so that we don't have to pass map object into function every time.       
         map.addLayer(mapUtils.createOSMLayer()); //create and add OpenStreetMaps baselayer to map
 
-        var loadingPanel = new OpenLayers.Control.LoadingPanel();
-        map.addControl(loadingPanel);
-        mapUtils.zoomToAustralia();
+        //var loadingPanel = new OpenLayers.Control.LoadingPanel();
+        //map.addControl(loadingPanel);
+        //mapUtils.zoomToAustralia();
 
         //gsUrl, gslayerName, layerName, isBaseLayer
         var layer = mapUtils.createLayer(WMS_URL, LAYER_IMAGES, "deployment-image", false);

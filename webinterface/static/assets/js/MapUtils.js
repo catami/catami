@@ -45,6 +45,17 @@ MapUtils.prototype.createMapOption = function () {
  * @param isBaseLayer - flag specifying if layer is baselayer
  */
 MapUtils.prototype.createLayer = function (gsUrl, gslayerName, layerName, isBaseLayer) {
+    var myWMS = OpenLayers.Class(OpenLayers.Layer.WMS, {
+
+        getURL: function (bounds) {
+            var url = OpenLayers.Layer.WMS.prototype.getURL.call(this, bounds);
+            if (OpenLayers.ProxyHost && OpenLayers.String.startsWith(url, "http")) {
+                url = OpenLayers.ProxyHost + encodeURIComponent(url);
+            }
+            return url;
+        }
+    });
+
     var filter_1_1 = new OpenLayers.Format.Filter({ version: "1.1.0" });
     var filter = new OpenLayers.Filter.Logical({
         type: OpenLayers.Filter.Logical.OR,
@@ -52,7 +63,7 @@ MapUtils.prototype.createLayer = function (gsUrl, gslayerName, layerName, isBase
     });
     var xml = new OpenLayers.Format.XML();
 
-    var layer = new OpenLayers.Layer.WMS(layerName, gsUrl,
+    var layer = new myWMS(layerName, gsUrl,
                     { 
                         layers: gslayerName, transparent: "true", 
                         format: "image/png", 
@@ -233,6 +244,7 @@ MapUtils.prototype.createClusterLayer = function (url) {
     var style = new OpenLayers.Style(null, {
         rules: [lowRule, middleRule, highRule]
     });
+
     var vector = new OpenLayers.Layer.Vector("Features", {
         protocol: new OpenLayers.Protocol.HTTP({
             url: url,

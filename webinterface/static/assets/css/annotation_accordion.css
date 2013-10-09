@@ -1,9 +1,9 @@
+
 .accordion { list-style-type: none; padding: 0; margin: 0 0 30px; border: 1px solid #e6edf1; border-top: none; border-left: none; }
 .accordion ul { padding: 0; margin: 0; float: left; display: block; width: 100%;}
 .accordion li { background: #e68e2f; cursor: pointer; list-style-type: none; padding: 0; margin: 0; float: left; display: block; width: 100%;}
 .accordion li.active>a { background: url('images/close.gif') no-repeat center right;}
 .accordion li.active>a.endpoint { background: none;}
-.accordion li hover {color:red;border-width: 2;border-color: red;}
 
 .accordion li.active {color:red;}
 .accordion li div { padding: 20px; background: #eee09a; display: block; clear: both; float: left; width: 360px;}
@@ -11,23 +11,26 @@
 .accordion .endpoint { background: none;}
 
 /* Level 2 */
-.accordion li ul li { background: #d1a63a; font-size: 0.9em; }
+.accordion li ul li { background: #d1a63a;  }
 .accordion li ul li a { padding: 0 20px; }
 
+
 /* Level 3 */
-.accordion li ul li ul li { background: #e9d39a; font-size: 0.9em; }
+.accordion li ul li ul li { background: #e9d39a;  }
 .accordion li ul li ul li a { padding: 0 30px; }
 
 /* Level 4 */
-.accordion li ul li ul li ul li { background: #e4d4ac; font-size: 0.9em; }
+.accordion li ul li ul li ul li { background: #e4d4ac;  }
 .accordion li ul li ul li ul li a { padding: 0 40px; }
 
 /* Level 5 */
-.accordion li ul li ul li ul li ul li { background: #e9dec2; font-size: 0.9em; }
+.accordion li ul li ul li ul li ul li { background: #e9dec2;  }
 .accordion li ul li ul li ul li ul li a { padding: 0 50px; }
 
 /* Level 6 */
-.accordion li ul li ul li ul li ul li ul li { background: #f2ecdc; font-size: 0.9em; }
+.accordion li ul li ul li ul li ul li ul li { background: #f2ecdc;  }
 .accordion li ul li ul li ul li ul li ul li a { padding: 0 60px; }
 
 .disable {opacity: .3;}
+
+
