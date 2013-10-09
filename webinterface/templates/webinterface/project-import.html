@@ -1,0 +1,264 @@
+{% extends "base-topmenu.html" %}
+{% block title %}Catami Project - Project List {% endblock %}
+{% block tail_head %}<link rel="stylesheet" href="{{ STATIC_URL }}assets/jquery/plugins/chosen/chosen.css">
+{%endblock%}
+
+{% block content %}
+    <div id="ProjectImportContainer"></div>
+
+<script type="text/template" id="ProjectImportTemplate">
+
+        <ul class="breadcrumb">
+            <li> <a href="/projects/">Projects</a> <spanclass="divider">></span> </li>
+            <li class="active">Import</li>
+        </ul>
+        <!--
+		<form action="/api/dev/project/import_project/" method="POST" enctype="multipart/form-data" 
+              class="form-horizontal" onSubmit="updateHiddenFields();"> -->
+        <form enctype="multipart/form-data" method="post" name="fileinfo" id="fileinfo" class="form-horizontal">
+			<div id="fileupload-buttonbar">
+				<label>
+				   <span class="btn">Please select CSV to import</span>                
+				   <input type="file" name="file" id="fileUpload" accept=".csv" style="opacity: 0;">
+				</label>
+			</div>            				
+			<div id="import_project_form" style="display: none; width: 350px;">
+				<fieldset>            
+					<legend>Project Details</legend>
+					<div class="alert alert-error" style="display: none">
+						<strong><span id="error_message1"></span></strong><span id="error_message2"></span>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="short_name">
+							Name:</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="name" name="name" data-error-style="inline"
+								value="">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="description">
+							Description:</label>
+						<div class="controls">
+							<textarea class="input-xlarge" id="description" name="description" rows="3" data-error-style="inline"></textarea>
+						</div>
+					</div>
+					<legend>Deployment to work on</legend>
+					<div class="control-group">
+						<label class="control-label">
+							Deployment:</label>
+						<div class="controls">
+							<select data-placeholder="Select deployment/s" style="width:350px;" class="chosen-select" multiple>
+								<option value=""></option>
+								<%=deployments%>
+							</select>
+                            <input type="hidden" id="deployment_ids" name="deployment_ids" value=""> 
+						</div>
+					</div>
+					<legend>Annotation method</legend>
+		
+					<div class="btn-group" data-toggle="buttons-radio">                 
+						<button type="button" class="btn active" id="radio_point">
+							Fine Scale
+						</button>
+						<button type="button" class="btn" id="radio_whole">
+							Broad Scale
+						</button>
+                        <input type="hidden" id="annotation_type" name="annotation_type" value="0">
+					</div>
+
+					<div class="point_annotation_div">
+						<br>
+						<div class="control-group">
+							<label class="control-label" for="point_image_sampling_methodology">
+								Image Sampling:</label>
+							<div class="controls">
+								<select class="input-xlarge" id="point_image_sampling_methodology" name="point_image_sampling_methodology" disabled="true">
+									<option value="3">All</option>
+								</select>
+							</div>
+						</div>
+						<div id="point_number_of_images" class="control-group">
+							<label class="control-label" for="image_sample_size_point">
+								Number of Images:</label>
+							<div class="controls">
+								<input type="number" class="input-xlarge" id="image_sample_size_point" name="image_sample_size_point" value="1"
+									data-error-style="inline">
+							</div>
+						</div>
+                        <div id="point_number_of_annotations" class="control-group">
+							<label class="control-label" for="number_annotations_point">
+								Number of Annotations:</label>
+							<div class="controls">
+								<input type="number" class="input-xlarge" id="number_annotations_point" name="number_annotations_point" value="0"
+									data-error-style="inline">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="point_sampling_methodology">
+								Point Sampling:</label>
+							<div class="controls">
+								<select class="input-xlarge" id="point_sampling_methodology" name="point_sampling_methodology">
+									<option value="0">Random</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="wholeImage_annotation_annotation_div" style="display: none">
+						<br>
+						<div class="control-group">
+							<label class="control-label" for="whole_image_sampling_methodology">
+								Image Sampling:</label>
+							<div class="controls">
+								<select class="input-xlarge" id="whole_image_sampling_methodology" name="whole_image_sampling_methodology" disabled="true">
+									<option value="3">All</option>
+								</select>
+							</div>
+						</div>
+						<div id="whole_number_of_images" class="control-group">
+							<label class="control-label" for="image_sample_size_whole">
+								Number of Images:</label>
+							<div class="controls">
+								<input type="number" class="input-xlarge" id="image_sample_size_whole" name="image_sample_size_whole" value="1"
+									data-error-style="inline">
+							</div>
+						</div>
+                        <div id="whole_number_of_annotations" class="control-group">
+							<label class="control-label" for="number_annotations_whole">
+								Number of Annotations:</label>
+							<div class="controls">
+								<input type="number" class="input-xlarge" id="number_annotations_whole" name="number_annotations_whole" value="0"
+									data-error-style="inline">
+							</div>
+						</div>
+					</div>
+					<div style="margin-left: 374px;">
+						<button type="button" class="btn btn-primary btn-large" onclick="submitClicked();">
+							<span>Import</span>
+						</button>
+					</div>        
+				</fieldset>
+			</div>
+		</form>
+</script>
+
+
+
+<script type="text/template" id="DeploymentTemplate">
+        <option value="<%=id%>"><%=short_name%></option>
+</script>
+
+<script type="text/javascript">
+
+    //Add handler to fire off the following functions when a csv is selected
+    $(function () {
+        $('#fileUpload').on('change', function () {
+            var read = new FileReader();
+            read.readAsBinaryString(this.files[0]);
+            read.onloadend = function () {
+                processData(read.result);
+            }
+            $('#fileupload-buttonbar').hide();
+            $('#import_project_form').fadeIn();
+        });
+    });
+
+    function submitClicked() {
+        updateHiddenFields();
+        var data = new FormData($("#fileinfo")[0]);
+        $.ajax({
+            type: "POST",
+            url: '/api/dev/project/import_project/',
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (response, textStatus, jqXHR) {
+                //alert('project_id: ' + response.project_id);
+                window.location.replace("/projects/" + response.project_id);
+            },
+            error: function (model, xhr, options) {
+                alert('Project Import Failed!');
+            }
+        });
+    }
+
+    //read csv and get informationed used to prefill form
+    function processData(allText) {
+        var allTextLines = allText.split(/\r\n|\n/);
+        var headers = allTextLines[0].split(',');
+
+        var deploymentIds = new Array();
+        var deploymentNames = new Array();
+        var annotationSetType = "";
+        var index_deployment_name = $.inArray("Deployment Name", headers);
+        var index_id = $.inArray("Deployment Id", headers);
+        var index_type = $.inArray("Annotation Set Type", headers);
+        var index_image_name = $.inArray("Image Name", headers);
+        var unique_images = new Array(); //used to count number of (unique) image names in the CSV
+
+        if (index_type != -1)
+            annotationSetType = allTextLines[1].split(',')[index_type];
+
+
+        for (var i = 1; i < allTextLines.length; i++) {
+            var row = allTextLines[i].split(',');
+            //if header exists and value is defined and isn't in array, store in array
+            if (index_deployment_name != -1 && row[index_deployment_name] && $.inArray(row[index_deployment_name], deploymentNames) == -1)
+                deploymentNames.push(row[index_deployment_name]);
+            if (index_id != -1 && row[index_id] && $.inArray(row[index_id], deploymentIds) == -1)
+                deploymentIds.push(row[index_id]);
+
+            var image_name = row[index_image_name];
+            if (index_image_name != -1 && row[index_image_name] && $.inArray(image_name, unique_images) == -1)
+                unique_images.push(image_name);
+        }
+        updateSelected(deploymentIds, annotationSetType, allTextLines.length - 2, unique_images.length);
+    }
+
+    //function that prefills form with information obtained from selected csv
+    function updateSelected(deploymentIds, annotationSetType, numAnnotations, numImages) {
+        if (deploymentIds.length != 0) {
+            this.$(".chosen-select").val(deploymentIds);
+            this.$(".chosen-select").trigger('chosen:updated');
+        }
+        // Only account for only Broad Scale as default is Fine Scale 
+        if (annotationSetType && annotationSetType == "Broad Scale") {
+            this.$('#radio_point').removeClass('active');
+            this.$('#radio_whole').toggleClass('active');
+            this.$('#radio_whole').trigger("click");
+            this.$('#radio_point').prop('disabled', true);
+            this.$('#annotation_type').val('1'); //Fine Scale: 1, Broad Scale: 2
+        }
+        else {
+            this.$('#radio_whole').prop('disabled', true);
+        }
+
+        
+        //Set the number of annotations based on information from CSV
+        this.$('#number_annotations_whole').val(numAnnotations);
+        this.$('#number_annotations_point').val(numAnnotations);
+
+        //Set the number of image based on information from CSV
+        this.$('#image_sample_size_whole').val(numImages);
+        this.$('#image_sample_size_point').val(numImages);
+
+        //Prevent user from changing this value
+        this.$('#image_sample_size_whole').prop('disabled', true);
+        this.$('#image_sample_size_point').prop('disabled', true);        
+        this.$('#number_annotations_whole').prop('disabled', true);
+        this.$('#number_annotations_point').prop('disabled', true);
+    }
+
+    function updateHiddenFields() {
+        this.$('#deployment_ids').val($(".chosen-select").val());       
+    }
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/chosen/chosen.jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/jpages/js/jPages.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/annotationset-model.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/js/spin.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-import-view.js"></script>
+
+{% endblock %}
