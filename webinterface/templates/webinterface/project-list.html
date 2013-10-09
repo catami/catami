@@ -13,7 +13,8 @@
         </ul>
 
         {% if user.is_authenticated %}
-        <button class="btn btn-large btn-primary pull-right" type="button" id="create_button">Create New Project</button>
+        <button class="btn btn-large btn-primary pull-right" type="button" id="import_button">Import Project</button>
+        <button class="btn btn-large btn-primary pull-right" type="button" id="create_button">Create New Project</button>        
         {% endif %}
 
         <table class="table table-striped">
@@ -39,6 +40,7 @@
         </tr>
     </script>
 
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/js/catamiUtil.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-list-view.js"></script>
 
 {% endblock %}

@@ -408,7 +408,10 @@ class TestProjectResource(ResourceTestCase):
                                                  annotation_set=self.annotation_set_point,
                                                  x=10.0,
                                                  y=15.0,
-                                                 annotation_caab_code = '63600901',                           
+                                                 annotation_caab_code = '63600901',
+                                                 qualifier_short_name = 'qualifier',
+                                                 annotation_caab_code_secondary = '80600901',
+                                                 qualifier_short_name_secondary = 'qualifier2',                                                                            
                                                  image=self.mock_image_one,
                                                  owner=self.user_bob)                                 
 
@@ -416,14 +419,20 @@ class TestProjectResource(ResourceTestCase):
                                                  annotation_set=self.annotation_set_point,
                                                  x=22.0,
                                                  y=16.0,
-                                                 annotation_caab_code = '10000903',                           
+                                                 annotation_caab_code = '10000903',
+                                                 qualifier_short_name = 'qualifier',
+                                                 annotation_caab_code_secondary = '10000903',
+                                                 qualifier_short_name_secondary = 'qualifierB',                                                                             
                                                  image=self.mock_image_two,
                                                  owner=self.user_bob)                                                                      
 
         #Make a whole image annotation
         self.whole_image_annotation_point_1 = mommy.make_one(WholeImageAnnotation,
                                                     annotation_set=self.annotation_set_whole,
-                                                    annotation_caab_code = '80600901',  
+                                                    annotation_caab_code = '80600901',
+                                                    qualifier_short_name = '',
+                                                    annotation_caab_code_secondary = '',
+                                                    qualifier_short_name_secondary = '',                                                       
                                                     image=self.mock_image_three,
                                                     owner=self.user_bob)
 
@@ -452,12 +461,21 @@ class TestProjectResource(ResourceTestCase):
         self.assertTrue(has_header2, msg=None)
         
         #POINT
-        expectedRowA1 = ['Annotation Set Type', 'Image Name', 'Campaign Name', 'Deployment Name', 
-                        'Image Location', 'Point in Image', 'Annotation Code', 'Annotation Name']
-        expectedRowA2 = ['Point', 'Image1', 'Campaign1', 'Deployment1', 
-                        'POINT (12.4604000000000000 43.9420000000000000)', '10.0 , 15.0', '63600901', 'Seagrasses']
-        expectedRowA3 = ['Point', 'Image2', 'Campaign1', 'Deployment2', 
-                        'POINT (4.5609999999999999 23.1419999999999990)', '22.0 , 16.0', '10000903', 'Massive forms']
+        expectedRowA1 = ['Annotation Set Type', 'Image Name', 'Campaign Name', 'Campaign Id',
+                         'Deployment Name', 'Deployment Id', 'Image Location', 'Annotation Code', 'Annotation Name',
+                         'Qualifier Name', 'Annotation Code 2', 'Annotation Name 2', 'Qualifier Name 2',
+                         'Point Sampling', 'Point in Image']
+        expectedRowA2 = ['Fine Scale', 'Image1', 'Campaign1', self.campaign_one.id.__str__(), 
+                         'Deployment1', self.deployment_one.id.__str__(),
+                         'POINT (12.4604000000000000 43.9420000000000000)', '63600901', 'Seagrasses', 'qualifier',
+                         '80600901', 'Worms', 'qualifier2',
+                         '0', '10.0 , 15.0']
+        expectedRowA3 = ['Fine Scale', 'Image2', 'Campaign1', self.campaign_one.id.__str__(), 
+                         'Deployment2', self.deployment_two.id.__str__(),
+                         'POINT (4.5609999999999999 23.1419999999999990)',
+                         '10000903', 'Massive forms', 'qualifier',
+                         '10000903', 'Massive forms','qualifierB',
+                         '0', '22.0 , 16.0' ]
 
         expectedList1 = [expectedRowA1, expectedRowA2, expectedRowA3]
 
@@ -469,8 +487,12 @@ class TestProjectResource(ResourceTestCase):
             i = i + 1
 
         #WHOLE IMAGE
-        expectedRowB1 = ['Whole Image', 'Image3', 'Campaign2', 'Deployment3', 
-                        'POINT (62.4151000000000020 41.2233999999999980)', '', '80600901', 'Worms']
+        expectedRowB1 = ['Whole Image', 'Image3', 'Campaign2', self.campaign_two.id.__str__(), 
+                         'Deployment3', self.deployment_three.id.__str__(),
+                         'POINT (62.4151000000000020 41.2233999999999980)', 
+                         '80600901', 'Worms', '',
+                         '','','',
+                         '', '']
         
         expectedList2 = [expectedRowA1, expectedRowB1]       
 

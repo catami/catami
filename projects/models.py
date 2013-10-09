@@ -159,6 +159,39 @@ class PointAnnotationManager(models.Manager):
                 point_annotation.annotation_caab_code = ""
                 point_annotation.qualifier_short_name = ""
 
+                point_annotation.annotation_caab_code_secondary = ""
+                point_annotation.qualifier_short_name_secondary = ""
+
+                #point_annotation.save()
+                points_to_bulk_save.append(point_annotation)
+
+        # do the bulk save - for performance
+        PointAnnotation.objects.bulk_create(points_to_bulk_save)
+
+    def import_sampled_points(self, annotation_set, import_data):
+        """ create annotation points with information from uploaded CSV and add to this annotation
+            set """
+
+        images = annotation_set.images.all()
+        points_to_bulk_save = []
+
+        # iterate through the images and create points
+        for image in images:
+            for annotation in import_data[str(image.deployment.id)][image.image_name]:
+
+                point_annotation = PointAnnotation()
+                point_annotation.annotation_set = annotation_set
+                point_annotation.image = image
+                point_annotation.owner = annotation_set.owner
+                point_annotation.x = annotation['Point in Image'].split(',')[0]
+                point_annotation.y = annotation['Point in Image'].split(',')[1]
+
+                point_annotation.annotation_caab_code = annotation['Annotation Code']
+                point_annotation.qualifier_short_name = annotation['Qualifier Name']
+
+                point_annotation.annotation_caab_code_secondary = annotation['Annotation Code 2']
+                point_annotation.qualifier_short_name_secondary = annotation['Qualifier Name 2']
+
                 #point_annotation.save()
                 points_to_bulk_save.append(point_annotation)
 
@@ -195,6 +228,36 @@ class WholeImageAnnotationManager(models.Manager):
 
                 whole_image_annotation.annotation_caab_code = ""
                 whole_image_annotation.qualifier_short_name = ""
+
+                whole_image_annotation.annotation_caab_code_secondary = ""
+                whole_image_annotation.qualifier_short_name_secondary = ""
+
+                points_to_bulk_save.append(whole_image_annotation)
+
+        # do the bulk save - for performance
+        WholeImageAnnotation.objects.bulk_create(points_to_bulk_save)
+
+    def import_whole_image_points(self,annotation_set, import_data):
+        """ create annotation points with information from uploaded CSV and add to this annotation
+            set """
+
+        images = annotation_set.images.all()
+        points_to_bulk_save = []
+
+        # iterate through the images and create points
+        for image in images:
+            for annotation in import_data[str(image.deployment.id)][image.image_name]:
+                whole_image_annotation = WholeImageAnnotation()
+
+                whole_image_annotation.annotation_set = annotation_set
+                whole_image_annotation.image = image
+                whole_image_annotation.owner = annotation_set.owner
+
+                whole_image_annotation.annotation_caab_code = annotation['Annotation Code']
+                whole_image_annotation.qualifier_short_name = ['Qualifier Name']
+
+                whole_image_annotation.annotation_caab_code_secondary = annotation['Annotation Code']
+                whole_image_annotation.qualifier_short_name_secondary = ['Qualifier Name 2']
 
                 points_to_bulk_save.append(whole_image_annotation)
 

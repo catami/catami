@@ -1,21 +1,3 @@
-//a mixin helper function to serialize forms
-$.fn.serializeObject = function()
-{
-   var o = {};
-   var a = this.serializeArray();
-   $.each(a, function() {
-       if (o[this.name]) {
-           if (!o[this.name].push) {
-               o[this.name] = [o[this.name]];
-           }
-           o[this.name].push(this.value || '');
-       } else {
-           o[this.name] = this.value || '';
-       }
-   });
-   return o;
-};
-
 var Project = Backbone.Model.extend({
     urlRoot: "/api/dev/project/",
     validation: {
@@ -80,10 +62,14 @@ ProjectCollectionView = Backbone.View.extend({
         return this;
     },
     events: {
-        "click #create_button": "doCreate"
+        "click #create_button": "doCreate",
+        "click #import_button": "doImport"
     },
     doCreate: function (event) {
         window.location.replace("/projects/create");
+    },
+    doImport: function (event) {
+        window.location.replace("/projects/import");
     }
 });
 

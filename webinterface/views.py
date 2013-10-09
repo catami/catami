@@ -20,6 +20,7 @@ from django.contrib.auth.decorators import login_required
 import httplib2
 import simplejson
 import HTMLParser
+import csv
 
 logger = logging.getLogger(__name__)
 
@@ -109,6 +110,11 @@ def project_view(request, project_id):
 
 def project_create(request):
     return render_to_response('webinterface/project-create.html',
+                              {},
+                              RequestContext(request))
+
+def project_import(request):
+    return render_to_response('webinterface/project-import.html',
                               {},
                               RequestContext(request))
 

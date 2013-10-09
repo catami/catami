@@ -39,10 +39,11 @@ urlpatterns = patterns(
     #url(r'^projects$', 'projects'),
     url(r'^projects/$', 'projects'),
     url(r'^projects/create/$', 'project_create'),
+    url(r'^projects/import/$', 'project_import'),
     url(r'^projects/(?P<project_id>\d+)/$', 'project_view'),
     url(r'^projects/(?P<project_id>\d+)/configure/$', 'project_configure'),
     url(r'^projects/(?P<project_id>\d+)/annotate/$', 'project_annotate'),
-
+   
 
     #plain data views
     url(r'^data/$', 'data'),

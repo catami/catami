@@ -4,6 +4,7 @@ from django.conf.urls import url
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.http import HttpResponse
 from django.utils import simplejson
+from django.db.models import Q
 import requests
 from tastypie import fields
 # import tastypie
@@ -424,11 +425,13 @@ class ProjectResource(ModelResource):
             'images': ALL_WITH_RELATIONS,
             'id': 'exact'
         }
+        allowed_methods = ['get', 'post'] 
         #excludes = ['owner', 'creation_date', 'modified_date']
 
     def prepend_urls(self):
         return [
             url(r"^(?P<project>%s)/create_project%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('create_project'), name="create_project"),
+            url(r"^(?P<project>%s)/import_project%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('import_project'), name="import_project"),
             url(r"^(?P<project>%s)/(?P<pk>\w[\w/-]*)/csv%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_csv'), name="api_get_csv"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/images%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_images'), name="api_get_images"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/share_project%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('share_project'), name="api_share_project"),
@@ -488,8 +491,11 @@ class ProjectResource(ModelResource):
         sets = AnnotationSet.objects.filter(project=kwargs['pk'])
 
         writer = csv.writer(response)
-        writer.writerow(['Annotation Set Type', 'Image Name', 'Campaign Name', 'Deployment Name', 
-                         'Image Location', 'Point in Image', 'Annotation Code', 'Annotation Name'])        
+        writer.writerow(['Annotation Set Type', 'Image Name', 'Campaign Name', 'Campaign Id', 
+                         'Deployment Name', 'Deployment Id',  'Image Location', 
+                         'Annotation Code', 'Annotation Name', 'Qualifier Name',
+                         'Annotation Code 2', 'Annotation Name 2', 'Qualifier Name 2',
+                         'Point Sampling', 'Point in Image'])        
         
         for set in sets:
             # 0 - Point, 1 - Whole Image    
@@ -502,25 +508,58 @@ class ProjectResource(ModelResource):
                     point_set = PointAnnotationResource().obj_get_list(bundle, image=image.id)
                     for point in point_set: 
                         code_name = ''
+                        code_name_secondary = ''
                         if point.annotation_caab_code and point.annotation_caab_code is not u'':
                             code = AnnotationCodes.objects.filter(caab_code=point.annotation_caab_code)
                             if code and code is not None and len(code) > 0:
                                 code_name = code[0].code_name
-                        writer.writerow(['Fine Scale', image.image_name, image.deployment.campaign.short_name, 
-                                        image.deployment.short_name, image.position, 
-                                        (str(point.x) + ' , ' + str(point.y)), 
-                                        point.annotation_caab_code, code_name])
+                        if point.annotation_caab_code_secondary and point.annotation_caab_code_secondary is not u'':
+                            code = AnnotationCodes.objects.filter(caab_code=point.annotation_caab_code_secondary)
+                            if code and code is not None and len(code) > 0:
+                                code_name_secondary = code[0].code_name
+                        writer.writerow(['Fine Scale', image.image_name, 
+                                         image.deployment.campaign.short_name,
+                                         image.deployment.campaign.id,                                          
+                                         image.deployment.short_name, 
+                                         image.deployment.id,
+                                         image.position, 
+                                         point.annotation_caab_code,
+                                         code_name,
+                                         point.qualifier_short_name,
+                                         point.annotation_caab_code_secondary,
+                                         code_name_secondary,
+                                         point.qualifier_short_name_secondary,
+                                         set.point_sampling_methodology,
+                                         (str(point.x) + ' , ' + str(point.y)), 
+                                        ])
                 elif annotation_set_type == 1:                    
                     whole_set = WholeImageAnnotationResource().obj_get_list(bundle, image=image.id)
                     for whole in whole_set: 
                         code_name = ''
+                        code_name_secondary = ''
                         if whole.annotation_caab_code and whole.annotation_caab_code is not u'':
                             code = AnnotationCodes.objects.filter(caab_code=whole.annotation_caab_code)                    
                             if code and code is not None and len(code) > 0:
                                 code_name = code[0].code_name
-                        writer.writerow(['Broad Scale', image.image_name, image.deployment.campaign.short_name, 
-                                        image.deployment.short_name, image.position, '',                                         
-                                        whole.annotation_caab_code, code_name])
+                        if whole.annotation_caab_code_secondary and whole.annotation_caab_code_secondary is not u'':
+                            code = AnnotationCodes.objects.filter(caab_code=whole.annotation_caab_code_secondary)                    
+                            if code and code is not None and len(code) > 0:
+                                code_name_secondary = code[0].code_name
+                        writer.writerow(['Broad Scale', image.image_name, 
+                                         image.deployment.campaign.short_name, 
+                                         image.deployment.campaign.id,                                          
+                                         image.deployment.short_name, 
+                                         image.deployment.id,                                         
+                                         image.position,
+                                         whole.annotation_caab_code, 
+                                         code_name,
+                                         whole.qualifier_short_name,
+                                         whole.annotation_caab_code_secondary, 
+                                         code_name_secondary,
+                                         whole.qualifier_short_name_secondary,
+                                         set.point_sampling_methodology,                                                                                  
+                                         'N/A'
+                                        ])
         return response
 
     def create_project(self, request, **kwargs):
@@ -562,7 +601,7 @@ class ProjectResource(ModelResource):
             elif image_sampling_methodology == '1':
                 image_subset = ImageManager().stratified_sample_images(images, image_sample_size)
             # all
-            elif image_sampling_methodology == '3':
+            elif image_sampling_methodology == '2':
                 image_subset = images
             else:
                 raise Exception("Image sampling method not implemented.")
@@ -596,6 +635,109 @@ class ProjectResource(ModelResource):
             return response
 
         return self.create_response(request, "Not all fields were provided.", response_class=HttpBadRequest)
+
+
+    def import_project(self, request, **kwargs):
+        """
+        Special handler function to import a project based on uploaded csv
+        A project can contain one or more images from one or more deployments
+        If a project only has one deployment, specifying the deployment id per row (image)
+        in the CSV is optional, mandatory otherwise.
+        """
+  
+        if request.method == 'POST':
+            #log.info('received POST to main multiuploader view')
+            if request.FILES == None:
+                return HttpResponseBadRequest('Must have files attached!')
+
+            selectedDeploymentIds = request.POST['deployment_ids'].split(',')
+            isMultiDeployment = len(selectedDeploymentIds) > 1
+            #getting file data for farther manipulations
+            file = request.FILES['file']
+            csv_content = csv.DictReader(file)
+            map = {} #map image names base on deployment ids
+
+            for row in csv_content:                
+                name = row['Image Name']
+                id = -1
+                if isMultiDeployment:
+                    if 'Deployment Id' in row and row['Deployment Id'] != None:
+                        id = row['Deployment Id']
+                    else:
+                        return HttpResponse('Multi Deployment in project detected, each image requires respective deployment id (in CSV) ')                        
+                else:
+                    id = selectedDeploymentIds[0]
+
+                if id != -1:
+                    annotation = {}
+                    annotation['Point In Image'] = row['Point in Image']
+                    annotation['Annotation Code'] = row['Annotation Code']
+                    annotation['Qualifier Name'] = row['Qualifier Name']
+                    annotation['Annotation Code 2'] = row['Annotation Code 2']
+                    annotation['Qualifier Name 2'] = row['Qualifier Name 2']
+                    annotation['Point in Image'] = row['Point in Image']
+                    annotations = []
+                    annotations.append(annotation)
+                    if id in map.keys():
+                        if name in map[id].keys():
+                           map[id][name].append(annotation)
+                        else:
+                            map[id][name] = annotations                                                                                       
+                    else:
+                        deployments = {}
+                        deployments[name] = annotations
+                        map[id] = deployments
+
+            # get the images we are interested in
+            query = Q()
+            for id in map.keys():            
+                query = query | Q(deployment__in=id, image_name__in=map[id].keys())
+
+            images = Image.objects.filter(query)
+
+            name = request.POST['name']
+            description = request.POST['description']
+            annotation_set_type = request.POST['annotation_type']
+            #If Fine Scale, obtain methodology, else Not Applicable (-1)
+            point_sampling_methodology = 'point_sampling_methodology' in request.POST and request.POST['point_sampling_methodology'] or -1
+            #Import always uses All (3) images
+            image_sampling_methodology = 3
+
+            # only proceed with all parameters
+            if (name and description and image_sampling_methodology and
+                point_sampling_methodology) is not None:
+
+                #create the project
+                project_bundle = Bundle()
+                project_bundle.request = request
+                project_bundle.data = dict(name=name, description=description, images=images)
+                new_project = self.obj_create(project_bundle)                
+
+
+                #create the annotation set for the project
+                annotation_set_bundle = Bundle()
+                annotation_set_bundle.request = request
+                annotation_set_bundle.data = dict(project=new_project, name=name, description=description,
+                                                  image_sampling_methodology=image_sampling_methodology,
+                                                  image_sample_size=len(images),
+                                                  point_sampling_methodology=point_sampling_methodology,
+                                                  images=images,
+                                                  annotation_set_type=annotation_set_type,
+                                                  import_data=map)
+            
+                AnnotationSetResource().obj_create(annotation_set_bundle)
+
+        else: #GET
+            return HttpResponse('Only POST accepted')
+      
+
+        json_content = {}
+        json_content["project_id"] = str(new_project.obj.id)
+
+        return HttpResponse(content= json.dumps(json_content,sort_keys=True),
+                            status=200,
+                            content_type='application/json') 
+
 
     def share_project(self, request, **kwargs):
         """
@@ -654,6 +796,7 @@ class ProjectResource(ModelResource):
             # OK
             return HttpResponse(status=201,
                                 content_type='application/json')
+                        
 
     def obj_create(self, bundle, **kwargs):
         """
@@ -1080,18 +1223,23 @@ class AnnotationSetResource(ModelResource):
         """ Helper function to hold all the sampling logic """
 
         # subsample points based on methodologies
-        #bundle.obj.images = bundle.data['image_subset']
-        point_sample_size = bundle.data['point_sample_size']
+        #bundle.obj.images = bundle.data['image_subset']      
         point_sampling_methodology = bundle.data['point_sampling_methodology']
         
         if point_sampling_methodology == '0':
-            PointAnnotationManager().apply_random_sampled_points(bundle.obj, point_sample_size)
+            if 'import_data' in bundle.data:
+                PointAnnotationManager().import_sampled_points(bundle.obj, bundle.data['import_data'])
+            else:    
+                PointAnnotationManager().apply_random_sampled_points(bundle.obj, bundle.data['point_sample_size'])
         else:
             raise Exception("Point sampling method not implemented.")
 
     def do_whole_image_point_operations(self, bundle):
         """ Helper function to hold whole image point assignment logic """
-        WholeImageAnnotationManager().apply_whole_image_points(bundle.obj)
+        if 'import_data' in bundle.data:
+            WholeImageAnnotationManager().import_whole_image_points(bundle.obj, bundle.data['import_data'])
+        else:
+            WholeImageAnnotationManager().apply_whole_image_points(bundle.obj)
 
 
     def obj_create(self, bundle, **kwargs):
@@ -1116,8 +1264,8 @@ class AnnotationSetResource(ModelResource):
         #create the bundle
         super(AnnotationSetResource, self).obj_create(bundle)
 
-        # generate anootation points
-        if int(bundle.data['annotation_set_type']) == 0:
+        # generate annotation points
+        if int(bundle.data['annotation_set_type']) == 0: #Fine Scale
             try:
                 self.do_point_sampling_operations(bundle)
             except Exception:
@@ -1126,7 +1274,7 @@ class AnnotationSetResource(ModelResource):
 
                 #return not implemented response
                 raise ImmediateHttpResponse(HttpNotImplemented("Unable to create point (fine scale) annotation set."))
-        elif int(bundle.data['annotation_set_type']) == 1:
+        elif int(bundle.data['annotation_set_type']) == 1: #Broad Scale
             try:
                 self.do_whole_image_point_operations(bundle)
             except Exception:
