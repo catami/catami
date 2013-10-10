@@ -43,10 +43,10 @@
 							<textarea class="input-xlarge" id="description" name="description" rows="3" data-error-style="inline"></textarea>
 						</div>
 					</div>
-					<legend>Deployment to work on</legend>
+					<legend>Deployment(s) to work on</legend>
 					<div class="control-group">
 						<label class="control-label">
-							Deployment:</label>
+							Deployment(s):</label>
 						<div class="controls">
 							<select data-placeholder="Select deployment/s" style="width:350px;" class="chosen-select" multiple>
 								<option value=""></option>
@@ -165,22 +165,27 @@
     });
 
     function submitClicked() {
-        updateHiddenFields();
-        var data = new FormData($("#fileinfo")[0]);
-        $.ajax({
-            type: "POST",
-            url: '/api/dev/project/import_project/',
-            data: data,
-            contentType: false,
-            processData: false,
-            success: function (response, textStatus, jqXHR) {
-                //alert('project_id: ' + response.project_id);
-                window.location.replace("/projects/" + response.project_id);
-            },
-            error: function (model, xhr, options) {
-                alert('Project Import Failed!');
-            }
-        });
+        if ($(".chosen-select").val() && $("#name").val() && $("#description").val()) {
+            updateHiddenFields();
+            var data = new FormData($("#fileinfo")[0]);           
+            $.ajax({
+                type: "POST",
+                url: '/api/dev/project/import_project/',
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (response, textStatus, jqXHR) {
+                    //alert('project_id: ' + response.project_id);
+                    window.location.replace("/projects/" + response.project_id);
+                },
+                error: function (request, status, error) {
+                    alert('Project Import Failed! Error:' + request.responseText);
+                }
+            });            
+        }
+        else {           
+            alert('Form incomplete! Please fill up missing fields before resubmitting.');
+        }
     }
 
     //read csv and get informationed used to prefill form

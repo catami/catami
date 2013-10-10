@@ -651,6 +651,9 @@ class ProjectResource(ModelResource):
                 return HttpResponseBadRequest('Must have files attached!')
 
             selectedDeploymentIds = request.POST['deployment_ids'].split(',')
+            if len(selectedDeploymentIds) == 0:
+                return HttpResponseBadRequest('No deployment selected')
+
             isMultiDeployment = len(selectedDeploymentIds) > 1
             #getting file data for farther manipulations
             file = request.FILES['file']
@@ -664,7 +667,7 @@ class ProjectResource(ModelResource):
                     if 'Deployment Id' in row and row['Deployment Id'] != None:
                         id = row['Deployment Id']
                     else:
-                        return HttpResponse('Multi Deployment in project detected, each image requires respective deployment id (in CSV) ')                        
+                        return HttpResponseBadRequest('Multi Deployment in project detected, each image requires respective deployment id (in CSV) ')                        
                 else:
                     id = selectedDeploymentIds[0]
 
@@ -694,6 +697,8 @@ class ProjectResource(ModelResource):
                 query = query | Q(deployment__in=id, image_name__in=map[id].keys())
 
             images = Image.objects.filter(query)
+            if images.count() == 0:
+                 return HttpResponseBadRequest('Unable to find requested images in database')
 
             name = request.POST['name']
             description = request.POST['description']
