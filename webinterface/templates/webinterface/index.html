@@ -24,6 +24,12 @@
 			-webkit-box-shadow: 0px 0px 5px rgba(0,0,0,0.8);
 			box-shadow:0px 0px 5px rgba(0,0,0,0.8);
         }
+
+        .carousel{
+	        -moz-box-shadow: 0px 0px 5px rgba(0,0,0,0.8);
+			-webkit-box-shadow: 0px 0px 5px rgba(0,0,0,0.8);
+			box-shadow:0px 0px 5px rgba(0,0,0,0.8);
+        }
     </style>
 
     <div class="content-container " >
@@ -33,34 +39,99 @@
             <!--<img src="{{ STATIC_URL }}images/banner_01.jpg" alt="catami pretty banner" width="2400"/>-->
         </div>
 
-        <div class="container-fluid">
-            <div class="span6">
+        <div class="row-fluid">
+            <div class="span4">
+                <div class="hero-unit" style="max-height: 480px">
+                    <h2>Welcome to CATAMI</h2>
+
+                    <p class="lead">The online data management and image annotation system for marine ecologists, with a twist.</p>
+                    <p class="lead"><a href="#features"> Features</a> include: </p>
+                    <p class="lead">
+                        <ul>
+                            <li>Transect data management and visualisation</li>
+                            <li>Fine and broad scale still image annotation</li>
+                            <li>Similar image recognition for a faster annotation process</li>
+                            <li>Share your projects with friends or colleagues</li>
+                            <li>And much more!</li>
+                        </ul>
+                    </p>
+
+                    <p>
+                        <a href="{% url userena_signup %}" class="btn btn-success">Get an Account it's free!</a>
+                    </p>
+
+                    <p class="lead">Want more? Then <a href="mailto:catami@ivec.org">get in touch</a>.</p>
+
+                </div>
+            </div>
+            <div class="span8">
+                <div id="myCarousel" class="carousel slide">
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel" data-slide-to="1"></li>
+                        <li data-target="#myCarousel" data-slide-to="2"></li>
+                    </ol>
+                    <!-- Carousel items -->
+                    <div class="carousel-inner">
+                        <div class="active item">
+                            <img src="{{ STATIC_URL }}images/DeploymentView.jpg">
+                            <div class="carousel-caption">
+                                <h4>Transect Visualisation</h4>
+                                <p>Upload and manage your dives, view the transect, images and associated sensor readings.</p>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <img src="{{ STATIC_URL }}images/FineScale.jpg">
+                            <div class="carousel-caption">
+                                <h4>Fine Scale Image Annotation</h4>
+                                <p>Fine scale annotation with on the fly statistics, multi point selection and various image controls. </p>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <img src="{{ STATIC_URL }}images/BroadScale.jpg">
+                            <div class="carousel-caption">
+                                <h4>Image Similary Search - Recommended Images</h4>
+                                <p>Get recommendations for similar images during broad scale classification to speed up the process.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel nav -->
+                    <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+                    <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+                </div>
+            </div>
+        </div>
+
+        {% comment %}
+        <div class="row-fluid">
+
+            <div class="span4">
 
                 {% if user.is_authenticated %}
 
 
-                        <div class="well">
+                        <div class="hero-unit">
                             <p class="lead" style="align:center;">My profile <a
                                     href="/accounts/{{ user.username }}/"><i
                                     class="icon-user icon-4x pull-right"></i></a></p>
                             <br>
                         </div>
 
-                        <div class="well">
+                        <div class="hero-unit">
                             <p class="lead">My projects <a
                                     href="{% url webinterface.views.projects %}"><i
                                     class="icon-list-alt icon-4x pull-right"></i></a></p>
                             <br>
                         </div>
 
-                        <div class="well">
+                        <div class="hero-unit">
                             <p class="lead">Create a project and start annotating <a
                                     href="{% url webinterface.views.project_create %}"><i class="icon-plus-sign-alt icon-4x pull-right"></i></a>
                             </p>
                             <br>
                         </div>
 
-                        <div class="well">
+                        <div class="hero-unit">
                             <p class="lead">Explore data holdings <a
                                     href="{% url webinterface.views.campaign_list %}"><i class="icon-search icon-4x pull-right"></i></a>
                             </p>
@@ -84,7 +155,7 @@
                             </a>
 
                         </div>
-                        <div class="well">
+                        <div class="hero-unit">
                             <p class="lead">Login <a
                                     href="{% url userena_signin %}"><i class="icon-signin icon-4x pull-right"></i></a>
                             </p>
@@ -92,14 +163,14 @@
                                     class="icon-exclamation-sign"></i> Forgot your account details?</p></a>
                         </div>
 
-                        <div class="well">
+                        <div class="hero-unit">
                             <p class="lead">Explore our data holdings <a
                                     href="{% url webinterface.views.campaign_list %}"><i class="icon-search icon-4x pull-right"></i></a>
                             </p>
                             <br>
                         </div>
 
-                        <div class="well">
+                        <div class="hero-unit">
                             <p class="lead">Explore projects people are sharing <a
                                     href="{% url webinterface.views.projects %}"><i
                                     class="icon-list-alt icon-4x pull-right"></i></a></p>
@@ -109,11 +180,45 @@
                 {% endif %}
 
             </div>
-        </div>
 
-        <!-- Tag line zone	 -->
-        <div align="center" style="margin-top:20px;">
-            <p class="lead">Welcome to CATAMI. Online data exploration and image annotation for marine ecologists.</p>
+        </div>
+        {% endcomment %}
+
+        <hr class="fancy-style">
+
+        <div class="row-fluid">
+            <div class="span1"></div>
+            <div id="features" class="featurette span10">
+
+                <div class="row">
+                    <div class="span4">
+                        <h2><span class="muted">Data Management</span></h2>
+                        <p class="lead">Supports still imagery from any camera, in png or jpg formats. Currently used with AUV, Towed Imagery and Kayak Cam.</p>
+                        <p class="lead">Data broken down into Campaigns and Deployments for easy discovery and transect visualisation.</p>
+                        <p class="lead"><a href="{% url webinterface.views.campaign_list %}" class="btn"> Browse Campaigns and Deployments </a> </p>
+                    </div>
+                    <div class="span4">
+                        <h2><span class="muted">Image Annotation</span></h2>
+                        <p class="lead">Fine and broad scale annotation projects supported.</p>
+                        <p class="lead">Random and stratified image sampling across thousands of images in seconds.</p>
+                        <p class="lead">Random point sampling. </p>
+                        <p class="lead">On the fly statistics calculated while you work. </p>
+                        <p class="lead">Export your work as a CSV for further analysis. </p>
+                        <p class="lead">Work in private, public or work with friends and colleagues on the same data at the same time! </p>
+                        {% if user.is_authenticated %}
+                            <p class="lead"><a href="{% url webinterface.views.project_create %}" class="btn"> Create your own Project </a> </p>
+                        {% endif %}
+                    </div>
+                    <div class="span4">
+                        <h2><span class="muted">Secret Sauce!</span></h2>
+                        <p class="lead">Similar image recommendations in broad scale classification projects.</p>
+                        <p class="lead">Full support for the CATAMI classification scheme.</p>
+                        <p class="lead"><a href="{% url webinterface.views.classification %}" class="btn"> Get the Classification Scheme </a></p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="span1"></div>
         </div>
 
         <hr class="fancy-style">
@@ -141,6 +246,7 @@
 
 {% endblock %}
 {% block add_script %}
+
     <script type="text/javascript">
         (function () {
             var po = document.createElement('script');
