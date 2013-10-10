@@ -498,14 +498,14 @@ class ProjectResource(ModelResource):
                          'Point Sampling', 'Point in Image'])        
         
         for set in sets:
-            # 0 - Point, 1 - Whole Image    
+            # 0 - Fine Scale, 1 - Broad Scale
             annotation_set_type = set.annotation_set_type
             for image in set.images.all():
                 bundle = Bundle()
                 bundle.request = request
                 bundle.data = dict(image=image.id, annotation_set=set.id)
-                if annotation_set_type == 0:
-                    point_set = PointAnnotationResource().obj_get_list(bundle, image=image.id)
+                if annotation_set_type == 0: #Fine Scale
+                    point_set = PointAnnotationResource().obj_get_list(bundle, image=image.id,annotation_set=set.id)
                     for point in point_set: 
                         code_name = ''
                         code_name_secondary = ''
@@ -532,8 +532,8 @@ class ProjectResource(ModelResource):
                                          set.point_sampling_methodology,
                                          (str(point.x) + ' , ' + str(point.y)), 
                                         ])
-                elif annotation_set_type == 1:                    
-                    whole_set = WholeImageAnnotationResource().obj_get_list(bundle, image=image.id)
+                elif annotation_set_type == 1: #Broad Scale                    
+                    whole_set = WholeImageAnnotationResource().obj_get_list(bundle, image=image.id, annotation_set=set.id)
                     for whole in whole_set: 
                         code_name = ''
                         code_name_secondary = ''
