@@ -288,8 +288,8 @@ ImageAnnotateView = Backbone.View.extend({
             this.disableAnnotationSelector();
             GlobalEvent.trigger('finescale_points_deselected');
         }
-        else
-            this.enableAnnotationSelector();
+        //else
+            //this.enableAnnotationSelector();
 
         //refresh the point labels
         this.refreshPointLabelsForImage();
@@ -368,7 +368,7 @@ ImageAnnotateView = Backbone.View.extend({
         //deselect any points that are selected
         $(".pointSelected").each(function(index, pointSpan) {
             //var theCaabCode = $(pointSpan).attr('caab_code');
-            var annotationCode = PointUtil.getAnnotationCodeForPointId($(thePoint).attr('id'));
+            var annotationCode = PointUtil.getAnnotationCodeForPointId($(pointSpan).attr('id'));
             var theCaabCode = (annotationCode == null) ? "" : annotationCode.get("caab_code");
 
             if(theCaabCode === "") {

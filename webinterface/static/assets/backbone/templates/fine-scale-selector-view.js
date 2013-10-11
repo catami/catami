@@ -8,7 +8,7 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         'click #fine_scale_label': 'editPrimaryLabel'
     },
     initialize: function () {
-        GlobalEvent.on("point_clicked", this.fineScalePointSelected, this);
+        GlobalEvent.on("point_is_selected", this.fineScalePointSelected, this);
         GlobalEvent.on("annotation_set_has_changed", this.selectedFineScalePointsAssigned, this);
         GlobalEvent.on("finescale_points_deselected", this.render, this);
         GlobalEvent.on("annotation_to_be_set", this.annotationChosen, this);
@@ -49,6 +49,13 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         return this;
     },
     fineScalePointSelected: function(){
+
+        // TODO: Mark fix this hack!
+        // not letting the user select a point when annotation panel not in view
+        if(!$("#AnnotationSelectionButton").hasClass("active")) {
+            GlobalEvent.trigger("deselect_points");
+            return;
+        }
 
         // get the selected points
         var selectedPoints = $('.pointSelected');
@@ -131,6 +138,11 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         this.editPrimaryLabel();
 
         $('#fine_scale_label').append(labelSet);
+
+        $('.AnnotationChooserBox').removeClass('disable');
+        $('a[href=#overall_root_node]').trigger('activate-node');
+
+        //alert("contuniing");
 
     },
     selectedFineScalePointsAssigned: function() {
