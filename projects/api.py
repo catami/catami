@@ -600,8 +600,11 @@ class ProjectResource(ModelResource):
             # stratified
             elif image_sampling_methodology == '1':
                 image_subset = ImageManager().stratified_sample_images(images, image_sample_size)
-            # all
+            # spatial
             elif image_sampling_methodology == '2':
+                raise Exception("Spatial image sampling method not implemented.")
+            # all
+            elif image_sampling_methodology == '3':
                 image_subset = images
             else:
                 raise Exception("Image sampling method not implemented.")
