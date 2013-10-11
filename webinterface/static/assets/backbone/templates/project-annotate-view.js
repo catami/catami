@@ -448,7 +448,7 @@ function createPagination(meta) {
 function createBookmark() {
     var url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') 
               + "/projects/" + projectId + "/annotate/?bid=";
-    window.prompt("Bookmark URL Generated", url + selectedImageId);
+    window.prompt("Permanent URL to this project image.", url + selectedImageId);
 }
 
 
