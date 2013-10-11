@@ -419,6 +419,7 @@ function loadPage(offset) {
     var image = thumbnailImages.first();
     selectedImageId = image.get('id');
     GlobalEvent.trigger("thumbnail_selected_by_id", selectedImageId, image.get('web_location'));
+    GlobalEvent.trigger("annotation_set_has_changed"); //XXX triggering this event to fetch new image stats and redraw chart for image progress
 }
 
 function fetchThumbnails(offset) {

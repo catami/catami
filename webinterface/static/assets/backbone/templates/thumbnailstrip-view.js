@@ -126,6 +126,7 @@ ThumbnailStripView = Backbone.View.extend({
         selectedImageId = $(event.currentTarget).data("id");
         var webLocation = $(event.currentTarget).data("web_location");
         GlobalEvent.trigger("thumbnail_selected_by_id", selectedImageId, webLocation);
+        GlobalEvent.trigger("annotation_set_has_changed"); //XXX triggering this event to fetch new image stats and redraw chart for image progress
     },
     thumbnailSelectedById: function (id, webLocation) {
 

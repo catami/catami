@@ -147,21 +147,22 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
     },
     selectedFineScalePointsAssigned: function() {
         var selectedPoints = $('.pointSelected');
+        if (selectedPoints && selectedPoints[0]) {
+            // all selected points will now be the same value. No need to iterate through the set
+            var localPoint = points.get(selectedPoints[0].id);
 
-        // all selected points will now be the same value. No need to iterate through the set
-        var localPoint = points.get(selectedPoints[0].id);
-        
-        annotationCode = annotationCodeList.find(function(model) {
-            return model.get('caab_code') === localPoint.get('annotation_caab_code');
-        });
-        
-        $('#fine_scale_label').text(annotationCode.get('code_name')+' ');
-        if (selectedPoints.length > 1){
-            $('#fine_scale_label').append('<div class="label label-info"> x'+selectedPoints.length+'</div>');
-        }
-        $("#fine_scale_class_label").show();
-        if (!$("#remove_secondary_annotation").is(':visible')){
-            $("#add_secondary_annotation").show();
+            annotationCode = annotationCodeList.find(function (model) {
+                return model.get('caab_code') === localPoint.get('annotation_caab_code');
+            });
+
+            $('#fine_scale_label').text(annotationCode.get('code_name') + ' ');
+            if (selectedPoints.length > 1) {
+                $('#fine_scale_label').append('<div class="label label-info"> x' + selectedPoints.length + '</div>');
+            }
+            $("#fine_scale_class_label").show();
+            if (!$("#remove_secondary_annotation").is(':visible')) {
+                $("#add_secondary_annotation").show();
+            }
         }
     },
     addSecondaryAnnotation: function() {
