@@ -13,8 +13,10 @@
         </ul>
 
         {% if user.is_authenticated %}
-        <button class="btn btn-large btn-primary pull-right" type="button" id="import_button">Import Project</button>
-        <button class="btn btn-large btn-primary pull-right" type="button" id="create_button">Create New Project</button>        
+        <p>
+        <button class="btn btn-large btn-primary " type="button" id="create_button" ><i class="icon-plus"></i> Create New Project</button>
+        <button class="btn btn-large " type="button" id="import_button" ><i class="icon-upload"></i> Import Project</button>
+        </p>
         {% endif %}
 
         <table class="table table-striped">
