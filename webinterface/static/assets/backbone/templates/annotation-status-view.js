@@ -40,7 +40,7 @@ AnnotationStatusView = Backbone.View.extend({
                                     font: "normal normal 11pt Tahoma",
                                     fontColor: "black",
                                     labelOffset: -40,
-                                    radius: 200
+                                    radius: 80
                                 });
 
                                 chart_image_dist = new Chart("chart_image_distribution");
@@ -49,7 +49,7 @@ AnnotationStatusView = Backbone.View.extend({
                                     font: "normal normal 11pt Tahoma",
                                     fontColor: "black",
                                     labelOffset: -40,
-                                    radius: 200
+                                    radius: 80
                                 });
                             }
 
@@ -59,7 +59,7 @@ AnnotationStatusView = Backbone.View.extend({
                                 font: "normal normal 11pt Tahoma",
                                 fontColor: "black",
                                 labelOffset: -40,
-                                radius: 200
+                                radius: 80
                             });
 
                             var chart_project_dist = new Chart("chart_project_distribution");
@@ -68,7 +68,7 @@ AnnotationStatusView = Backbone.View.extend({
                                 font: "normal normal 11pt Tahoma",
                                 fontColor: "black",
                                 labelOffset: -40,
-                                radius: 200
+                                radius: 80
                             });
 
                             var chart_topfive = new Chart("chart_topfive");
