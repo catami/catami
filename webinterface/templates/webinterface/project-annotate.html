@@ -591,6 +591,7 @@
 
             <div class="image-container-fluid">
                 <div id="ImageContainer" class="content-area panzoom"></div>
+
             </div>
         </div>
 
@@ -958,9 +959,12 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.autoResizeImages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/dojo/dojo/dojo.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/js/image-segmentation.js"></script>
 
     <script type="text/javascript">
 
+
+        var imageSegmentation = new ImageSegmentation();
         var projectId = "{{ project_id }}";
         var project = new ProjectLite({"id": projectId});
 
