@@ -17,6 +17,7 @@ ImageAnnotateView = Backbone.View.extend({
         GlobalEvent.on("thumbnail_selected_by_id", this.thumbnailSelectedWithId, this);
         GlobalEvent.on("screen_changed", this.screenChanged, this);
         GlobalEvent.on("point_clicked", this.pointClicked, this);
+        GlobalEvent.on("point_shift_clicked", this.pointShiftClicked, this);
         GlobalEvent.on("point_mouseover", this.pointMouseOver, this);
         GlobalEvent.on("point_mouseout", this.pointMouseOut, this);
         GlobalEvent.on("annotation_to_be_set", this.annotationChosen, this);
@@ -178,8 +179,15 @@ ImageAnnotateView = Backbone.View.extend({
 
                 $("[rel=tooltip]").tooltip();
 
-                $("#ImageContainer").children('span').click(function(){
-                    GlobalEvent.trigger("point_clicked", this);
+                $("#ImageContainer").children('span').click(function(e){
+
+                    if(e.shiftKey) {
+                        GlobalEvent.trigger("point_shift_clicked", this);
+                    }
+                    else {
+                        GlobalEvent.trigger("point_clicked", this);
+                    }
+
                 });
 
                 $("#ImageContainer").children('span').mouseover(function(){
@@ -221,6 +229,9 @@ ImageAnnotateView = Backbone.View.extend({
         //now we have to wait for the image to load before we can draw points
         $("#Image").imagesLoaded(function() {
             parent.renderPointsForImage();
+
+            console.log("segmenting");
+            imageSegmentation.segmentImage("#Image", 10);
         });
 
     },
@@ -240,6 +251,9 @@ ImageAnnotateView = Backbone.View.extend({
         //now we have to wait for the image to load before we can draw points
         $("#Image").imagesLoaded(function() {
             parent.renderPointsForImage(selectedPosition);
+
+            console.log("segmenting");
+            imageSegmentation.segmentImage("#Image", 10);
         });
 
     },
@@ -254,12 +268,22 @@ ImageAnnotateView = Backbone.View.extend({
         });
     },
     pointClicked: function(thePoint) {
+
+        this.selectPoint(thePoint);
+
+        //refresh the point labels
+        this.refreshPointLabelsForImage();
+    },
+    pointShiftClicked: function(thePoint) {
+        this.selectSimilarPoints($(thePoint).attr('id'));
+    },
+    selectPoint: function(thePoint) {
+
         var theClass = $(thePoint).attr('class');
 
         //var theCaabCode = $(thePoint).attr('caab_code');
         var annotationCode = PointUtil.getAnnotationCodeForPointId($(thePoint).attr('id'));
         var theCaabCode = (annotationCode == null) ? "" : annotationCode.get("caab_code");
-
 
         if(theClass == 'pointSelected' && theCaabCode == ""){
             $(thePoint).attr('class', 'pointNotAnnotated');
@@ -290,9 +314,41 @@ ImageAnnotateView = Backbone.View.extend({
         }
         //else
             //this.enableAnnotationSelector();
+    },
+    selectSimilarPoints: function(selectedPointId) {
+        var parent = this;
 
-        //refresh the point labels
-        this.refreshPointLabelsForImage();
+        var preTime = new Date().getTime();
+
+        //get point colour
+        var selectedPoint = PointUtil.getPointWithId(selectedPointId);
+        var selectedPointX = selectedPoint.get("x");
+        var selectedPointY = selectedPoint.get("y");
+        var selectedPointColour = imageSegmentation.getPointColour(selectedPointX, selectedPointY);
+
+        var samePoints = [];
+        for(var i=0; i<points.length; i++) {
+
+            var x = points.at(i).get("x");
+            var y = points.at(i).get("y");
+
+            var pointColour = imageSegmentation.getPointColour(x, y);
+
+            if(pointColour[0] == selectedPointColour[0] &&
+                pointColour[1] == selectedPointColour[1] &&
+                pointColour[2] == selectedPointColour[2] &&
+                pointColour[3] == selectedPointColour[3]) {
+
+                samePoints.push(points.at(i));
+            }
+
+        }
+
+        for(var i=0; i < samePoints.length; i++) {
+            var point = samePoints[i];
+            parent.selectPoint("#" + point.get("id"));
+        }
+
     },
     pointMouseOver: function(thePoint) {
 
