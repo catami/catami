@@ -2,11 +2,15 @@ from shutil import copy
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from django.conf.urls import url
+from django.http import HttpResponse
+from django.utils import simplejson
 
 import guardian
 from guardian.shortcuts import (get_objects_for_user, get_perms_for_model,
                                 get_users_with_perms, get_groups_with_perms, get_perms)
 from tastypie import fields
+from tastypie.utils import trailing_slash
 from tastypie.authentication import (MultiAuthentication,
                                      SessionAuthentication,
                                      ApiKeyAuthentication,
@@ -557,6 +561,46 @@ class ImageResource(ModelResource):
         }
         # patch and put added to permit bulk posting via patch_list
         allowed_methods = ['get', 'post', 'patch', 'put'] #allow post to create campaign via Backbonejs
+
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<image>%s)/upload%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('image_upload'), name="image_upload"),
+        ]
+
+    def image_upload(self, request, **kwargs):
+        """
+        Special handler function to create a project based on search criteria from images
+        """
+
+        json_data = simplejson.loads(request.body)
+
+        #pull the query parameters out
+
+        date_time = json_data['date_time']
+        deployment = json_data['deployment'] 
+        depth = json_data['depth']
+        depth_uncertainty = json_data['depth_uncertainty']
+        image_name = json_data['image_name']
+        position = json_data['position']
+        angle = json_data['angle']
+        name = json_data['name']
+        altitude = json_data['altitude']
+        altitude_unit = json_data['altitude_unit']
+        pitch = json_data['pitch']
+        pitch_unit = json_data['pitch_unit']
+        roll = json_data['roll']
+        roll_unit = json_data['roll_unit']
+        salinity = json_data['salinity']
+        salinity_unit = json_data['salinity_unit']
+        temperature = json_data['temperature']
+        temperature_unit = json_data['temperature_unit']
+        yaw = json_data['yaw']
+        yaw_unit = json_data['yaw_unit']
+
+        response = HttpResponse(content_type='application/json')        
+        return response
+
+        return self.create_response(request, "Not all fields were provided.", response_class=HttpBadRequest)
 
     #this gets called just before sending response. Careful as we are overwritting the method defined in BackboneCompaitibleResource
     def alter_list_data_to_serialize(self, request, data):
