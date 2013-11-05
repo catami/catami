@@ -549,7 +549,7 @@ class ImageResource(ModelResource):
 
     class Meta:
         always_return_data = True
-        queryset = Image.objects.all()
+        queryset = Image.objects.all().order_by('date_time')
         resource_name = "image"
         authentication = MultiAuthentication(AnonymousGetAuthentication(),
                                              ApiKeyAuthentication())
