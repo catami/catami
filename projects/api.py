@@ -660,7 +660,9 @@ class ProjectResource(ModelResource):
             isMultiDeployment = len(selectedDeploymentIds) > 1
             #getting file data for farther manipulations
             file = request.FILES['file']
+
             csv_content = csv.DictReader(file)
+
             map = {} #map image names base on deployment ids
 
             for row in csv_content:                
@@ -700,6 +702,7 @@ class ProjectResource(ModelResource):
                 query = query | Q(deployment__in=id, image_name__in=map[id].keys())
 
             images = Image.objects.filter(query)
+
             if images.count() == 0:
                  return HttpResponseBadRequest('Unable to find requested images in database')
 
@@ -720,8 +723,7 @@ class ProjectResource(ModelResource):
                 project_bundle.request = request
                 project_bundle.data = dict(name=name, description=description, images=images)
                 new_project = self.obj_create(project_bundle)                
-
-
+                
                 #create the annotation set for the project
                 annotation_set_bundle = Bundle()
                 annotation_set_bundle.request = request
@@ -731,18 +733,16 @@ class ProjectResource(ModelResource):
                                                   point_sampling_methodology=point_sampling_methodology,
                                                   images=images,
                                                   annotation_set_type=annotation_set_type,
-                                                  import_data=map)
-            
+                                                  import_data=map)            
+
                 AnnotationSetResource().obj_create(annotation_set_bundle)
 
         else: #GET
             return HttpResponse('Only POST accepted')
       
+        json_content = "{\"project_id\": \"" + str(new_project.obj.id) + "\"}"
 
-        json_content = {}
-        json_content["project_id"] = str(new_project.obj.id)
-
-        return HttpResponse(content= json.dumps(json_content,sort_keys=True),
+        return HttpResponse(content= json_content,
                             status=200,
                             content_type='application/json') 
 
@@ -1232,8 +1232,8 @@ class AnnotationSetResource(ModelResource):
 
         # subsample points based on methodologies
         #bundle.obj.images = bundle.data['image_subset']      
+
         point_sampling_methodology = bundle.data['point_sampling_methodology']
-        
         if point_sampling_methodology == '0':
             if 'import_data' in bundle.data:
                 PointAnnotationManager().import_sampled_points(bundle.obj, bundle.data['import_data'])

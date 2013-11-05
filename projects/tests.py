@@ -1,4 +1,6 @@
+from django.test.client import Client
 from django.contrib.auth.models import User, Group
+from django.utils import simplejson
 import json
 import guardian
 from guardian.core import ObjectPermissionChecker
@@ -14,6 +16,7 @@ from catamidb import authorization as catamidbauthorization
 import logging
 import socket
 import StringIO, csv
+import tempfile
 
 #logger = logging.getLogger(__name__)
 logging.disable(logging.DEBUG)
@@ -362,7 +365,7 @@ class TestProjectResource(ResourceTestCase):
 
         authorization.apply_project_permissions(
             self.user_bob, self.project_whole)
-
+        
         #POINT
         self.annotation_set_point = mommy.make_one(AnnotationSet,
                                             project=self.project_point,
@@ -503,6 +506,80 @@ class TestProjectResource(ResourceTestCase):
             # self.assertTrue(row == expectedList2[i], msg=None)
             i = i + 1
 
+    def test_import_csv(self):
+        self.deployment_four = mommy.make_one(
+        'catamidb.Deployment',
+        short_name='Deployment4',
+        start_position=Point(12.4604, 43.9420),
+        end_position=Point(12.4604, 43.9420),
+        transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
+        campaign=self.campaign_two)
+
+        mock_image_one = mommy.make_recipe('projects.Image1', deployment=self.deployment_four, date_time=datetime.now() + timedelta(seconds=123) )
+        
+
+
+        #temp = tempfile.NamedTemporaryFile()
+        myfile = open('temp.csv', 'wb')
+        wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+        wr.writerow(['Annotation Set Type', 'Image Name', 'Campaign Name', 'Campaign Id', 
+                         'Deployment Name', 'Deployment Id',  'Image Location', 
+                         'Annotation Code', 'Annotation Name', 'Qualifier Name',
+                         'Annotation Code 2', 'Annotation Name 2', 'Qualifier Name 2',
+                         'Point Sampling', 'Point in Image'])     
+        wr.writerow(['Fine Scale', self.mock_image_one.image_name,
+                         self.mock_image_one.deployment.campaign.short_name,                                        
+                         self.mock_image_one.deployment.campaign.id,                                                                                 
+                         self.mock_image_one.deployment.short_name,                                         
+                         self.mock_image_one.deployment.id,                                       
+                         self.mock_image_one.position,                                         
+                         '63600901',                                        
+                         'Seagrasses',                                        
+                         'qualifier',                                         
+                         '80600901',                                         
+                         'Worms',                                         
+                         'qualifier_secondary',                                         
+                         2,#self.annotation_set_point.point_sampling_methodology,                                       
+                         '22.0 , 16.0',                                        
+                       ])
+
+        myfile.flush();
+        sameFile = open('temp.csv', 'rb')
+        import_csv_url = "/api/dev/project/import_project/?deployment_ids="+str(self.deployment_four.id)
+
+        self.client = Client()
+        self.client.login(username='bob', password='bob')
+        response = self.client.post(import_csv_url, 
+                                    {'file':sameFile, 
+                                     'deployment_ids':str(self.deployment_four.id), 
+                                     'name': 'test1', 
+                                     'description': 'description',
+                                     'annotation_type': '0',
+                                     'point_sampling_methodology' : '0'})
+            
+        json_data = simplejson.loads(response.content)
+        
+        self.assertHttpOK(response) #ensure 200 'ok' response
+        self.assertEqual(json_data['project_id'],str(3)) #3rd project created in unit test
+        
+        get_project_url = "/api/dev/project/"+json_data['project_id']+"/"
+
+        response = self.bob_api_client.get(get_project_url,
+                                            format='json')
+
+        self.assertValidJSONResponse(response)
+
+        # check that there are no permissions on the object
+        project_data = self.deserialize(response)
+
+        #check project info
+        self.assertEqual(project_data['name'], 'test1')
+        self.assertEqual(project_data['description'], 'description')
+        #check number of images imported
+        self.assertEqual(project_data['image_count'], 1)
+        #check image path
+        self.assertEqual(project_data['images'][0], '/api/dev/image/' + str(mock_image_one.id)+"/")
+        
     def test_configure(self):
 
         ### create some objects
