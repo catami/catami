@@ -68,6 +68,7 @@ var plain_annotation_list;
 OrchestratorView = Backbone.View.extend({
     el: $('div'),
     events: {
+        "click #configure_project_button": "doConfigure"
     },
     onLoadError: function(model, response, options) {
         if(response.status == 401) {
@@ -181,8 +182,11 @@ OrchestratorView = Backbone.View.extend({
     },
     assign : function (view, selector) {
         view.setElement($(selector)).render();
+    },
+    doConfigure: function (event) {
+        //redirect to configuration page
+        window.location.replace("/projects/" + project.get("id") + "/configure");
     }
-
 });
 
 

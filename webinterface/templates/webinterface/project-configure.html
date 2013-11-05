@@ -1,7 +1,8 @@
 {% extends "base-topmenu.html" %}
-{% block title %}Catami Project - Project List {% endblock %}
+{% block title %} Project Configure {% endblock %}
 
 {% block content %}
+
 
     <div id="ProjectConfigureContainer" class=""></div>
 
@@ -46,6 +47,14 @@
                                 %></textarea>
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label class="control-label" for="intelligent-points">
+                            Intelligent Point Selection:</label>
+
+                        <div class="controls make-switch switch-large">
+                            <input id="intelligent-points" type="checkbox" <%= intelligentpoints %>>
+                        </div>
+                    </div>
 
                     <div style="margin-left: 374px;">
                         <button type="button" class="btn btn-primary btn-large"
@@ -68,6 +77,7 @@
     <!--<script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-model.js"></script>-->
     <script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/project-configure-view.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/js/spin.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap-switch/static/js/bootstrap-switch.js"></script>
 
     <script type="text/javascript">
 

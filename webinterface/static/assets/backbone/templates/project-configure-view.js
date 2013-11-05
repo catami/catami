@@ -50,10 +50,15 @@ ProjectConfigureView = Backbone.View.extend({
         this.model.on('validated:valid', this.valid, this);
         this.model.on('validated:invalid', this.invalid, this);
 
+        // get intelligent points configuration from the cookie, disabled by default
+        var intelligentPointsKey = "catamiproject_" + project.get("id");
+        var intelligentPoints = ($.cookie(intelligentPointsKey) == "true") ? "checked" : "";
+
         var projectVariables = {
             "name": project.get("name"),
             "description": project.get("description"),
-            "id": project.get("id")
+            "id": project.get("id"),
+            "intelligentpoints": intelligentPoints
         };
 
         var projectTemplate = _.template($("#ProjectConfigureTemplate").html(), projectVariables);
@@ -85,6 +90,12 @@ ProjectConfigureView = Backbone.View.extend({
             var theXHR = this.model.save(properties, {
                 patch: true,
                 success: function (model, xhr, options) {
+
+                    // if everything saved to the database ok then set the cookie settings
+                    var intelligentPointsKey = "catamiproject_" + project.get("id");
+                    var cookieValue = ($('#intelligent-points').is(':checked')) ? true : false;
+                    $.cookie(intelligentPointsKey, cookieValue, { expires: 365, path: '/' });
+
                     //refresh page back to this project
                     window.location.replace("/projects/" + model.get("id"));
                 },

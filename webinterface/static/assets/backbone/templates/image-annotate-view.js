@@ -230,8 +230,13 @@ ImageAnnotateView = Backbone.View.extend({
         $("#Image").imagesLoaded(function() {
             parent.renderPointsForImage();
 
-            console.log("segmenting");
-            imageSegmentation.segmentImage("#Image", 10);
+            // do the image segmentation if it is turned on
+            var intelligentPointsKey = "catamiproject_" + project.get("id");
+            var intelligentPoints = ($.cookie(intelligentPointsKey) == "true") ? true : false;
+
+            if(intelligentPoints)
+                setTimeout(imageSegmentation.segmentImage("#Image", 10) ,1);
+
         });
 
     },
@@ -252,8 +257,12 @@ ImageAnnotateView = Backbone.View.extend({
         $("#Image").imagesLoaded(function() {
             parent.renderPointsForImage(selectedPosition);
 
-            console.log("segmenting");
-            imageSegmentation.segmentImage("#Image", 10);
+            // do the image segmentation if it is turned on
+            var intelligentPointsKey = "catamiproject_" + project.get("id");
+            var intelligentPoints = ($.cookie(intelligentPointsKey) == "true") ? true : false;
+
+            if(intelligentPoints)
+                setTimeout(imageSegmentation.segmentImage("#Image", 10) ,1);
         });
 
     },
@@ -275,7 +284,21 @@ ImageAnnotateView = Backbone.View.extend({
         this.refreshPointLabelsForImage();
     },
     pointShiftClicked: function(thePoint) {
-        this.selectSimilarPoints($(thePoint).attr('id'));
+
+        // get intelligent points configuration from the cookie, disabled by default
+        var intelligentPointsKey = "catamiproject_" + project.get("id");
+        var intelligentPoints = ($.cookie(intelligentPointsKey) == "true") ? true : false;
+
+        // if intelligent points is on then do the work
+        if(intelligentPoints)
+            this.selectSimilarPoints($(thePoint).attr('id'));
+
+        // if it's not on, then tell the user
+        else
+            $('#similar-points-modal').modal('show');
+
+        //refresh the point labels
+        this.refreshPointLabelsForImage();
     },
     selectPoint: function(thePoint) {
 
@@ -285,13 +308,13 @@ ImageAnnotateView = Backbone.View.extend({
         var annotationCode = PointUtil.getAnnotationCodeForPointId($(thePoint).attr('id'));
         var theCaabCode = (annotationCode == null) ? "" : annotationCode.get("caab_code");
 
-        if(theClass == 'pointSelected' && theCaabCode == ""){
+        if(theClass == 'pointSelected' && theCaabCode == "") {
             $(thePoint).attr('class', 'pointNotAnnotated');
-        } else if(theClass == 'pointSelected' && theCaabCode != ""){
+        } else if(theClass == 'pointSelected' && theCaabCode != "") {
             $(thePoint).attr('class', 'pointAnnotated');
-        } else if(theClass == 'pointSelected pointLabelledStillSelected'){
+        } else if(theClass == 'pointSelected pointLabelledStillSelected') {
             $(thePoint).attr('class', 'pointAnnotated');
-        }else {
+        } else {
 
             //firstly we need to check if we need to deselect already labelled points
             $(".pointLabelledStillSelected").each(function (index, pointSpan) {
