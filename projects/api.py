@@ -2,7 +2,7 @@ import csv
 import json
 from django.conf.urls import url
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils import simplejson
 from django.db.models import Q
 import requests
@@ -695,13 +695,13 @@ class ProjectResource(ModelResource):
                         deployments = {}
                         deployments[name] = annotations
                         map[id] = deployments
-
+            
             # get the images we are interested in
             query = Q()
             for id in map.keys():            
-                query = query | Q(deployment__in=id, image_name__in=map[id].keys())
+                query = query | Q(deployment=id, image_name__in=map[id].keys())
 
-            images = Image.objects.filter(query)
+            images = Image.objects.filter(query)                                    
 
             if images.count() == 0:
                  return HttpResponseBadRequest('Unable to find requested images in database')

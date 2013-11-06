@@ -507,15 +507,23 @@ class TestProjectResource(ResourceTestCase):
             i = i + 1
 
     def test_import_csv(self):
+
+        self.campaign_three = mommy.make_one(
+        'catamidb.Campaign',
+        short_name='Campaign3')
+
+        #add the users to the main campaign for permission purposes
+        catamidbauthorization.apply_campaign_permissions(self.user_bob, self.campaign_three)
+
         self.deployment_four = mommy.make_one(
         'catamidb.Deployment',
         short_name='Deployment4',
         start_position=Point(12.4604, 43.9420),
         end_position=Point(12.4604, 43.9420),
         transect_shape=Polygon(((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))),
-        campaign=self.campaign_two)
+        campaign=self.campaign_three)
 
-        mock_image_one = mommy.make_recipe('projects.Image1', deployment=self.deployment_four, date_time=datetime.now() + timedelta(seconds=123) )
+        self.mock_image_four = mommy.make_recipe('projects.Image1', deployment=self.deployment_four, date_time=datetime.now() + timedelta(seconds=123) )
         
 
 
@@ -527,12 +535,12 @@ class TestProjectResource(ResourceTestCase):
                          'Annotation Code', 'Annotation Name', 'Qualifier Name',
                          'Annotation Code 2', 'Annotation Name 2', 'Qualifier Name 2',
                          'Point Sampling', 'Point in Image'])     
-        wr.writerow(['Fine Scale', self.mock_image_one.image_name,
-                         self.mock_image_one.deployment.campaign.short_name,                                        
-                         self.mock_image_one.deployment.campaign.id,                                                                                 
-                         self.mock_image_one.deployment.short_name,                                         
-                         self.mock_image_one.deployment.id,                                       
-                         self.mock_image_one.position,                                         
+        wr.writerow(['Fine Scale', self.mock_image_four.image_name,
+                         self.mock_image_four.deployment.campaign.short_name,                                        
+                         self.mock_image_four.deployment.campaign.id,                                                                                 
+                         self.mock_image_four.deployment.short_name,                                         
+                         self.mock_image_four.deployment.id,                                       
+                         self.mock_image_four.position,                                         
                          '63600901',                                        
                          'Seagrasses',                                        
                          'qualifier',                                         
@@ -549,6 +557,7 @@ class TestProjectResource(ResourceTestCase):
 
         self.client = Client()
         self.client.login(username='bob', password='bob')
+
         response = self.client.post(import_csv_url, 
                                     {'file':sameFile, 
                                      'deployment_ids':str(self.deployment_four.id), 
@@ -556,12 +565,11 @@ class TestProjectResource(ResourceTestCase):
                                      'description': 'description',
                                      'annotation_type': '0',
                                      'point_sampling_methodology' : '0'})
-            
+    
         json_data = simplejson.loads(response.content)
         
         self.assertHttpOK(response) #ensure 200 'ok' response
-        self.assertEqual(json_data['project_id'],str(3)) #3rd project created in unit test
-        
+       
         get_project_url = "/api/dev/project/"+json_data['project_id']+"/"
 
         response = self.bob_api_client.get(get_project_url,
@@ -578,7 +586,7 @@ class TestProjectResource(ResourceTestCase):
         #check number of images imported
         self.assertEqual(project_data['image_count'], 1)
         #check image path
-        self.assertEqual(project_data['images'][0], '/api/dev/image/' + str(mock_image_one.id)+"/")
+        self.assertEqual(project_data['images'][0], '/api/dev/image/' + str(self.mock_image_four.id)+"/")
         
     def test_configure(self):
 
