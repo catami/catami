@@ -14,7 +14,8 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
         'click .percentValue': 'percentCoverageSelected',
         'click .broadScaleTools': 'toggleBroadScaleTools',
         'click #confirm_set_unscorable': 'confirmSetImageUnscorable',
-        'click #set_image_unscorable': 'showUnscorableConfirmation'
+        'click #set_image_unscorable': 'showUnscorableConfirmation',
+        "change .qualifiers": "qualifiersChanged"
     },
     initialize: function () {
         GlobalEvent.on("annotation_to_be_set", this.wholeImageAnnotationChosen, this);
@@ -55,6 +56,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
     renderBroadScalePoints: function() {
         var parent = this;
         var broadScaleAnnotationTemplate = "";
+
         // show spinner (TBD)
         broadScalePoints.each(function (whole_image_point) {
             var annotationCode;
@@ -62,6 +64,7 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
             var pointId = whole_image_point.get('id');
             var label = whole_image_point.get('annotation_caab_code');
             var fov_percentage = whole_image_point.get('coverage_percentage');
+            var qualifier = whole_image_point.get('qualifier_short_name');
 
             if (fov_percentage < 0){fov_percentage='--';}
 
@@ -99,7 +102,12 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
                 "model_id": pointId
             };
 
-            broadScaleAnnotationTemplate += _.template($("#BroadScaleItemTemplate").html(), annotationVariables);
+            // now select the appropriate qualifier item
+            var html = _.template($("#BroadScaleItemTemplate").html(), annotationVariables);
+            html = html.replace("<option>" + qualifier + "</option>", "<option selected>" + qualifier + "</option>");
+
+            // append the html
+            broadScaleAnnotationTemplate += html;
         });
 
         var wholeImageVariables = { "broadScaleAnnotations": broadScaleAnnotationTemplate };
@@ -112,11 +120,12 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
 
         parent.$el.html(wholeImageTemplate);
 
+        $('.selectpicker').selectpicker();
+
         return this;
     },
     wholeImageAnnotationChosen: function(caab_code_id) {
         // an annotation has been selected in the annotation chooser
-
         var parent = this;
 
         var usefulRootCaabCode = getUsefulCaabRoot(caab_code_id);
@@ -132,8 +141,12 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
 
         $.each(editableAnnotations, function(index, element) {
 
-            var properties = { 'annotation_caab_code': caab_object.get('caab_code') };
+            // get the id of the selected label
             var pointId = $(element).data('model_id');
+
+            // set the properties
+            var properties = { 'annotation_caab_code': caab_object.get('caab_code') };
+
             var theXHR  = broadScalePoints.get(pointId).save(properties, {
                 patch: true,
                 headers: {"cache-control": "no-cache"},
@@ -149,6 +162,40 @@ var WholeImageAnnotationSelectorView = Backbone.View.extend({
             });
         });
 
+    },
+    qualifiersChanged: function(event) {
+
+        // get the id of the selected qualifier
+        var target = $( event.target );
+        var annotationId = $(target).attr("id").replace("qualifiers-", "");
+
+        //get the qualifier
+        var selector = "#qualifiers-" + annotationId;
+        var qualifier = $(selector + " option:selected").text();
+
+        // set the properties to update
+        var properties = { 'qualifier_short_name': qualifier };
+
+        var theXHR  = broadScalePoints.get(annotationId).save(properties, {
+            patch: true,
+            headers: {"cache-control": "no-cache"},
+            success: function (model, xhr, options) {
+                // no need to do anything
+            },
+            error: function (model, xhr, options) {
+                // send a fail message to the user
+                $.pnotify({
+                    title: 'Error',
+                    text: "Failed to save the qualifier, please try again.",
+                    type: 'error', // success | info | error
+                    hide: true,
+                    icon: false,
+                    history: false,
+                    sticker: false
+                });
+            }
+        });
+        //});
     },
     thumbnailSelected: function(selectedPosition) {
         //deprecated

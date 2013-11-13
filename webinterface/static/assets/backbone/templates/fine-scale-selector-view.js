@@ -5,7 +5,8 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         'click #add_secondary_annotation': 'addSecondaryAnnotation',
         'click #fine_scale_label_secondary': 'editSecondaryLabel',
         'click #remove_secondary_annotation':'removeSecondaryAnnotation',
-        'click #fine_scale_label': 'editPrimaryLabel'
+        'click #fine_scale_label': 'editPrimaryLabel',
+        "change .qualifiers": "qualifiersChanged"
     },
     initialize: function () {
         GlobalEvent.on("point_is_selected", this.fineScalePointSelected, this);
@@ -22,6 +23,7 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         var usefulRootCaabCodeSecondary = '';
         var labelSecondary = '';
         var pointId = '000';
+        //var qualifier = whole_image_point.get('qualifier_short_name');
 
         var fineScaleVariables = {
             "fineScaleClassParent": usefulRootCaabCode,
@@ -32,6 +34,7 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         };
 
         var fineScaleItemTemplate = _.template($("#FineScaleAnnotionTemplate").html(), fineScaleVariables);
+        //fineScaleItemTemplate = fineScaleItemTemplate.replace("<option>" + qualifier + "</option>", "<option selected>" + qualifier + "</option>");
 
         $('.FineScaleEditBox').show();
         $('.BroadScaleEditBox').hide();
@@ -39,12 +42,15 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         parent.$el.html(fineScaleItemTemplate);
 
         $("#fine_scale_class_label").hide();
+        $("#fine_scale_qualifier_label").hide();
         $("#add_secondary_annotation").hide();
 
         if (labelSecondary === ''){
             $("#secondaryLabel").hide();
             $("#fineScaleBadge").hide();
         }
+
+        $('.selectpicker').selectpicker();
 
         return this;
     },
@@ -99,6 +105,21 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
                 
                 $('#fine_scale_label').text(annotationCode.get('code_name')+' ');
 
+                var qualifier = localPoint.get('qualifier_short_name');
+                $('#fine_scale_qualifier_select').val(qualifier);
+
+
+                /*
+                $('#fine_scale_qualifier_select option').filter(function() {
+                    if($(this).text() == qualifier)
+                        console.log("yes");
+
+                    console.log($(this).text() + " _ " + qualifier)
+                    //may want to use $.trim in here
+                    return $(this).text() == qualifier;
+                }).prop("selected","selected");
+                */
+
                 if (selectedPoints.length >1) {
                     $('#fine_scale_label').append('<div class="label label-info"> x'+selectedPoints.length+'</div>');
                 }
@@ -109,6 +130,8 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
 
                     $("#secondaryLabel").show();
                     $("#fine_scale_label_secondary").text(annotationCode.get('code_name')+' ');
+                    $('#fine_scale_qualifier_label_secondary_select').val(localPoint.get('qualifier_short_name_secondary'));
+
                     $("#remove_secondary_annotation").show();
                     $("#fineScaleBadge").show();
                 } else {
@@ -117,12 +140,16 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
                     }
                 }
                 $("#fine_scale_class_label").show();
+                $("#fine_scale_qualifier_label").show();
             }
         } else {
             $.each(selectedPoints, function(index, point) {
                 var localpoint = points.get(point.id);
                 var local_caabcode = localpoint.get('annotation_caab_code');
                 $('#fine_scale_label').text(mixedDisplayText);
+
+                $('#fine_scale_qualifier_select').val("");
+                $('#fine_scale_qualifier_label_secondary_select').val("");
 
                 if(local_caabcode !== ''){
                     annotationCode = annotationCodeList.find(function(model) {
@@ -142,6 +169,9 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
         $('.AnnotationChooserBox').removeClass('disable');
         $('a[href=#overall_root_node]').trigger('activate-node');
 
+        //re render the select picker for updates
+        $('.selectpicker').selectpicker('render');
+
         //alert("contuniing");
 
     },
@@ -160,6 +190,8 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
                 $('#fine_scale_label').append('<div class="label label-info"> x' + selectedPoints.length + '</div>');
             }
             $("#fine_scale_class_label").show();
+            $("#fine_scale_qualifier_label").show();
+
             if (!$("#remove_secondary_annotation").is(':visible')) {
                 $("#add_secondary_annotation").show();
             }
@@ -220,6 +252,49 @@ var FineScaleAnnotationSelectorView = Backbone.View.extend({
             });
         });
 
+    },
+    qualifiersChanged: function(event) {
+
+        // get the id of the selected qualifier
+        var target = $( event.target );
+        var selector = $(target).attr("id");
+
+        //get the qualifier
+        //var selector = "#fine_scale_qualifier_select";
+        var qualifier = $("#" + selector + " option:selected").text();
+
+        //need to specify the properties to patch
+        var properties = { 'qualifier_short_name': qualifier };
+
+        // if it's the secondary annotation then change the property to patch
+        if((selector + "").indexOf("secondary") != -1)
+            properties = { 'qualifier_short_name_secondary': qualifier };
+
+        //get the selected points
+        var selectedPoints = $('.pointSelected');
+
+        // save the initial value for the newly created secondary annotation
+        $.each(selectedPoints, function(index, localPoint) {
+
+            var theXHR = points.get(localPoint.id).save(properties, {
+                patch: true,
+                headers: {"cache-control": "no-cache"},
+                success: function (model, xhr, options) {
+                    // no need to do anything
+                },
+                error: function (model, xhr, options) {
+                    $.pnotify({
+                        title: theXHR.response,
+                        text: 'Failed to save the qualifier to the server.',
+                        type: 'error', // success | info | error
+                        hide: true,
+                        icon: false,
+                        history: false,
+                        sticker: false
+                    });
+                }
+            });
+        });
     },
     editSecondaryLabel: function() {
         this.closeEditPrimaryLabel();

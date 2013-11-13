@@ -310,10 +310,19 @@ ImageAnnotateView = Backbone.View.extend({
 
         if(theClass == 'pointSelected' && theCaabCode == "") {
             $(thePoint).attr('class', 'pointNotAnnotated');
+
+            // there may be other points that are selected so fire off an event
+            GlobalEvent.trigger("point_is_selected", this);
         } else if(theClass == 'pointSelected' && theCaabCode != "") {
             $(thePoint).attr('class', 'pointAnnotated');
+
+            // there may be other points that are selected so fire off an event
+            GlobalEvent.trigger("point_is_selected", this);
         } else if(theClass == 'pointSelected pointLabelledStillSelected') {
             $(thePoint).attr('class', 'pointAnnotated');
+
+            // there may be other points that are selected so fire off an event
+            GlobalEvent.trigger("point_is_selected", this);
         } else {
 
             //firstly we need to check if we need to deselect already labelled points

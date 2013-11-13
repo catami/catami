@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/elastislide/custom.css"/>
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/catami-api/css/bootstrapSwitch.css"/>
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}assets/css/annotation_accordion.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="{{ STATIC_URL }}assets/silviomoreto-bootstrap-select/bootstrap-select.css">
 
     <style type="text/css">
     html, body {
@@ -213,7 +215,6 @@
     .fineScaleLabel {
         font-weight: 500;
         font-size: large;
-        display: block;
     }
 
     .wholeImageList {
@@ -706,18 +707,22 @@
         </div>
 
         <!-- Modal -->
-        <div id="similar-points-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        <div id="similar-points-modal" class="modal hide fade" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel"
              aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Intelligent Points not enabled.</h3>
             </div>
             <div class="modal-body">
-                To enable Intelligent Point selection you will need to turn it on in your projects configuration. Please note that turning this on may slow down image loading. We also recommend you use google Chrome when Intelligent Points is enabled.
+                To enable Intelligent Point selection you will need to turn it on in your projects configuration. Please
+                note that turning this on may slow down image loading. We also recommend you use google Chrome when
+                Intelligent Points is enabled.
             </div>
             <div class="modal-footer">
                 <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                <button id="configure_project_button" data-dismiss="modal" class="btn btn-primary">Configure Project</button>
+                <button id="configure_project_button" data-dismiss="modal" class="btn btn-primary">Configure Project
+                </button>
             </div>
         </div>
 
@@ -995,17 +1000,22 @@
 
     <script type="text/template" id="BroadScaleItemTemplate">
         <li class="wholeImageItem" data-model_id="<%=model_id%>">
+
+
             <a id="delete_selected_annotation" class="pull-right"><i class="icon-trash broadScaleRemoveButton"
                                                                      data-model_id="<%=model_id%>"></i></a>
             <span class="wholeImageClassLabel label label-info pull-right"><%=broadScaleClassParent%></span>
             <span class="broadScalePercentage label label-info pull-right"><%=broadScalePercentage%></span>
-            <span class="broadScaleTools pull-right" data-model_id="<%=model_id%>"><i class="icon-cog"></i></span>
+            <span class="broadScaleTools pull-right" data-model_id="<%=model_id%>"><i
+                    class="icon-chevron-down"></i></span>
             <span class="wholeImageLabel" class="pull-left" data-model_id="<%=model_id%>"><i
                     class="icon-edit editBroadScaleIndictor pull-left"></i><%=broadScaleClass%></span>
 
+
             <div class="broadScaleControlContainer" data-model_id="<%=model_id%>">
-                <div class="percentageSelector pull-right">
-                    <p class="percentageSelectorLabel pull-right">FOV Coverage</p>
+
+                <div class="percentageSelector ">
+                    <p class="percentageSelectorLabel ">FOV Coverage: </p>
                     <span class="percentValue percent_none" data-percentage='-1' data-model_id="<%=model_id%>">--</span>
                     <span class='percentValue percent_0' data-percentage='0' data-model_id="<%=model_id%>">0</span>
                     <span class="percentValue percent_10" data-percentage='10' data-model_id="<%=model_id%>">10</span>
@@ -1020,6 +1030,39 @@
                     <span class="percentValue percent_100" data-percentage='100'
                           data-model_id="<%=model_id%>">100</span>
                 </div>
+
+                <div>
+                    <p class="percentageSelectorLabel">Qualifier: </p>
+                    <select id="qualifiers-<%=model_id%>" data-placeholder="Qualifiers"
+                            class="selectpicker qualifiers">
+                        <option value=""></option>
+                        <optgroup label="Natural">
+                            <option>Bleached</option>
+                            <option>Dead</option>
+                            <option>Storm damage</option>
+                            <option>Urchin barren</option>
+                            <option>Iceberg scour</option>
+                            <option>Veneer</option>
+                            <option>Epiphyte</option>
+                            <option>Rhodolith</option>
+                            <option>Recruits</option>
+                        </optgroup>
+                        <optgroup label="Anthropogenic">
+                            <option>Rubbish ­ Concentrated (e.g. dumpsite)</option>
+                            <option>Rubbish ­ Occasional (e.g. car tyre)</option>
+                            <option>Rubbish ­ Shipwreck</option>
+                            <option>Fishery related ­ Gear tracks / marks</option>
+                            <option>Fishery related ­ Damage to solid epifauna</option>
+                            <option>Fishery related ­ Discarded / lost gear</option>
+                        </optgroup>
+                        <optgroup label="Level">
+                            <option>Primary</option>
+                            <option>Secondary</option>
+                            <option>Tertiary</option>
+                        </optgroup>
+                    </select>
+                </div>
+
             </div>
         </li>
     </script>
@@ -1027,19 +1070,88 @@
     <script type="text/template" id="FineScaleAnnotionTemplate">
         <ul class="fineScaleList">
             <li id="primarylabel" class="fineScaleItem">
-                <span id="add_secondary_annotation" class="label addSecondaryButton pull-right"><i
-                        class="icon-plus-sign"></i> Alternate</span>
+
+                <span id="fine_scale_label" class="fineScaleLabel" data-model_id="<%=model_id%>"><%=fineScaleClass%></span>
+
+                <span id="add_secondary_annotation" class="label addSecondaryButton pull-right">
+                    <i class="icon-plus-sign"></i> Alternate </span>
+
                 <span id="fine_scale_class_label" class="wholeImageClassLabel label label-info pull-right"><%=fineScaleClassParent%></span>
-                <span id="fine_scale_label" class="fineScaleLabel" class="pull-left" data-model_id="<%=model_id%>"><i
-                        class="pull-left"></i><%=fineScaleClass%></span>
+
+                <span id="fine_scale_qualifier_label" style="pull-right">
+                    <select id="fine_scale_qualifier_select" data-placeholder="Qualifiers" data-style="btn-mini pull-right"
+                            class="selectpicker qualifiers pull-right">
+                        <option value=""></option>
+                        <optgroup label="Natural">
+                            <option value="Bleached">Bleached</option>
+                            <option value="Dead">Dead</option>
+                            <option value="Storm damage">Storm damage</option>
+                            <option value="Urchin barren">Urchin barren</option>
+                            <option value="Iceberg scour">Iceberg scour</option>
+                            <option value="Veneer">Veneer</option>
+                            <option value="Epiphyte">Epiphyte</option>
+                            <option value="Rhodolith">Rhodolith</option>
+                            <option value="Recruits">Recruits</option>
+                        </optgroup>
+                        <optgroup label="Anthropogenic">
+                            <option value="Rubbish ­ Concentrated (e.g. dumpsite)">Rubbish ­ Concentrated (e.g. dumpsite)</option>
+                            <option value="Rubbish ­ Occasional (e.g. car tyre)">Rubbish ­ Occasional (e.g. car tyre)</option>
+                            <option value="Rubbish ­ Shipwreck">Rubbish ­ Shipwreck</option>
+                            <option value="Fishery related ­ Gear tracks / marks">Fishery related ­ Gear tracks / marks</option>
+                            <option value="Fishery related ­ Damage to solid epifauna">Fishery related ­ Damage to solid epifauna</option>
+                            <option value="Fishery related ­ Discarded / lost gear">Fishery related ­ Discarded / lost gear</option>
+                        </optgroup>
+                        <optgroup label="Level">
+                            <option value="Primary">Primary</option>
+                            <option value="Secondary">Secondary</option>
+                            <option value="Tertiary">Tertiary</option>
+                        </optgroup>
+                    </select>
+                </span>
+
             </li>
             <li class="fineScaleSeperator"><span id="fineScaleBadge" class="fineScaleBadge">or</span></li>
             <li id="secondaryLabel" class="fineScaleItem">
-                <span id="remove_secondary_annotation" class="label addSecondaryButton pull-right"><i
-                        class="icon-minus-sign"></i> Alternate</span>
-                <span class="wholeImageClassLabel label label-info pull-right"><%=fineScaleClassSecondaryParent%></span>
+
                 <span id="fine_scale_label_secondary" class="fineScaleLabel" class="pull-left"
                       data-model_id="<%=model_id%>"><i class="pull-left"></i><%=fineScaleClassSecondary%></span>
+
+                <span id="remove_secondary_annotation" class="label addSecondaryButton pull-right"><i
+                        class="icon-minus-sign"></i> Alternate</span>
+
+                <span class="wholeImageClassLabel label label-info pull-right"><%=fineScaleClassSecondaryParent%></span>
+
+                <span id="fine_scale_qualifier_label_secondary" class="pull-right">
+                    <select id="fine_scale_qualifier_label_secondary_select" data-placeholder="Qualifiers"
+                            data-style="btn-mini pull-right"
+                            class="selectpicker qualifiers pull-right">
+                        <option value=""></option>
+                        <optgroup label="Natural">
+                            <option value="Bleached">Bleached</option>
+                            <option value="Dead">Dead</option>
+                            <option value="Storm damage">Storm damage</option>
+                            <option value="Urchin barren">Urchin barren</option>
+                            <option value="Iceberg scour">Iceberg scour</option>
+                            <option value="Veneer">Veneer</option>
+                            <option value="Epiphyte">Epiphyte</option>
+                            <option value="Rhodolith">Rhodolith</option>
+                            <option value="Recruits">Recruits</option>
+                        </optgroup>
+                        <optgroup label="Anthropogenic">
+                            <option value="Rubbish ­ Concentrated (e.g. dumpsite)">Rubbish ­ Concentrated (e.g. dumpsite)</option>
+                            <option value="Rubbish ­ Occasional (e.g. car tyre)">Rubbish ­ Occasional (e.g. car tyre)</option>
+                            <option value="Rubbish ­ Shipwreck">Rubbish ­ Shipwreck</option>
+                            <option value="Fishery related ­ Gear tracks / marks">Fishery related ­ Gear tracks / marks</option>
+                            <option value="Fishery related ­ Damage to solid epifauna">Fishery related ­ Damage to solid epifauna</option>
+                            <option value="Fishery related ­ Discarded / lost gear">Fishery related ­ Discarded / lost gear</option>
+                        </optgroup>
+                        <optgroup label="Level">
+                            <option value="Primary">Primary</option>
+                            <option value="Secondary">Secondary</option>
+                            <option value="Tertiary">Tertiary</option>
+                        </optgroup>
+                    </select>
+                </span>
         </ul>
     </script>
 
@@ -1105,6 +1217,8 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.autoResizeImages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/dojo/dojo/dojo.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/js/image-segmentation.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/silviomoreto-bootstrap-select/bootstrap-select.js"
+            type="text/javascript"></script>
 
     <script type="text/javascript">
 
@@ -1144,6 +1258,8 @@
         });
 
     </script>
+
+
 
 
 {% endblock %}

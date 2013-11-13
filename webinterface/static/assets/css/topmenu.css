@@ -116,3 +116,14 @@ p.login-extras {
 .header-padding{
     padding-top: 60px;
 }
+
+
+/**
+    A box with a coloured sidebar
+*/
+.callout {
+    background-color: #F4F8FA;
+    border-color: #BCE8F1;
+    border-left: 3px solid #BCE8F1;
+    padding: 20px;
+}
