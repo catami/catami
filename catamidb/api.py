@@ -21,11 +21,13 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import Unauthorized, ImmediateHttpResponse
 from tastypie import http
 from tastypie.resources import ModelResource, Resource
+from tastypie.bundle import Bundle
 from .models import *
 from catamidb import authorization
 
 import os, shutil
 import PIL
+import json
 
 import logging
 
@@ -573,29 +575,78 @@ class ImageResource(ModelResource):
         """
 
         json_data = simplejson.loads(request.body)
-
+        deployments = {}
         #pull the query parameters out
+        for i in range(0, len(json_data['objects']),1):           
+            deployment = json_data['objects'][i]['deployment']             
+            deployment_id = deployment.split('/')[len(deployment.split('/'))-2]
+            #dp = None
+            #if deployment_id in deployments.keys():
+            #    dp = deployments[deployment_id]
+            #else:
+            #    dp = Deployment.objects.filter(id=int(deployment_id))
 
-        date_time = json_data['date_time']
-        deployment = json_data['deployment'] 
-        depth = json_data['depth']
-        depth_uncertainty = json_data['depth_uncertainty']
-        image_name = json_data['image_name']
-        position = json_data['position']
-        angle = json_data['angle']
-        name = json_data['name']
-        altitude = json_data['altitude']
-        altitude_unit = json_data['altitude_unit']
-        pitch = json_data['pitch']
-        pitch_unit = json_data['pitch_unit']
-        roll = json_data['roll']
-        roll_unit = json_data['roll_unit']
-        salinity = json_data['salinity']
-        salinity_unit = json_data['salinity_unit']
-        temperature = json_data['temperature']
-        temperature_unit = json_data['temperature_unit']
-        yaw = json_data['yaw']
-        yaw_unit = json_data['yaw_unit']
+
+            #create the Image
+            image_bundle = Bundle()
+            image_bundle.request = request
+
+            image_name = json_data['objects'][i]['image_name']
+            date_time = json_data['objects'][i]['date_time']
+            position = json_data['objects'][i]['position']
+            depth = json_data['objects'][i]['depth']
+            depth_uncertainty = json_data['objects'][i]['depth_uncertainty']
+            dpc = None
+            if (depth_uncertainty is not None and depth_uncertainty != 'null'):    
+                dpc = float(depth_uncertainty)           
+            image_bundle.data = dict(deployment=deployment, image_name=image_name, 
+                                     date_time=date_time, position=position, depth=depth, 
+                                     depth_uncertainty=dpc)
+            new_image = self.obj_create(image_bundle)   
+                  
+            #create Measurement
+            temperature = json_data['objects'][i]['temperature']
+            temperature_unit = json_data['objects'][i]['temperature_unit']
+            salinity = json_data['objects'][i]['salinity']
+            salinity_unit = json_data['objects'][i]['salinity_unit']
+            pitch = json_data['objects'][i]['pitch']
+            pitch_unit = json_data['objects'][i]['pitch_unit']
+            roll = json_data['objects'][i]['roll']
+            roll_unit = json_data['objects'][i]['roll_unit']
+            yaw = json_data['objects'][i]['yaw']
+            yaw_unit = json_data['objects'][i]['yaw_unit']
+            altitude = json_data['objects'][i]['altitude']
+            altitude_unit = json_data['objects'][i]['altitude_unit']
+
+            measurement_bundle = Bundle()
+            measurement_bundle.request = request
+            measurement_bundle.data = dict(image='/api/dev/image/'+str(new_image.obj.id)+'/',
+                                           temperature=temperature,
+                                           temperature_unit=temperature_unit,
+                                           salinity=salinity,
+                                           salinity_unit=salinity_unit,
+                                           pitch=pitch,
+                                           pitch_unit=pitch_unit,
+                                           roll=roll,
+                                           roll_unit=roll_unit,
+                                           yaw=yaw,
+                                           yaw_unit=yaw_unit,
+                                           altitude=altitude,
+                                          altitude_unit=altitude_unit) 
+
+            new_measurement = MeasurementsResource().obj_create(measurement_bundle)   
+            
+            #create camera
+            angle = json_data['objects'][i]['angle']
+            name = json_data['objects'][i]['name']
+
+            camera_bundle = Bundle()
+            camera_bundle.request = request
+            camera_bundle.data = dict(image='/api/dev/image/'+str(new_image.obj.id)+'/',
+                                      name=name,
+                                      angle=int(angle))
+
+            new_camera = CameraResource().obj_create(camera_bundle) 
 
         response = HttpResponse(content_type='application/json')        
         return response
