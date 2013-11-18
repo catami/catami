@@ -4,10 +4,12 @@ from dateutil.tz import tzutc
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 from guardian.shortcuts import get_perms
+import math
 from catamidb.models import Image, Deployment
 from random import sample
 from django.db.utils import IntegrityError
 from django.core.validators import MinValueValidator, MaxValueValidator
+import numpy as np
 
 import random
 import logging
@@ -87,6 +89,7 @@ class AnnotationSet(models.Model):
         (0, 'Random Point'),
         (1, 'Stratified Point'),
         (2, 'Fixed 5 Point'),
+        (3, 'Uniform Grid'),
     )
 
     ANNOTATATION_SET_TYPE_CHOICES = (
@@ -205,6 +208,85 @@ class PointAnnotationManager(models.Manager):
         #TODO: implement
         return None
 
+    def apply_uniform_grid_points(self, annotation_set, sample_size):
+        """ Apply a uniform grid of points to an image. """
+
+        images = annotation_set.images.all()
+        points_to_bulk_save = []
+
+        # take the square root of the sample size and round
+        square = math.sqrt(int(sample_size))
+        rows = columns = round(square)
+
+        # +1 to the rows and cols
+        rows += 1
+        columns += 1
+
+        # create the grid
+        row_points = np.linspace(0.008, 0.992, num=rows, endpoint=False)
+        column_points = np.linspace(0.008, 0.992, num=columns, endpoint=False)
+
+        # pop the first item from the arrays - we do this so we get an even spacing excluding edges
+        row_points = np.delete(row_points, 0)
+        column_points = np.delete(column_points, 0)
+
+        # apply the points to the images
+        for image in images:
+            for row in row_points:
+                for column in column_points:
+
+                    point_annotation = PointAnnotation()
+
+                    point_annotation.annotation_set = annotation_set
+                    point_annotation.image = image
+                    point_annotation.owner = annotation_set.owner
+                    point_annotation.x = row
+                    point_annotation.y = column
+
+                    point_annotation.annotation_caab_code = ""
+                    point_annotation.qualifier_short_name = ""
+
+                    point_annotation.annotation_caab_code_secondary = ""
+                    point_annotation.qualifier_short_name_secondary = ""
+
+                    #point_annotation.save()
+                    points_to_bulk_save.append(point_annotation)
+
+        # do the bulk save - for performance
+        PointAnnotation.objects.bulk_create(points_to_bulk_save)
+
+    def apply_fixed_five_points(self, annotation_set):
+        """ 5 points based on AIMS standard """
+
+        images = annotation_set.images.all()
+        points_to_bulk_save = []
+
+        # create the grid
+        row_points = [0.25, 0.25, 0.5, 0.75, 0.75]
+        column_points = [0.25, 0.75, 0.5, 0.75, 0.25]
+
+        # apply the points to the images
+        for image in images:
+            for i in range(int(5)):
+                    point_annotation = PointAnnotation()
+
+                    point_annotation.annotation_set = annotation_set
+                    point_annotation.image = image
+                    point_annotation.owner = annotation_set.owner
+                    point_annotation.x = row_points[i]
+                    point_annotation.y = column_points[i]
+
+                    point_annotation.annotation_caab_code = ""
+                    point_annotation.qualifier_short_name = ""
+
+                    point_annotation.annotation_caab_code_secondary = ""
+                    point_annotation.qualifier_short_name_secondary = ""
+
+                    #point_annotation.save()
+                    points_to_bulk_save.append(point_annotation)
+
+        # do the bulk save - for performance
+        PointAnnotation.objects.bulk_create(points_to_bulk_save)
 
 class WholeImageAnnotationManager(models.Manager):
     """ Handles logic functions related to whole image annotations """

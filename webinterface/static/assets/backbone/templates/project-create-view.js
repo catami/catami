@@ -106,7 +106,8 @@ ProjectCreateView = Backbone.View.extend({
         'click #radio_whole': 'wholeImageAnnotationClicked',
         "click #create_button": "doCreate",
         "change #point_image_sampling_methodology": "pointImageSamplingSelected",
-        "change #whole_image_sampling_methodology": "wholeImageSamplingSelected"
+        "change #whole_image_sampling_methodology": "wholeImageSamplingSelected",
+        "change #point_sampling_methodology": 'pointSamplingSelected'
     },
     pointImageSamplingSelected: function(event) {
         var methodology = $("#point_image_sampling_methodology").val();
@@ -126,6 +127,15 @@ ProjectCreateView = Backbone.View.extend({
             this.$('#whole_number_of_images').hide();
         } else {
             this.$('#whole_number_of_images').fadeIn();
+        }
+    },
+    pointSamplingSelected: function(event) {
+        var methodology = $("#point_sampling_methodology").val();
+
+        if(methodology == "2") { // 5 point system already has 5 points, so no need to show
+            this.$('#point_sample_size_div').hide();
+        } else {
+            this.$('#point_sample_size_div').fadeIn();
         }
     },
     pointAnnotationClicked: function (event) {

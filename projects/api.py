@@ -1234,11 +1234,17 @@ class AnnotationSetResource(ModelResource):
         #bundle.obj.images = bundle.data['image_subset']      
 
         point_sampling_methodology = bundle.data['point_sampling_methodology']
+
+
         if point_sampling_methodology == '0':
             if 'import_data' in bundle.data:
                 PointAnnotationManager().import_sampled_points(bundle.obj, bundle.data['import_data'])
             else:    
                 PointAnnotationManager().apply_random_sampled_points(bundle.obj, bundle.data['point_sample_size'])
+        elif point_sampling_methodology == '2':
+            PointAnnotationManager().apply_fixed_five_points(bundle.obj)
+        elif point_sampling_methodology == '3':
+            PointAnnotationManager().apply_uniform_grid_points(bundle.obj, bundle.data['point_sample_size'])
         else:
             raise Exception("Point sampling method not implemented.")
 
