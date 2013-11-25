@@ -1348,6 +1348,33 @@ class PointAnnotationResource(ModelResource):
             'annotation_set': 'exact',
         }       
 
+    def prepend_urls(self):
+        return [            
+            url(r"^(?P<resource_name>%s)/(?P<annotation_set_id>\w[\w/-]*)/count_annotations%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('count_annotations'), name="count_annotations"),
+        ]
+
+    def count_annotations(self, request, **kwargs):
+       # need to create a bundle for tastypie
+        bundle = self.build_bundle(request=request)
+
+        # get annotation set based on id
+        set_id = kwargs['annotation_set_id']                     
+        annotations = PointAnnotationResource().obj_get_list(bundle, annotation_set=set_id)
+
+        status = {}
+        for annot in annotations:
+            id = annot.image.id 
+            if not id in status: #if not in status, initialise
+                status[id] = 0
+            if annot.annotation_caab_code and annot.annotation_caab_code is not u'':
+                code = AnnotationCodes.objects.filter(caab_code=annot.annotation_caab_code)
+                if code and code is not None and len(code) > 0:                    
+                    status[id] = status[id] + 1
+
+        return HttpResponse(content= json.dumps(status,sort_keys=True),
+                            status=200,
+                            content_type='application/json') 
+
     def obj_create(self, bundle, **kwargs):
         """
         We are overriding this function so we can get access to the newly
@@ -1405,6 +1432,32 @@ class WholeImageAnnotationResource(ModelResource):
             'qualifier_short_name': 'exact',
             'annotation_set': 'exact',
         }
+    def prepend_urls(self):
+        return [            
+            url(r"^(?P<resource_name>%s)/(?P<annotation_set_id>\w[\w/-]*)/count_annotations%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('count_annotations'), name="count_annotations"),
+        ]
+
+    def count_annotations(self, request, **kwargs):
+       # need to create a bundle for tastypie
+        bundle = self.build_bundle(request=request)
+
+        # get annotation set based on id
+        set_id = kwargs['annotation_set_id']                     
+        annotations = WholeImageAnnotationResource().obj_get_list(bundle, annotation_set=set_id)
+
+        status = {}
+        for annot in annotations:
+            id = annot.image.id 
+            if not id in status: #if not in status, initialise
+                status[id] = 0
+            if annot.annotation_caab_code and annot.annotation_caab_code is not u'':
+                code = AnnotationCodes.objects.filter(caab_code=annot.annotation_caab_code)
+                if code and code is not None and len(code) > 0:                    
+                    status[id] = status[id] + 1
+
+        return HttpResponse(content= json.dumps(status,sort_keys=True),
+                            status=200,
+                            content_type='application/json') 
 
     def obj_create(self, bundle, **kwargs):
         """

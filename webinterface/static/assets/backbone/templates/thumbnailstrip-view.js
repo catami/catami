@@ -6,7 +6,7 @@ ThumbnailStripView = Backbone.View.extend({
         GlobalEvent.on("thumbnail_selected_by_id", this.thumbnailSelectedById, this);
         GlobalEvent.on("update_annotation", this.updateAnnotation, this);
         GlobalEvent.on("thumbnails_loaded", this.render, this);
-        GlobalEvent.on("annotation_set_has_changed", this.buildAnnotationStatus, this);
+        GlobalEvent.on("annotation_set_has_changed", this.updateAnnotation, this);
     },
     render: function () {
         //get all the images to be rendered
@@ -25,101 +25,37 @@ ThumbnailStripView = Backbone.View.extend({
         // Load the compiled HTML into the Backbone "el"
         this.$el.html(projectTemplate);
 
-        this.buildAnnotationStatus();
+        this.updateAnnotation();
     },
-    buildAnnotationStatus: function () {
-
+    updateAnnotation: function () {
         var parent = this;
-
-        var localMap = { "images": [] }; //reset map
-
         var annotationSetTypes = ["fine scale", "broad scale"];
 
         // enforcing only one annotation set per project for the time being, so
         // can assume the first one
         var annotationSet = annotationSets.at(0);
         var annotationSetType = annotationSetTypes[annotationSet.get('annotation_set_type')];
-
-        var imageIds = "";
-        thumbnailImages.each(function (image) {
-            imageIds += image.get('id') + ',';
-        });
-
-        imageIds = imageIds.substring(0, imageIds.length - 1); //remove trailing comma
-        var imageAnnotations;
+        var annotationSetId = annotationSet.get('id');
+        var url = "";
         if (annotationSetType === "broad scale")
-            imageAnnotations = new WholeImageAnnotations({ "url": "/api/dev/whole_image_annotation/" });
-        else imageAnnotations = new PointAnnotations({ "url": "/api/dev/point_annotation/" });
-        imageAnnotations.fetch({
+            url = "/api/dev/whole_image_annotation/" + annotationSetId + "/count_annotations/";
+        else
+            url = "/api/dev/point_annotation/" + annotationSetId + "/count_annotations/";
+        $.ajax({
+            url: url,
+            dataType: "json",
             //async: false,
-            data: {
-                annotation_set: annotationSet.get('id'),
-                image__in: imageIds,
-                limit: 200
-            },
-            success: function (model, response, options) {
-                //loop through the points and get caab       
-                imageAnnotations.each(function (annotation) {
-                    var imageId = catami_getIdFromUrl(annotation.get('image'));
-                    var code = annotation.get('annotation_caab_code');
-                    var name = annotation.get('annotation_caab_name');
-                    var annotId = annotation.get('id');
-                    if (typeof code != 'undefined') {
-                        var imageFound = false;
-                        $.each(localMap.images, function (i, im) {
-                            if (im.id == imageId) { //image found, add annotation to image                                    
-                                var annot_new = {
-                                    "id": annotId,
-                                    "code": code,
-                                    "name": name
-                                }
-                                im.annotations.push(annot_new);
-                                imageFound = true;
-                                return;
-                            }
-                        });
-                        if (!imageFound) { //create image with annotation if image not found                           
-                            var image_new = {
-                                "id": imageId,
-                                "annotations": [
-                                    {
-                                        "id": annotId,
-                                        "code": code,
-                                        "name": name
-                                    }
-                                ]
-                            }
-                            localMap.images.push(image_new);
-                        }
-                    }
-                });
-
-                map = localMap;
+            success: function (response, textStatus, jqXHR) {
+                map = response;
                 parent.renderAnnotationStatus();
             }
         });
 
-    },
-    updateAnnotation: function (imageId, annotId, code, name) {
-        updateAnnotation(imageId, annotId, code, name);
         this.renderAnnotationStatus();
     },
     renderAnnotationStatus: function () {
-        // enforcing only one annotation set per project for the time being, so
-        // can assume the first one
-        var annotationSet = annotationSets.at(0);
-        var images = annotationSet.get("images");
-        for (var i = 0; i < images.length; i++) {
-            var im = images[i].split("/"); //value of format  "/api/dev/image/12/", need to split to get image id
-            var imid = im[im.length - 2];
-            var count = 0;
-            $.each(map.images, function (i, image) {
-                if (image.id == imid) { //find respective image, and check if annotation is done
-                    count = countAnnotated(image);
-                    return;
-                }
-            });
-            $('#image_' + imid).text(count);
+        for (imid in map) {
+            $('#image_' + imid).text(map[imid]);
         }
     },
     thumbnailSelectedByEvent: function (event) {
@@ -142,32 +78,6 @@ ThumbnailStripView = Backbone.View.extend({
         'click .wrapper': 'thumbnailSelectedByEvent'
     }
 });
-
-
-// helper function to count the number of annotations done on the image (json object)
-function countAnnotated(image) {
-    var count = 0;
-    $.each(image.annotations, function (i, annotation) {
-        //alert(image.id + ' : ' + annotation.code + ' != "" : ' + (annotation.code != ""));
-        if (annotation.code != "") count++;
-    });
-    return count
-}
-
-function updateAnnotation(imageId, annotId, code, name) {
-    $.each(map.images, function (i, image) {
-        if (image.id == imageId) {
-            $.each(image.annotations, function (i, annot) {
-                if (annot.id == annotId) {
-                    annot.code = code;
-                    annot.name = name;
-                    return;
-                }
-            });
-            return;
-        }
-    });
-}
 
 function generateAllThumbnailTemplates(thumbnailImages) {
     var template = ""
