@@ -1354,8 +1354,6 @@ class PointAnnotationResource(ModelResource):
         ]
 
     def count_annotations(self, request, **kwargs):
-        # need to create a bundle for tastypie
-        bundle = self.build_bundle(request=request)
 
         # get annotation set based on id
         set_id = kwargs['annotation_set_id']                     
@@ -1439,8 +1437,6 @@ class WholeImageAnnotationResource(ModelResource):
         ]
 
     def count_annotations(self, request, **kwargs):
-       # need to create a bundle for tastypie
-        bundle = self.build_bundle(request=request)
 
         # get annotation set based on id
         set_id = kwargs['annotation_set_id']                     

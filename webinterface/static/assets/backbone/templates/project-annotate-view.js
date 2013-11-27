@@ -215,8 +215,11 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
     el: "#whole-image-annotation-selector",
     model: new WholeImageAnnotation(),
     events: {
+        'click #PanButton': "togglePan"
     },
-    initialize: function () {},
+    initialize: function () {
+        this.panOn = false;
+    },
     render: function () {
         var wholeImageTemplate = "";
 
@@ -225,12 +228,28 @@ WholeImageAnnotationSelectorView = Backbone.View.extend({
         // // Load the compiled HTML into the Backbone "el"
         this.$el.html(wholeImageTemplate);
         return this.el;
+    },
+    togglePan: function() {
+        alert('clicked');
+        if(this.panOn) {
+            alert('pan on');
+            this.panOn = false;
+        } else {
+            alert('pan off');
+            this.panOn = true;
+        }
+
     }
 });
 
 //shown only for points annotations
 PointControlBarView = Backbone.View.extend({
-    initialize: function () {},
+    initialize: function () {
+        this.panOn = false;
+    },
+    events: {
+        'click #PanButton': "togglePan"
+    },
     render: function () {
         var imageZoomControlTemplate = _.template($("#PointControlBarTemplate").html(), {});
 
@@ -244,6 +263,9 @@ PointControlBarView = Backbone.View.extend({
             $reset: $(".reset")
         });
 
+        // turn panning off by default
+        $("#ImageContainer").panzoom('option', 'disablePan', true);
+
         $('#hide_points_button').mousedown(function(){GlobalEvent.trigger("hide_points");});
         $('#hide_points_button').mouseup(function() {GlobalEvent.trigger("show_points");});
 
@@ -251,12 +273,32 @@ PointControlBarView = Backbone.View.extend({
         $('#deselect_points_button').click(function(){GlobalEvent.trigger("deselect_points");});
 
         return this.el;
+    },
+    togglePan: function() {
+
+        if(this.panOn) {
+            // if pan is on the disable it
+            $("#ImageContainer").panzoom('option', 'disablePan', true);
+            $("#PanButton").removeClass('active');
+            this.panOn = false;
+        } else {
+            // if pan is not on then enable it
+            $("#ImageContainer").panzoom('option', 'disablePan', false);
+            $("#PanButton").addClass('active');
+            this.panOn = true;
+        }
+
     }
 });
 
 //shown only for whole image annotations
 WholeImageControlBarView = Backbone.View.extend({
-    initialize: function () {},
+    initialize: function () {
+        this.panOn = false;
+    },
+    events: {
+        'click #PanButton': "togglePan"
+    },
     render: function () {
         var imageZoomControlTemplate = _.template($("#WholeImageControlBarTemplate").html(), {});
 
@@ -270,7 +312,25 @@ WholeImageControlBarView = Backbone.View.extend({
             $reset: $(".reset")
         });
 
+        // turn panning off by default
+        $("#ImageContainer").panzoom('option', 'disablePan', true);
+
         return this.el;
+    },
+    togglePan: function() {
+
+        if(this.panOn) {
+            // if pan is on the disable it
+            $("#ImageContainer").panzoom('option', 'disablePan', true);
+            $("#PanButton").removeClass('active');
+            this.panOn = false;
+        } else {
+            // if pan is not on then enable it
+            $("#ImageContainer").panzoom('option', 'disablePan', false);
+            $("#PanButton").addClass('active');
+            this.panOn = true;
+        }
+
     }
 });
 

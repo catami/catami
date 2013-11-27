@@ -80,6 +80,13 @@
         margin: 0px;
     }
 
+    .image {
+        overflow: visible;
+    }
+
+    .canvas-layers { position:absolute; top:0; left:0 }
+
+    /*
     #Image {
         overflow: visible;
         /*display: block;*/
@@ -87,7 +94,7 @@
                     margin: 0px;
                     position: relative;
         */
-    }
+    /*}*/
 
     .pointAnnotated {
         -moz-box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.8), 0px 0px 3px rgba(0, 0, 0, 0.8);
@@ -568,7 +575,7 @@
         border-radius: 0;
     }
 
-    .toolbar button:active {
+    .toolbar .active {
         background-color: #008aaa;
     }
 
@@ -858,6 +865,7 @@
 
     <script type="text/template" id="ImageZoomControlTemplate">
         <section class="buttons well">
+            <button class="btn btn-small move">Pan</button>
             <div class="btn-group">
                 <button class="btn zoom-in">Zoom In</button>
                 <button class="btn zoom-out">Zoom Out</button>
@@ -897,6 +905,12 @@
         <div class="row toolbar">
             <div class="button-container-div">
                 <ul>
+                    <a class="icon-button toolbar-entry-wide">
+                        <li id="PanButton" class="">
+                            <i class="icon-move icon-2x icon-style"></i>
+                            <span class="link_title icon-style-text">Pan</span>
+                        </li>
+                    </a>
                     <li class="toolbar-entry-wide">
                         <div>
                             <a class="zoom-out icon-button toolbar-entry-wide"><i
@@ -934,6 +948,12 @@
         <div class="row toolbar">
             <div class="button-container-div">
                 <ul>
+                    <a class="icon-button toolbar-entry-wide">
+                        <li id="PanButton" class="">
+                            <i class="icon-move icon-2x icon-style"></i>
+                            <span class="link_title icon-style-text">Pan</span>
+                        </li>
+                    </a>
                     <li class="toolbar-entry-wide">
                         <div>
                             <a href="#" class="zoom-out icon-button toolbar-entry-wide"><i
@@ -1184,7 +1204,9 @@
     </script>
 
     <script type="text/template" id="ImageTemplate">
-        <img id="Image" src='<%= web_location %>' data-src='<%= web_location %>' alt='image'>
+        <canvas id="CanvasImage" class="canvas-layers"/>
+        <canvas id="CanvasImage2" class="canvas-layers"/>
+        <img id="Image" class="canvas-layers" src='<%= web_location %>' data-src='<%= web_location %>' alt='image' style="visibility: hidden">
     </script>
 
     <script type="text/template" id="StatusTemplate">
@@ -1211,6 +1233,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.imagesloaded.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.accordion.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.panzoom.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jcanvas.min.js"></script>
     <script type="text/javascript"
             src="{{ STATIC_URL }}assets/jquery.elevatezoom/jquery.elevateZoom-2.5.5.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}assets/bootstrap/js/bootstrap-button.js"></script>
@@ -1253,7 +1276,9 @@
             var divHeight = $("#ImageAppContainer").height();
 
             var max = (divWidth > divHeight) ? divHeight : divWidth;
-            $('#Image').autoResizeImages({maxSize: max});
+            //$('#Image').autoResizeImages({maxSize: max});
+            //$('#CanvasImage').autoResizeImages({maxSize: max});
+            //$('#LassoLayer').autoResizeImages({maxSize: max});
 
         });
 
