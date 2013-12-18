@@ -186,6 +186,12 @@ def campaigncreate(request):
 
     return render_to_response('webinterface/campaigncreate.html', context, rcon)
 
+@login_required
+def data_upload(request):
+    context = {}
+    rcon = RequestContext(request)
+
+    return render_to_response('webinterface/data-upload.html', context, rcon)
 
 def campaigns(request):
     """@brief Campaign list html for entire database

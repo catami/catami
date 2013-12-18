@@ -34,6 +34,8 @@ urlpatterns = patterns(
     #url(r'^staging/', include('staging.urls')),
     # campaign creating
     url(r'^staging/campaign/create$', 'campaigncreate', name='staging_campaign_create'),
+    url(r'^staging/upload/$', 'data_upload'),
+
 
     # Projects
     #url(r'^projects$', 'projects'),
