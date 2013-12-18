@@ -1,0 +1,259 @@
+{% extends "base-topmenu.html" %}
+{% block title %}CATAMI Data Upload{% endblock %}
+
+{% block content %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<link href="{{ STATIC_URL }}assets/fuelux/fuelux.css" rel="stylesheet" type="text/css">
+
+<style type="text/css">
+	.extra-box{
+		margin-top: 5px;
+		background-color: #f9f9f9;
+		border: 1px solid #d4d4d4;
+		height: 800px;
+	}
+    #dragged-files-view{
+	    max-height: 500px;
+	    overflow: auto;
+    }
+    #filedrag{
+/* 		display: block; */
+		font-weight: bold;
+		text-align: center;
+		padding: 1em 0;
+		margin: 1em 0;
+		color: #555;
+		background-color: rgba(242,242,242,1);
+		border: 0px solid black;
+		border-radius: 7px;
+		cursor: default;
+		height:400px;
+		width:100%;
+	}
+	
+	#draghere-cartoon.hover{
+		color: green;
+		box-shadow: inset 0 3px 4px #888;
+	}
+	form {
+		width:auto;
+	}
+	.action-box {
+		margin: 1em 0;
+		color: #434343;
+		background-color: rgba(246,251,202,1);
+		border: 0px solid black;
+		border-radius: 7px;
+		padding: 5px;
+		font-size: 17px;
+	}
+	.action-box-success{
+		background-color: rgba(194,255,195,1);
+		color: #0c4b1c;
+	}
+	.action-box-failed{
+		background-color: rgba(255,182,182,1);
+		color: #6b2f2f;
+	}	
+</style>
+<div>
+<h2>CATAMI Deployment/Image Set Uploader</h2>
+
+<div class="fuelux">
+<div id="MyWizard" class="wizard">
+	<ul class="steps">
+		<li data-target="#step1" class="active"><span class="badge badge-info">1</span>1. Drop Files<span class="chevron"></span></li>
+		<li data-target="#step2"><span class="badge">2</span>2. Edit Metadata<span class="chevron"></span></li>
+		<li data-target="#step3"><span class="badge">3</span>3. Upload<span class="chevron"></span></li>
+	</ul>
+	<div class="actions">
+		<button type="button" class="btn btn-mini btn-prev"> <i class="icon-arrow-left"></i>Prev</button>
+		<button type="button" class="btn btn-mini btn-next" data-last="Finish">Next<i class="icon-arrow-right"></i></button>
+	</div>
+</div>
+<div class="step-content extra-box">
+	<div class="step-pane active" id="step1">
+		<div class="row span12">
+			<h3>Drag & Drop your files here</h3>
+			<p class="alert alert-info">Drag and drop your files (images, csv files etc), we'll sort out which is which.  You can also click the 'Choose Files' button to open a familiar file dialog to select the files you wish to upload.<br>When done you'll see your files listed here.</p>
+			<div id="data_upload_container" class=""></div>
+		</div>
+		<div class="row span12">
+			<div id="upload_summary_container" class=""></div>
+		</div>
+	</div>
+	<div class="step-pane" id="step2">
+		<div class="row span12">
+			<h3>Edit your metadata</h3>
+			<div id="deployment_info_container" class=""></div>
+			<p class="alert alert-error" id="no-drop-alert">You need to drop some files before you see anything here. See stage 1.</p>
+		</div>
+	</div>
+	<div class="step-pane" id="step3">
+		<div class="row span12">
+			<h3>Fire away!</h3>
+			<div id="upload_control_container"></div>
+			<p class="alert alert-error" id="no-valid-data-alert">You need address all errors in stage 3 before you see anything here.</p>
+		</div>
+		<div class = "row span12">
+			<div id="data_error_container" class=""></div>
+		</div>
+	</div>
+</div>
+</div>
+
+<!-- error reporting -->
+<script type="text/template" id="error_report_template">
+	<div class="alert alert-error" id="no_images_list_file">
+		<p><strong><i class="icon-warning-sign"></i> images.csv</strong> is missing. Drag it into the file list to fix this. <a href="#" class="btn pull-right">More information.</a></p>
+	</div>
+	<div class="alert alert-error" id="no_deployment_file">
+		<p><strong><i class="icon-warning-sign"></i> description.txt</strong> is missing. Drag it into the file list to fix this.  <a href="#" class="btn pull-right">More information.</a></p>
+	</div>
+	<div class="alert alert-success"  id="all_import_worked">
+		<p><i class="icon-ok"></i> Everything looks ok. Edit the underlined info as you like, and click upload</p>
+	</div>
+	<div class="alert alert-success"  id="all_upload_worked">
+		<p><i class="icon-ok"></i> Everything uploaded just great.</p>
+	</div>
+</script>
+
+
+<!-- Controls and progress feedback -->
+<script type="text/template" id="action_control_template">
+	<div>
+	<h4>Progress Information</h4>
+	<div class="row span12">
+		<h5>Deployment Metadata</h5>
+		<div>
+			<div id="deployment_post_status" class="action-box"><i id="activity-icon" class="icon-cog icon-2x"></i> <span id="message">Make Deployment</span></div>
+		</div>
+		<div>
+			<div id="image_metadata_status" class="action-box"><i id="activity-icon" class="icon-cog icon-2x"></i> <span id="message">Add Image Data</span></div>
+		</div>	
+	</div>
+	
+	<div class="row span12">
+		<h5>Deployment Image Set</h5>
+		<div class="progress progress-striped active span12">
+			<div id="image_upload_bar" class="bar" style="width: 0%;"></div>
+		</div>
+	</div>
+	
+	<div class="row span12">
+		<div id="upload_success_status" class="action-box action-box-success"><i class="icon-thumbs-up icon-2x"></i> <a id="message" href="#">View your uploaded deployment</a></div>
+	</div>
+
+	<div class="row span12">	
+		<div id="button_zone"><button id="start-upload-button" class="btn btn-primary">Start Upload</button> <button id="cancel-clear-button" class="btn btn-danger">Cancel/Clear</button></div>
+	</div>
+	</div>
+</script>
+
+<!--Summary of dropped files -->
+<script type="text/template" id="image_list_summary_template">
+	<div id="deployment_info_well" class="well">
+		<h4>Summary</h4>
+	</div>
+</script>
+
+<!-- authen info -->
+<script type="text/template" id="account_info_template">
+	<div id="authenication_info_well" class="well">
+
+	<table><tbody>
+		<tr><td>Username</td><td><span id="username_text"><%=username%></span></td></tr>
+		<tr><td>API Key</td><td><span id="apikey_text"><%=apikey%></span></td></tr>
+	</tbody></table>
+	</div>
+</script>
+
+<!-- Deployment info -->
+<script type="text/template" id="deployment_info_template">
+	<!-- Deployment info from description.txt -->
+	<div id="deployment_info_well" class="well">
+		<h3 id="shortname_text"><%=short_name%></h3>
+		<table><tbody>
+			<tr><td>Version</td><td><span id="version_text"><%=version%></span></td></tr>
+		    <tr><td>Type</td><td> <span id="type_text"><%=type%></td></tr>
+			<tr><td>Description</td><td><span id="description_text"><%=description%></span></td></tr> <!-- 	  aka  mission_aim -->
+			<tr><td>Operator</td><td><span id="operator_text"><%=operator%></span></td></tr>
+			<tr><td>Keywords</td><td><span id="keywords_text"><%=keywords%></span></td></tr>
+			<tr><td>Contact Person</td><td><span id="contact_text"><%=contact_person%></td></tr>
+			<tr><td>License</td><td><span id="license_text"><%=license%></td></tr>
+			<tr><td><h4>Derived from image set</h4></td></tr>
+			<tr><td>Start Position</td><td><span id="start_position_text"> <%=start_position%></span></td></tr>
+			<tr><td>End Position</td><td><span id="end_position_text"><%=end_position%></span></td></tr>
+			<tr><td>Bounding Polygon</td><td><span id="bounding_polygon_text"><%=transect_shape%></td></tr>
+			<tr><td>Minimum Depth (m)</td><td><span id="min_depth_text"><%=min_depth%></span></td></tr>
+			<tr><td>Maximum Depth (m)</td><td><span id="max_depth_text"><%=max_depth%></span></td></tr>
+
+		</tbody></table>
+<!-- 		error section -->
+		<div class="alert alert-error"  id="deployment_data_incomplete">
+			<p><i class="icon-exclamation-sign"></i> <strong>You are missing some required information</strong></p>
+			<ul id="deployment_missing_info"></ul>
+		</div>
+		<div class="alert alert-warning"  id="deployment_data_optional_incomplete">
+			<p><i class="icon-exclamation-sign"></i> <strong>You are missing some optional information.</strong> You can upload your deployment without this.</p>
+			<ul id="deployment_missing_optional_info"></ul>
+		</div>		
+		<div class="alert alert-success"  id="deployment_data_complete">
+			<p><i class="icon-ok"></i> You can upload this deployment.</p>
+		</div>
+		
+	</div>
+	
+	<!-- Deployment info from model lookup, IF the deployment is already in the system -->
+	<div id="deployment_model_well"  class="well">
+		<h4>Deployment model contents</h4>
+		<p><%=campaign%></p>
+		<p><%=campaign_name%></p>
+		<p><%=end_time_stamp%></p>
+		<p><%=id%></p>
+		<p><%=license%></p>
+		<p><%=map_extent%></p>
+		<p><%=reported_operator%></p>
+		<p><%=resource_uri%></p>
+		<p><%=start_time_stamp%></p>
+		<p><%=transect_shape%></p>
+		<p><%=reported_type%></p>
+	</div>
+</script>
+
+<!--File selector, drop target and file list -->
+<script type="text/template" id="data_upload_template">		
+	<fieldset>
+	
+	<input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="300000" />
+	
+	<div>
+		<label for="fileselect">Files to upload:</label>
+		<input type="file" id="fileselect" name="fileselect[]" multiple="multiple" />
+		<div id="filedrag">
+			<div id="draghere-cartoon">
+				<h3>Drag and drop files here</h3>
+				<i class="icon-file-text-alt icon-3x"></i> <i class="icon-plus icon-2x"></i> <i class="icon-picture icon-3x"></i>
+			</div>
+			<div id="dragged-files-view">
+				<table id="dragged-files-table" class="table table-condensed">
+				<tr><td>name</td><td>size</td><td>type</td></tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	</fieldset>
+	
+	</form>
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/jquery/plugins/jquery.csv.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap-editable/js/bootstrap-editable.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/data-upload-model.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}assets/backbone/templates/data-upload-view.js"></script>
+<script type="text/javascript">
+	var uploadOrchestratorView = new UploadOrchestratorView();
+</script>
+<script src="{{ STATIC_URL }}assets/fuelux/loader.min.js" type="text/javascript"></script>
+
+{% endblock %}
+
