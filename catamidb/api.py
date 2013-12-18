@@ -5,6 +5,8 @@ from django.conf import settings
 from django.conf.urls import url
 from django.http import HttpResponse
 from django.utils import simplejson
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 import guardian
 from guardian.shortcuts import (get_objects_for_user, get_perms_for_model,
@@ -28,6 +30,7 @@ from catamidb import authorization
 import os, shutil
 import PIL
 import json
+import codecs
 
 import logging
 
@@ -458,9 +461,12 @@ class ImageUploadResource(ModelResource):
         allowed_methods = ['get', 'post']  # allow post to create campaign via Backbonejs
 
     def deserialize(self, request, data, format=None):
+
         if not format:
             format = request.META.get('CONTENT_TYPE', 'application/json')
         if format == 'application/x-www-form-urlencoded':
+            return request.POST
+        if format == 'application/x-www-form-urlencoded; charset=UTF-8':
             return request.POST
         if format.startswith('multipart'):
             data = request.POST.copy()
@@ -469,7 +475,9 @@ class ImageUploadResource(ModelResource):
         return super(ImageUploadResource, self).deserialize(request, data, format)
 
     def obj_create(self, bundle, **kwargs):
+
         if ("img" in bundle.data.keys() and "deployment" in bundle.data.keys()):
+
             imageName = str(bundle.data["img"])
             sourcePath, imgName = os.path.split(imageName)
             if imgName.find("@") != -1:
@@ -488,7 +496,12 @@ class ImageUploadResource(ModelResource):
                         os.makedirs(temp_dir)                   
                     imageDest = ImageManager().get_image_destination(deployment[0], settings.IMPORT_PATH)
                     thumbDest = ImageManager().get_thumbnail_destination(deployment[0], settings.IMPORT_PATH)
-                    bundle.obj.img.field.upload_to = temp_dir
+
+                    if ("filedata" in bundle.data.keys()):
+                        #write filedata Blob() to image as named in temp_dir
+                        path = default_storage.save(os.path.join(temp_dir, imgName), ContentFile(bundle.data["filedata"].read()))
+                    else :
+                        bundle.obj.img.field.upload_to = temp_dir
 
                     if not os.path.exists(imageDest):
                         logger.debug("Created directory for images: %s" % imageDest)
@@ -575,9 +588,12 @@ class ImageResource(ModelResource):
         """
 
         json_data = simplejson.loads(request.body)
-        deployments = {}
+
+        deployments =  []
+        logger.debug("starting web based metadata ingest %s" % json_data['objects'][0]['deployment'])
+
         #pull the query parameters out
-        for i in range(0, len(json_data['objects']),1):           
+        for i in range(0, len(json_data['objects']),1):
             deployment = json_data['objects'][i]['deployment']             
             deployment_id = deployment.split('/')[len(deployment.split('/'))-2]
             #dp = None
@@ -648,7 +664,15 @@ class ImageResource(ModelResource):
 
             new_camera = CameraResource().obj_create(camera_bundle) 
 
-        response = HttpResponse(content_type='application/json')        
+            deployment_response = {'image_name': image_name, 'image_uri':'/api/dev/image/'+str(new_image.obj.id)}
+
+            deployments.append(deployment_response)
+
+        logger.debug("finished web based metadata ingest %s" % json_data['objects'][0]['deployment'])
+
+        response = HttpResponse(content_type='application/json')
+        response.content = json.dumps(deployments)
+
         return response
 
         return self.create_response(request, "Not all fields were provided.", response_class=HttpBadRequest)
