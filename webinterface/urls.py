@@ -24,7 +24,17 @@ urlpatterns = patterns(
     url(r'^faq', 'faq'),
     url(r'^contact', 'contact'),
     url(r'^licensing', 'licensing'),
-    url(r'^howto', 'howto'),
+
+    url(r'^howto/$', 'howto'),
+    url(r'^howto/overview/$', 'howto_overview'),
+    url(r'^howto/getstarted/$', 'howto_getstarted'),
+    url(r'^howto/navigation/$', 'howto_navigation'),
+    url(r'^howto/upload/$', 'howto_upload'),
+    url(r'^howto/startannotating/$', 'howto_startannotating'),
+    url(r'^howto/annotateimages/$', 'howto_annotateimages'),
+    url(r'^howto/manageprojects/$', 'howto_manageprojects'),
+    url(r'^howto/automatecatami/$', 'howto_automatecatami'),
+
     url(r'^about', 'about'),
     url(r'^proxy/$', 'proxy'),
     url(r'^classification', 'classification'),

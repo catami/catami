@@ -90,6 +90,38 @@ def howto(request):
     return render_to_response('webinterface/howto.html', {},
                               RequestContext(request))
 
+def howto_overview(request):
+    return render_to_response('webinterface/howto-overview.html', {},
+                              RequestContext(request))
+
+def howto_getstarted(request):
+    return render_to_response('webinterface/howto-getstarted.html', {},
+                              RequestContext(request))
+
+def howto_upload(request):
+    return render_to_response('webinterface/howto-upload.html', {},
+                              RequestContext(request))    
+
+def howto_navigation(request):
+    return render_to_response('webinterface/howto-navigate.html', {},
+                              RequestContext(request))
+
+def howto_startannotating(request):
+    return render_to_response('webinterface/howto-getstarted-annotation.html', {},
+                              RequestContext(request))   
+
+def howto_annotateimages(request):
+    return render_to_response('webinterface/howto-annotate.html', {},
+                              RequestContext(request))
+
+def howto_manageprojects(request):
+    return render_to_response('webinterface/howto-project-management.html', {},
+                              RequestContext(request))   
+
+def howto_automatecatami(request):
+    return render_to_response('webinterface/howto-automation.html', {},
+                              RequestContext(request))   
+
 def classification(request):
     return render_to_response('webinterface/classification.html', {},
                               RequestContext(request))
