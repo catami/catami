@@ -1,12 +1,97 @@
 {% extends "base-topmenu.html" %}
 
 {% block content %}
+<style type="text/css">
+	.fat-line {
+		width: 20px;
+		height: 600px;
+		background: #ffbb00;
+		-moz-border-radius: 50px;
+		-webkit-border-radius: 50px;
+		border-radius: 50px;
+	}
+	
+	.circle-marker {
+		margin-left:-5px;
+		width: 30px;
+		height: 30px;
+		background: red;
+		-moz-border-radius: 15px;
+		-webkit-border-radius: 15px;
+		border-radius: 15px;	
+	}
+	
+	.rectangle-label {
+		width: 200px;
+		height: 100px;
+		background: #f8e8ad;		
+		-moz-border-radius: 15px;
+		-webkit-border-radius: 15px;
+		border-radius: 15px;
+	}
 
-	<div class="">
-    <h1>Catami HowTo: Overview of CATAMI</h1>
+	.text-label {
+		width:300px;
+		padding-left:40px;
+	}
+	.image-label {
+		margin-left:40px;
+		width:200px;
+		border: black;
+		border-width: 1px;
+	}
+	.top-marker {
+		margin-top:-590px;
+	}
+	.image-marker {
+		margin-top:30px;
+	}	
+	.marker {
+		margin-top:108px;
+	}
+	
+	.diagram {
+		border: black;
+		border-width: 1px;
+		-moz-border-radius: 15px;
+		-webkit-border-radius: 15px;
+		border-radius: 15px;	
+	}
 
-    <p class="lead">high level overview, workflow, static. maybe links to video/sections as relevant
-</p>
+</style>	
+	<div class="container">
+		<row>
+		    <h1>CATAMI HowTo: Overview</h1>
+		
+			<div class="lead">
+			CATAMI consists of two independent activities; The CATAMI website (this) and the CATAMI Classification Scheme <a href="/classification"><i class="icon-external-link-sign"></i></a>
+			</div>
+		</row>
+		<row>
+			<p class="lead">Use the CATAMI website to explore and annotate marine imagery</p>
+		</row>
+		<row>
+			<div class="span5 diagram">
+			    <p class="lead">1. Exploring Imagery</p>
+			    <div class="shape">
+					<div class="fat-line"></div>
+					<div class="circle-marker top-marker"><div class="text-label lead">Campaign overview</div></div><img src="{{ STATIC_URL }}images/campaignview.png" class="image-label">
+					<div class="circle-marker image-marker"><div class="text-label lead">Campaigns contain deployments</div></div><img src="{{ STATIC_URL }}images/campaigndetailview.png" class="image-label">
+					<div class="circle-marker image-marker"><div class="text-label lead">Deployments contain imagery</div></div><img src="{{ STATIC_URL }}images/deploymentdetailview.png" class="image-label">
+			    </div>
+			</div>
+			<div class="span5 diagram">
+			    <p class="lead">2. Annotating Imagery</p>
+			    <div class="shape">
+					<div class="fat-line"></div>
+					<div class="circle-marker top-marker"><div class="text-label lead">Login / Make an account</div></div>
+					<div class="circle-marker marker"><div class="text-label lead">Upload data</div></div>
+					<div class="circle-marker marker"><div class="text-label lead">Create a project</div></div>
+					<div class="circle-marker marker"><div class="text-label lead">Annotate images <i class="icon-repeat icon-spin"> </i></div></div>
+					<div class="circle-marker marker"><div class="text-label lead">Download / Share annotations</div></div>
+			    </div>
+			</div>
+		</row>
 	</div>
 {% endblock %}
 
