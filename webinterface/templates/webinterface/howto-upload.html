@@ -2,10 +2,63 @@
 
 {% block content %}
 
-	<div class="">
+	<div class="container">
     <h1>Catami HowTo: Upload data to CATAMI</h1>
 
-    <p class="lead">Uploading data to CATAMI servers.</p>
+	<div class="alert alert-info">
+		    	<strong>Important!</strong> You'll need to be logged in to upload data to CATAMI.
+	</div>
+	
+	<row>
+		<div class="span4">
+	    	<p class="lead">1. Prepare your data</p>
+		</div>
+		
+		<div class="span7">
+			<p class="lead">The Data Format</p>
+			
+		    <p>CATAMI expects data to be prepared according to the CATAMI Data Specification. 
+		    You can find this on the <a href="https://github.com/catami/catami/wiki/Data-importing">
+		    CATAMI wiki <i class="icon-external-link-sign"></i></a>.</p>
+		    <p>For a typical image based deployment, this will consist of a directory of images and several 
+		    descriptive text files. 
+		    <div class="alert alert-info">
+		    	<strong>Important!</strong> These text files 
+				have a specific format <a href="https://github.com/catami/catami/wiki/Data-importing">
+					See more <i class="icon-external-link-sign"></i></a>
+		    </div>
+		    </p>
+		    <p>With your data organised for CATAMI, you are ready to start uploading</p>
+		    
+		    <div class="alert alert-error">
+		    <strong>What about video data?</strong>
+		    <p>CATAMI does not support video data at this time</p>
+		    </div>
+		</div>
+	</row>
+	<row><div class="span12"><hr></div></row>
+
+	<row>
+		<div class="span4">
+			<p class="lead">2. Upload your data</p>
+		</div>
+		<div class="span7">
+			<row>
+			<p class="lead">Choose web-based or command-line upload</p>
+			</row>
+			<row>
+			<p class="lead">Web-based upload</p>
+			<p>The web-based upload tool is the preferred method of uploading data to CATAMI.</p>
+			<iframe width="640" height="360" src="//www.youtube.com/embed/6vPfQ6CQT_8?feature=player_detailpage" frameborder="0" allowfullscreen></iframe>
+			</row>
+			<row>
+			<p class="lead">Command-line upload</p>
+			<p>The CATAMI command-line upload tool is written in Python 2.7 and has quite a few Python dependancies. The source code and instructions are available
+				at <a href="https://github.com/catami/catami-data-upload">the CATAMI github</a>.
+			</p>
+			</row>
+		</div>
+	</row>
 	</div>
 {% endblock %}
 

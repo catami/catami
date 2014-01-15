@@ -2,10 +2,65 @@
 
 {% block content %}
 
-	<div class="">
+	<div class="container">
     <h1>Catami HowTo: Get started with annotation</h1>
 
-    <p class="lead">How to make a new project, available options</p>
+    <p class="lead">How to make a new project and get started with annotation in CATAMI.</p>
+
+	<div class="alert alert-info">
+		    	<strong>Important!</strong> You'll need to be logged in to create a project.
+	</div>
+		 
+		    	
+	<row>
+		<div class="span4">
+	    	<p class="lead">1. Create a new project</p>
+		</div>
+		
+		<div class="span7">
+			<p>Head to the <a href="/projects/">projects page <i class="icon-external-link-sign"></i></a> and click the '+Create a new project' button, or just hit this button right here:</p>
+			<button class="btn btn-large btn-primary " type="button" onclick="window.open('/projects/create/')"><i class="icon-plus"></i> Create New Project</button>			
+		</div>
+	</row>
+	<row><div class="span12"><hr></div></row>
+	<row>
+		<div class="span4">
+	    	<p class="lead">2. Name your project</p>
+		</div>
+		
+		<div class="span7">
+			<p>Give your project a useful name and (optionally) a description.</p>
+			<img src="{{STATIC_URL}}/images/example_projcreate_01.png" class="img-polaroid">
+		</div>
+	</row>
+	<row><div class="span12"><hr></div></row>
+
+	<row>
+		<div class="span4">
+	    	<p class="lead">3. Select the deployments you with to annotate</p>
+		</div>
+		
+		<div class="span7">
+			<p>Deployments are where CATAMI keeps images organised.  You'll need to select one (or more) deployments to have images to annotate.</p>
+			<img src="{{STATIC_URL}}/images/example_projcreate_02.png" class="img-polaroid">
+
+		</div>
+	</row>
+	<row><div class="span12"><hr></div></row>
+
+	<row>
+		<div class="span4">
+	    	<p class="lead">4. Choose your annotation options</p>
+		</div>
+		
+		<div class="span7">
+			<p>Choose between fine scale annotation (points on images) and broad scale annotation (entire image annotation with percentage cover).  Finally, choose 
+				how to assign the points (Point sampling) and how to sample the images for annotation (you can skip sampling and choose 'All').
+			</p>
+			<img src="{{STATIC_URL}}/images/example_projcreate_03.png" class="img-polaroid">
+
+		</div>
+	</row>
 	</div>
 {% endblock %}
 
