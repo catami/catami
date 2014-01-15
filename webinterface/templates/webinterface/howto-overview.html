@@ -51,11 +51,14 @@
 	}
 	
 	.diagram {
-		border: black;
+		padding:10px;
+		padding-left: 30px;
+		height:680px;
+		border: rgba(0,0,0,0.3) solid;
 		border-width: 1px;
-		-moz-border-radius: 15px;
-		-webkit-border-radius: 15px;
-		border-radius: 15px;	
+		-moz-border-radius: 8px;
+		-webkit-border-radius: 8px;
+		border-radius: 8px;	
 	}
 
 </style>	
@@ -68,7 +71,7 @@
 			</div>
 		</row>
 		<row>
-			<p class="lead">Use the CATAMI website to explore and annotate marine imagery</p>
+			<p class="lead">Use the CATAMI website to explore and annotate marine imagery with these primary workflows.</p>
 		</row>
 		<row>
 			<div class="span5 diagram">
@@ -84,11 +87,13 @@
 			    <p class="lead">2. Annotating Imagery</p>
 			    <div class="shape">
 					<div class="fat-line"></div>
-					<div class="circle-marker top-marker"><div class="text-label lead">Login / Make an account</div></div>
-					<div class="circle-marker marker"><div class="text-label lead">Upload data</div></div>
-					<div class="circle-marker marker"><div class="text-label lead">Create a project</div></div>
-					<div class="circle-marker marker"><div class="text-label lead">Annotate images <i class="icon-repeat icon-spin"> </i></div></div>
-					<div class="circle-marker marker"><div class="text-label lead">Download / Share annotations</div></div>
+					<div class="circle-marker top-marker"><div class="text-label"><p class="lead">Login  <a href="/accounts/signin/"><i class="icon-external-link-sign"></i></a> / Make an account <a href="/accounts/signup/"><i class="icon-external-link-sign"></i></a></p><p>Data upload and annotation are available to you when you login to CATAMI.</p></div></div>
+					<div class="circle-marker marker"><div class="text-label"><p class="lead">Upload data <a href="/staging/upload/"><i class="icon-external-link-sign"></i></a></p>Upload images and data using the built-in web uploader, or use the command line CATAMI upload tool.<p></div></div>
+					<div class="circle-marker marker"><div class="text-label"><p class="lead">Create a project <a href="/projects/create/"><i class="icon-external-link-sign"></i></a></p><p>Create a project to annotate images.  Choose which images to annotate and other annotation decisions.</p></div></div>
+					<div class="circle-marker marker"><div class="text-label"><p class="lead">Annotate images <i class="icon-repeat icon-spin"> </i> <a href="/projects/"><i class="icon-external-link-sign"></i></a></p><p>Use CATAMI tools to annotate faster.</p></div>
+					
+					</div>
+					<div class="circle-marker marker"><div class="text-label lead">Download / Share annotations <a href="/projects/"><i class="icon-external-link-sign"></i></a></div></div>
 			    </div>
 			</div>
 		</row>
