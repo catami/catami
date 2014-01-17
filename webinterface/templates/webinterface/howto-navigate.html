@@ -2,27 +2,39 @@
 
 {% block content %}
 
-	<div class="">
-    <h1>Catami HowTo: Navigate CATAMI</h1>
+	<div class="container">
+        <h1>Catami HowTo: Navigate CATAMI</h1>
 
-    <p class="lead">How to navigate through data, yours, theirs, whatever.</p>
-
-    <p class="lead"><u>Campaigns</u></p>
-    <a>To view campaigns, click on the Explore button, and then Campaigns </a>
-    <br />
-    <br />    
-    <img src="/static/images/campaign1.png" alt="campaign1"/>
-    <img src="/static/images/campaign2.png" alt="campaign2"/>
-    <br />
-    <br />
-    <p class="lead"><u>Deployment</u></p>
-    <a>To view campaigns, click on the Explore button, and then Campaigns </a>
-    <br />
-    <br />    
-    <img src="/static/images/deployment1.png" alt="deployment1"/>
-    <img src="/static/images/deployment2.png" alt="deployment2"/>
-    <br />
-    <br />
+        <row>
+            <div class="span4">                            	
+	    	    <p class="lead">Campaigns</p>
+            </div>
+		    <div class="span7">         
+                <p>To view campaigns, click on the Explore button, and then Campaigns </p>
+                <img src="/static/images/campaign1.png" alt="campaign1"/>
+                <img src="/static/images/campaign2.png" alt="campaign2"/>
+            </div>                    
+        </row>
+        <row><div class="span12"><hr></div></row>
+        <row>
+            <div class="span4">                            	
+	    	    <p class="lead">Deployments</p>
+            </div>
+		    <div class="span7">         
+                <p>To view deployments, click on the Explore button, and then Deployments </p>
+                <img src="/static/images/deployment1.png" alt="deployment1"/>
+                <img src="/static/images/deployment2.png" alt="deployment2"/>
+            </div>                    
+        </row>
+        <row><div class="span12"><hr></div></row>
+        <row>
+            <div class="span4">
+	 	        <p class="lead">Next Steps</p>
+	        </div>
+            <div class="span7">
+	            <a href="/howto/upload/" class="lead"><i class="icon-chevron-sign-right"></i> Howto: Upload Data</a>
+            </div>
+        </row>
 	</div>
 {% endblock %}
 

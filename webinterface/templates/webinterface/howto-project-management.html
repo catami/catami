@@ -2,34 +2,44 @@
 
 {% block content %}
 
-	<div class="">
-    <h1>Catami HowTo: Manage projects in CATAMI</h1>
-
-    <p class="lead">Delete, export, import and bookmark projects</p>
-
-    <p class="lead"><u>Deleting a Project</u></p>
-    <a>Ensure you have logged in and have the right permissions. Once logged in, select a project you wish to delete, and click on the red 'Delete' button located on the top left corner of the screen</a>
-    <br />
-    <br />    
-    <img src="/static/images/delete1.png" alt="delete1"/>
-    <br />
-    <a>The following confirmation dialog will appear, click on the confirmation button to proceed with deletion of project</a>
-    <br />    
-    <br />    
-    <img src="/static/images/delete2.png" alt="delete2"/>    
-	</div>
-    <br />
-    <p class="lead"><u>Exporting a project</u></p>
-    <a>Ensure you have logged in and have the right permissions. Once logged in, select a project you wish to export, and click on the 'Download CSV' button located on the top left corner of the screen</a>
-    <br />
-    <br />    
-    <img src="/static/images/export1.png" alt="export"/>
-    <br />
-    <br />    
-    <a>The following confirmation dialog will appear, click on the confirmation button to export the project</a>
-    <br />    
-    <br />    
-    <img src="/static/images/export2.png" alt="export2"/>    
+	<div class="container">
+        <h1>Catami HowTo: Manage projects in CATAMI</h1>
+        <div class="alert alert-info">
+		    	    <strong>Important!</strong> You'll need to be logged in to perform the following operations
+	    </div>
+        <row>
+            <div class="span4">                            	
+	            <p class="lead">Deleting a Project</p>
+            </div>
+	        <div class="span7">         
+                <p>Select a project you wish to delete, and click on the red 'Delete' button located on the top left corner of the screen</p>
+                <img src="/static/images/delete1.png" alt="delete1"/>
+            </div>                    
+        </row>
+        <row>
+            <div class="span4"></div>
+	        <div class="span7">         
+                <p>The following confirmation dialog will appear, click on the confirmation button to proceed with deletion of project</p>
+                <img src="/static/images/delete2.png" alt="delete2"/>
+            </div>                    
+        </row>
+        <row><div class="span12"><hr></div></row>    
+        <row>
+            <div class="span4">                            	
+	            <p class="lead">Exporting a project</p>
+            </div>
+	        <div class="span7">         
+                <p>Select a project you wish to export, and click on the 'Download CSV' button located on the top left corner of the screen</p>
+                <img src="/static/images/export1.png" alt="export1"/>
+            </div>                    
+        </row>
+        <row>
+            <div class="span4"></div>
+	        <div class="span7">         
+                <p>The following confirmation dialog will appear, click on the confirmation button to export the project</p>
+                <img src="/static/images/export2.png" alt="export2"/>
+            </div>                    
+        </row>  
 	</div>
 
 {% endblock %}

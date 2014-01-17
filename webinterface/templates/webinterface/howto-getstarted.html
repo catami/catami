@@ -2,31 +2,47 @@
 
 {% block content %}
 
-	<div class="">
-    <h1>Catami HowTo: Get Started with CATAMI</h1>
-
-    <p class="lead">Learning about CATAMI, making an account and getting to work.</p>
-
-    <p class="lead"><u>Creating an account</u></p>
-    <a>To create a new account, click on the green button "Get an Account it's free!" located on the left hand corner of the page </a>
-    <br />
-    <br />    
-    <img src="/static/images/create1.png" alt="create1"/>
-    <br />
-    <a>Fill up the form to complete the registration</a>
-    <br />
-    <br />    
-    <img src="/static/images/create2.png" alt="create2"/>
-
-    <p class="lead"><u>Account privileges</u></p>
-    <a>Logging in provides you with additional features, such as being able to upload data, create projects, and set permissions</a>
-    <br />
-    <br />    
-    <img src="/static/images/visitor.png" alt="visitor"/>
-    <br />
-    <br />    
-    <img src="/static/images/signed.png" alt="signed"/>
-
+	<div class="container">
+        <h1>Catami HowTo: Get Started with CATAMI</h1>
+        <row>
+            <div class="span4">                            	
+	    	    <p class="lead">1. Create an account</p>
+            </div>
+		    <div class="span7">         
+                <p>To create a new account, click on the green button "Get an Account it's free!" located on the left hand corner of the page </p>
+                <img src="/static/images/create1.png" alt="create1"/> 
+            </div>                    
+        </row>
+        <row><div class="span12"><hr></div></row>
+        <row>
+            <div class="span4">                            	
+	    	    <p class="lead">2. Fill up the form</p>
+            </div>
+		    <div class="span7">         
+                <p>Fill up form to complete the registration</p>
+                <img src="/static/images/create2.png" alt="create2"/> 
+            </div>                    
+        </row>
+        <row><div class="span12"><hr></div></row>
+        <row>
+            <div class="span4">                            	
+	    	    <p class="lead">3. Account privileges</p>
+            </div>
+		    <div class="span7">         
+                <p>Logging in provides you with additional features, such as being able to upload data, create projects, and set permissions</p>
+                <img src="/static/images/visitor.png" alt="visitor"/>
+                <img src="/static/images/signed.png" alt="signed"/>
+            </div>                    
+        </row>
+        <row><div class="span12"><hr></div></row>                           
+       	<row>
+		    <div class="span4">
+	 	        <p class="lead">Next Steps</p>
+	        </div>
+            <div class="span7">
+	            <a href="/howto/navigation/" class="lead"><i class="icon-chevron-sign-right"></i> Howto: Navigate around CATAMI</a>
+            </div>
+        </row>
 	</div>
 {% endblock %}
 
