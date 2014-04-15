@@ -27,6 +27,7 @@ var DataUploader = Backbone.Model.extend({
         keywords: '',
         campaign: '',
         campaign_name: '',
+        campaign_number: '',
         contact_person: '',
         descriptive_keywords: '',
         end_position: '',
@@ -82,7 +83,7 @@ var DataUploader = Backbone.Model.extend({
                             'mission_aim': parent.get('mission_aim'),
                             'min_depth': parent.get('min_depth'),
                             'max_depth': parent.get('max_depth'),
-                            'campaign': '/api/dev/campaign/19/',
+                            'campaign':parent.get('campaign'),
                             'descriptive_keywords': parent.get('descriptive_keywords'),
                             'license': parent.get('license')
                         };
@@ -323,7 +324,6 @@ var DataUploader = Backbone.Model.extend({
     parseRequiredFiles: function() {
         // read and parse description.txt and imagfes.csv
 
-        console.log('Parse required files');
         for (var i = 0; i < this.get("file_list").length; i++) {
             if (this.get("file_list")[i].name === 'description.txt') {
                 this.parseDescription(this.get("file_list")[i]);
@@ -337,7 +337,6 @@ var DataUploader = Backbone.Model.extend({
         // parse the description.txt
         var parent = this;
 
-        console.log('parseDescription');
         var reader = new FileReader();
         reader.onload = (function(theFile){
             var fileName = theFile.name;
@@ -364,12 +363,7 @@ var DataUploader = Backbone.Model.extend({
                         parent.set("keywords", words[1]);
                     }
                 }
-   
-                console.log(parent.get("version"));
-                console.log(parent.get("type"));
-                console.log(parent.get("description"));
-                console.log(parent.get("operator"));
-                console.log(parent.get("keywords"));
+
 
                 GlobalEvent.trigger("deployment_description_parsed");
             };
@@ -381,12 +375,10 @@ var DataUploader = Backbone.Model.extend({
         
         var parent = this;
 
-        console.log(file);
         var reader = new FileReader();
         reader.onload = (function(theFile){
             var fileName = theFile.name;
             return function(e){
-                console.log('start image data parse');
 
                 var text = reader.result;
                 var data = $.csv.toArrays(text);

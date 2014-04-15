@@ -151,7 +151,6 @@ var DataUploadView = Backbone.View.extend({
         // note: dataTranfer is not in the jQuery event,have to poll the originalEvent contained within.
 
         var dt = event.originalEvent.dataTransfer;
-        console.log('files',dt.files);
         //var files = event.target.files || event.originalEvent.dataTransfer.files;
 
         dataUploader.set({file_list:event.originalEvent.dataTransfer.files});
@@ -161,7 +160,6 @@ var DataUploadView = Backbone.View.extend({
     },
     updateFileListInView: function(selectedFileList){
         //update UI elements for dropped files
-        console.log('updateFileListInView',selectedFileList);
         if (selectedFileList.length > 0){
             $('#upload_control_container').show();
             $("#draghere-cartoon").hide();
@@ -194,10 +192,8 @@ var DataUploadView = Backbone.View.extend({
     },
     parseDir: function(event){
         //directory parsing code,in the unlikely event thate we have access to DirectoryReader()
-        console.log('parse dir');
         var parent = this;
 
-        console.log(event);
         // this probably means dir dropping is webkit only (chrome/safari)
         var entry = event.dataTransfer.items[0].webkitGetAsEntry();
         var entries = [];
@@ -214,7 +210,6 @@ var DataUploadView = Backbone.View.extend({
                 }
             },parent.errorHandler);
           };
-        console.log(dirObject);
     },
     errorHandler: function (error) {
         console.log(error);
@@ -239,7 +234,6 @@ var DeploymentInfoView = Backbone.View.extend({
     events: {
     },
     render: function () {
-        console.log('render DeploymentInfoView');
         var variables = {
             'version': '',
             'type': '',
@@ -248,6 +242,7 @@ var DeploymentInfoView = Backbone.View.extend({
             'keywords': '',
             'campaign': '',
             'campaign_name': '',
+            'campaign_number': '',
             'contact_person': '',
             'descriptive_keywords': '',
             'end_position': '',
@@ -281,7 +276,6 @@ var DeploymentInfoView = Backbone.View.extend({
         // we're assuming that all of these fields have had 'editable' run on them in the initDeploymentInfo
 
         var parent = this;
-        console.log('updateDeploymentInfo view elements');
         if (dataUploader.get("description").trim() !== ""){
             $('#description_text').text(dataUploader.get("description"));
             $('#description_text').removeClass('editable-empty');
@@ -316,7 +310,6 @@ var DeploymentInfoView = Backbone.View.extend({
             $('#end_position_text').text(dataUploader.get("end_position"));
             $('#end_position_text').removeClass('editable-empty');
         }
-        console.log("min depth",dataUploader.get("min_depth"));
         if(dataUploader.get("min_depth") !== ""){
             $('#min_depth_text').text(dataUploader.get("min_depth"));
             $('#min_depth_text').removeClass('editable-empty');
@@ -332,13 +325,16 @@ var DeploymentInfoView = Backbone.View.extend({
             $('#bounding_polygon_text').removeClass('editable-empty');
         }
 
+
+        if(dataUploader.get("campaign_number").trim() !== ""){
+            $('#campaign_text').text(dataUploader.get("campaign_number"));
+            $('#campaign_text').removeClass('editable-empty');
+        }
         //update warnings and errors
-        console.log('call checkDeploymentDataEntry now');
         parent.checkDeploymentDataEntry();
     },
     initDeploymentInfo: function() {
         var parent = this;
-        console.log('initDeploymentInfo view');
 
         // get, from the model or the user, what we need for the deployment data model. 
         // uses x-editable (http://vitalets.github.io/x-editable)
@@ -363,7 +359,6 @@ var DeploymentInfoView = Backbone.View.extend({
                                                 $('#version_text').addClass('editable-empty');
                                             } else {
                                                 $('#version_text').removeClass('editable-empty');
-                                                console.log(' new value is new',versionArray[newValue].text);
                                                 dataUploader.set("version", versionArray[newValue].text);
                                             }
                                             parent.checkDeploymentDataEntry();
@@ -449,8 +444,24 @@ var DeploymentInfoView = Backbone.View.extend({
                                                 $('#license_text').removeClass('editable-empty');
                                                 dataUploader.set("license", licenseArray[newValue].text);
                                             }
+                                        }     
+                                    });
+
+        console.log('campaogn number -', dataUploader.get("campaign_number"),'-');
+        $('#campaign_text').editable({type: 'text',
+                                        emptytext: ' [campaign number] ',
+                                        value: dataUploader.get("campaign_number"),
+                                        unsavedclass: null,
+                                        success: function(response, newValue){
+                                            if(newValue.trim()===''){
+                                                $('#campaign_text').addClass('editable-empty');
+                                            } else {
+                                                $('#campaign_text').removeClass('editable-empty');
+                                                dataUploader.set("campaign_number", newValue);
+                                                dataUploader.set("campaign", "/api/dev/campaign/"+newValue+"/");
+                                            }
                                             parent.checkDeploymentDataEntry();
-                                        }
+                                      }
                                     });
 
         $('#keywords_text').editable({  type: 'text',
@@ -464,7 +475,6 @@ var DeploymentInfoView = Backbone.View.extend({
                                                 $('#keywords_text').removeClass('editable-empty');
                                             }
                                             parent.checkDeploymentDataEntry();
-                                            console.log('ipdated keywords',newValue);
                                             dataUploader.set("keywords", newValue);
                                       }
                                     });
@@ -554,7 +564,7 @@ var DeploymentInfoView = Backbone.View.extend({
                                                     dataUploader.set("transect_shape", newValue);
                                                 }
                                             });
-
+        this.updateDeploymentInfo();
         this.checkDeploymentDataEntry();
     },
     checkDeploymentDataEntry: function() {
@@ -564,7 +574,6 @@ var DeploymentInfoView = Backbone.View.extend({
         // if missing data is found the success view is hidden and error view is shown
 
         // if the entry exists, it is updated in the model with the contents
-        console.log('checkDeploymentDataEntry');
 
         $("#deployment_data_complete").show();
         $("#deployment_data_incomplete").hide();
@@ -590,6 +599,13 @@ var DeploymentInfoView = Backbone.View.extend({
 
         if($('#type_text').hasClass("editable-empty")) {
             $("#deployment_missing_info").append("<li>Deployment type is missing, select a type.</li>");
+            $("#deployment_data_incomplete").show();
+            $("#no-valid-data-alert").show();
+            $("#deployment_data_complete").hide();
+        }
+
+        if($('#campaign_text').hasClass("editable-empty")) {
+            $("#deployment_missing_info").append("<li>Campaign selection is missing, enter a campaign</li>");
             $("#deployment_data_incomplete").show();
             $("#no-valid-data-alert").show();
             $("#deployment_data_complete").hide();
