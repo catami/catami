@@ -99,7 +99,15 @@
 
 
                     {% if user.is_superuser %}
-                    <li><a href="/staging/campaign/create"><i class="icon-cloud-upload"></i> Import </a></li>
+                    <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}">
+                        <a href="#"><i class="icon-cloud-upload"></i> Import </a></a>
+
+                            <ul class="dropdown-menu">
+								<li><a href="/staging/campaign/create">Create Campaign</a></li>
+								<li><a href="/staging/upload">Upload Data</a></li>
+                            </ul>
+
+                    </li>
                     {% endif %}
 
                     <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}">
