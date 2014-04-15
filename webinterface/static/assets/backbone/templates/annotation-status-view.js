@@ -251,12 +251,16 @@ AnnotationStatusView = Backbone.View.extend({
                         chartRenderCallback();
                     },
                     error: function (request, status, error) {
-                        alert(request.responseText);
+                        console.log(request.responseText);
+                        console.log(request);
+
                     }
                 });
             },
             error: function (request, status, error) {
-                alert(request.responseText);
+                console.log(request.responseText);
+                console.log(request);
+
             }
         });
 
