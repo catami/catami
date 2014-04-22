@@ -27,6 +27,6 @@ nose-exclude
 django-dajaxice
 django-dajax
 django-bootstrap-toolkit
-PIL
+pillow
 requests==1.2.3
 numpy==1.8.0
