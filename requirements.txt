@@ -1,5 +1,5 @@
 pysftp
-django==1.4.1
+django==1.4.11
 django-jenkins
 south
 vectorformats
@@ -24,8 +24,6 @@ httplib2
 model_mommy==0.8.1
 django-waffle
 nose-exclude
-django-dajaxice
-django-dajax
 django-bootstrap-toolkit
 pillow
 requests==1.2.3
