@@ -66,6 +66,11 @@ def logout_view(request):
 
 
 # Info pages
+def news(request):
+    return render_to_response('webinterface/news.html', {},
+                              RequestContext(request))
+
+
 def faq(request):
     return render_to_response('webinterface/faq.html', {},
                               RequestContext(request))

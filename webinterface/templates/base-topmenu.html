@@ -94,13 +94,16 @@
             <div class="nav-collapse collapse">
                 <ul class="nav">
                     <li class="{% ifequal request.path url.webinterface.views.index %}active{% endifequal %}"><a
-                            href="{% url webinterface.views.index %}" class="dropdown-toggle"><i class="icon-home "></i>
-                        Home</a></li>
+                            href="{% url webinterface.views.index %}" class="dropdown-toggle">Home</a></li>
+
+
+                    <li class="dropdown {% ifequal request.path "/news" %}active{% endifequal %}">
+                    <a href="{% url webinterface.views.news %}">News</a></li>
 
 
                     {% if user.is_superuser %}
                     <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}">
-                        <a href="#"><i class="icon-cloud-upload"></i> Import </a></a>
+                        <a href="#">Import </a></a>
 
                             <ul class="dropdown-menu">
 								<li><a href="/staging/campaign/create">Create Campaign</a></li>
@@ -111,7 +114,7 @@
                     {% endif %}
 
                     <li class="dropdown {% ifequal request.path "/explore" %}active{% endifequal %}">
-                        <a href="#"><i class="icon-search "></i> Explore</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Explore <b class="caret"></b></a>
 
                             <ul class="dropdown-menu">
                                 <li class="{% ifequal request.path "/data/campaigns" %}
@@ -125,9 +128,9 @@
 
 
                     <li class="dropdown {% ifequal request.path "/projects" %}active{% endifequal %}">
-                    <a href="{% url webinterface.views.projects %}"><i class="icon-list-alt "></i> Projects</a>
+                    <a href="{% url webinterface.views.projects %}">Projects</a>
 
-                    <li class="dropdown {% ifequal request.path "/projects" %}active{% endifequal %}">
+                    <li class="dropdown {% ifequal request.path "/classification" %}active{% endifequal %}">
                     <a href="{% url webinterface.views.classification %}"> Classification </a>
 
                     <!--<li class="divider-vertical"></li>-->
@@ -135,11 +138,11 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                              More <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{% url webinterface.views.about %}"><i class="icon-info-sign"></i> About</a>
+                            <li><a href="{% url webinterface.views.about %}">About</a>
                             </li>
-                            <li><a href="{% url webinterface.views.contact %}"><i class="icon-envelope"></i> Contact us</a>
+                            <li><a href="{% url webinterface.views.contact %}">Contact us</a>
                             </li>
-                            <li><a href="{% url webinterface.views.howto %}"><i class="icon-question-sign"></i> How To</a></li>
+                            <li><a href="{% url webinterface.views.howto %}">How To</a></li>
                         </ul>
                     </li>
 

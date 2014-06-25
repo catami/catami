@@ -24,6 +24,7 @@ urlpatterns = patterns(
     url(r'^faq', 'faq'),
     url(r'^contact', 'contact'),
     url(r'^licensing', 'licensing'),
+    url(r'^news', 'news'),
 
     url(r'^howto/$', 'howto'),
     url(r'^howto/overview/$', 'howto_overview'),
