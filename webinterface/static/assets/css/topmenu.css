@@ -128,12 +128,14 @@ p.login-extras {
     padding: 20px;
 }
 
-/* News styles */
+/* Marketing section of Overview
+-------------------------------------------------- */
 
 .news {
   color: #5a5a5a;
 }
 .news h1 {
+  text-align: center;
   margin: 60px 0 10px;
   font-size: 60px;
   font-weight: 200;
