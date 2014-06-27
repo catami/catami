@@ -78,6 +78,8 @@
 	/* Masthead (docs home)
 	------------------------- */
 	.masthead {
+		padding-top: 20px;
+		padding-bottom: 10px;
 		margin: 0px;
 		margin-bottom: 0;
 		color: #fff;
@@ -98,16 +100,19 @@
 	  padding: 0 10px;
 	  color: rgba(255,255,255,.25);
 	}
-
+	
+	.feature-text {
+		font-size: larger;
+		font-weight: 200;
+	}
     </style>
 
 	<div class="fullWidthContainer">
     	<div class="masthead">
 			<h1>Welcome to CATAMI</h1>
 			<p class="lead">The online data management and image annotation system for marine ecologists, with a twist.</p>
-			<p>An iVEC project, funded by NeCTAR and supported by ANDS.</p>
+			<p>An iVEC project, funded by NeCTAR and supported by ANDS</p>
 			<p><img src="{{ STATIC_URL }}/images/ivec-white-logo-long.png"></p>
-
     	</div>
 	</div>	
             	
@@ -116,6 +121,7 @@
         <div class="row-fluid">
 
             <div class="span8 offset2">
+            	<br>
                 <div id="myCarousel" class="carousel slide">
                     <ol class="carousel-indicators">
                         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -243,29 +249,29 @@
             <div id="features" class="featurette span10">
 
                 <div class="row">
-                    <div class="span4">
-                        <h2><span class="muted">Data Management</span></h2>
-                        <p class="lead">Supports still imagery from any camera, in png or jpg formats. Currently used with AUV, Towed Imagery and Kayak Cam.</p>
-                        <p class="lead">Data broken down into Campaigns and Deployments for easy discovery and transect visualisation.</p>
-                        <p class="lead"><a href="{% url webinterface.views.campaign_list %}" class="btn"> Browse Campaigns and Deployments </a> </p>
+                    <div class="span4 feature-text">
+                        <h3><span class="muted">Data Management</span></h3>
+                        <p class="">Supports still imagery from any camera, in png or jpg formats. Currently used with AUV, Towed Imagery and Kayak Cam.</p>
+                        <p class="">Data broken down into Campaigns and Deployments for easy discovery and transect visualisation.</p>
+                        <p class=""><a href="{% url webinterface.views.campaign_list %}" class="btn"> Browse Campaigns and Deployments </a> </p>
                     </div>
-                    <div class="span4">
+                    <div class="span4 feature-text">
                         <h2><span class="muted">Image Annotation</span></h2>
-                        <p class="lead">Fine and broad scale annotation projects supported.</p>
-                        <p class="lead">Random and stratified image sampling across thousands of images in seconds.</p>
-                        <p class="lead">Random point sampling. </p>
-                        <p class="lead">On the fly statistics calculated while you work. </p>
-                        <p class="lead">Export your work as a CSV for further analysis. </p>
-                        <p class="lead">Work in private, public or work with friends and colleagues on the same data at the same time! </p>
+                        <p class="">Fine and broad scale annotation projects supported.</p>
+                        <p class="">Random and stratified image sampling across thousands of images in seconds.</p>
+                        <p class="">Random point sampling. </p>
+                        <p class="">On the fly statistics calculated while you work. </p>
+                        <p class="">Export your work as a CSV for further analysis. </p>
+                        <p class="">Work in private, public or work with friends and colleagues on the same data at the same time! </p>
                         {% if user.is_authenticated %}
                             <p class="lead"><a href="{% url webinterface.views.project_create %}" class="btn"> Create your own Project </a> </p>
                         {% endif %}
                     </div>
-                    <div class="span4">
+                    <div class="span4 feature-text">
                         <h2><span class="muted">Secret Sauce!</span></h2>
-                        <p class="lead">Similar image recommendations in broad scale classification projects.</p>
-                        <p class="lead">Full support for the CATAMI classification scheme.</p>
-                        <p class="lead"><a href="{% url webinterface.views.classification %}" class="btn"> Get the Classification Scheme </a></p>
+                        <p class="">Similar image recommendations in broad scale classification projects.</p>
+                        <p class="">Full support for the CATAMI classification scheme.</p>
+                        <p class=""><a href="{% url webinterface.views.classification %}" class="btn"> Get the Classification Scheme </a></p>
                     </div>
                 </div>
 
