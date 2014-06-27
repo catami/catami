@@ -127,3 +127,32 @@ p.login-extras {
     border-left: 3px solid #BCE8F1;
     padding: 20px;
 }
+
+/* News styles */
+
+.news {
+  color: #5a5a5a;
+}
+.news h1 {
+  margin: 60px 0 10px;
+  font-size: 60px;
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.news h2 {
+  font-weight: 200;
+  margin-bottom: 5px;
+}
+.news p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.news-img {
+  display: block;
+  margin: 0 auto 30px;
+  max-height: 145px;
+}
+
+

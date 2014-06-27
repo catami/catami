@@ -1,10 +1,33 @@
 {% extends "base-topmenu.html" %}
 
 {% block content %}
-	<div class="">
-    <h1>News</h1>
-
-    <p class="lead">No news is good news</p>
+<div class="row news">
+	<div class="span8 offset2">
+		<h1>Updates from the CATAMI Team</h1>
 	</div>
+	<div class="span8 offset2">
+		<div class="row">
+		    <h2>CATAMI wins at the WAiTTA Incite Awards 2013-2014</h2>
+		    <p>CATAMI was recently awarded a Western Australian Information Technology and Telecommunications Alliance (WAiTTA) Incite Award under the Society Domain, Sustainability category (http://www.waitta.asn.au/). We are honoured to receive this award and would like to thank all the people who worked on the project including the marine ecology researchers who gave up their time.  We are now nominated for the National iAwards in August.</p>
+		    <img class="news-img" src="{{ STATIC_URL }}/images/WAITTAWinnerslogo SocietySustainability.jpeg">
+		    <div><span class="badge badge-success">Posted 27-06-2014</span></div> 
+		    <hr>
+		</div>
+		
+		<div class="row">
+		    <h2>CATAMI updates</h2>
+		    <p>CATAMI has been updated with a new news page, a redesigned front page and information on the new CATAMI classification poster produced by our friends at NERP <a href="/classification">Check it out</a></p>
+		    <div><span class="badge badge-success">Posted 27-06-2014</span></div>     
+		    <hr>
+		</div>
+		
+		<div class="row">
+		    <h2>A new location for CATAMI News!</h2>
+		    <p>This will be new location for CATAMI news taking over from the old CATAMI blog - http://catami-australia.blogspot.com.au/<br>The original blog posts will be relocated here in the near future</p>
+		    <div><span class="badge badge-success">Posted 27-06-2014</span></div>     
+		    <hr>
+		</div>
+	</div>
+</div>
 {% endblock %}
 
